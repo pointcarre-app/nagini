@@ -812,7 +812,7 @@ pca-nagini/
 ├── docs.md                        # This documentation
 ├── README.md                      # Project overview
 ├── LICENSE
-├── LICENCE-DEPENDENCIES.md
+├── 3RD-PARTY.md
 └── todo.md
 ```
 
