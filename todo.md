@@ -5,3 +5,6 @@
 
 
 - [] #low Consider adding support for `input()` with Brython Manager
+
+
+- [] Add Licence buy button
