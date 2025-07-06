@@ -14,7 +14,10 @@ import { handleFSOperation, executeFS, loadPackages } from './worker-fs.js';
  * @param {string} message - Error message to send
  * @returns {void}
  */
-const postError = (message) => self.postMessage({ type: "error", message: `🔧 [Worker] ${message}` });
+const postError = (message) => self.postMessage({
+  type: "error",
+  message: `🔧 [Worker] ${message}`
+});
 
 /**
  * Post filesystem error message to main thread
@@ -117,7 +120,56 @@ async function handleInit(data, workerState) {
     importScripts(`${PYODIDE_WORKER_CONFIG.PYODIDE_CDN}pyodide.js`);
     workerState.pyodide = await loadPyodide({ indexURL: PYODIDE_WORKER_CONFIG.PYODIDE_CDN });
 
-    // Load Python initialization script
+    // Load Python module dependencies first
+    const pythonModules = [
+      '/src/pyodide/python/capture_system.py',
+      '/src/pyodide/python/code_transformation.py', 
+      '/src/pyodide/python/pyodide_utilities.py'
+    ];
+
+    for (const modulePath of pythonModules) {
+      try {
+        const moduleResponse = await fetch(modulePath);
+        if (moduleResponse.ok) {
+          const moduleContent = await moduleResponse.text();
+          const moduleName = modulePath.split('/').pop();
+          workerState.pyodide.FS.writeFile(moduleName, moduleContent);
+          // Execute the module so it can be imported
+          workerState.pyodide.runPython(moduleContent);
+          console.log(`🐍 Loaded and executed Python module: ${moduleName}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️ Could not load Python module ${modulePath}:`, error.message);
+      }
+    }
+
+    // Create tests directory and load test script files
+    try {
+      workerState.pyodide.FS.mkdir("tests");
+    } catch (e) {
+      // Directory might already exist
+    }
+
+    const testScripts = [
+      '/scenery/tests/pyodide_manager_test_scripts.py',
+      '/scenery/tests/integration_test_scripts.py'
+    ];
+
+    for (const scriptPath of testScripts) {
+      try {
+        const scriptResponse = await fetch(scriptPath);
+        if (scriptResponse.ok) {
+          const scriptContent = await scriptResponse.text();
+          const scriptName = scriptPath.split('/').pop();
+          workerState.pyodide.FS.writeFile(`tests/${scriptName}`, scriptContent);
+          console.log(`🧪 Loaded test script: tests/${scriptName}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️ Could not load test script ${scriptPath}:`, error.message);
+      }
+    }
+
+    // Load main Python initialization script
     const response = await fetch(pyodideInitPath);
     if (!response.ok) throw new Error(`${PYODIDE_WORKER_CONFIG.MESSAGES.FETCH_FAILED} ${pyodideInitPath}`);
 

@@ -774,20 +774,100 @@ try {
 }
 ```
 
-#### Message Handler Pattern
+#### Message Handler Pattern (Core Architecture)
+
+The **Handler Replacement Pattern** is a fundamental architectural technique that enables Promise-based APIs over web worker message passing. This pattern is essential for converting asynchronous message communication into synchronous-looking JavaScript code.
+
+**The Problem:**
+Web workers communicate via messages, not direct function calls. When we send a message to the worker, we get a response later via `handleMessage()`. But JavaScript functions expect immediate return values or Promises.
+
+**Normal Flow:**
+1. User calls: `manager.executeAsync("test.py", "print('hello')")`
+2. Manager sends message to worker
+3. Worker executes Python code  
+4. Worker sends result back
+5. `handleMessage()` receives the result
+6. But how do we get the result back to the original caller?
+
+**The Solution - Handler Replacement:**
+We temporarily "hijack" the `handleMessage` function to capture the specific result for the specific caller, then restore the original function.
+
+**Step-by-Step Process:**
+1. **Save Original Handler**: `const originalHandler = this.getHandleMessage()`
+2. **Replace with Interceptor**: Replace `handleMessage` with a custom function that:
+   - Still calls the original handler (for normal processing)  
+   - BUT ALSO checks if this is the result we're waiting for
+   - If yes: resolve the Promise with the result
+   - Then restore the original `handleMessage`
+3. **Send Message**: Send the message to the worker
+4. **Capture Result**: When the result comes back, our custom handler catches it
+5. **Restore Handler**: Original handler is restored for future calls
+
+**Why This is Safe:**
+JavaScript is single-threaded, so only one execution can happen at a time. No race conditions are possible - each call completes before the next starts.
+
+**Implementation Example:**
 ```javascript
-// Temporarily replace message handler to capture specific results
-const originalHandler = this.getHandleMessage();
-this.setHandleMessage(function(data) {
-    originalHandler.call(this, data);
-    
-    if (data.type === "result") {
-        // Handle result and restore original handler
-        this.setHandleMessage(originalHandler);
-        resolve(data);
-    }
-});
+// Core implementation of the handler replacement pattern
+static async executeAsync(worker, isReady, executionHistory, setHandleMessage, getHandleMessage, filename, code, namespace) {
+    return new Promise((resolve, reject) => {
+        // Add timeout to prevent hanging
+        const timeoutId = setTimeout(() => {
+            setHandleMessage(originalHandler);
+            reject(new Error("Execution timeout after 30 seconds"));
+        }, 30000);
+
+        // Save original handler and replace with interceptor
+        const originalHandler = getHandleMessage();
+        
+        setHandleMessage(function(data) {
+            try {
+                // Call original handler for normal processing
+                originalHandler.call(this, data);
+                
+                // Check if this is the result we're waiting for
+                if (data.type === "result") {
+                    clearTimeout(timeoutId);
+                    const result = executionHistory[executionHistory.length - 1];
+                    resolve(result);
+                    // Restore original handler
+                    setHandleMessage(originalHandler);
+                } else if (data.type === "error") {
+                    clearTimeout(timeoutId);
+                    setHandleMessage(originalHandler);
+                    reject(new Error(`Execution error: ${data.message}`));
+                }
+            } catch (error) {
+                clearTimeout(timeoutId);
+                setHandleMessage(originalHandler);
+                reject(new Error(`Handler error: ${error.message}`));
+            }
+        });
+
+        // Send execution message to worker
+        worker.postMessage({
+            type: "execute",
+            filename,
+            code,
+            namespace
+        });
+    });
+}
 ```
+
+**Analogy:**
+Like temporarily replacing your mailbox with a special one that:
+1. Still puts mail in your house (original function)
+2. But ALSO checks for a specific letter you're expecting  
+3. When that letter arrives, immediately gives it to you
+4. Then puts your normal mailbox back
+
+**Pattern Usage in Nagini:**
+- **PyodideManagerStaticExecutor.executeAsync()**: Core execution with results
+- **PyodideManagerFS._sendFSCommand()**: Filesystem operations  
+- **PyodideManagerInput**: Input handling (similar pattern)
+
+This pattern enables clean, Promise-based APIs while maintaining the performance benefits of web worker execution.
 
 #### Configuration Management
 ```javascript

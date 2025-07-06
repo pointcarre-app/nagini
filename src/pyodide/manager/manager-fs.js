@@ -117,6 +117,29 @@ export class PyodideManagerFS {
   /**
    * Private helper method to send FS commands to worker with message interception
    *
+   * This method implements the HANDLER REPLACEMENT PATTERN to enable Promise-based
+   * filesystem operations over web worker message passing.
+   *
+   * 🔧 HANDLER REPLACEMENT PATTERN FOR FILESYSTEM OPERATIONS:
+   *
+   * This method uses the same core pattern as PyodideManagerStaticExecutor.executeAsync(),
+   * but specialized for filesystem operations:
+   *
+   * 1. Save the original handleMessage function
+   * 2. Replace with a custom interceptor that:
+   *    - Still calls the original handler (for normal processing)
+   *    - BUT ALSO checks if this is the FS result we're waiting for
+   *    - If yes: resolve the Promise with the result
+   *    - Then restore the original handleMessage
+   * 3. Send the filesystem command to the worker
+   * 4. When the FS result comes back, our custom handler catches it
+   * 5. Original handler is restored for future calls
+   *
+   * This enables clean Promise-based filesystem APIs like:
+   * - await manager.fs("writeFile", {path: "test.txt", content: "hello"})
+   * - await manager.fs("readFile", {path: "test.txt"})
+   * - await manager.fs("mkdir", {path: "new-directory"})
+   *
    * @private
    * @param {PyodideManager} manager - Manager instance
    * @param {FSOperation} operation - FS operation name

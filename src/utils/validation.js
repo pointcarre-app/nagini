@@ -209,7 +209,9 @@ export class ValidationUtils {
     this.validateString(backend, 'backend', component);
     const validBackends = ['pyodide'];
     if (!validBackends.includes(backend.toLowerCase())) {
-      throw new Error(`🔧 [${component}] backend must be one of: ${validBackends.join(', ')}, got "${backend}"`);
+      throw new Error(
+        `🔧 [${component}] backend must be one of: ${validBackends.join(', ')}, got "${backend}"`
+      );
     }
   }
 }

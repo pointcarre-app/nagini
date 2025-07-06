@@ -82,7 +82,9 @@ export async function loadPackages(packages, workerState) {
     try {
       await workerState.pyodide.loadPackage(toLoad);
       toLoad.forEach(pkg => workerState.packagesLoaded.add(pkg));
-      postInfo(`${PYODIDE_WORKER_CONFIG.MESSAGES.SMART_SUCCESS} ${toLoad.length} new packages: ${toLoad.join(", ")}`);
+      postInfo(
+        `${PYODIDE_WORKER_CONFIG.MESSAGES.SMART_SUCCESS} ${toLoad.length} new packages: ${toLoad.join(", ")}`
+      );
     } catch (err) {
       postWarning(`${PYODIDE_WORKER_CONFIG.MESSAGES.PACKAGE_WARNING} ${err.message}`);
     }

@@ -1,4 +1,11 @@
-import { assert, assertEquals, assertContains, logTestStart, logTestPass, logTestFail } from './test-utils.js';
+import {
+    assert,
+    assertEquals,
+    assertContains,
+    logTestStart,
+    logTestPass,
+    logTestFail
+} from './test-utils.js';
 import { PyodideFileLoader } from '../../src/pyodide/file-loader/file-loader.js';
 
 export class FileLoaderTests {

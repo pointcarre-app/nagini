@@ -49,7 +49,11 @@ class PyodideManager {
     // Strict type validation using ValidationUtils
     ValidationUtils.validatePackages(packages, 'PyodideManager');
     ValidationUtils.validateFilesToLoad(filesToLoad, 'PyodideManager');
-    ValidationUtils.validateString(pyodideInitPath, 'pyodideInitPath', 'PyodideManager');
+    ValidationUtils.validateString(
+      pyodideInitPath,
+      'pyodideInitPath',
+      'PyodideManager'
+    );
     ValidationUtils.validateString(workerPath, 'workerPath', 'PyodideManager');
 
     /** @type {Worker|null} Web worker instance */

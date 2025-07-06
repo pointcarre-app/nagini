@@ -7,7 +7,11 @@ export function assert(condition, message) {
 
 export function assertEquals(actual, expected, message) {
     if (!deepEquals(actual, expected)) {
-        throw new Error(`ASSERTION FAILED: ${message}\n  Expected: ${JSON.stringify(expected)}\n  Actual: ${JSON.stringify(actual)}`);
+        throw new Error(
+            `ASSERTION FAILED: ${message}\n` +
+            `  Expected: ${JSON.stringify(expected)}\n` +
+            `  Actual: ${JSON.stringify(actual)}`
+        );
     }
 }
 
@@ -40,13 +44,21 @@ function deepEquals(a, b) {
 
 export function assertContains(haystack, needle, message) {
     if (!haystack.includes(needle)) {
-        throw new Error(`ASSERTION FAILED: ${message}\n  Expected to contain: ${needle}\n  Actual: ${haystack}`);
+        throw new Error(
+            `ASSERTION FAILED: ${message}\n` +
+            `  Expected to contain: ${needle}\n` +
+            `  Actual: ${haystack}`
+        );
     }
 }
 
 export function assertInstanceOf(obj, constructor, message) {
     if (!(obj instanceof constructor)) {
-        throw new Error(`ASSERTION FAILED: ${message}\n  Expected instance of: ${constructor.name}\n  Actual: ${obj.constructor.name}`);
+        throw new Error(
+            `ASSERTION FAILED: ${message}\n` +
+            `  Expected instance of: ${constructor.name}\n` +
+            `  Actual: ${obj.constructor.name}`
+        );
     }
 }
 

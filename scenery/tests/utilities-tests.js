@@ -1,4 +1,11 @@
-import { assert, assertEquals, assertContains, logTestStart, logTestPass, logTestFail } from './test-utils.js';
+import {
+    assert,
+    assertEquals,
+    assertContains,
+    logTestStart,
+    logTestPass,
+    logTestFail
+} from './test-utils.js';
 
 export class UtilitiesTests {
     static async test1TestUtilsAssertFunction() {

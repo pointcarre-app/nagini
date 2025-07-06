@@ -1,4 +1,11 @@
-import { assert, assertEquals, assertContains, logTestStart, logTestPass, logTestFail } from './test-utils.js';
+import {
+    assert,
+    assertEquals,
+    assertContains,
+    logTestStart,
+    logTestPass,
+    logTestFail
+} from './test-utils.js';
 import { ValidationUtils } from '../../src/utils/validation.js';
 
 export class ValidationUtilsTests {

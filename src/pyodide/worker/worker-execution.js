@@ -43,7 +43,10 @@ export async function handleExecute(data, workerState) {
       console.log(PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_NAMESPACE);
       if (result.needsAsync) {
         console.log("🔧 [Worker] Running async with namespace");
-        await workerState.pyodide.runPythonAsync(result.code, { globals: workerState.pyodide.toPy(namespace) });
+        await workerState.pyodide.runPythonAsync(
+          result.code,
+          { globals: workerState.pyodide.toPy(namespace) }
+        );
       } else {
         workerState.pyodide.runPython(result.code, { globals: workerState.pyodide.toPy(namespace) });
       }

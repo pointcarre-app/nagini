@@ -129,8 +129,13 @@ export class PyodideManagerInput {
         console.log("🎛️ [PyodideManagerInput] Calling input callback");
         manager.inputState.inputCallback(data.prompt);
       } else {
-        console.warn("🎛️ [PyodideManagerInput] Input required but no callback or queued input available");
-        console.warn("🎛️ [PyodideManagerInput] Current queue length:", manager.inputState.inputQueue.length);
+        console.warn(
+          "🎛️ [PyodideManagerInput] Input required but no callback or queued input available"
+        );
+        console.warn(
+          "🎛️ [PyodideManagerInput] Current queue length:",
+          manager.inputState.inputQueue.length
+        );
       }
     }
   }

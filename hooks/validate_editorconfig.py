@@ -66,14 +66,14 @@ class EditorConfigValidator:
     def _matches_pattern(self, file_path, pattern):
         """Check if file path matches the pattern."""
         # Convert glob pattern to regex
-        if pattern.startswith("*."):
+        if pattern.startswith("*.{") and pattern.endswith("}"):
+            # Handle *.{js,mjs,ts} - this must come before the general *.ext check
+            exts = [ext.strip() for ext in pattern[3:-1].split(",")]
+            return file_path.suffix[1:] in exts
+        elif pattern.startswith("*."):
             # Handle *.py, *.js, etc.
             ext = pattern[2:]
             return file_path.suffix[1:] == ext
-        elif pattern.startswith("*.{") and pattern.endswith("}"):
-            # Handle *.{js,mjs,ts}
-            exts = pattern[3:-1].split(",")
-            return file_path.suffix[1:] in exts
         elif pattern == "Makefile":
             return file_path.name == "Makefile"
         else:
@@ -87,6 +87,10 @@ class EditorConfigValidator:
         if not file_path.exists() or file_path.is_dir():
             return True
 
+        # Skip markdown files from validation
+        if file_path.suffix.lower() in [".md", ".mdx"]:
+            return True
+
         # Skip binary files
         if self._is_binary_file(file_path):
             return True
@@ -94,6 +98,12 @@ class EditorConfigValidator:
         config = self._get_file_config(file_path)
         if not config:
             return True
+
+        # Check file length if specified in config
+        if "max_file_lines" in config:
+            max_lines = int(config["max_file_lines"])
+            if not self._check_file_length(file_path, max_lines):
+                return False
 
         try:
             with open(file_path, "rb") as f:
@@ -165,6 +175,19 @@ class EditorConfigValidator:
                 return b"\0" in chunk
         except:
             return True
+
+    def _check_file_length(self, file_path, max_lines):
+        """Check if file has fewer than max_lines lines."""
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                line_count = sum(1 for _ in f)
+                if line_count >= max_lines:
+                    self.errors.append(f"{file_path}: Too many lines ({line_count} >= {max_lines})")
+                    return False
+                return True
+        except Exception as e:
+            self.errors.append(f"{file_path}: Error counting lines: {e}")
+            return False
 
     def validate_all(self, paths=None):
         """Validate all files in the repository."""

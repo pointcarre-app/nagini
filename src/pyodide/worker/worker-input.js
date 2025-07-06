@@ -78,7 +78,9 @@ export async function handleInputResponse(data, workerState) {
       self.pendingInputResolver(input);
       self.pendingInputResolver = null;
     } else {
-      console.warn("🔧 [Worker] No pending input resolver found");
+      console.warn(
+        "🔧 [Worker] No pending input resolver found"
+      );
     }
   } catch (err) {
     console.error("🔧 [Worker] Failed to provide input:", err);

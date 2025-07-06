@@ -54,7 +54,9 @@ export class PyodideManagerStaticExecutor {
     ValidationUtils.validateExecutionParams(filename, code, namespace, 'PyodideManagerStaticExecutor');
 
     if (!isReady) {
-      console.warn("⚡ [PyodideManagerStaticExecutor] Worker not ready, skipping execution");
+      console.warn(
+        "⚡ [PyodideManagerStaticExecutor] Worker not ready, skipping execution"
+      );
       return;
     }
 
@@ -83,7 +85,34 @@ export class PyodideManagerStaticExecutor {
    * Execute Python code asynchronously and return a Promise with the result
    *
    * This method provides Promise-based execution with comprehensive result tracking.
-   * It temporarily intercepts the message handler to capture the execution result.
+   * It implements the HANDLER REPLACEMENT PATTERN to enable Promise-based APIs
+   * over web worker message passing.
+   *
+   * 🔧 HANDLER REPLACEMENT PATTERN IMPLEMENTATION:
+   *
+   * THE PROBLEM:
+   * Web workers communicate via messages, not direct function calls. When we send
+   * a message to the worker, we get a response later via handleMessage(). But
+   * JavaScript functions expect immediate return values or Promises.
+   *
+   * THE SOLUTION:
+   * We temporarily "hijack" the handleMessage function to capture the specific
+   * result for the specific caller, then restore the original function.
+   *
+   * STEP-BY-STEP PROCESS:
+   * 1. Save the original handleMessage function
+   * 2. Replace handleMessage with a custom function that:
+   *    - Still calls the original (for normal processing)
+   *    - BUT ALSO checks if this is the result we're waiting for
+   *    - If yes: resolve the Promise with the result
+   *    - Then restore the original handleMessage
+   * 3. Send the message to the worker
+   * 4. When the result comes back, our custom handler catches it
+   * 5. Original handler is restored for future calls
+   *
+   * WHY THIS IS SAFE:
+   * JavaScript is single-threaded, so only one execution can happen at a time.
+   * No race conditions possible - each call completes before the next starts.
    *
    * @param {Worker} worker - Web worker instance for executing Python code
    * @param {boolean} isReady - Whether Pyodide is ready for execution

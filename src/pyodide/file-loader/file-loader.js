@@ -35,7 +35,9 @@ class PyodideFileLoader {
         throw new Error(`📦 [PyodideFileLoader] filesToLoad[${index}] must be an object`);
       }
       if (typeof file.url !== 'string' || !file.url.trim()) {
-        throw new Error(`📦 [PyodideFileLoader] filesToLoad[${index}].url must be a non-empty string`);
+        throw new Error(
+          `📦 [PyodideFileLoader] filesToLoad[${index}].url must be a non-empty string`
+        );
       }
       if (typeof file.path !== 'string' || !file.path.trim()) {
         throw new Error(`📦 [PyodideFileLoader] filesToLoad[${index}].path must be a non-empty string`);

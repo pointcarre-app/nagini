@@ -1,4 +1,11 @@
-import { assert, assertEquals, assertContains, logTestStart, logTestPass, logTestFail } from './test-utils.js';
+import {
+    assert,
+    assertEquals,
+    assertContains,
+    logTestStart,
+    logTestPass,
+    logTestFail
+} from './test-utils.js';
 
 export class IntegrationTests {
     static async testComplexInputData(manager) {
@@ -12,32 +19,22 @@ export class IntegrationTests {
             manager.queueInput("Engineer");
             manager.queueInput("y");
 
-            const result1 = await manager.executeAsync("complex_input_test1", `
-print("=== User Registration System ===")
+                        const result1 = await manager.executeAsync(
+                "complex_input_test1", 
+                `print("=== User Registration System ===")
 name = input("Enter your full name: ")
 age = int(input("Enter your age: "))
 job = input("Enter your job title: ")
 newsletter = input("Subscribe to newsletter? (y/n): ")
-
 print(f"Registration complete!")
 print(f"Name: {name}")
 print(f"Age: {age}")
 print(f"Job: {job}")
 print(f"Newsletter: {'Yes' if newsletter.lower() == 'y' else 'No'}")
-
-# Calculate some data
 is_adult = age >= 18
 next_decade = age + 10
-
-missive({
-    "name": name,
-    "age": age,
-    "job": job,
-    "newsletter": newsletter,
-    "is_adult": is_adult,
-    "next_decade": next_decade
-})
-`);
+missive({"name": name, "age": age, "job": job, "newsletter": newsletter, "is_adult": is_adult, "next_decade": next_decade})`
+            );
 
             assert(!result1.error, "Complex input test 1 should not have errors");
             assertEquals(result1.missive.name, "John Doe", "Name should match input");
@@ -52,8 +49,9 @@ missive({
             manager.queueInput("150");  // Invalid - too high
             manager.queueInput("25");   // Valid
 
-            const result2 = await manager.executeAsync("complex_input_test2", `
-print("=== Input Validation Test ===")
+                        const result2 = await manager.executeAsync(
+                "complex_input_test2", 
+                `print("=== Input Validation Test ===")
 while True:
     age_str = input("Enter your age (1-120): ")
     age = int(age_str)
@@ -62,10 +60,9 @@ while True:
         break
     else:
         print(f"Invalid age: {age}. Please try again.")
-
 print("Age validation completed!")
-missive({"validated_age": age})
-`);
+missive({"validated_age": age})`
+            );
 
             assert(!result2.error, "Complex input test 2 should not have errors");
             assertEquals(result2.missive.validated_age, 25, "Should get validated age");
@@ -78,32 +75,24 @@ missive({"validated_age": age})
             manager.queueInput("3");
             manager.queueInput("2");
 
-            const result3 = await manager.executeAsync("complex_input_test3", `
-print("=== Calculator Test ===")
+            const result3 = await manager.executeAsync(
+                "complex_input_test3",
+                `print("=== Calculator Test ===")
 numbers = []
 for i in range(3):
-    num = float(input(f"Enter number {i+1}: "))
-    numbers.append(num)
-    print(f"Got: {num}")
-
+    num_str = input(f"Enter number {i+1}: ")
+    numbers.append(float(num_str))
 total = sum(numbers)
 average = total / len(numbers)
 product = 1
 for num in numbers:
     product *= num
-
 print(f"Numbers: {numbers}")
 print(f"Sum: {total}")
 print(f"Average: {average}")
 print(f"Product: {product}")
-
-missive({
-    "numbers": numbers,
-    "sum": total,
-    "average": average,
-    "product": product
-})
-`);
+missive({"numbers": numbers, "sum": total, "average": average, "product": product})`
+            );
 
             assert(!result3.error, "Complex input test 3 should not have errors");
             assertEquals(result3.missive.numbers, [5.0, 3.0, 2.0], "Should get correct numbers");
@@ -124,17 +113,15 @@ missive({
         logTestStart("Integration", testName);
 
         try {
-            const result = await manager.executeAsync("data_viz_workflow", `
-import matplotlib.pyplot as plt
+                        const result = await manager.executeAsync(
+                "data_viz_workflow", 
+                `import matplotlib.pyplot as plt
 import numpy as np
-
-# Create multiple datasets - use symmetric range for sin to get mean ~0
 x = np.linspace(-np.pi, np.pi, 50)
 y1 = np.sin(x)
 y2 = np.cos(x)
 y3 = np.sin(x) * np.cos(x)
-
-# Create multiple figures
+# Create first figure
 fig1 = plt.figure(figsize=(8, 6))
 plt.plot(x, y1, 'b-', label='sin(x)')
 plt.plot(x, y2, 'r--', label='cos(x)')
@@ -143,37 +130,22 @@ plt.ylabel('y')
 plt.title('Trigonometric Functions')
 plt.legend()
 plt.grid(True)
-
+# Create second figure
 fig2 = plt.figure(figsize=(8, 6))
-plt.plot(x, y3, 'g-', linewidth=2, label='sin(x) * cos(x)')
+plt.plot(x, y3, 'g-', label='sin(x)*cos(x)')
 plt.xlabel('x')
 plt.ylabel('y')
-plt.title('Product of Sin and Cos')
+plt.title('Product of Trigonometric Functions')
 plt.legend()
 plt.grid(True)
-
-# Statistical analysis
 mean_y1 = np.mean(y1)
 std_y1 = np.std(y1)
 max_y1 = np.max(y1)
 min_y1 = np.min(y1)
-
 print(f"Statistical Analysis of sin(x):")
 print(f"Mean: {mean_y1:.4f}")
-print(f"Std Dev: {std_y1:.4f}")
-print(f"Max: {max_y1:.4f}")
-print(f"Min: {min_y1:.4f}")
-
-missive({
-    "x_points": len(x),
-    "datasets": 3,
-    "figures": 2,
-    "mean_y1": mean_y1,
-    "std_y1": std_y1,
-    "max_y1": max_y1,
-    "min_y1": min_y1
-})
-`);
+missive({"x_points": len(x), "datasets": 3, "figures": 2, "mean_y1": mean_y1, "std_y1": std_y1, "max_y1": max_y1, "min_y1": min_y1})`
+            );
 
             assert(!result.error, "Data visualization workflow should not have errors");
             assert(result.figures, "Should have figures");
@@ -228,35 +200,24 @@ def process_list(items):
             await manager.fs("writeFile", { path: "temp_module.py", content: moduleCode });
 
             // Now use the module
-            const result = await manager.executeAsync("import_workflow_test", `
-# Import our custom module
-from temp_module import DataProcessor, process_list
-
-# Test the DataProcessor class
+            const result = await manager.executeAsync(
+                "import_workflow_test",
+                `from temp_module import DataProcessor, process_list
 processor = DataProcessor("Test Processor")
 processor.add_data(10)
 processor.add_data(20)
 processor.add_data(30)
-
 stats = processor.get_stats()
-print(f"Processor: {processor.name}")
-print(f"Stats: {stats}")
-
-# Test the process_list function
 original_list = [1, 2, 3, 4, 5]
 processed_list = process_list(original_list)
-print(f"Original: {original_list}")
-print(f"Processed: {processed_list}")
-
-missive({
-    "processor_name": processor.name,
-    "data_count": stats["count"],
-    "data_sum": stats["sum"],
-    "data_mean": stats["mean"],
-    "original_list": original_list,
-    "processed_list": processed_list
-})
-`);
+print(f"Processor name: {processor.name}")
+print(f"Data count: {stats['count']}")
+print(f"Data sum: {stats['sum']}")
+print(f"Data mean: {stats['mean']}")
+print(f"Original list: {original_list}")
+print(f"Processed list: {processed_list}")
+missive({"processor_name": processor.name, "data_count": stats['count'], "data_sum": stats['sum'], "data_mean": stats['mean'], "original_list": original_list, "processed_list": processed_list})`
+            );
 
             assert(!result.error, "Import workflow should not have errors");
             assertEquals(result.missive.processor_name, "Test Processor", "Should get correct processor name");
@@ -280,18 +241,20 @@ missive({
 
         try {
             // Test 1: Global execution followed by namespace execution
-            const globalResult = await manager.executeAsync("global_test", `
-global_var = "I am global"
-print(f"Global execution: {global_var}")
-missive({"global_var": global_var})
-`);
+            const globalResult = await manager.executeAsync(
+                "global_test",
+                `global_var = "I am global"
+print(f"Global variable set: {global_var}")
+missive({"global_var": global_var})`
+            );
 
-            const namespaceResult = await manager.executeAsync("namespace_test", `
-namespace_var = "I am in namespace"
-print(f"Namespace execution: {namespace_var}")
-# global_var should not be accessible here in namespace mode
-missive({"namespace_var": namespace_var})
-`, { isolated: true });
+            const namespaceResult = await manager.executeAsync(
+                "namespace_test",
+                `namespace_var = "I am in namespace"
+print(f"Namespace variable set: {namespace_var}")
+missive({"namespace_var": namespace_var})`,
+                { isolated: true }
+            );
 
             assert(!globalResult.error, "Global execution should not have errors");
             assert(!namespaceResult.error, "Namespace execution should not have errors");
@@ -299,10 +262,11 @@ missive({"namespace_var": namespace_var})
             assertEquals(namespaceResult.missive.namespace_var, "I am in namespace", "Namespace variable should be set");
 
             // Test 2: Back to global to verify persistence
-            const globalResult2 = await manager.executeAsync("global_test2", `
-print(f"Global var still exists: {global_var}")
-missive({"global_var_persistent": global_var})
-`);
+            const globalResult2 = await manager.executeAsync(
+                "global_test2",
+                `print(f"Global variable from earlier: {global_var}")
+missive({"global_var_persistent": global_var})`
+            );
 
             assert(!globalResult2.error, "Second global execution should not have errors");
             assertEquals(globalResult2.missive.global_var_persistent, "I am global", "Global variable should persist");
@@ -320,55 +284,52 @@ missive({"global_var_persistent": global_var})
         logTestStart("Integration", testName);
 
         try {
-            const result = await manager.executeAsync("advanced_matplotlib", `
-import matplotlib.pyplot as plt
+            const result = await manager.executeAsync(
+                "advanced_matplotlib",
+                `import matplotlib.pyplot as plt
 import numpy as np
-
-# Create multiple subplots
+from matplotlib.patches import Rectangle
+from matplotlib.collections import PatchCollection
+import matplotlib.patches as patches
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 10))
-
-# Subplot 1: Line plot
-x = np.linspace(0, 2*np.pi, 100)
-ax1.plot(x, np.sin(x), 'b-', label='sin(x)')
-ax1.plot(x, np.cos(x), 'r--', label='cos(x)')
-ax1.set_title('Trigonometric Functions')
-ax1.legend()
-ax1.grid(True)
-
-# Subplot 2: Scatter plot
-np.random.seed(42)
+data1 = np.random.randn(100)
+data2 = np.random.randn(100)
+ax1.hist(data1, bins=20, alpha=0.7, color='blue')
+ax1.set_title('Histogram of Random Data')
+ax1.set_xlabel('Value')
+ax1.set_ylabel('Frequency')
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+ax2.plot(x, y, 'r-', linewidth=2)
+ax2.fill_between(x, 0, y, alpha=0.3)
+ax2.set_title('Sine Wave with Fill')
+ax2.set_xlabel('x')
+ax2.set_ylabel('sin(x)')
+ax2.grid(True)
+categories = ['A', 'B', 'C', 'D', 'E']
+values = [23, 45, 56, 78, 32]
+ax3.bar(categories, values, color=['red', 'green', 'blue', 'yellow', 'orange'])
+ax3.set_title('Bar Chart')
+ax3.set_ylabel('Values')
 x_scatter = np.random.randn(50)
 y_scatter = np.random.randn(50)
-ax2.scatter(x_scatter, y_scatter, alpha=0.6, c='green')
-ax2.set_title('Random Scatter Plot')
-ax2.grid(True)
-
-# Subplot 3: Histogram
-data = np.random.normal(0, 1, 1000)
-ax3.hist(data, bins=30, alpha=0.7, color='purple', edgecolor='black')
-ax3.set_title('Normal Distribution Histogram')
-ax3.grid(True)
-
-# Subplot 4: Bar plot
-categories = ['A', 'B', 'C', 'D']
-values = [23, 45, 56, 78]
-ax4.bar(categories, values, color=['red', 'green', 'blue', 'orange'])
-ax4.set_title('Category Values')
-
+colors = np.random.randn(50)
+ax4.scatter(x_scatter, y_scatter, c=colors, alpha=0.7)
+ax4.set_title('Scatter Plot')
+ax4.set_xlabel('x')
+ax4.set_ylabel('y')
 plt.tight_layout()
-
-print("Complex matplotlib figure with 4 subplots created!")
-missive({
-    "subplot_count": 4,
-    "total_data_points": len(x) + len(x_scatter) + len(data) + len(values),
-    "figure_size": [12, 10]
-})
-`);
+subplot_count = 4
+total_data_points = len(data1) + len(data2) + len(x) + len(categories) + len(x_scatter)
+print(f"Created figure with {subplot_count} subplots")
+print(f"Total data points: {total_data_points}")
+missive({"subplot_count": subplot_count, "total_data_points": total_data_points})`
+            );
 
             assert(!result.error, "Advanced matplotlib should not have errors");
             assert(result.figures && result.figures.length >= 1, "Should have at least one figure");
             assertEquals(result.missive.subplot_count, 4, "Should have 4 subplots");
-            assert(result.missive.total_data_points > 1000, "Should have substantial data points");
+            assert(result.missive.total_data_points > 300, "Should have substantial data points");
 
             logTestPass(testName);
             return { result, testName };

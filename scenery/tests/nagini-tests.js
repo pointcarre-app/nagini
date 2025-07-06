@@ -1,13 +1,31 @@
-import { assert, assertInstanceOf, logTestStart, logTestPass, logTestFail } from './test-utils.js';
+import {
+    assert,
+    assertInstanceOf,
+    logTestStart,
+    logTestPass,
+    logTestFail
+} from './test-utils.js';
 import { Nagini } from '../../src/nagini.js';
 
 export class NaginiTests {
-    static async test1CreateManager(backend, packages, filesToLoad, pyodideInitPath, workerPath) {
+    static async test1CreateManager(
+        backend,
+        packages,
+        filesToLoad,
+        pyodideInitPath,
+        workerPath
+    ) {
         const testName = "createManager()";
         logTestStart("Nagini", testName);
 
         try {
-            const manager = await Nagini.createManager(backend, packages, filesToLoad, pyodideInitPath, workerPath);
+            const manager = await Nagini.createManager(
+                backend,
+                packages,
+                filesToLoad,
+                pyodideInitPath,
+                workerPath
+            );
 
             assert(manager, "Manager should be created");
             assert(manager.packages, "Manager should have packages property");

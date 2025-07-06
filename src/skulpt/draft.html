@@ -457,6 +457,10 @@ print("Turtle graphics complete!")</textarea>
                 window.pyTurtleColor(Sk.ffi.remapToJs(color));
             });
 
+            //Sk.builtins.pyTurtleSpeed = new Sk.builtin.func(function(speed) {
+            //window.pyTurtleSpeed(Sk.ffi.remapToJs(speed));
+            // });
+
             // Try to run the code
             try {
                 Sk.misceval.asyncToPromise(function() {
