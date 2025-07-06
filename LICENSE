@@ -156,7 +156,35 @@ If you run a modified version of this software on a server and let users
 interact with it remotely through a computer network, you must make the
 source code of your modified version available to those users.
 
+---
 
+## Third-Party Dependencies
+
+This software incorporates components from the following open-source projects:
+
+### Brython
+- **License**: BSD 3-Clause "New" or "Revised" License
+- **Copyright**: Copyright (c) 2012, Pierre Quentel pierre.quentel@gmail.com
+- **Project**: brython-dev/brython
+- **Usage**: Python-to-JavaScript transpilation capabilities
+
+**BSD 3-Clause License Requirements:**
+- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+### Pyodide
+- **License**: Mozilla Public License 2.0
+- **Project**: pyodide/pyodide
+- **Usage**: Python runtime via WebAssembly
+
+**Mozilla Public License 2.0 Requirements:**
+- Source code of licensed files and modifications must be made available under the same license
+- Copyright and license notices must be preserved
+- Patent rights are expressly granted
+- Larger works using the licensed work may be distributed under different terms
+
+**📄 For complete license texts and detailed information about all dependencies, see [LICENCE-DEPENDENCIES.md](LICENCE-DEPENDENCIES.md)**
 
 ---
 

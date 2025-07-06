@@ -240,9 +240,12 @@ open http://localhost:8000/scenery/
 
 ## Dependencies
 
-- **Pyodide v0.27.7** - Python runtime via WebAssembly
+- **Pyodide v0.27.7** - Python runtime via WebAssembly (Mozilla Public License 2.0)
+- **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
 - **Modern Browser** - WebWorkers, SharedArrayBuffer support
 - **No external dependencies** - Self-contained system
+
+**📄 For complete license information and compatibility details, see [LICENCE-DEPENDENCIES.md](LICENCE-DEPENDENCIES.md)**
 
 ## Performance
 
