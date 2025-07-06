@@ -1,29 +1,26 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 pages:
   stage: deploy
   script:
-    - mkdir public
-    - cp -r * public/ 2>/dev/null || true
-    - rm -rf public/public
-    - rm -f public/.gitlab-ci.yml
+  - mkdir public
+  - cp -r * public/ 2>/dev/null || true
+  - rm -rf public/public
+  - rm -f public/.gitlab-ci.yml
   artifacts:
     paths:
-      - public
+    - public
   only:
-    - main
-
-
-
-# cleaner
-# pages:
-#   script:
-#     - mkdir public
-#     - cp index.html public/
-#     - cp -r css public/ 2>/dev/null || true
-#     - cp -r js public/ 2>/dev/null || true
-#     - cp -r images public/ 2>/dev/null || true
-#     # Add any other folders/files you need
-#   artifacts:
-#     paths:
-#       - public
-#   only:
-#     - master
+  - main
+stages:
+- test
+- secret-detection
+secret_detection:
+  stage: secret-detection
+include:
+- template: Security/Secret-Detection.gitlab-ci.yml
