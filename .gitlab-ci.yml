@@ -20,6 +20,7 @@ pages:
 stages:
 - test
 - secret-detection
+- deploy
 secret_detection:
   stage: secret-detection
 include:
