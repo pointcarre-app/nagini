@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Python Turtle Graphics in Browser using Skulpt" />
+    <meta name="keywords" content="python, turtle, graphics, browser, skulpt, programming" />
+    <title>Python Turtle Graphics in Browser</title>
+    <!-- Updated Skulpt CDN links with fallbacks -->
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"
+            onerror="loadSkulptFallback()"
+            id="skulpt-main"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.min.js"
+            onerror="loadSkulptStdlibFallback()"
+            id="skulpt-stdlib"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-panel {
+            display: flex;
+            flex-direction: column;
+            background: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #4CAF50;
+            font-size: 2em;
+        }
+
+        .license-info {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .code-editor {
+            flex: 1;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #fff;
+            resize: none;
+            outline: none;
+            white-space: pre;
+            overflow-wrap: normal;
+            overflow-x: auto;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-run {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-run:hover {
+            background: #45a049;
+        }
+
+        .btn-run:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .btn-clear {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #da190b;
+        }
+
+        .btn-example {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-example:hover {
+            background: #1976D2;
+        }
+
+        .output {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #0f0;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .canvas-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #turtle-canvas {
+            border: 1px solid #ddd;
+        }
+
+        .examples {
+            margin-top: 10px;
+        }
+
+        .example-btn {
+            background: #666;
+            color: white;
+            padding: 5px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .example-btn:hover {
+            background: #888;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        .loading {
+            color: #ffa500;
+        }
+
+        .license-notice {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-width: 300px;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🐍 Python Turtle Graphics in Browser</h1>
+      <div class="license-info">Licensed under AGPL v3 | Powered by Skulpt</div>
+    </div>
+
+    <div class="container">
+      <div class="editor-panel">
+        <textarea id="code-editor" class="code-editor" placeholder="Write your Python turtle code here..."># Simple turtle graphics test
+# No import needed - turtle functions are built-in!
+
+# Draw a simple square
+pyTurtleColor("red")
+for i in range(4):
+    pyTurtleForward(100)
+    pyTurtleRight(90)
+
+# Draw a circle
+pyTurtlePenup()
+pyTurtleGoto(50, 50)
+pyTurtlePendown()
+pyTurtleColor("blue")
+pyTurtleCircle(30)
+
+print("Turtle graphics complete!")</textarea>
+
+        <div class="controls">
+          <button class="btn btn-run" id="run-btn" onclick="runCode()">▶ Run Code</button>
+          <button class="btn btn-clear" onclick="clearCanvas()">🗑 Clear Canvas</button>
+          <button class="btn btn-example" onclick="loadExample()">📝 Load Example</button>
+        </div>
+
+        <div class="examples">
+          <button class="example-btn" onclick="loadSpiral()">Spiral</button>
+          <button class="example-btn" onclick="loadStar()">Star</button>
+          <button class="example-btn" onclick="loadFlower()">Flower</button>
+          <button class="example-btn" onclick="loadFractal()">Fractal Tree</button>
+        </div>
+
+        <div id="output" class="output">Loading Python environment...</div>
+      </div>
+
+      <div class="canvas-panel">
+        <h3>Graphics Output</h3>
+        <div class="canvas-container">
+          <canvas id="turtle-canvas" width="500" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        let skulptReady = false;
+        let loadingFallback = false;
+
+        // Function to load Skulpt fallback CDN
+        function loadSkulptFallback() {
+            if (loadingFallback) return;
+            loadingFallback = true;
+
+            console.log('Primary Skulpt CDN failed, trying fallback...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/skulpt@1.2.0/dist/skulpt.min.js';
+            script.onload = () => checkSkulptReady();
+            script.onerror = () => loadSkulptFromGitHub();
+            document.head.appendChild(script);
+        }
+
+        function loadSkulptStdlibFallback() {
+            if (loadingFallback) return;
+
+            console.log('Primary Skulpt stdlib CDN failed, trying fallback...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/skulpt@1.2.0/dist/skulpt-stdlib.min.js';
+            script.onload = () => checkSkulptReady();
+            script.onerror = () => loadSkulptStdlibFromGitHub();
+            document.head.appendChild(script);
+        }
+
+        function loadSkulptFromGitHub() {
+            console.log('Trying GitHub CDN for Skulpt...');
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/skulpt/skulpt-dist@1.2.0/skulpt.min.js';
+            script.onload = () => checkSkulptReady();
+            script.onerror = () => showSkulptError();
+            document.head.appendChild(script);
+        }
+
+        function loadSkulptStdlibFromGitHub() {
+            console.log('Trying GitHub CDN for Skulpt stdlib...');
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/skulpt/skulpt-dist@1.2.0/skulpt-stdlib.min.js';
+            script.onload = () => checkSkulptReady();
+            script.onerror = () => showSkulptError();
+            document.head.appendChild(script);
+        }
+
+        function showSkulptError() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<span class="error">❌ Failed to load Skulpt library from all CDN sources.</span>\n' +
+                '<span class="error">Please check your internet connection or try refreshing the page.</span>\n' +
+                '<span class="error">Alternative: Consider using Pyodide or Brython for Python in the browser.</span>';
+
+            // Disable run button
+            const runBtn = document.getElementById('run-btn');
+            runBtn.disabled = true;
+            runBtn.textContent = '❌ Skulpt Failed';
+        }
+
+        function checkSkulptReady() {
+            if (typeof Sk !== 'undefined' && Sk.builtinFiles && Sk.builtinFiles.files) {
+                skulptReady = true;
+                const output = document.getElementById('output');
+                output.innerHTML = '<span class="success">✅ Python environment ready! Click "Run Code" to execute.</span>';
+
+                // Enable run button
+                const runBtn = document.getElementById('run-btn');
+                runBtn.disabled = false;
+                runBtn.textContent = '▶ Run Code';
+
+                console.log('Skulpt loaded successfully');
+            } else {
+                setTimeout(checkSkulptReady, 100);
+            }
+        }
+
+        // Configure Skulpt
+        function builtinRead(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+                throw "File not found: '" + x + "'";
+            return Sk.builtinFiles["files"][x];
+        }
+
+        function runCode() {
+            if (!skulptReady) {
+                const output = document.getElementById('output');
+                output.innerHTML = '<span class="error">❌ Skulpt is not ready yet. Please wait for it to load.</span>';
+                return;
+            }
+
+            const code = document.getElementById('code-editor').value;
+            const output = document.getElementById('output');
+
+            output.innerHTML = '<span class="loading">🔄 Running...</span>\n';
+
+            // Clear the canvas
+            const canvas = document.getElementById('turtle-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Simple and clean Skulpt configuration
+            Sk.configure({
+                output: function(text) {
+                    document.getElementById('output').innerHTML += text;
+                },
+                read: builtinRead
+            });
+
+            // Create turtle graphics system
+            window.TurtleCanvas = {
+                canvas: document.getElementById('turtle-canvas'),
+                ctx: document.getElementById('turtle-canvas').getContext('2d'),
+                x: 250,
+                y: 200,
+                angle: 0,
+                penDown: true,
+                color: 'black'
+            };
+
+            // Add turtle functions as global JS functions
+            window.pyTurtleForward = function(distance) {
+                const tc = window.TurtleCanvas;
+                const radians = tc.angle * Math.PI / 180;
+                const newX = tc.x + Math.cos(radians) * distance;
+                const newY = tc.y + Math.sin(radians) * distance;
+
+                if (tc.penDown) {
+                    tc.ctx.beginPath();
+                    tc.ctx.moveTo(tc.x, tc.y);
+                    tc.ctx.lineTo(newX, newY);
+                    tc.ctx.strokeStyle = tc.color;
+                    tc.ctx.lineWidth = 2;
+                    tc.ctx.stroke();
+                }
+
+                tc.x = newX;
+                tc.y = newY;
+            };
+
+            window.pyTurtleRight = function(degrees) {
+                window.TurtleCanvas.angle += degrees;
+            };
+
+            window.pyTurtlePenup = function() {
+                window.TurtleCanvas.penDown = false;
+            };
+
+            window.pyTurtlePendown = function() {
+                window.TurtleCanvas.penDown = true;
+            };
+
+            window.pyTurtleGoto = function(x, y) {
+                const tc = window.TurtleCanvas;
+                const screenX = tc.canvas.width / 2 + x;
+                const screenY = tc.canvas.height / 2 - y;
+
+                if (tc.penDown) {
+                    tc.ctx.beginPath();
+                    tc.ctx.moveTo(tc.x, tc.y);
+                    tc.ctx.lineTo(screenX, screenY);
+                    tc.ctx.strokeStyle = tc.color;
+                    tc.ctx.lineWidth = 2;
+                    tc.ctx.stroke();
+                }
+
+                tc.x = screenX;
+                tc.y = screenY;
+            };
+
+            window.pyTurtleCircle = function(radius) {
+                const tc = window.TurtleCanvas;
+                tc.ctx.beginPath();
+                tc.ctx.arc(tc.x, tc.y, Math.abs(radius), 0, 2 * Math.PI);
+                tc.ctx.strokeStyle = tc.color;
+                tc.ctx.lineWidth = 2;
+                tc.ctx.stroke();
+            };
+
+            window.pyTurtleColor = function(color) {
+                window.TurtleCanvas.color = color;
+            };
+
+            // Add turtle as builtin functions - this is the KEY CHANGE
+            Sk.builtins.pyTurtleForward = new Sk.builtin.func(function(distance) {
+                window.pyTurtleForward(Sk.ffi.remapToJs(distance));
+            });
+
+            Sk.builtins.pyTurtleRight = new Sk.builtin.func(function(degrees) {
+                window.pyTurtleRight(Sk.ffi.remapToJs(degrees));
+            });
+
+            Sk.builtins.pyTurtlePenup = new Sk.builtin.func(function() {
+                window.pyTurtlePenup();
+            });
+
+            Sk.builtins.pyTurtlePendown = new Sk.builtin.func(function() {
+                window.pyTurtlePendown();
+            });
+
+            Sk.builtins.pyTurtleGoto = new Sk.builtin.func(function(x, y) {
+                window.pyTurtleGoto(Sk.ffi.remapToJs(x), Sk.ffi.remapToJs(y));
+            });
+
+            Sk.builtins.pyTurtleCircle = new Sk.builtin.func(function(radius) {
+                window.pyTurtleCircle(Sk.ffi.remapToJs(radius));
+            });
+
+            Sk.builtins.pyTurtleColor = new Sk.builtin.func(function(color) {
+                window.pyTurtleColor(Sk.ffi.remapToJs(color));
+            });
+
+            // Try to run the code
+            try {
+                Sk.misceval.asyncToPromise(function() {
+                    return Sk.importMainWithBody("<stdin>", false, code, true);
+                }).then(function(mod) {
+                    output.innerHTML += '<span class="success">✅ Code executed successfully!</span>\n';
+                }).catch(function(err) {
+                    output.innerHTML += '<span class="error">❌ Error: ' + err.toString() + '</span>\n';
+                });
+            } catch (e) {
+                output.innerHTML += '<span class="error">❌ Immediate Error: ' + e.toString() + '</span>\n';
+            }
+        }
+
+        function clearCanvas() {
+            const canvas = document.getElementById('turtle-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            document.getElementById('output').innerHTML = '<span class="success">🧹 Canvas cleared!</span>\n';
+        }
+
+        function loadExample() {
+            const exampleCode = `# Create a colorful pattern
+colors = ["red", "orange", "yellow", "green", "blue", "purple"]
+
+for i in range(36):
+    pyTurtleColor(colors[i % len(colors)])
+    pyTurtleForward(100)
+    pyTurtleRight(-170)  # left turn = negative right turn
+
+print("Colorful pattern complete!")`;
+
+            document.getElementById('code-editor').value = exampleCode;
+        }
+
+        function loadSpiral() {
+            const spiralCode = `# Draw a spiral
+pyTurtleColor("cyan")
+
+for i in range(100):
+    pyTurtleForward(i * 2)
+    pyTurtleRight(91)
+
+print("Spiral complete!")`;
+
+            document.getElementById('code-editor').value = spiralCode;
+        }
+
+        function loadStar() {
+            const starCode = `# Draw a star
+pyTurtleColor("gold")
+
+for i in range(5):
+    pyTurtleForward(100)
+    pyTurtleRight(144)
+
+print("Star complete!")`;
+
+            document.getElementById('code-editor').value = starCode;
+        }
+
+        function loadFlower() {
+            const flowerCode = `# Draw a flower pattern
+pyTurtleColor("pink")
+
+for i in range(36):
+    pyTurtleCircle(50)
+    pyTurtleRight(10)
+
+print("Flower complete!")`;
+
+            document.getElementById('code-editor').value = flowerCode;
+        }
+
+        function loadFractal() {
+            const fractalCode = `# Draw a fractal tree
+def draw_tree(branch_length):
+    if branch_length > 5:
+        pyTurtleForward(branch_length)
+        pyTurtleRight(20)
+        draw_tree(branch_length - 15)
+        pyTurtleRight(-40)  # left turn
+        draw_tree(branch_length - 15)
+        pyTurtleRight(20)
+        pyTurtleForward(-branch_length)  # backward
+
+pyTurtleColor("brown")
+pyTurtleRight(-90)  # point up
+pyTurtlePenup()
+pyTurtleGoto(0, -100)
+pyTurtlePendown()
+
+draw_tree(75)
+
+print("Fractal tree complete!")`;
+
+            document.getElementById('code-editor').value = fractalCode;
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            clearCanvas();
+
+            // Check if Skulpt is already loaded
+            if (typeof Sk !== 'undefined') {
+                checkSkulptReady();
+            } else {
+                // Wait for scripts to load
+                setTimeout(checkSkulptReady, 1000);
+            }
+        });
+    </script>
+
+    <!-- License Notice -->
+    <div class="license-notice">
+      <strong>AGPL v3 License</strong>
+      <br />
+      This Python Turtle Graphics environment is licensed under the GNU Affero General Public License v3.0.
+      You are free to use, modify, and distribute this software under the terms of the AGPL v3.
+    </div>
+  </body>
+</html>

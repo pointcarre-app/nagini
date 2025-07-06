@@ -17,9 +17,9 @@ class EditorConfigValidator:
 
     def _parse_editorconfig(self):
         """Parse .editorconfig file."""
-        config_path = self.root_path / ".editorconfig"
+        config_path = self.root_path / "hooks" / ".editorconfig"
         if not config_path.exists():
-            print("No .editorconfig file found")
+            print("No .editorconfig file found in hooks/")
             return {}
 
         config = {}
@@ -199,11 +199,11 @@ class EditorConfigValidator:
             # Find all non-ignored files
             paths = []
             for root, dirs, files in os.walk(self.root_path):
-                # Skip common ignore patterns
+                # Skip common ignore patterns and hooks folder
                 dirs[:] = [
                     d
                     for d in dirs
-                    if not d.startswith(".") and d not in ["node_modules", "__pycache__"]
+                    if not d.startswith(".") and d not in ["node_modules", "__pycache__", "hooks"]
                 ]
 
                 for file in files:
