@@ -2,9 +2,11 @@
     - [x] Ensure Turtle is working
     - [x] write a test and maybe keep the draft statically in an /experiments folder ? 
 
-
-
 - [] #low Consider adding support for `input()` with Brython Manager
 
-
 - [] Add Licence buy button
+
+- [] Update hooks for ensuring checking of ALL files at every commit
+
+- [] decide about how to use scenery (externally - no install here) 
+    - [] check the outputs in the table in `/scenery/index.html`
