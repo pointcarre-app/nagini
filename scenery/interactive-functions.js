@@ -226,3 +226,61 @@ window.executeMatplotlibCode = executeMatplotlibCode;
 
 // Export for potential module usage
 export { executeInputCode, executeMatplotlibCode, initInteractiveManager };
+
+// Add Brython manager initializer
+async function initBrythonManager() {
+    if (window.brythonManager && window.brythonManager.isReady) {
+        return window.brythonManager;
+    }
+    const { Nagini } = await import('../src/nagini.js');
+    window.brythonManager = await Nagini.createManager('brython', [], [], '', '');
+    await Nagini.waitForReady(window.brythonManager, 10000);
+    return window.brythonManager;
+}
+
+/**
+ * Execute turtle code from the turtle text area using Brython backend
+ */
+async function executeTurtleCode() {
+    const codeEditor = document.getElementById('turtle-code-editor');
+    const output = document.getElementById('turtle-code-output');
+    const canvasDiv = document.getElementById('turtle');
+
+    if (!codeEditor || !output || !canvasDiv) {
+        console.error('Turtle elements not found');
+        return;
+    }
+
+    const userCode = codeEditor.value;
+    if (!userCode.trim()) {
+        output.textContent = 'No code to execute';
+        return;
+    }
+
+    try {
+        const mgr = await initBrythonManager();
+
+        // Clear previous output and drawing
+        output.textContent = 'Executing turtle code...\n';
+        canvasDiv.innerHTML = '';
+
+        // Prepend canvas setup to user code
+        const setup = "import turtle\nfrom browser import document\n" +
+                      "turtle.set_defaults(turtle_canvas_wrapper=document['turtle'])\n";
+        const code = setup + userCode + "\n\nprint('Drawing completed')";
+
+        const result = await mgr.executeAsync('interactive_turtle_code', code);
+        if (result.stdout) output.textContent += result.stdout;
+        if (result.stderr) output.textContent += '\nERROR:\n' + result.stderr;
+        if (result.error) output.textContent += '\nEXECUTION ERROR:\n' + result.error.message;
+        output.textContent += '\nTurtle code execution completed!';
+    } catch (error) {
+        console.error('Interactive turtle execution failed:', error);
+        output.textContent = 'ERROR: ' + error.message;
+    }
+}
+
+// make global
+window.executeTurtleCode = executeTurtleCode;
+
+export { executeTurtleCode, initBrythonManager };

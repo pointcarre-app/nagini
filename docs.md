@@ -384,6 +384,60 @@ Execute Python code asynchronously with result tracking.
 
 **Returns:** `Promise<ExecutionResult>`
 
+### BrythonManager (Lightweight Backend)
+
+The Brython backend executes Python by transpiling it to JavaScript directly in the **main thread** (no WebAssembly, no web-workers). It is great for lightweight demos such as turtle graphics but has several limitations compared to Pyodide.
+
+**Key points**
+- ✅ Instant startup – no WASM download
+- ✅ Same result object shape as Pyodide for `executeAsync`
+- ⚠️  No package installation (only Brython stdlib)
+- ⚠️  No `input()` queue / callbacks (methods are stubs that emit console warnings)
+- ⚠️  No virtual filesystem (`fs()` will throw)
+- ⚠️  Runs on the UI thread – long-running scripts will block the page
+
+#### `executeAsync(filename, code)`
+Execute Python code and return a full `ExecutionResult` object (with `stdout`, `stderr`, `missive`, `time`, etc.).
+
+```javascript
+const manager = await Nagini.createManager(
+    'brython',      // Use the Brython backend
+    [],             // packages ignored
+    [],             // filesToLoad ignored
+    '',             // initPath ignored
+    ''              // workerPath ignored
+);
+
+await Nagini.waitForReady(manager);
+
+const result = await manager.executeAsync('demo.py', `
+from browser import document
+import turtle
+
+# Simple square
+pen = turtle.Turtle()
+for _ in range(4):
+    pen.forward(100)
+    pen.right(90)
+
+print('Finished drawing!')
+`);
+
+console.log(result.stdout); // "Finished drawing!\n"
+```
+
+#### `executeFile(filename, code)`
+Fire-and-forget wrapper around `executeAsync` (returns void).
+
+#### Unsupported / Stubbed APIs
+```javascript
+manager.fs();                 // ➜ Error: not supported
+manager.queueInput('data');   // ➜ Console warning (ignored)
+manager.setInputCallback(cb); // ➜ Console warning (ignored)
+```
+
+Properties available: `isReady`, `executionHistory`, `packages`.
+
 ---
 
 ## Features
@@ -642,8 +696,11 @@ Nagini includes 16 comprehensive test cases covering all major features:
 14. **Input Handling** - Queue system and stdout verification
 15. **Matplotlib Integration** - Figure capture and base64 encoding
 
+#### Manager Tests (BrythonManager)
+16. **Simple Execution** - `executeAsync()` basic stdout validation
+
 #### File Loading Tests (PyodideFileLoader)
-16. **Remote Integration** - Remote file loading and Python imports
+17. **Remote Integration** - Remote file loading and Python imports
 
 ### Running Tests
 
@@ -708,6 +765,17 @@ pca-nagini/
 │   ├── nagini.js                  # High-level API
 │   ├── utils/
 │   │   └── validation.js          # Parameter validation utilities
+│   ├── brython/                   # Brython backend
+│   │   ├── index.html
+│   │   ├── lib/
+│   │   │   ├── brython.js
+│   │   │   └── brython_stdlib.js
+│   │   ├── manager/
+│   │   │   ├── manager.js
+│   │   │   ├── loader.js
+│   │   │   └── executor.js
+│   │   └── python/
+│   │       └── turtle_min.py
 │   └── pyodide/
 │       ├── manager/
 │       │   ├── manager.js         # Core PyodideManager class
@@ -724,12 +792,28 @@ pca-nagini/
 │       ├── file-loader/
 │       │   └── file-loader.js     # Remote file loading
 │       └── python/
-│           └── pyodide_init.py    # Python initialization script
+│           ├── pyodide_init.py    # Python initialization script
+│           ├── capture_system.py
+│           ├── code_transformation.py
+│           └── pyodide_utilities.py
 ├── scenery/                       # Testing and demo
+│   ├── app.js
+│   ├── index.html
+│   ├── interactive-functions.js
 │   └── tests/                     # Test modules
+│       ├── brython-manager-tests.js
+│       └── ... (other test files)
+├── experiments/                   # Experimental playgrounds
+│   └── brython/ (demo resources)
+├── hooks/                         # Git / editor hooks
+│   ├── install-hooks.sh
+│   ├── pre-commit
+│   └── validate_editorconfig.py
 ├── docs.md                        # This documentation
 ├── README.md                      # Project overview
-└── LICENSE                        # License
+├── LICENSE
+├── LICENCE-DEPENDENCIES.md
+└── todo.md
 ```
 
 ### Architecture Principles

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Simple Python Turtle Brython Editor" />
+    <meta name="keywords" content="python,turtle,brython,editor" />
+    <title>Simple Turtle Editor</title>
+    <style>
+        #output {
+            width: 100%;
+            height: 150px;
+            margin-top: 0.5rem;
+        }
+
+        #turtle {
+            border: 1px solid #aaa;
+            width: 100%;
+            height: 400px;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            margin-right: 0.5rem;
+        }
+    </style>
+  </head>
+  <body onload="brython()" style="font-family: sans-serif; margin: 1rem;">
+    <h2>Simple Python Turtle (Brython)</h2>
+    <textarea id="code" style="width: 100%; height: 300px;"># Sample code
+import turtle
+from browser import document
+
+# Set the canvas wrapper so turtle draws inside the #turtle div
+turtle.set_defaults(turtle_canvas_wrapper=document['turtle'])
+
+t = turtle.Turtle()
+for _ in range(4):
+    t.forward(100)
+    t.left(90)
+
+t.write('Hello from Brython!', font=('Arial', 16, 'normal'))
+
+print('Drawing complete')
+
+turtle.done()</textarea>
+    <br />
+    <button id="run">Run</button>
+    <button id="clear">Clear</button>
+    <button id="about">About Brython</button>
+    <textarea id="output" readonly></textarea>
+    <div id="turtle"></div>
+
+    <script src="./brython.js"></script>
+    <script src="./brython_stdlib.js"></script>
+    <script type="text/python3" src="./turtle_min.py" id="__main__"></script>
+  </body>
+</html>

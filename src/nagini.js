@@ -28,7 +28,10 @@ export const Nagini = {
       if (backend.toLowerCase() === 'pyodide') {
         const { PyodideManager } = await import('./pyodide/manager/manager.js');
         return new PyodideManager(packages, filesToLoad, initPath, workerPath);
-      } else  {
+      } else if (backend.toLowerCase() === 'brython') {
+        const { BrythonManager } = await import('./brython/manager/manager.js');
+        return new BrythonManager(packages, filesToLoad, initPath, workerPath);
+      } else {
         throw new Error(`🔧 [Nagini] ${backend} backend not yet implemented`);
       }
     },
@@ -79,7 +82,7 @@ export const Nagini = {
      * @returns {string[]} Array of supported backend names
      */
     getSupportedBackends: () => {
-      return ['pyodide'];
+      return ['pyodide', 'brython'];
     },
 
     /**

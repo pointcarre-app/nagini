@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Simple Pyodide Editor with Matplotlib & Input" />
+    <meta name="keywords" content="python,pyodide,matplotlib,input,editor" />
+    <title>Simple Pyodide Editor</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 1rem;
+            max-width: 900px;
+        }
+
+        #code {
+            width: 100%;
+            height: 300px;
+        }
+
+        #output {
+            width: 100%;
+            height: 150px;
+            margin-top: 0.5rem;
+        }
+
+        #figures img {
+            max-width: 100%;
+            border: 1px solid #ccc;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-right: 0.5rem;
+        }
+    </style>
+  </head>
+  <body>
+    <h2>Simple Pyodide (Matplotlib & Input)</h2>
+    <textarea id="code"># Sample code for Pyodide
+import matplotlib.pyplot as plt
+
+name = input('Enter your name: ')
+print(f'Hello {name}!')
+
+plt.figure()
+plt.plot([1, 2, 3, 4], [1, 4, 9, 16])
+plt.title('Simple Plot')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.grid(True)
+plt.show()
+</textarea>
+    <br />
+    <button id="run">Run</button>
+    <button id="clear">Clear</button>
+    <textarea id="output" readonly></textarea>
+    <div id="figures"></div>
+
+    <!-- Main logic -->
+    <script type="module">
+        import {
+            Nagini
+        } from '../nagini.js';
+
+        // Global manager reference for debugging
+        let manager = null;
+
+        const codeEditor = document.getElementById('code');
+        const runBtn = document.getElementById('run');
+        const clearBtn = document.getElementById('clear');
+        const outputArea = document.getElementById('output');
+        const figuresDiv = document.getElementById('figures');
+
+        async function initManager() {
+            if (manager) return manager;
+            // Packages required for demo (matplotlib comes with numpy, pynolson older; micropip included just in case)
+            const packages = ['micropip', 'matplotlib'];
+            // Paths are relative to this HTML file
+            const pyInit = '/src/pyodide/python/pyodide_init.py';
+            const workerPath = './worker/worker.js';
+
+            manager = await Nagini.createManager('pyodide', packages, [], pyInit, workerPath);
+            await Nagini.waitForReady(manager);
+            console.log('🧙‍♂️ PyodideManager ready');
+            return manager;
+        }
+
+        function attachInputHandling(mgr) {
+            // When Python requests input(), prompt the user via window.prompt
+            mgr.setInputCallback((promptText) => {
+                const userInput = window.prompt(promptText || 'Enter input:');
+                if (userInput !== null) {
+                    mgr.provideInput(userInput);
+                } else {
+                    // Provide empty string if user cancels
+                    mgr.provideInput('');
+                }
+            });
+        }
+
+        async function executeCode() {
+            const mgr = await initManager();
+            attachInputHandling(mgr);
+
+            // Reset UI
+            outputArea.value = 'Running...\n';
+            figuresDiv.innerHTML = '';
+
+            const code = codeEditor.value;
+            try {
+                const result = await mgr.executeAsync('user_code.py', code);
+
+                // Display stdout/stderr
+                if (result.stdout) outputArea.value += result.stdout + '\n';
+                if (result.stderr) outputArea.value += '\nSTDERR:\n' + result.stderr + '\n';
+                if (result.error) outputArea.value += '\nERROR:\n' + result.error.message + '\n';
+
+                // Render captured figures, if any
+                if (result.figures && result.figures.length) {
+                    result.figures.forEach((b64, idx) => {
+                        const img = document.createElement('img');
+                        img.src = 'data:image/png;base64,' + b64;
+                        img.alt = 'Figure ' + (idx + 1);
+                        figuresDiv.appendChild(img);
+                    });
+                }
+
+                outputArea.value += '\nExecution finished.';
+            } catch (err) {
+                console.error(err);
+                outputArea.value += '\nEXCEPTION: ' + err.message;
+            }
+        }
+
+        function clearOutput() {
+            outputArea.value = '';
+            figuresDiv.innerHTML = '';
+        }
+
+        runBtn.addEventListener('click', executeCode);
+        clearBtn.addEventListener('click', clearOutput);
+
+        // Auto-initialize manager when page loads to warm-up Pyodide
+        initManager().catch((e) => console.error('Manager init failed', e));
+    </script>
+  </body>
+</html>

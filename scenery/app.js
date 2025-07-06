@@ -6,21 +6,22 @@ import { FileLoaderTests } from './tests/file-loader-tests.js';
 import { PyodideIntegrationTests } from './tests/pyodide-integration-tests.js';
 import { ValidationUtilsTests } from './tests/validation-utils-tests.js';
 import { UtilitiesTests } from './tests/utilities-tests.js';
+import { BrythonManagerTests } from './tests/brython-manager-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
+// Local files to avoid CORS issues while checking via static access the "for" scenery tests
 const filesToLoad = [
     {
-      url: "https://pca-teachers.s3.eu-west-par.io.cloud.ovh.net/teachers-src/teachers/__init__.py",
+      url: "tests/teachers__init__mock.py",
       path: "teachers/__init__.py"
     },
     {
-      url: "https://pca-teachers.s3.eu-west-par.io.cloud.ovh.net/" +
-           "teachers-src/teachers/generator.py",
+      url: "tests/teachers_generator_mock.py",
       path: "teachers/generator.py"
     },
     {
-      url: "https://pca-teachers.s3.eu-west-par.io.cloud.ovh.net/teachers-src/teachers/maths.py",
+      url: "tests/teachers_maths_mock.py",
       path: "teachers/maths.py"
     }
 ];
@@ -252,6 +253,16 @@ async function runDemo() {
         console.log("3️⃣ string manipulation utilities");
         await UtilitiesTests.test3StringManipulationUtilities();
         window.updateTestStatus('status-utilities-3', 'pass');
+
+        // BrythonManager Tests
+        console.log("\nBrythonManager Tests");
+        console.log("=".repeat(50));
+
+        console.log("1️⃣ simple executeAsync()");
+        await BrythonManagerTests.test1SimpleExecution();
+        if (window.updateTestStatus) {
+          window.updateTestStatus('status-brython-manager-1', 'pass');
+        }
 
         console.log("\nALL TESTS PASSED!");
         console.log("=" .repeat(50));

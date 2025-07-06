@@ -143,31 +143,31 @@ async function handleInit(data, workerState) {
       }
     }
 
-    // Create tests directory and load test script files
-    try {
-      workerState.pyodide.FS.mkdir("tests");
-    } catch (e) {
-      // Directory might already exist
-    }
+    // // Create tests directory and load test script files
+    // try {
+    //   workerState.pyodide.FS.mkdir("tests");
+    // } catch (e) {
+    //   // Directory might already exist
+    // }
 
-    const testScripts = [
-      '/scenery/tests/pyodide_manager_test_scripts.py',
-      '/scenery/tests/integration_test_scripts.py'
-    ];
+    // const testScripts = [
+    //   '/scenery/tests/pyodide_manager_test_scripts.py',
+    //   '/scenery/tests/integration_test_scripts.py'
+    // ];
 
-    for (const scriptPath of testScripts) {
-      try {
-        const scriptResponse = await fetch(scriptPath);
-        if (scriptResponse.ok) {
-          const scriptContent = await scriptResponse.text();
-          const scriptName = scriptPath.split('/').pop();
-          workerState.pyodide.FS.writeFile(`tests/${scriptName}`, scriptContent);
-          console.log(`🧪 Loaded test script: tests/${scriptName}`);
-        }
-      } catch (error) {
-        console.warn(`⚠️ Could not load test script ${scriptPath}:`, error.message);
-      }
-    }
+    // for (const scriptPath of testScripts) {
+    //   try {
+    //     const scriptResponse = await fetch(scriptPath);
+    //     if (scriptResponse.ok) {
+    //       const scriptContent = await scriptResponse.text();
+    //       const scriptName = scriptPath.split('/').pop();
+    //       workerState.pyodide.FS.writeFile(`tests/${scriptName}`, scriptContent);
+    //       console.log(`🧪 Loaded test script: tests/${scriptName}`);
+    //     }
+    //   } catch (error) {
+    //     console.warn(`⚠️ Could not load test script ${scriptPath}:`, error.message);
+    //   }
+    // }
 
     // Load main Python initialization script
     const response = await fetch(pyodideInitPath);

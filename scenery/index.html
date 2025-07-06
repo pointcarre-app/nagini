@@ -114,11 +114,20 @@
             color: #000080;
             font-weight: bold;
         }
+
+        /* Turtle canvas */
+        #turtle {
+            border: 1px solid #aaa;
+            width: 100%;
+            height: 400px;
+            margin-top: 10px;
+        }
     </style>
   </head>
   <body>
     <h1>Nagini</h1>
-    <h2>Programmatic tests status</h2>
+    <h2>Programmatic tests</h2>
+    <h3>Status</h3>
     <table>
       <thead>
         <tr>
@@ -365,6 +374,26 @@
           <td id="status-pyodide-manager-13" class="test-status-pending">⏳</td>
         </tr>
 
+        <!-- BrythonManager Tests -->
+        <tr class="test-group-pyodide-manager">
+          <td colspan="4">
+            <strong>BrythonManager Class Tests</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>1️⃣</td>
+          <td>
+            <code>BrythonManager</code>
+          </td>
+          <td>
+            <code>executeAsync(filename, code)</code>
+            <br />
+            Simple stdout validation
+          </td>
+          <td id="status-brython-manager-1" class="test-status-pending">⏳</td>
+        </tr>
+        <!-- End BrythonManager -->
+
         <!-- PyodideFileLoader Tests -->
         <tr class="test-group-file-loader">
           <td colspan="4">
@@ -596,7 +625,7 @@
             }
         };
     </script>
-    <h2>Programmatic tests logs</h2>
+    <h3>Logs</h3>
     <details>
       <summary id="logs-summary">Display JS logs [Lines from logs: 0]</summary>
       <pre id="output"></pre>
@@ -607,7 +636,9 @@
       Wait for the Programmatic tests above to finish before running the interactive tests.
     </div>
 
-    <h2>Interactive test: Input</h2>
+    <h2>Interactive tests</h2>
+
+    <h3>Input (with Pyodide)</h3>
 
     <p>
       Test interactive input functionality with <code>input()</code> calls:
@@ -624,7 +655,7 @@ print("Interactive demo completed!")</textarea>
     <button onclick="executeInputCode()">Execute Input Code</button>
     <pre id="input-code-output"></pre>
 
-    <h2>Interactive test: Matplotlib</h2>
+    <h3>Matplotlib (with Pyodide)</h3>
     <p>Test matplotlib figure generation and base64 capture:</p>
     <textarea id="matplotlib-code-editor" rows="12" cols="80">import matplotlib.pyplot as plt
 import numpy as np
@@ -649,6 +680,25 @@ print("Figure will be displayed below as an image.")</textarea>
     <br />
     <button onclick="executeMatplotlibCode()">Execute Matplotlib Code</button>
     <pre id="matplotlib-code-output"></pre>
+
+    <h3>Turtle (with Brython)</h3>
+    <p>Run Brython turtle graphics in the same page:</p>
+    <textarea id="turtle-code-editor" rows="10" cols="80"># Sample turtle square
+import turtle
+from browser import document
+
+t = turtle.Turtle()
+for _ in range(4):
+    t.forward(100)
+    t.left(90)
+
+print('Square drawn!')
+
+turtle.done()</textarea>
+    <br />
+    <button onclick="executeTurtleCode()">Execute Turtle Code</button>
+    <pre id="turtle-code-output"></pre>
+    <div id="turtle"></div>
 
   </body>
 </html>

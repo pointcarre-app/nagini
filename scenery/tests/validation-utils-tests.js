@@ -89,7 +89,7 @@ export class ValidationUtilsTests {
                 ValidationUtils.validateBackend('invalid', 'TestComponent');
             } catch (error) {
                 errorThrown = true;
-                assertContains(error.message, "🔧 [TestComponent] backend must be one of: pyodide, got \"invalid\"", "Should have correct error message");
+                assertContains(error.message, "🔧 [TestComponent] backend must be one of: pyodide, brython", "Should have correct error message");
             }
             assert(errorThrown, "Should throw error for invalid backend");
 

@@ -17,7 +17,7 @@ environments.
 - **🎯 Namespace Isolation** - Complete execution isolation between runs
 - **💬 Structured Data Exchange** - "Missive" system for Python ↔ JavaScript communication
 - **📁 Filesystem Access** - Complete file operations (`writeFile`, `readFile`, `mkdir`, etc.)
-- **🔧 Backend Agnostic** - Designed for multiple Python backends (currently supports Pyodide)
+- **🔧 Backend Agnostic** - Supports multiple Python backends (Pyodide & Brython)
 
 ## Quick Start
 
@@ -26,7 +26,7 @@ import { Nagini } from './src/nagini.js';
 
 // 1. Create manager (defaults to 'pyodide' backend)
 const manager = await Nagini.createManager(
-    'pyodide',                           // Backend (currently only 'pyodide')
+    'pyodide',                           // Backend ('pyodide' or 'brython')
     ["sympy", "matplotlib"],             // Python packages
     [],                                  // Files to load (URL objects)
     "./src/pyodide/python/pyodide_init.py",  // Init script
@@ -162,8 +162,8 @@ await Nagini.waitForReady(manager, timeout);
 const result = await Nagini.executeFromUrl(url, manager, namespace);
 
 // Check supported backends
-const backends = Nagini.getSupportedBackends(); // ['pyodide']
-const isSupported = Nagini.isBackendSupported('pyodide'); // true
+const backends = Nagini.getSupportedBackends(); // ['pyodide', 'brython']
+const isSupported = Nagini.isBackendSupported('brython'); // true
 ```
 
 ### PyodideManager (Core Manager)
@@ -200,6 +200,17 @@ src/
 ├── nagini.js                        # Main API entry point
 ├── utils/
 │   └── validation.js                # Parameter validation utilities
+├── brython/                         # Brython backend
+│   ├── index.html
+│   ├── lib/
+│   │   ├── brython.js
+│   │   └── brython_stdlib.js
+│   ├── manager/
+│   │   ├── manager.js
+│   │   ├── loader.js
+│   │   └── executor.js
+│   └── python/
+│       └── turtle_min.py
 └── pyodide/
     ├── manager/
     │   ├── manager.js               # Core PyodideManager class
