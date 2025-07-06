@@ -273,7 +273,7 @@ open http://localhost:8000/scenery/
 - **Modern Browser** - WebWorkers, SharedArrayBuffer support
 - **No external dependencies** - Self-contained system
 
-**📄 For complete license information and compatibility details, see [LICENCE-DEPENDENCIES.md](LICENCE-DEPENDENCIES.md)**
+**📄 For complete license information and compatibility details, see [3RD-PARTY.md](3RD-PARTY.md)**
 
 ## Performance
 
@@ -450,7 +450,7 @@ This software incorporates components from the following open-source projects:
 - Patent rights are expressly granted
 - Larger works using the licensed work may be distributed under different terms
 
-**📄 For complete license texts and detailed information about all dependencies, see [LICENCE-DEPENDENCIES.md](LICENCE-DEPENDENCIES.md)**
+**📄 For complete license texts and detailed information about all dependencies, see [3RD-PARTY.md](3RD-PARTY.md)**
 
 ---
 
