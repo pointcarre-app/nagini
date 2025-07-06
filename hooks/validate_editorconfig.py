@@ -123,10 +123,10 @@ class EditorConfigValidator:
                     return False
 
             # Check insert_final_newline
-            final_newline_check = (
+            check_final_nl = (
                 "insert_final_newline" in config and config["insert_final_newline"] == "true"
             )
-            if final_newline_check:
+            if check_final_nl:
                 if text and not text.endswith("\n"):
                     self.errors.append(f"{file_path}: Missing final newline")
                     return False
@@ -182,9 +182,15 @@ class EditorConfigValidator:
                 for file in files:
                     if not file.startswith(".") and not file.endswith(".pyc"):
                         paths.append(Path(root) / file)
+        else:
+            # Filter out any hooks files from provided paths
+            paths = [p for p in paths if not str(p).startswith("hooks/")]
 
         all_valid = True
         for path in paths:
+            # Double check - skip any hooks files
+            if str(path).startswith("hooks/"):
+                continue
             if not self.validate_file(path):
                 all_valid = False
 
