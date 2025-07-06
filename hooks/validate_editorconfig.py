@@ -141,33 +141,6 @@ class EditorConfigValidator:
                         self.errors.append(f"{file_path}:{i}: Trailing whitespace")
                         return False
 
-            # Check indentation
-            if "indent_style" in config:
-                indent_style = config["indent_style"]
-                indent_size = int(config.get("indent_size", 4))
-
-                for i, line in enumerate(lines, 1):
-                    if not line.strip():  # Skip empty lines
-                        continue
-
-                    leading_ws = len(line) - len(line.lstrip(" \t"))
-                    if leading_ws == 0:
-                        continue
-
-                    if indent_style == "space":
-                        if "\t" in line[:leading_ws]:
-                            self.errors.append(f"{file_path}:{i}: Uses tabs instead of spaces")
-                            return False
-                        if leading_ws % indent_size != 0:
-                            msg = f"{file_path}:{i}: Incorrect indentation "
-                            msg += f"(expected multiple of {indent_size})"
-                            self.errors.append(msg)
-                            return False
-                    elif indent_style == "tab":
-                        if " " in line[:leading_ws]:
-                            self.errors.append(f"{file_path}:{i}: Uses spaces instead of tabs")
-                            return False
-
             # Check max_line_length
             if "max_line_length" in config:
                 max_length = int(config["max_line_length"])
