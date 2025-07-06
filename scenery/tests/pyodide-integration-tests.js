@@ -7,10 +7,10 @@ import {
     logTestFail
 } from './test-utils.js';
 
-export class IntegrationTests {
+export class PyodideIntegrationTests {
     static async testComplexInputData(manager) {
         const testName = "complex input data scenarios";
-        logTestStart("Integration", testName);
+        logTestStart("PyodideIntegration", testName);
 
         try {
             // Test 1: Multiple inputs with different types
@@ -19,8 +19,8 @@ export class IntegrationTests {
             manager.queueInput("Engineer");
             manager.queueInput("y");
 
-                        const result1 = await manager.executeAsync(
-                "complex_input_test1", 
+            const result1 = await manager.executeAsync(
+                "complex_input_test1",
                 `print("=== User Registration System ===")
 name = input("Enter your full name: ")
 age = int(input("Enter your age: "))
@@ -49,8 +49,8 @@ missive({"name": name, "age": age, "job": job, "newsletter": newsletter, "is_adu
             manager.queueInput("150");  // Invalid - too high
             manager.queueInput("25");   // Valid
 
-                        const result2 = await manager.executeAsync(
-                "complex_input_test2", 
+            const result2 = await manager.executeAsync(
+                "complex_input_test2",
                 `print("=== Input Validation Test ===")
 while True:
     age_str = input("Enter your age (1-120): ")
@@ -110,11 +110,11 @@ missive({"numbers": numbers, "sum": total, "average": average, "product": produc
 
     static async testDataVisualizationWorkflow(manager) {
         const testName = "data visualization workflow";
-        logTestStart("Integration", testName);
+        logTestStart("PyodideIntegration", testName);
 
         try {
-                        const result = await manager.executeAsync(
-                "data_viz_workflow", 
+            const result = await manager.executeAsync(
+                "data_viz_workflow",
                 `import matplotlib.pyplot as plt
 import numpy as np
 x = np.linspace(-np.pi, np.pi, 50)
@@ -170,7 +170,7 @@ missive({"x_points": len(x), "datasets": 3, "figures": 2, "mean_y1": mean_y1, "s
 
     static async testFileSystemAndImportWorkflow(manager) {
         const testName = "filesystem and import workflow";
-        logTestStart("Integration", testName);
+        logTestStart("PyodideIntegration", testName);
 
         try {
             // Create a temporary Python module
@@ -237,7 +237,7 @@ missive({"processor_name": processor.name, "data_count": stats['count'], "data_s
 
     static async testMixedExecutionScenarios(manager) {
         const testName = "mixed execution scenarios";
-        logTestStart("Integration", testName);
+        logTestStart("PyodideIntegration", testName);
 
         try {
             // Test 1: Global execution followed by namespace execution
@@ -281,7 +281,7 @@ missive({"global_var_persistent": global_var})`
 
     static async testAdvancedMatplotlibWorkflow(manager) {
         const testName = "advanced matplotlib workflow";
-        logTestStart("Integration", testName);
+        logTestStart("PyodideIntegration", testName);
 
         try {
             const result = await manager.executeAsync(
@@ -338,4 +338,4 @@ missive({"subplot_count": subplot_count, "total_data_points": total_data_points}
             throw error;
         }
     }
-}
+} 

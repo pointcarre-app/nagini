@@ -3,7 +3,7 @@ import { PyodideFileLoader } from '../src/pyodide/file-loader/file-loader.js';
 import { NaginiTests } from './tests/nagini-tests.js';
 import { PyodideManagerTests } from './tests/pyodide-manager-tests.js';
 import { FileLoaderTests } from './tests/file-loader-tests.js';
-import { IntegrationTests } from './tests/integration-tests.js';
+import { PyodideIntegrationTests } from './tests/pyodide-integration-tests.js';
 import { ValidationUtilsTests } from './tests/validation-utils-tests.js';
 import { UtilitiesTests } from './tests/utilities-tests.js';
 import './interactive-functions.js';
@@ -193,28 +193,28 @@ async function runDemo() {
         await FileLoaderTests.test3FileLoaderErrorHandling(manager);
         window.updateTestStatus('status-file-loader-3', 'pass');
 
-        // Integration Tests
-        console.log("\nIntegration Tests");
+        // PyodideIntegration Tests
+        console.log("\nPyodideIntegration Tests");
         console.log("=" .repeat(50));
 
         console.log("1️⃣ complex input data scenarios");
-        await IntegrationTests.testComplexInputData(manager);
+        await PyodideIntegrationTests.testComplexInputData(manager);
         window.updateTestStatus('status-integration-1', 'pass');
 
         console.log("2️⃣ data visualization workflow");
-        await IntegrationTests.testDataVisualizationWorkflow(manager);
+        await PyodideIntegrationTests.testDataVisualizationWorkflow(manager);
         window.updateTestStatus('status-integration-2', 'pass');
 
         console.log("3️⃣ filesystem and import workflow");
-        await IntegrationTests.testFileSystemAndImportWorkflow(manager);
+        await PyodideIntegrationTests.testFileSystemAndImportWorkflow(manager);
         window.updateTestStatus('status-integration-3', 'pass');
 
         console.log("4️⃣ mixed execution scenarios");
-        await IntegrationTests.testMixedExecutionScenarios(manager);
+        await PyodideIntegrationTests.testMixedExecutionScenarios(manager);
         window.updateTestStatus('status-integration-4', 'pass');
 
         console.log("5️⃣ advanced matplotlib workflow");
-        await IntegrationTests.testAdvancedMatplotlibWorkflow(manager);
+        await PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager);
         window.updateTestStatus('status-integration-5', 'pass');
 
         // ValidationUtils Tests
