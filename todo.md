@@ -1,2 +1,3 @@
-- [ ] Implement Skulpt in `src/skulpt/`
+- [ ] Implement brython in `src/brython/`
     - [ ] Ensure Turtle is working
+    - [ ] write a test and maybe keep the draft statically in an /experiments folder ? 
