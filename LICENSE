@@ -2,6 +2,15 @@
 
 **Nagini** is available under a dual licensing model to support both open-source community development and commercial applications.
 
++### Nagini
++- **License**: Dual License
++  - Non-commercial: GNU Affero General Public License v3.0 (AGPL-3.0)
++  - Commercial: Proprietary Commercial License
++- **Copyright**: © 2025 SAS POINTCARRE.APP
++- **Project**: Nagini
++- **Usage**: Core application code
++
+
 ## Non-Commercial Use - GNU Affero General Public License v3.0 (AGPL-3.0)
 
 For **non-commercial use**, Nagini is licensed under the GNU Affero General Public License v3.0.
