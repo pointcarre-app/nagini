@@ -47,7 +47,7 @@ const manager = await Nagini.createManager(
     ["sympy", "matplotlib"],             // Python packages
     [],                                  // Files to load (URL objects)
     "./src/pyodide/python/pyodide_init.py",  // Init script
-    "./src/pyodide/worker/worker.js"     // Worker script
+    "./src/pyodide/worker/worker.js"     // Worker script (dev) or worker-dist.js (prod)
 );
 
 // 2. Wait for initialization
@@ -66,6 +66,65 @@ missive({"solutions": [str(s) for s in solutions]})
 console.log(result.stdout);   // "Solutions: [-2, 2]"
 console.log(result.missive);  // {"solutions": ["-2", "2"]}
 ```
+
+## Worker Bundling for Cross-Origin Use
+
+When using Nagini with Flask apps or other cross-origin scenarios, use the **bundled worker** to avoid ES6 import issues:
+
+### Quick Usage (Bundled Worker)
+
+```javascript
+// For Flask/cross-origin apps - use bundled worker
+const manager = await Nagini.createManager(
+    'pyodide',
+    ["numpy", "matplotlib"],
+    [],
+    "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py",
+    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"  // Bundled version
+);
+```
+
+### Blob Worker Creation (Flask Example)
+
+```javascript
+// Create blob worker URL to avoid CORS issues
+async function createBlobWorkerUrl(workerPath) {
+    const response = await fetch(workerPath);
+    const workerCode = await response.text();
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    return URL.createObjectURL(blob);
+}
+
+// Use in Flask app
+const workerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
+const blobWorkerUrl = await createBlobWorkerUrl(workerPath);
+
+const manager = await Nagini.createManager(
+    'pyodide',
+    ["numpy"],
+    [],
+    "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py",
+    blobWorkerUrl  // Blob URL works across origins
+);
+```
+
+### Building the Worker Bundle
+
+```bash
+# Navigate to worker directory
+cd src/pyodide/worker
+
+# Install dependencies (first time only)
+npm install
+
+# Build production bundle
+npm run build
+
+# Build development bundle (with source maps)
+npm run build-dev
+```
+
+**Output**: Creates `worker-dist.js` (64KB bundled file) that works in any environment.
 
 ## Interactive Input
 
@@ -216,7 +275,8 @@ console.log(manager.executionHistory);
 src/
 ├── nagini.js                        # Main API entry point
 ├── utils/
-│   └── validation.js                # Parameter validation utilities
+│   ├── validation.js                # Parameter validation utilities
+│   └── createBlobWorker.js          # Cross-origin worker utilities
 ├── brython/                         # Brython backend
 │   ├── index.html
 │   ├── lib/
@@ -235,17 +295,36 @@ src/
     │   ├── manager-input.js         # Input handling
     │   └── manager-fs.js            # Filesystem operations
     ├── worker/
-    │   ├── worker.js               # Worker entry point
+    │   ├── worker.js               # Worker entry point (ES6 modules)
     │   ├── worker-config.js        # Configuration constants
     │   ├── worker-handlers.js      # Message handlers
     │   ├── worker-execution.js     # Execution logic
     │   ├── worker-input.js         # Input handling
-    │   └── worker-fs.js            # Filesystem operations
+    │   ├── worker-fs.js            # Filesystem operations
+    │   ├── webpack.config.cjs      # Webpack bundling configuration
+    │   ├── package.json            # NPM dependencies and build scripts
+    │   ├── package-lock.json       # Dependency lock file
+    │   ├── worker-dist.js          # **Bundled worker output** (generated)
+    │   ├── .gitignore              # Build artifacts exclusions
+    │   ├── README.md               # Worker bundling documentation
+    │   └── node_modules/           # NPM dependencies (generated)
     ├── file-loader/
     │   └── file-loader.js          # Remote file loading
     └── python/
-        └── pyodide_init.py         # Python initialization script
+        ├── pyodide_init.py         # Python initialization script
+        ├── capture_system.py       # Output capture system
+        ├── code_transformation.py  # Code transformation utilities
+        └── pyodide_utilities.py    # Python helper functions
 ```
+
+### Worker Bundling System
+
+The worker directory includes a complete **webpack-based bundling system** to resolve ES6 import issues when creating blob workers across different origins (e.g., Flask apps):
+
+- **Development**: Use modular `worker.js` with ES6 imports
+- **Production**: Use bundled `worker-dist.js` (single file, no imports)
+- **Build Process**: `npm run build` creates optimized bundle
+- **Cross-Origin Support**: Bundled worker works in blob URLs
 
 ## Testing
 
