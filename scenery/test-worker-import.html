@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Worker Import</title>
+  </head>
+  <body>
+    <h1>Test Worker Import</h1>
+    <div id="output"></div>
+    <script type="module">
+        const output = document.getElementById('output');
+
+        function log(message) {
+            output.innerHTML += message + '<br />';
+            console.log(message);
+        }
+
+        async function createBlobWorkerUrl(workerPath) {
+            try {
+                // Fetch the bundled worker
+                const response = await fetch(workerPath);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch worker: ${response.status} ${response.statusText}`);
+                }
+                const workerCode = await response.text();
+
+                // Create a blob with the bundled worker code directly
+                const blob = new Blob([workerCode], {
+                    type: 'application/javascript'
+                });
+                const blobUrl = URL.createObjectURL(blob);
+
+                return blobUrl;
+            } catch (error) {
+                throw new Error(`Failed to create blob worker URL: ${error.message}`);
+            }
+        }
+
+        async function testWorkerImport() {
+            try {
+                log('Testing worker import...');
+
+                // Test with bundled worker
+                const workerPath = '../src/pyodide/worker/worker-dist.js';
+                const blobWorkerUrl = await createBlobWorkerUrl(workerPath);
+
+                const worker = new Worker(blobWorkerUrl);
+
+                log('✅ Worker created successfully');
+
+                // Listen for messages
+                worker.onmessage = (e) => {
+                    log(`Worker message: ${JSON.stringify(e.data)}`);
+                };
+
+                worker.onerror = (e) => {
+                    log(`❌ Worker error: ${e.message}`);
+                };
+
+                // Send a test message
+                worker.postMessage({
+                    type: 'init',
+                    packages: ['numpy'],
+                    filesToLoad: [],
+                    pyodideInitPath: '../src/pyodide/python/pyodide_init.py'
+                });
+
+                log('✅ Message sent to worker');
+
+            } catch (error) {
+                log(`❌ Error: ${error.message}`);
+                console.error('Error:', error);
+            }
+        }
+
+        testWorkerImport();
+    </script>
+  </body>
+</html>

@@ -120,54 +120,39 @@ async function handleInit(data, workerState) {
     importScripts(`${PYODIDE_WORKER_CONFIG.PYODIDE_CDN}pyodide.js`);
     workerState.pyodide = await loadPyodide({ indexURL: PYODIDE_WORKER_CONFIG.PYODIDE_CDN });
 
+    // Compute base URL from pyodideInitPath
+    // If pyodideInitPath is '/src/pyodide/python/pyodide_init.py', base should be '/src/pyodide/python/'
+    const pathParts = pyodideInitPath.split('/');
+    pathParts.pop(); // Remove filename
+    const baseUrl = pathParts.join('/') + '/';
+    
+    console.log(`🐍 Using base URL for Python modules: ${baseUrl}`);
+
     // Load Python module dependencies first
     const pythonModules = [
-      '/src/pyodide/python/capture_system.py',
-      '/src/pyodide/python/code_transformation.py', 
-      '/src/pyodide/python/pyodide_utilities.py'
+      'capture_system.py',
+      'code_transformation.py', 
+      'pyodide_utilities.py'
     ];
 
-    for (const modulePath of pythonModules) {
+    for (const moduleName of pythonModules) {
       try {
+        const modulePath = baseUrl + moduleName;
+        console.log(`🐍 Attempting to fetch: ${modulePath}`);
         const moduleResponse = await fetch(modulePath);
         if (moduleResponse.ok) {
           const moduleContent = await moduleResponse.text();
-          const moduleName = modulePath.split('/').pop();
           workerState.pyodide.FS.writeFile(moduleName, moduleContent);
           // Execute the module so it can be imported
           workerState.pyodide.runPython(moduleContent);
           console.log(`🐍 Loaded and executed Python module: ${moduleName}`);
+        } else {
+          console.warn(`⚠️ Failed to fetch Python module ${modulePath}: ${moduleResponse.status} ${moduleResponse.statusText}`);
         }
       } catch (error) {
-        console.warn(`⚠️ Could not load Python module ${modulePath}:`, error.message);
+        console.warn(`⚠️ Could not load Python module ${moduleName}:`, error.message);
       }
     }
-
-    // // Create tests directory and load test script files
-    // try {
-    //   workerState.pyodide.FS.mkdir("tests");
-    // } catch (e) {
-    //   // Directory might already exist
-    // }
-
-    // const testScripts = [
-    //   '/scenery/tests/pyodide_manager_test_scripts.py',
-    //   '/scenery/tests/integration_test_scripts.py'
-    // ];
-
-    // for (const scriptPath of testScripts) {
-    //   try {
-    //     const scriptResponse = await fetch(scriptPath);
-    //     if (scriptResponse.ok) {
-    //       const scriptContent = await scriptResponse.text();
-    //       const scriptName = scriptPath.split('/').pop();
-    //       workerState.pyodide.FS.writeFile(`tests/${scriptName}`, scriptContent);
-    //       console.log(`🧪 Loaded test script: tests/${scriptName}`);
-    //     }
-    //   } catch (error) {
-    //     console.warn(`⚠️ Could not load test script ${scriptPath}:`, error.message);
-    //   }
-    // }
 
     // Load main Python initialization script
     const response = await fetch(pyodideInitPath);

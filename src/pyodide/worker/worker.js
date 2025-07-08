@@ -17,6 +17,8 @@
  * @module PyodideWorker
  */
 
+import { handleMessage } from './worker-handlers.js';
+
 /**
  * Worker state object to track Pyodide instance and loaded packages
  * @type {WorkerState}
@@ -33,31 +35,22 @@ const workerState = {
 };
 
 /**
- * Web Worker message handler with dynamic import loading
+ * Web Worker message handler
  *
- * Processes messages from the main thread using modular handlers loaded dynamically.
- * This pattern allows for code splitting and lazy loading of handler modules.
+ * Processes messages from the main thread using imported handlers.
  *
  * @param {MessageEvent<WorkerMessage>} e - Message event from main thread
  * @returns {Promise<void>}
  */
 self.onmessage = async function (e) {
   try {
-    // Dynamically import the handler module for code splitting
-    const { handleMessage } = await import('./worker-handlers.js');
-
-    // Replace onmessage with the imported handler for future messages
-    self.onmessage = async function (e) {
-      await handleMessage(e, workerState);
-    };
-
-    // Handle the current message
+    // Use the imported handleMessage function directly
     await handleMessage(e, workerState);
   } catch (error) {
-    // Error during dynamic import or initial message handling
+    // Error during message handling
     self.postMessage({
       type: "error",
-      message: `🔧 [Worker] Failed to load handlers: ${error.message}`
+      message: `🔧 [Worker] Failed to handle message: ${error.message}`
     });
   }
 };
