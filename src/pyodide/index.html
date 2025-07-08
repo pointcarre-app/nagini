@@ -77,9 +77,9 @@ plt.show()
             if (manager) return manager;
             // Packages required for demo (matplotlib comes with numpy, pynolson older; micropip included just in case)
             const packages = ['micropip', 'matplotlib'];
-            // Paths are relative to this HTML file
-            const pyInit = '/src/pyodide/python/pyodide_init.py';
-            const workerPath = './worker/worker.js';
+            // Use full URLs for cross-origin blob worker compatibility
+            const pyInit = 'http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py';
+            const workerPath = 'http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js';
 
             manager = await Nagini.createManager('pyodide', packages, [], pyInit, workerPath);
             await Nagini.waitForReady(manager);

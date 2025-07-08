@@ -32,6 +32,7 @@ import { PyodideManagerStaticExecutor } from './manager-static-execution.js';
 import { PyodideManagerInput } from './manager-input.js';
 import { PyodideManagerFS } from './manager-fs.js';
 import { ValidationUtils } from '../../utils/validation.js';
+import { createBlobWorkerUrl } from '../../utils/createBlobWorker.js';
 
 class PyodideManager {
   /**
@@ -40,8 +41,8 @@ class PyodideManager {
    * @param {string[]} packages - Array of Python package names to install
    * @param {Array<FileToLoad>} filesToLoad - Array of file objects to load into filesystem
    * @param {string} pyodideInitPath - Path to the pyodide_init.py file
-   * @param {string} workerPath - Path to the web worker file
-   * @throws {Error} If any parameter has incorrect type
+   * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
+   * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
   constructor(packages, filesToLoad, pyodideInitPath, workerPath) {
     console.log("🎛️ [PyodideManager] Constructor called");
@@ -55,6 +56,11 @@ class PyodideManager {
       'PyodideManager'
     );
     ValidationUtils.validateString(workerPath, 'workerPath', 'PyodideManager');
+
+    // Enforce bundled worker requirement
+    if (!workerPath.includes('worker-dist.js')) {
+      throw new Error(`🚨 [PyodideManager] Only bundled workers are supported. Expected 'worker-dist.js', got: ${workerPath}`);
+    }
 
     /** @type {Worker|null} Web worker instance */
     this.worker = null;
@@ -74,14 +80,21 @@ class PyodideManager {
     /** @type {string} Path to the pyodide_init.py file */
     this.pyodideInitPath = pyodideInitPath;
 
-    /** @type {string} Path to the web worker file */
+    /** @type {string} Path to the bundled web worker file */
     this.workerPath = workerPath;
+
+    /** @type {string|null} Blob URL for cleanup */
+    this.blobUrl = null;
 
     // Initialize input state using the input module
     PyodideManagerInput.initializeInputState(this);
 
-    this.initWorker();
-    console.log("🎛️ [PyodideManager] Worker initialized");
+    // Initialize worker asynchronously
+    this.initWorker().then(() => {
+      console.log("🎛️ [PyodideManager] Blob worker initialized");
+    }).catch((error) => {
+      console.error("🚨 [PyodideManager] Worker initialization failed:", error);
+    });
   }
 
   /**
@@ -107,20 +120,39 @@ class PyodideManager {
   }
 
   /**
-   * Initialize the web worker and set up message handling
+   * Initialize the web worker using blob URL pattern and set up message handling
    *
    * @private
-   * @returns {void}
+   * @returns {Promise<void>}
+   * @throws {Error} If blob worker creation fails
    */
-  initWorker() {
-    this.worker = new Worker(this.workerPath);
-    this.worker.onmessage = (e) => this.handleMessage(e.data);
-    this.worker.postMessage({
-      type: "init",
-      packages: this.packages,
-      filesToLoad: this.filesToLoad,
-      pyodideInitPath: this.pyodideInitPath,
-    });
+  async initWorker() {
+    try {
+      console.log(`🏭 [PyodideManager] Creating blob worker from: ${this.workerPath}`);
+      
+      // Create blob URL first for cleanup tracking
+      this.blobUrl = await createBlobWorkerUrl(this.workerPath);
+      
+      // Create worker from blob URL
+      this.worker = new Worker(this.blobUrl);
+      
+      // Set up message handling
+      this.worker.onmessage = (e) => this.handleMessage(e.data);
+      
+      // Start initialization
+      this.worker.postMessage({
+        type: "init",
+        packages: this.packages,
+        filesToLoad: this.filesToLoad,
+        pyodideInitPath: this.pyodideInitPath,
+      });
+      
+      console.log(`🏭 [PyodideManager] Blob worker created successfully`);
+      
+    } catch (error) {
+      console.error("🚨 [PyodideManager] Failed to initialize blob worker:", error);
+      throw new Error(`Failed to initialize blob worker: ${error.message}`);
+    }
   }
 
   /**
@@ -254,6 +286,34 @@ class PyodideManager {
    */
   clearExecutionHistory() {
     this.executionHistory = [];
+  }
+
+  /**
+   * Cleanup resources and terminate worker
+   * Call this when the manager is no longer needed to prevent memory leaks
+   *
+   * @returns {void}
+   */
+  destroy() {
+    console.log("🧹 [PyodideManager] Cleaning up resources");
+    
+    // Terminate worker
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
+    
+    // Revoke blob URL to prevent memory leaks
+    if (this.blobUrl) {
+      URL.revokeObjectURL(this.blobUrl);
+      this.blobUrl = null;
+    }
+    
+    // Reset state
+    this.isReady = false;
+    this.executionHistory = [];
+    
+    console.log("🧹 [PyodideManager] Cleanup complete");
   }
 }
 

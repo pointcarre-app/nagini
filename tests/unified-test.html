@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Unified Nagini Test - Pyodide vs Brython" />
+    <title>Nagini Unified Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f9f9f9;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            min-height: 80vh;
+        }
+
+        .column {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pyodide-column {
+            border-left: 5px solid #4CAF50;
+        }
+
+        .brython-column {
+            border-left: 5px solid #2196F3;
+        }
+
+        h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .pyodide-column h2 {
+            color: #4CAF50;
+        }
+
+        .brython-column h2 {
+            color: #2196F3;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pyodide-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .pyodide-btn:hover {
+            background: #45a049;
+        }
+
+        .brython-btn {
+            background: #2196F3;
+            color: white;
+        }
+
+        .brython-btn:hover {
+            background: #1976D2;
+        }
+
+        .output {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.loading {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status.success {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        #turtle {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+            width: 300px;
+            height: 300px;
+        }
+
+        .feature-list {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .feature-list ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .feature-list li {
+            margin: 5px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🐍 Nagini Unified Test Suite</h1>
+      <p>
+        Cross-origin testing between <strong>http://127.0.0.1:8010</strong> (Nagini) and <strong>http://127.0.0.1:5001</strong> (Flask)
+      </p>
+      <p>
+        <strong>Pyodide</strong> (left) vs <strong>Brython</strong> (right)
+      </p>
+    </div>
+
+    <div class="container">
+      <!-- Pyodide Column -->
+      <div class="column pyodide-column">
+        <h2>🚀 Pyodide (WebAssembly + Blob Workers)</h2>
+
+        <div class="feature-list">
+          <strong>Features:</strong>
+          <ul>
+            <li>✅ Full Python environment (NumPy, Matplotlib, etc.)</li>
+            <li>✅ Automatic blob worker creation</li>
+            <li>✅ Cross-origin compatible</li>
+            <li>✅ Interactive input() support</li>
+            <li>✅ Matplotlib figure capture</li>
+            <li>✅ Filesystem operations</li>
+          </ul>
+        </div>
+
+        <button class="pyodide-btn" onclick="testPyodideBasic()">Test Basic Execution</button>
+        <button class="pyodide-btn" onclick="testPyodideNumpy()">Test NumPy + Matplotlib</button>
+        <button class="pyodide-btn" onclick="testPyodideInput()">Test Interactive Input</button>
+
+        <div id="pyodide-status" class="status loading hidden">Initializing Pyodide...</div>
+        <div id="pyodide-output" class="output">Click a button to test Pyodide...</div>
+        <div id="pyodide-figures"></div>
+      </div>
+
+      <!-- Brython Column -->
+      <div class="column brython-column">
+        <h2>⚡ Brython (JavaScript Transpilation)</h2>
+
+        <div class="feature-list">
+          <strong>Features:</strong>
+          <ul>
+            <li>✅ Instant startup (no downloads)</li>
+            <li>✅ DOM integration</li>
+            <li>✅ Turtle graphics</li>
+            <li>✅ Main thread execution</li>
+            <li>⚠️ Brython stdlib only</li>
+            <li>⚠️ No packages, input(), or filesystem</li>
+          </ul>
+        </div>
+
+        <button class="brython-btn" onclick="testBrythonBasic()">Test Basic Execution</button>
+        <button class="brython-btn" onclick="testBrythonTurtle()">Test Turtle Graphics</button>
+        <button class="brython-btn" onclick="testBrythonDOM()">Test DOM Integration</button>
+
+        <div id="brython-status" class="status loading hidden">Initializing Brython...</div>
+        <div id="brython-output" class="output">Click a button to test Brython...</div>
+        <div id="turtle"></div>
+      </div>
+    </div>
+
+    <script type="module">
+        import {
+            Nagini
+        } from 'http://127.0.0.1:8010/src/nagini.js';
+
+        let pyodideManager = null;
+        let brythonManager = null;
+
+        console.log('📝 Script loaded, Nagini available:', !!Nagini);
+
+        // Pyodide Tests
+        async function initPyodide() {
+            if (pyodideManager) return pyodideManager;
+
+            const status = document.getElementById('pyodide-status');
+            status.classList.remove('hidden');
+            status.className = 'status loading';
+            status.textContent = 'Initializing Pyodide with blob workers...';
+
+            try {
+                pyodideManager = await Nagini.createManager(
+                    'pyodide',
+                    ["numpy", "matplotlib"],
+                    [],
+                    "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py",
+                    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"
+                );
+
+                await Nagini.waitForReady(pyodideManager);
+
+                status.className = 'status success';
+                status.textContent = '✅ Pyodide ready with automatic blob workers!';
+
+                return pyodideManager;
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ Pyodide initialization failed: ${error.message}`;
+                throw error;
+            }
+        }
+
+        async function testPyodideBasic() {
+            const output = document.getElementById('pyodide-output');
+            const figures = document.getElementById('pyodide-figures');
+            figures.innerHTML = '';
+
+            try {
+                output.textContent = 'Running basic Pyodide test...';
+                const manager = await initPyodide();
+
+                const result = await manager.executeAsync('basic_test.py', `
+print("🎉 Pyodide basic test!")
+print(f"Python version: {'.'.join(map(str, __import__('sys').version_info[:3]))}")
+
+# Test basic computation
+numbers = [1, 2, 3, 4, 5]
+total = sum(numbers)
+average = total / len(numbers)
+
+print(f"Numbers: {numbers}")
+print(f"Sum: {total}")
+print(f"Average: {average}")
+
+# Test missive system
+missive({
+    "test": "basic",
+    "numbers": numbers,
+    "sum": total,
+    "average": average
+})
+
+print("✅ Basic test completed!")
+                `);
+
+                output.textContent = result.stdout;
+                if (result.missive) {
+                    output.textContent += '\n📦 Missive Data:\n' + JSON.stringify(result.missive, null, 2);
+                }
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testPyodideNumpy() {
+            const output = document.getElementById('pyodide-output');
+            const figures = document.getElementById('pyodide-figures');
+            figures.innerHTML = '';
+
+            try {
+                output.textContent = 'Running NumPy + Matplotlib test...';
+                const manager = await initPyodide();
+
+                const result = await manager.executeAsync('numpy_test.py', `
+import numpy as np
+import matplotlib.pyplot as plt
+
+print("🔢 NumPy + Matplotlib test!")
+print(f"NumPy version: {np.__version__}")
+
+# Generate data
+x = np.linspace(0, 10, 50)
+y1 = np.sin(x)
+y2 = np.cos(x)
+
+# Create plot
+plt.figure(figsize=(8, 6))
+plt.plot(x, y1, 'b-', label='sin(x)', linewidth=2)
+plt.plot(x, y2, 'r--', label='cos(x)', linewidth=2)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Pyodide Matplotlib Demo')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+# Statistics
+print(f"Data points: {len(x)}")
+print(f"Sin mean: {np.mean(y1):.4f}")
+print(f"Cos mean: {np.mean(y2):.4f}")
+
+missive({
+    "numpy_version": np.__version__,
+    "data_points": len(x),
+    "sin_mean": float(np.mean(y1)),
+    "cos_mean": float(np.mean(y2))
+})
+
+print("✅ NumPy + Matplotlib test completed!")
+                `);
+
+                output.textContent = result.stdout;
+                if (result.missive) {
+                    output.textContent += '\n📦 Missive Data:\n' + JSON.stringify(result.missive, null, 2);
+                }
+
+                // Display matplotlib figures
+                if (result.figures && result.figures.length > 0) {
+                    result.figures.forEach((base64, index) => {
+                        const img = document.createElement('img');
+                        img.src = `data:image/png;base64,${base64}`;
+                        img.style.maxWidth = '100%';
+                        img.style.border = '1px solid #ddd';
+                        img.style.borderRadius = '5px';
+                        img.style.marginTop = '10px';
+                        img.alt = `Figure ${index + 1}`;
+                        figures.appendChild(img);
+                    });
+                    output.textContent += `\n📊 ${result.figures.length} figure(s) displayed above!`;
+                }
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testPyodideInput() {
+            const output = document.getElementById('pyodide-output');
+            const figures = document.getElementById('pyodide-figures');
+            figures.innerHTML = '';
+
+            try {
+                output.textContent = 'Running interactive input test...';
+                const manager = await initPyodide();
+
+                // Queue some inputs
+                manager.queueInput("Alice");
+                manager.queueInput("25");
+                manager.queueInput("Engineer");
+
+                const result = await manager.executeAsync('input_test.py', `
+print("🎮 Interactive input test!")
+
+name = input("What's your name? ")
+age = int(input("How old are you? "))
+job = input("What's your job? ")
+
+print(f"Hello {name}!")
+print(f"You are {age} years old and work as an {job}.")
+print(f"In 10 years, you'll be {age + 10} years old!")
+
+missive({
+    "name": name,
+    "age": age,
+    "job": job,
+    "future_age": age + 10
+})
+
+print("✅ Input test completed!")
+                `);
+
+                output.textContent = result.stdout;
+                if (result.missive) {
+                    output.textContent += '\n📦 Missive Data:\n' + JSON.stringify(result.missive, null, 2);
+                }
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Brython Tests
+        async function initBrython() {
+            if (brythonManager) return brythonManager;
+
+            const status = document.getElementById('brython-status');
+            status.classList.remove('hidden');
+            status.className = 'status loading';
+            status.textContent = 'Initializing Brython...';
+
+            try {
+                brythonManager = await Nagini.createManager(
+                    'brython',
+                    [],
+                    [],
+                    '',
+                    '', {
+                        brythonJsPath: 'http://127.0.0.1:8010/src/brython/lib/brython.js',
+                        brythonStdlibPath: 'http://127.0.0.1:8010/src/brython/lib/brython_stdlib.js'
+                    }
+                );
+
+                await Nagini.waitForReady(brythonManager);
+
+                status.className = 'status success';
+                status.textContent = '✅ Brython ready - instant startup!';
+
+                return brythonManager;
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ Brython initialization failed: ${error.message}`;
+                throw error;
+            }
+        }
+
+        async function testBrythonBasic() {
+            const output = document.getElementById('brython-output');
+
+            try {
+                output.textContent = 'Running basic Brython test...';
+                const manager = await initBrython();
+
+                const result = await manager.executeAsync('brython_basic.py', `
+print("⚡ Brython basic test!")
+print("JavaScript transpilation - no WebAssembly!")
+
+# Test basic computation
+numbers = [1, 2, 3, 4, 5]
+total = sum(numbers)
+average = total / len(numbers)
+
+print(f"Numbers: {numbers}")
+print(f"Sum: {total}")
+print(f"Average: {average}")
+
+# Test string operations
+text = "Hello Brython!"
+print(f"Text: {text}")
+print(f"Uppercase: {text.upper()}")
+print(f"Length: {len(text)}")
+
+# Test missive system
+missive({
+    "test": "brython_basic",
+    "numbers": numbers,
+    "sum": total,
+    "average": average,
+    "text_length": len(text)
+})
+
+print("✅ Brython basic test completed!")
+                `);
+
+                output.textContent = result.stdout;
+                if (result.missive) {
+                    output.textContent += '\n📦 Missive Data:\n' + JSON.stringify(result.missive, null, 2);
+                }
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testBrythonTurtle() {
+            const output = document.getElementById('brython-output');
+            const canvas = document.getElementById('turtle');
+            canvas.innerHTML = '';
+
+            try {
+                output.textContent = 'Running Brython turtle graphics test...';
+                const manager = await initBrython();
+
+                const result = await manager.executeAsync('turtle_test.py', `
+import turtle
+from browser import document
+
+print("🐢 Brython turtle graphics test!")
+
+# Set up 300x300 turtle canvas with proper bounds
+turtle.set_defaults(
+    turtle_canvas_wrapper=document['turtle'],
+    canvaswidth=300,
+    canvasheight=300
+)
+
+# Create turtle and set speed
+t = turtle.Turtle()
+t.speed(8)
+
+# Clear and reset to center
+t.clear()
+t.penup()
+t.home()
+t.setheading(0)
+
+# Use smaller, safer coordinates (stay within -100 to +100)
+print("🎨 Drawing centered pattern...")
+colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+
+# Draw center star pattern (6 points)
+t.penup()
+t.goto(0, 0)
+t.pendown()
+
+for i in range(6):
+    t.color(colors[i])
+    
+    # Draw star ray
+    t.forward(50)
+    t.backward(50)
+    
+    # Rotate for next ray
+    t.right(60)
+
+# Draw decorative circles
+circle_positions = [(0, 0), (30, 30), (-30, 30), (30, -30), (-30, -30)]
+circle_sizes = [15, 8, 8, 8, 8]
+
+for i, ((x, y), size) in enumerate(zip(circle_positions, circle_sizes)):
+    t.penup()
+    t.goto(x, y - size)  # Move to bottom of circle
+    t.pendown()
+    t.color(colors[i % len(colors)])
+    t.circle(size)
+
+# Draw simple border squares in safe positions
+border_positions = [(-80, 80), (80, 80), (80, -80), (-80, -80)]
+for i, (x, y) in enumerate(border_positions):
+    t.penup()
+    t.goto(x, y)
+    t.pendown()
+    t.color(colors[i % len(colors)])
+    
+    # Draw small square
+    for _ in range(4):
+        t.forward(10)
+        t.right(90)
+
+# Add safe text positions
+t.penup()
+t.goto(0, 90)
+t.color('black')
+t.write('Brython 300x300', align='center', font=('Arial', 12, 'bold'))
+
+t.goto(0, -110)
+t.write('Tactical Turtle!', align='center', font=('Arial', 10, 'normal'))
+
+# Hide turtle cursor
+t.hideturtle()
+turtle.done()
+
+print("🎨 Tactical turtle graphics completed!")
+print("✅ Used safe coordinates within canvas bounds")
+print("✅ Star pattern + decorative circles + border squares")
+
+missive({
+    "test": "turtle_graphics_safe",
+    "canvas_size": "300x300", 
+    "pattern": "star_with_circles",
+    "coordinate_range": "-100 to +100",
+    "colors_used": len(colors),
+    "elements": ["star_rays", "decorative_circles", "border_squares", "text"]
+})
+
+print("✅ Safe tactical turtle test completed!")
+                `);
+
+                output.textContent = result.stdout;
+                if (result.missive) {
+                    output.textContent += '\n📦 Missive Data:\n' + JSON.stringify(result.missive, null, 2);
+                }
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testBrythonDOM() {
+            const output = document.getElementById('brython-output');
+
+            try {
+                output.textContent = 'Running Brython DOM integration test...';
+                const manager = await initBrython();
+
+                const result = await manager.executeAsync('dom_test.py', `
+from browser import document, html
+import time
+
+print("🌐 Brython DOM integration test!")
+
+# Get current page info
+title = document.title
+url = document.location.href
+
+print(f"Page title: {title}")
+print(f"Current URL: {url}")
+
+# Count elements
+buttons = document.select("button")
+divs = document.select("div")
+
+print(f"Buttons on page: {len(buttons)}")
+print(f"Divs on page: {len(divs)}")
+
+# Test browser objects
+user_agent = document.querySelector("html").lang or "unknown"
+print(f"Page language: {user_agent}")
+
+missive({
+    "test": "dom_integration",
+    "page_title": title,
+    "button_count": len(buttons),
+    "div_count": len(divs),
+    "page_language": user_agent
+})
+
+print("✅ DOM integration test completed!")
+                `);
+
+                output.textContent = result.stdout;
+                if (result.missive) {
+                    output.textContent += '\n📦 Missive Data:\n' + JSON.stringify(result.missive, null, 2);
+                }
+            } catch (error) {
+                output.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Make functions globally available
+        try {
+            window.testPyodideBasic = testPyodideBasic;
+            window.testPyodideNumpy = testPyodideNumpy;
+            window.testPyodideInput = testPyodideInput;
+            window.testBrythonBasic = testBrythonBasic;
+            window.testBrythonTurtle = testBrythonTurtle;
+            window.testBrythonDOM = testBrythonDOM;
+
+            console.log('✅ All functions attached to window object');
+            console.log('📋 Available functions:', Object.keys(window).filter(key => key.startsWith('test')));
+        } catch (error) {
+            console.error('❌ Failed to attach functions to window:', error);
+        }
+
+        // Initialize on load
+        console.log('🚀 Unified test page loaded and ready!');
+
+        // Add visual indicator that script loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('.header h1');
+            if (header) {
+                header.textContent += ' ✅';
+            }
+        });
+    </script>
+  </body>
+</html>

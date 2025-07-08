@@ -17,7 +17,7 @@
 
 ## Overview
 
-Nagini is a production-ready Python execution system for web browsers using Pyodide WebAssembly. It provides a clean, modular architecture with worker-based execution, interactive input handling, matplotlib visualization, and remote module loading capabilities.
+Nagini is a production-ready Python execution system for web browsers supporting two backends: **Pyodide WebAssembly** (full-featured with automatic blob workers) and **Brython** (lightweight JavaScript transpilation). It provides a clean, modular architecture with worker-based execution for Pyodide, interactive input handling, matplotlib visualization, and remote module loading capabilities.
 
 ### Use Cases
 
@@ -32,12 +32,15 @@ Nagini enables a wide range of applications across different domains:
 
 ### Key Benefits
 
-- **Isolated Execution**: Python runs in web workers, preventing main thread blocking
-- **Interactive Support**: Natural `input()` function support with multiple interaction modes
-- **Visualization Ready**: Automatic matplotlib figure capture and display
-- **Module Loading**: Load Python modules from S3/URLs at runtime
+- **Dual Backend Support**: Choose Pyodide (full-featured) or Brython (lightweight, instant startup)
+- **Automatic Blob Workers**: Cross-origin compatibility for Pyodide (Flask, Django, etc.)
+- **Isolated Execution**: Python runs in web workers (Pyodide) or main thread (Brython)
+- **Interactive Support**: Natural `input()` function support with multiple interaction modes (Pyodide only)
+- **Visualization Ready**: Automatic matplotlib figure capture and display (Pyodide only)
+- **Module Loading**: Load Python modules from S3/URLs at runtime (Pyodide only)
 - **Namespace Isolation**: Complete variable isolation between executions
-- **Production Tested**: 16 comprehensive test cases covering all features
+- **Unified Test Suite**: Comprehensive side-by-side testing with tactical turtle graphics (Brython) and scientific computing (Pyodide)
+- **Cross-Origin Testing**: Real-world Flask integration with automatic blob worker creation
 - **Flexible Licensing**: Free for non-commercial use, commercial licenses available
 
 ---

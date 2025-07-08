@@ -12,25 +12,41 @@ import { ValidationUtils } from './utils/validation.js';
 export const Nagini = {
     /**
      * Create a new manager instance with specified backend
-     * @param {string} [backend='pyodide'] - Backend to use ('pyodide' or '<?>')
+     * @param {string} [backend='pyodide'] - Backend to use ('pyodide' or 'brython')
      * @param {string[]} packages - Python packages to install
      * @param {Array} filesToLoad - Custom files to load into filesystem
      *                              Array of objects with {url, path} properties
      *                              Supports both local paths and remote URLs (S3, etc.)
      * @param {string} initPath - Path to the backend initialization file
-     * @param {string} workerPath - Path to the web worker file
+     * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
+     * @param {Object} [options={}] - Backend-specific options (e.g. brythonJsPath for Brython)
      * @returns {Manager} New manager instance
      */
-    createManager: async (backend = 'pyodide', packages, filesToLoad, initPath, workerPath) => {
+    createManager: async (backend = 'pyodide', packages, filesToLoad, initPath, workerPath, options = {}) => {
       // Validate backend parameter
       ValidationUtils.validateBackend(backend, 'Nagini');
 
       if (backend.toLowerCase() === 'pyodide') {
+        // Enforce bundled worker usage for Pyodide (cross-origin compatibility)
+        let finalWorkerPath = workerPath;
+        if (!workerPath.includes('worker-dist.js')) {
+          // Auto-convert to bundled worker
+          if (workerPath.includes('worker.js')) {
+            finalWorkerPath = workerPath.replace('worker.js', 'worker-dist.js');
+            console.warn(`🚨 [Nagini] Auto-converted to bundled worker: ${finalWorkerPath}`);
+            console.warn(`🚨 [Nagini] Only bundled workers are supported for cross-origin compatibility.`);
+            console.warn(`🚨 [Nagini] Please update your code to use worker-dist.js directly.`);
+          } else {
+            throw new Error(`🚨 [Nagini] Only bundled workers are supported for Pyodide. Expected 'worker-dist.js', got: ${workerPath}. Please build the worker first with 'npm run build' in the worker directory.`);
+          }
+        }
+        
         const { PyodideManager } = await import('./pyodide/manager/manager.js');
-        return new PyodideManager(packages, filesToLoad, initPath, workerPath);
+        return new PyodideManager(packages, filesToLoad, initPath, finalWorkerPath);
       } else if (backend.toLowerCase() === 'brython') {
+        // Brython doesn't require bundled workers - use as-is
         const { BrythonManager } = await import('./brython/manager/manager.js');
-        return new BrythonManager(packages, filesToLoad, initPath, workerPath);
+        return new BrythonManager(packages, filesToLoad, initPath, workerPath, options);
       } else {
         throw new Error(`🔧 [Nagini] ${backend} backend not yet implemented`);
       }

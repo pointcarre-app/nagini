@@ -88,10 +88,10 @@ async function runDemo() {
 
         console.log("Starting Nagini Test Suite\n");
 
-        // Test parameters - using absolute paths for worker compatibility
+        // Test parameters - using full URLs for cross-origin blob worker compatibility
         const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy"];
-        const pyodideInitPath = "/src/pyodide/python/pyodide_init.py";
-        const workerPath = "/src/pyodide/worker/worker.js";
+        const pyodideInitPath = "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py";
+        const workerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
 
         // Nagini Tests
         console.log("Nagini Tests");
