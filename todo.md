@@ -1,4 +1,6 @@
 
+- [ ] Better changelog
+
 - [ ] Clean docs and remove old files from old tentatives (like bundling with python)
 
 - [ ] Clean the `/tests`  (templates / views)
