@@ -2,9 +2,9 @@
 node_modules/
 
 # Build outputs
-worker-dist.js
-worker-bundled.js
-worker-simple.js
+# worker-dist.js
+# worker-bundled.js
+# worker-simple.js
 
 # Logs
 npm-debug.log*
