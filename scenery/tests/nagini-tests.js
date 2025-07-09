@@ -12,8 +12,8 @@ export class NaginiTests {
         backend,
         packages,
         filesToLoad,
-        pyodideInitPath,
-        workerPath
+        workerPath,
+        options = {}
     ) {
         const testName = "createManager()";
         logTestStart("Nagini", testName);
@@ -23,15 +23,22 @@ export class NaginiTests {
                 backend,
                 packages,
                 filesToLoad,
-                pyodideInitPath,
-                workerPath
+                workerPath,
+                options
             );
 
             assert(manager, "Manager should be created");
-            assert(manager.packages, "Manager should have packages property");
-            assert(manager.filesToLoad, "Manager should have filesToLoad property");
-            assert(manager.pyodideInitPath, "Manager should have pyodideInitPath property");
-            assert(manager.workerPath, "Manager should have workerPath property");
+            assert(manager.packages !== undefined, "Manager should have packages property");
+            assert(manager.filesToLoad !== undefined, "Manager should have filesToLoad property");
+            
+            // Only check for worker-specific properties in Pyodide backend
+            if (backend.toLowerCase() === 'pyodide') {
+                assert(manager.workerPath, "Pyodide manager should have workerPath property");
+            } else if (backend.toLowerCase() === 'brython') {
+                // Brython doesn't use workers, so these properties may not exist
+                assert(manager.executeAsync, "Brython manager should have executeAsync method");
+                assert(manager.isReady !== undefined, "Brython manager should have isReady property");
+            }
 
             logTestPass(testName);
             return { manager, testName };
@@ -88,6 +95,7 @@ export class NaginiTests {
             assert(Array.isArray(backends), "Should return an array");
             assert(backends.length > 0, "Should have at least one backend");
             assert(backends.includes('pyodide'), "Should include pyodide backend");
+            assert(backends.includes('brython'), "Should include brython backend");
 
             logTestPass(testName);
             return { backends, testName };
@@ -103,8 +111,45 @@ export class NaginiTests {
 
         try {
             assert(Nagini.isBackendSupported('pyodide'), "Pyodide should be supported");
+            assert(Nagini.isBackendSupported('brython'), "Brython should be supported");
             assert(!Nagini.isBackendSupported('invalid'), "Invalid backend should not be supported");
-            assert(Nagini.isBackendSupported('PYODIDE'), "Should be case insensitive");
+            assert(Nagini.isBackendSupported('PYODIDE'), "Should be case insensitive for pyodide");
+            assert(Nagini.isBackendSupported('BRYTHON'), "Should be case insensitive for brython");
+
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+
+    static async test6BackendSpecificFeatures(manager, backend) {
+        const testName = "backend-specific features";
+        logTestStart("Nagini", testName);
+
+        try {
+            if (backend.toLowerCase() === 'pyodide') {
+                // Pyodide-specific features
+                assert(manager.worker, "Pyodide manager should have worker property");
+                assert(manager.worker instanceof Worker, "Pyodide manager worker should be a Worker instance");
+                assert(manager.fs, "Pyodide manager should have fs method");
+                assert(manager.queueInput, "Pyodide manager should have queueInput method");
+            } else if (backend.toLowerCase() === 'brython') {
+                // Brython-specific features
+                assert(manager.executeAsync, "Brython manager should have executeAsync method");
+                assert(manager.isReady !== undefined, "Brython manager should have isReady property");
+                // Brython doesn't have workers or filesystem operations
+                assert(!manager.worker, "Brython manager should not have worker property");
+                
+                // Test that filesystem operations throw appropriate errors
+                try {
+                    await manager.fs("readFile", { path: "test.txt" });
+                    assert(false, "Brython fs operations should throw error");
+                } catch (error) {
+                    assert(error.message.includes("not support filesystem"), "Should throw filesystem not supported error");
+                }
+            }
 
             logTestPass(testName);
             return { testName };

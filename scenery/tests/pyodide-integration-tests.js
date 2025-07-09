@@ -37,12 +37,15 @@ missive({"name": name, "age": age, "job": job, "newsletter": newsletter, "is_adu
             );
 
             assert(!result1.error, "Complex input test 1 should not have errors");
-            assertEquals(result1.missive.name, "John Doe", "Name should match input");
-            assertEquals(result1.missive.age, 30, "Age should match input");
-            assertEquals(result1.missive.job, "Engineer", "Job should match input");
-            assertEquals(result1.missive.newsletter, "y", "Newsletter should match input");
-            assertEquals(result1.missive.is_adult, true, "Should correctly calculate adult status");
-            assertEquals(result1.missive.next_decade, 40, "Should correctly calculate next decade");
+            
+            // Parse missive JSON string to object
+            const missive1 = JSON.parse(result1.missive);
+            assertEquals(missive1.name, "John Doe", "Name should match input");
+            assertEquals(missive1.age, 30, "Age should match input");
+            assertEquals(missive1.job, "Engineer", "Job should match input");
+            assertEquals(missive1.newsletter, "y", "Newsletter should match input");
+            assertEquals(missive1.is_adult, true, "Should correctly calculate adult status");
+            assertEquals(missive1.next_decade, 40, "Should correctly calculate next decade");
 
             // Test 2: Input with validation loop
             manager.queueInput("0");    // Invalid - too low
@@ -65,7 +68,10 @@ missive({"validated_age": age})`
             );
 
             assert(!result2.error, "Complex input test 2 should not have errors");
-            assertEquals(result2.missive.validated_age, 25, "Should get validated age");
+            
+            // Parse missive JSON string to object
+            const missive2 = JSON.parse(result2.missive);
+            assertEquals(missive2.validated_age, 25, "Should get validated age");
             assertContains(result2.stdout, "Invalid age: 0", "Should show first invalid age");
             assertContains(result2.stdout, "Invalid age: 150", "Should show second invalid age");
             assertContains(result2.stdout, "Valid age: 25", "Should show valid age");
@@ -95,10 +101,13 @@ missive({"numbers": numbers, "sum": total, "average": average, "product": produc
             );
 
             assert(!result3.error, "Complex input test 3 should not have errors");
-            assertEquals(result3.missive.numbers, [5.0, 3.0, 2.0], "Should get correct numbers");
-            assertEquals(result3.missive.sum, 10.0, "Should calculate correct sum");
-            assertEquals(result3.missive.average, 10.0/3, "Should calculate correct average");
-            assertEquals(result3.missive.product, 30.0, "Should calculate correct product");
+            
+            // Parse missive JSON string to object
+            const missive3 = JSON.parse(result3.missive);
+            assertEquals(missive3.numbers, [5.0, 3.0, 2.0], "Should get correct numbers");
+            assertEquals(missive3.sum, 10.0, "Should calculate correct sum");
+            assertEquals(missive3.average, 10.0/3, "Should calculate correct average");
+            assertEquals(missive3.product, 30.0, "Should calculate correct product");
 
             logTestPass(testName);
             return { result1, result2, result3, testName };
@@ -150,15 +159,18 @@ missive({"x_points": len(x), "datasets": 3, "figures": 2, "mean_y1": mean_y1, "s
             assert(!result.error, "Data visualization workflow should not have errors");
             assert(result.figures, "Should have figures");
             assert(result.figures.length >= 2, "Should have at least 2 figures");
-            assertEquals(result.missive.x_points, 50, "Should have correct x points");
-            assertEquals(result.missive.datasets, 3, "Should have 3 datasets");
-            assertEquals(result.missive.figures, 2, "Should have 2 figures");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            assertEquals(missiveData.x_points, 50, "Should have correct x points");
+            assertEquals(missiveData.datasets, 3, "Should have 3 datasets");
+            assertEquals(missiveData.figures, 2, "Should have 2 figures");
 
             // Verify statistical calculations are reasonable
-            assert(Math.abs(result.missive.mean_y1) < 0.1, "Sin mean should be close to 0 over symmetric range");
-            assert(result.missive.std_y1 > 0.5, "Sin std should be reasonable");
-            assert(result.missive.max_y1 <= 1.0, "Sin max should be <= 1");
-            assert(result.missive.min_y1 >= -1.0, "Sin min should be >= -1");
+            assert(Math.abs(missiveData.mean_y1) < 0.1, "Sin mean should be close to 0 over symmetric range");
+            assert(missiveData.std_y1 > 0.5, "Sin std should be reasonable");
+            assert(missiveData.max_y1 <= 1.0, "Sin max should be <= 1");
+            assert(missiveData.min_y1 >= -1.0, "Sin min should be >= -1");
 
             logTestPass(testName);
             return { result, testName };
@@ -220,12 +232,15 @@ missive({"processor_name": processor.name, "data_count": stats['count'], "data_s
             );
 
             assert(!result.error, "Import workflow should not have errors");
-            assertEquals(result.missive.processor_name, "Test Processor", "Should get correct processor name");
-            assertEquals(result.missive.data_count, 3, "Should have correct data count");
-            assertEquals(result.missive.data_sum, 60, "Should have correct data sum");
-            assertEquals(result.missive.data_mean, 20.0, "Should have correct data mean");
-            assertEquals(result.missive.original_list, [1, 2, 3, 4, 5], "Should have correct original list");
-            assertEquals(result.missive.processed_list, [2, 4, 6, 8, 10], "Should have correct processed list");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            assertEquals(missiveData.processor_name, "Test Processor", "Should get correct processor name");
+            assertEquals(missiveData.data_count, 3, "Should have correct data count");
+            assertEquals(missiveData.data_sum, 60, "Should have correct data sum");
+            assertEquals(missiveData.data_mean, 20.0, "Should have correct data mean");
+            assertEquals(missiveData.original_list, [1, 2, 3, 4, 5], "Should have correct original list");
+            assertEquals(missiveData.processed_list, [2, 4, 6, 8, 10], "Should have correct processed list");
 
             logTestPass(testName);
             return { result, testName };
@@ -258,8 +273,13 @@ missive({"namespace_var": namespace_var})`,
 
             assert(!globalResult.error, "Global execution should not have errors");
             assert(!namespaceResult.error, "Namespace execution should not have errors");
-            assertEquals(globalResult.missive.global_var, "I am global", "Global variable should be set");
-            assertEquals(namespaceResult.missive.namespace_var, "I am in namespace", "Namespace variable should be set");
+            
+            // Parse missive JSON strings to objects
+            const globalMissive = JSON.parse(globalResult.missive);
+            const namespaceMissive = JSON.parse(namespaceResult.missive);
+            
+            assertEquals(globalMissive.global_var, "I am global", "Global variable should be set");
+            assertEquals(namespaceMissive.namespace_var, "I am in namespace", "Namespace variable should be set");
 
             // Test 2: Back to global to verify persistence
             const globalResult2 = await manager.executeAsync(
@@ -269,7 +289,10 @@ missive({"global_var_persistent": global_var})`
             );
 
             assert(!globalResult2.error, "Second global execution should not have errors");
-            assertEquals(globalResult2.missive.global_var_persistent, "I am global", "Global variable should persist");
+            
+            // Parse missive JSON string to object
+            const globalMissive2 = JSON.parse(globalResult2.missive);
+            assertEquals(globalMissive2.global_var_persistent, "I am global", "Global variable should persist");
 
             logTestPass(testName);
             return { globalResult, namespaceResult, globalResult2, testName };
@@ -328,8 +351,11 @@ missive({"subplot_count": subplot_count, "total_data_points": total_data_points}
 
             assert(!result.error, "Advanced matplotlib should not have errors");
             assert(result.figures && result.figures.length >= 1, "Should have at least one figure");
-            assertEquals(result.missive.subplot_count, 4, "Should have 4 subplots");
-            assert(result.missive.total_data_points > 300, "Should have substantial data points");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            assertEquals(missiveData.subplot_count, 4, "Should have 4 subplots");
+            assert(missiveData.total_data_points > 300, "Should have substantial data points");
 
             logTestPass(testName);
             return { result, testName };

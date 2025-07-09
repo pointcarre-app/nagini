@@ -42,9 +42,13 @@ missive({"namespace_custom_var": custom_var, "namespace_custom_name": custom_nam
                 namespace
             );
             assert(result.missive, "Result should have missive property");
-            assertEquals(result.missive.namespace_custom_var, 42, "Namespace custom_var should be accessible");
-            assertEquals(result.missive.namespace_custom_name, "test_namespace", "Namespace custom_name should be accessible");
-            assertEquals(result.missive.namespace_result, 84, "Namespace computation should work");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            
+            assertEquals(missiveData.namespace_custom_var, 42, "Namespace custom_var should be accessible");
+            assertEquals(missiveData.namespace_custom_name, "test_namespace", "Namespace custom_name should be accessible");
+            assertEquals(missiveData.namespace_result, 84, "Namespace computation should work");
             logTestPass(testName);
             return { result, testName };
         } catch (error) {
@@ -74,13 +78,18 @@ namespace_specific = "only_in_B"
 missive({"isolation_var": isolation_var, "shared_name": shared_name, "namespace_specific": namespace_specific})`,
                 namespaceB
             );
+            
+            // Parse missive JSON strings to objects
+            const missiveA = JSON.parse(resultA.missive);
+            const missiveB = JSON.parse(resultB.missive);
+            
             // Verify independence
-            assertEquals(resultA.missive.isolation_var, "A_modified", "Namespace A isolation_var should be correct");
-            assertEquals(resultB.missive.isolation_var, "B_modified", "Namespace B isolation_var should be correct");
-            assertEquals(resultA.missive.shared_name, "namespace_A", "Namespace A shared_name should be correct");
-            assertEquals(resultB.missive.shared_name, "namespace_B", "Namespace B shared_name should be correct");
-            assertEquals(resultA.missive.namespace_specific, "only_in_A", "Namespace A specific var should be correct");
-            assertEquals(resultB.missive.namespace_specific, "only_in_B", "Namespace B specific var should be correct");
+            assertEquals(missiveA.isolation_var, "A_modified", "Namespace A isolation_var should be correct");
+            assertEquals(missiveB.isolation_var, "B_modified", "Namespace B isolation_var should be correct");
+            assertEquals(missiveA.shared_name, "namespace_A", "Namespace A shared_name should be correct");
+            assertEquals(missiveB.shared_name, "namespace_B", "Namespace B shared_name should be correct");
+            assertEquals(missiveA.namespace_specific, "only_in_A", "Namespace A specific var should be correct");
+            assertEquals(missiveB.namespace_specific, "only_in_B", "Namespace B specific var should be correct");
             logTestPass(testName);
             return { resultA, resultB, testName };
         } catch (error) {
@@ -161,11 +170,15 @@ missive({"isolation_var": isolation_var, "shared_name": shared_name, "namespace_
         }
     }
     static async test12PyodideInitPath(manager) {
-        const testName = "pyodideInitPath";
+        const testName = "executionHistory (updated from pyodideInitPath)";
         logTestStart("PyodideManager", testName);
         try {
-            assert(typeof manager.pyodideInitPath === 'string', "PyodideInitPath should be a string");
-            assertContains(manager.pyodideInitPath, ".py", "PyodideInitPath should contain .py extension");
+            assert(Array.isArray(manager.executionHistory), "ExecutionHistory should be an array");
+            assert(manager.executionHistory.length > 0, "ExecutionHistory should have entries after running tests");
+            // Check that the latest entry has the expected structure
+            const latestEntry = manager.executionHistory[manager.executionHistory.length - 1];
+            assert(latestEntry.hasOwnProperty('filename'), "Latest entry should have filename");
+            assert(latestEntry.hasOwnProperty('timestamp'), "Latest entry should have timestamp");
             logTestPass(testName);
             return { testName };
         } catch (error) {
@@ -198,7 +211,11 @@ missive({"input_system": "ready"})`
             );
             assert(!result.error, "Input handling should not have errors");
             assertContains(result.stdout, "Input handling system ready", "Should show ready message");
-            assert(result.missive.input_system === "ready", "Should have missive confirmation");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            assert(missiveData.input_system === "ready", "Should have missive confirmation");
+            
             logTestPass(testName);
             return { result, testName };
         } catch (error) {
@@ -233,8 +250,12 @@ missive({"plot_type": "sine_wave", "x_points": len(x)})`
             assert(result.figures.length > 0, "Should have at least one figure");
             assert(typeof result.figures[0] === 'string', "Figure should be a string (base64)");
             assert(result.figures[0].length > 1000, "Figure base64 should be substantial");
-            assertEquals(result.missive.plot_type, "sine_wave", "Should have correct missive data");
-            assertEquals(result.missive.x_points, 100, "Should have correct x_points");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            assertEquals(missiveData.plot_type, "sine_wave", "Should have correct missive data");
+            assertEquals(missiveData.x_points, 100, "Should have correct x_points");
+            
             logTestPass(testName);
             return { result, testName };
         } catch (error) {

@@ -45,7 +45,7 @@ export const Nagini = {
       } else if (backend.toLowerCase() === 'brython') {
         // Brython doesn't require bundled workers - use as-is
         const { BrythonManager } = await import('./brython/manager/manager.js');
-        return new BrythonManager(packages, filesToLoad, workerPath, options);
+        return new BrythonManager(packages, filesToLoad, '', workerPath, options);
       } else {
         throw new Error(`🔧 [Nagini] ${backend} backend not yet implemented`);
       }

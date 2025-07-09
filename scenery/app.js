@@ -13,15 +13,15 @@ import './interactive-functions.js';
 // Local files to avoid CORS issues while checking via static access the "for" scenery tests
 const filesToLoad = [
     {
-      url: "tests/teachers__init__mock.py",
+      url: "http://127.0.0.1:8010/scenery/tests/teachers__init__mock.py",
       path: "teachers/__init__.py"
     },
     {
-      url: "tests/teachers_generator_mock.py",
+      url: "http://127.0.0.1:8010/scenery/tests/teachers_generator_mock.py",
       path: "teachers/generator.py"
     },
     {
-      url: "tests/teachers_maths_mock.py",
+      url: "http://127.0.0.1:8010/scenery/tests/teachers_maths_mock.py",
       path: "teachers/maths.py"
     }
 ];
@@ -88,29 +88,34 @@ async function runDemo() {
 
         console.log("Starting Nagini Test Suite\n");
 
-        // Test parameters - using full URLs for cross-origin blob worker compatibility
+        // Test parameters for different backends
         const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy"];
-        const pyodideInitPath = "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py";
-        const workerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
+        const pyodideWorkerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
+        const brythonOptions = {
+            brythonJsPath: "/src/brython/lib/brython.js",
+            brythonStdlibPath: "/src/brython/lib/brython_stdlib.js"
+        };
 
-        // Nagini Tests
-        console.log("Nagini Tests");
+        // ==============================================
+        // PYODIDE BACKEND TESTS
+        // ==============================================
+        console.log("Pyodide Backend Tests");
         console.log("=" .repeat(50));
 
-        console.log("1️⃣ Nagini.createManager()");
-        const managerResult = await NaginiTests.test1CreateManager(
-            'pyodide', packages, filesToLoad, pyodideInitPath, workerPath
+        console.log("1️⃣ Nagini.createManager() - Pyodide");
+        const pyodideManagerResult = await NaginiTests.test1CreateManager(
+            'pyodide', packages, filesToLoad, pyodideWorkerPath
         );
-        manager = managerResult.manager;
+        manager = pyodideManagerResult.manager;
         // Make manager globally accessible for interactive functions
         window.manager = manager;
         window.updateTestStatus('status-nagini-1', 'pass');
 
-        console.log("2️⃣ Nagini.waitForReady()");
+        console.log("2️⃣ Nagini.waitForReady() - Pyodide");
         await NaginiTests.test2WaitForReady(manager);
         window.updateTestStatus('status-nagini-2', 'pass');
 
-        console.log("3️⃣ Nagini.executeFromUrl()");
+        console.log("3️⃣ Nagini.executeFromUrl() - Pyodide");
         await NaginiTests.test3ExecuteFromUrl(manager, "./tests/sympy_test.py");
         window.updateTestStatus('status-nagini-3', 'pass');
 
@@ -121,6 +126,10 @@ async function runDemo() {
         console.log("5️⃣ Nagini.isBackendSupported()");
         await NaginiTests.test5IsBackendSupported();
         window.updateTestStatus('status-nagini-5', 'pass');
+
+        console.log("6️⃣ Backend-specific features - Pyodide");
+        await NaginiTests.test6BackendSpecificFeatures(manager, 'pyodide');
+        window.updateTestStatus('status-nagini-6', 'pass');
 
         // PyodideManager Tests
         console.log("\nPyodideManager Tests");
@@ -218,7 +227,42 @@ async function runDemo() {
         await PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager);
         window.updateTestStatus('status-integration-5', 'pass');
 
-        // ValidationUtils Tests
+        // ==============================================
+        // BRYTHON BACKEND TESTS
+        // ==============================================
+        console.log("\nBrython Backend Tests");
+        console.log("=" .repeat(50));
+
+        console.log("1️⃣ Nagini.createManager() - Brython");
+        const brythonManagerResult = await NaginiTests.test1CreateManager(
+            'brython', [], [], '', brythonOptions
+        );
+        const brythonManager = brythonManagerResult.manager;
+        if (window.updateTestStatus) {
+            window.updateTestStatus('status-brython-nagini-1', 'pass');
+        }
+
+        console.log("2️⃣ Nagini.waitForReady() - Brython");
+        await NaginiTests.test2WaitForReady(brythonManager);
+        if (window.updateTestStatus) {
+            window.updateTestStatus('status-brython-nagini-2', 'pass');
+        }
+
+        console.log("3️⃣ Backend-specific features - Brython");
+        await NaginiTests.test6BackendSpecificFeatures(brythonManager, 'brython');
+        if (window.updateTestStatus) {
+            window.updateTestStatus('status-brython-nagini-3', 'pass');
+        }
+
+        console.log("4️⃣ BrythonManager.executeAsync()");
+        await BrythonManagerTests.test1SimpleExecution(brythonManager);
+        if (window.updateTestStatus) {
+            window.updateTestStatus('status-brython-manager-1', 'pass');
+        }
+
+        // ==============================================
+        // VALIDATION AND UTILITIES TESTS
+        // ==============================================
         console.log("\nValidationUtils Tests");
         console.log("=" .repeat(50));
 
@@ -253,16 +297,6 @@ async function runDemo() {
         console.log("3️⃣ string manipulation utilities");
         await UtilitiesTests.test3StringManipulationUtilities();
         window.updateTestStatus('status-utilities-3', 'pass');
-
-        // BrythonManager Tests
-        console.log("\nBrythonManager Tests");
-        console.log("=".repeat(50));
-
-        console.log("1️⃣ simple executeAsync()");
-        await BrythonManagerTests.test1SimpleExecution();
-        if (window.updateTestStatus) {
-          window.updateTestStatus('status-brython-manager-1', 'pass');
-        }
 
         console.log("\nALL TESTS PASSED!");
         console.log("=" .repeat(50));

@@ -81,7 +81,9 @@ export class ValidationUtilsTests {
         try {
             // Test valid backends
             ValidationUtils.validateBackend('pyodide', 'TestComponent');
+            ValidationUtils.validateBackend('brython', 'TestComponent');
             ValidationUtils.validateBackend('PYODIDE', 'TestComponent'); // Should work with uppercase
+            ValidationUtils.validateBackend('BRYTHON', 'TestComponent'); // Should work with uppercase
 
             // Test invalid backend - should throw
             let errorThrown = false;

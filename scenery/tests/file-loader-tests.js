@@ -46,10 +46,13 @@ missive({
             assert(!result.error, "Import should not have errors");
             assertContains(result.stdout, "MathsObject imported successfully", "Should import MathsObject");
             assert(result.missive, "Should have missive data");
-            assert(result.missive.MathsObject_dir, "Should have MathsObject_dir in missive");
-            assert(Array.isArray(result.missive.MathsObject_dir), "MathsObject_dir should be an array");
-            assert(result.missive.MathsObject_dir.length > 0, "MathsObject_dir should not be empty");
-            assertContains(result.missive.MathsObject_type, "class", "MathsObject should be a class");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            assert(missiveData.MathsObject_dir, "Should have MathsObject_dir in missive");
+            assert(Array.isArray(missiveData.MathsObject_dir), "MathsObject_dir should be an array");
+            assert(missiveData.MathsObject_dir.length > 0, "MathsObject_dir should not be empty");
+            assertContains(missiveData.MathsObject_type, "class", "MathsObject should be a class");
 
             logTestPass(testName);
             return { result, testName };
@@ -138,10 +141,13 @@ missive({
 `);
 
             assert(!result.error, "Python execution should work even with import errors");
-            assert(!result.missive.import_success, "Import should fail for non-existent module");
-            assert(result.missive.error_occurred, "Error should be caught");
-            assert(result.missive.error_message, "Error message should be captured");
-            assertContains(result.missive.error_message, "No module named", "Should contain import error message");
+            
+            // Parse missive JSON string to object
+            const missiveData = JSON.parse(result.missive);
+            assert(!missiveData.import_success, "Import should fail for non-existent module");
+            assert(missiveData.error_occurred, "Error should be caught");
+            assert(missiveData.error_message, "Error message should be captured");
+            assertContains(missiveData.error_message, "No module named", "Should contain import error message");
 
             logTestPass(testName);
             return { testName };

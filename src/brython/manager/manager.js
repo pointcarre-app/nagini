@@ -14,7 +14,13 @@ class BrythonManager {
 
     // Lightweight validation (we ignore values but want parity)
     try { ValidationUtils.validateArray(packages, 'packages', 'BrythonManager'); } catch (_) {}
+    try { ValidationUtils.validateArray(filesToLoad, 'filesToLoad', 'BrythonManager'); } catch (_) {}
+    
     this.packages = packages;
+    this.filesToLoad = filesToLoad;  // Store filesToLoad for API parity
+    
+    console.log('🐢 [BrythonManager] filesToLoad set to:', this.filesToLoad);
+    console.log('🐢 [BrythonManager] packages set to:', this.packages);
 
     this.executionHistory = [];
     this.isReady = false;
