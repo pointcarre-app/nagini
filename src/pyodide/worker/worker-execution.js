@@ -115,11 +115,8 @@ export function captureOutputs(pyodide, isErrorCase = false) {
     if (!isErrorCase) {
       const missiveJson = pyodide.runPython("get_missive()");
       if (missiveJson) {
-        try {
-          missive = JSON.parse(missiveJson);
-        } catch (e) {
-          console.warn(PYODIDE_WORKER_CONFIG.MESSAGES.INVALID_MISSIVE, e.message);
-        }
+        // Keep as string - get_missive() already returns JSON string via json.dumps()
+        missive = missiveJson;
       }
 
       // Capture matplotlib figures
