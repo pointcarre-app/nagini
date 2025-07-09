@@ -12,14 +12,12 @@
  *
  * @param {string[]} packages - MUST be array of Python package names
  * @param {Array<FileToLoad>} filesToLoad - MUST be array of file objects
- * @param {string} pyodideInitPath - MUST be string path to pyodide_init.py
  * @param {string} workerPath - MUST be string path to worker file
  *
  * USAGE EXAMPLE:
  * const manager = new PyodideManager(
  *   ['numpy', 'pandas'],           // Array of packages
  *   [],                           // Array filesToLoad
- *   '../pyodide_init.py',      // String init path
  *   './pyodide-worker.js' // String worker path
  * );
  *
@@ -40,21 +38,15 @@ class PyodideManager {
    *
    * @param {string[]} packages - Array of Python package names to install
    * @param {Array<FileToLoad>} filesToLoad - Array of file objects to load into filesystem
-   * @param {string} pyodideInitPath - Path to the pyodide_init.py file
    * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
    * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
-  constructor(packages, filesToLoad, pyodideInitPath, workerPath) {
+  constructor(packages, filesToLoad, workerPath) {
     console.log("🎛️ [PyodideManager] Constructor called");
 
     // Strict type validation using ValidationUtils
     ValidationUtils.validatePackages(packages, 'PyodideManager');
     ValidationUtils.validateFilesToLoad(filesToLoad, 'PyodideManager');
-    ValidationUtils.validateString(
-      pyodideInitPath,
-      'pyodideInitPath',
-      'PyodideManager'
-    );
     ValidationUtils.validateString(workerPath, 'workerPath', 'PyodideManager');
 
     // Enforce bundled worker requirement
@@ -76,9 +68,6 @@ class PyodideManager {
 
     /** @type {Array<FileToLoad>} Files to load into Pyodide filesystem */
     this.filesToLoad = filesToLoad;
-
-    /** @type {string} Path to the pyodide_init.py file */
-    this.pyodideInitPath = pyodideInitPath;
 
     /** @type {string} Path to the bundled web worker file */
     this.workerPath = workerPath;
@@ -144,7 +133,6 @@ class PyodideManager {
         type: "init",
         packages: this.packages,
         filesToLoad: this.filesToLoad,
-        pyodideInitPath: this.pyodideInitPath,
       });
       
       console.log(`🏭 [PyodideManager] Blob worker created successfully`);

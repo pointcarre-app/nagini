@@ -11,6 +11,9 @@ module.exports = {
   target: 'webworker', // Optimize for web worker environment
   resolve: {
     extensions: ['.js'],
+    alias: {
+      '@python': path.resolve(__dirname, '../python')
+    }
   },
   module: {
     rules: [
@@ -29,6 +32,10 @@ module.exports = {
             ]
           }
         }
+      },
+      {
+        test: /\.py$/,
+        type: 'asset/source', // Load Python files as raw text
       }
     ]
   },

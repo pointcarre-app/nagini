@@ -8,6 +8,13 @@ import { PYODIDE_WORKER_CONFIG } from './worker-config.js';
 import { handleExecute, transformCodeForExecution, captureOutputs } from './worker-execution.js';
 import { setupInputHandling, handleInputResponse } from './worker-input.js';
 import { handleFSOperation, executeFS, loadPackages } from './worker-fs.js';
+import { PyodideFileLoader } from '../file-loader/file-loader.js';
+
+// Import Python modules as bundled strings
+import captureSystemPy from '@python/capture_system.py';
+import codeTransformationPy from '@python/code_transformation.py';
+import pyodideUtilitiesPy from '@python/pyodide_utilities.py';
+import pyodideInitPy from '@python/pyodide_init.py';
 
 /**
  * Post error message to main thread
@@ -101,7 +108,7 @@ async function handleMessage(e, workerState) {
 
 /**
  * Handle Pyodide initialization
- * Loads Pyodide runtime, initialization script, and packages
+ * Loads Pyodide runtime, bundled Python modules, and packages
  *
  * @param {InitMessage} data - Initialization message data
  * @param {WorkerState} workerState - Current worker state object
@@ -113,55 +120,64 @@ async function handleInit(data, workerState) {
     return;
   }
 
-  const { packages, pyodideInitPath } = data;
+  const { packages, filesToLoad } = data;
+
+  console.log("🔧 [Worker] handleInit called with data:", {
+    packages: packages ? packages.length : 0,
+    filesToLoad: filesToLoad ? filesToLoad.length : 0
+  });
+
+  console.log("🔧 [Worker] filesToLoad details:", filesToLoad);
 
   try {
     // Load Pyodide runtime
     importScripts(`${PYODIDE_WORKER_CONFIG.PYODIDE_CDN}pyodide.js`);
     workerState.pyodide = await loadPyodide({ indexURL: PYODIDE_WORKER_CONFIG.PYODIDE_CDN });
 
-    // Compute base URL from pyodideInitPath
-    // If pyodideInitPath is '/src/pyodide/python/pyodide_init.py', base should be '/src/pyodide/python/'
-    const pathParts = pyodideInitPath.split('/');
-    pathParts.pop(); // Remove filename
-    const baseUrl = pathParts.join('/') + '/';
-    
-    console.log(`🐍 Using base URL for Python modules: ${baseUrl}`);
+    console.log("🐍 Using bundled Python modules");
 
-    // Load Python module dependencies first
+    // Load bundled Python modules directly (no HTTP fetching needed!)
     const pythonModules = [
-      'capture_system.py',
-      'code_transformation.py', 
-      'pyodide_utilities.py'
+      { name: 'capture_system.py', content: captureSystemPy },
+      { name: 'code_transformation.py', content: codeTransformationPy },
+      { name: 'pyodide_utilities.py', content: pyodideUtilitiesPy }
     ];
 
-    for (const moduleName of pythonModules) {
+    for (const module of pythonModules) {
       try {
-        const modulePath = baseUrl + moduleName;
-        console.log(`🐍 Attempting to fetch: ${modulePath}`);
-        const moduleResponse = await fetch(modulePath);
-        if (moduleResponse.ok) {
-          const moduleContent = await moduleResponse.text();
-          workerState.pyodide.FS.writeFile(moduleName, moduleContent);
-          // Execute the module so it can be imported
-          workerState.pyodide.runPython(moduleContent);
-          console.log(`🐍 Loaded and executed Python module: ${moduleName}`);
-        } else {
-          console.warn(`⚠️ Failed to fetch Python module ${modulePath}: ${moduleResponse.status} ${moduleResponse.statusText}`);
-        }
+        // Write to filesystem for potential imports
+        workerState.pyodide.FS.writeFile(module.name, module.content);
+        // Execute the module so it can be imported
+        workerState.pyodide.runPython(module.content);
+        console.log(`🐍 Loaded and executed bundled Python module: ${module.name}`);
       } catch (error) {
-        console.warn(`⚠️ Could not load Python module ${moduleName}:`, error.message);
+        console.warn(`⚠️ Could not load bundled Python module ${module.name}:`, error.message);
       }
     }
 
-    // Load main Python initialization script
-    const response = await fetch(pyodideInitPath);
-    if (!response.ok) throw new Error(`${PYODIDE_WORKER_CONFIG.MESSAGES.FETCH_FAILED} ${pyodideInitPath}`);
+    // Load main Python initialization script from bundle
+    console.log("🐍 Loading bundled pyodide_init.py");
+    workerState.pyodide.runPython(pyodideInitPy);
 
-    workerState.pyodide.runPython(await response.text());
-
-    // Set up input handling system similar to the other repo
+    // Set up input handling system
     await setupInputHandling(workerState.pyodide);
+
+    // Load custom files into filesystem if provided
+    if (filesToLoad && filesToLoad.length > 0) {
+      console.log(`📦 [Worker] Loading ${filesToLoad.length} custom files into filesystem`);
+      console.log(`📦 [Worker] Files to load:`, filesToLoad);
+      
+      try {
+        const fileLoader = new PyodideFileLoader(filesToLoad);
+        await fileLoader.loadFiles(workerState.pyodide);
+        console.log(`📦 [Worker] Successfully loaded ${filesToLoad.length} custom files`);
+      } catch (error) {
+        console.error(`📦 [Worker] Failed to load custom files:`, error);
+        throw error;
+      }
+    } else {
+      console.log(`📦 [Worker] No custom files to load (filesToLoad: ${filesToLoad})`);
+    }
 
     // Load packages if provided
     if (packages?.length > 0) await loadPackages(packages, workerState);
@@ -183,22 +199,6 @@ async function handleInit(data, workerState) {
   }
 }
 
-// setupInputHandling now imported from input module
-
-// handleExecute now imported from execution module
-
-// handleInputResponse now imported from input module
-
-// handleFSOperation now imported from filesystem module
-
-// loadPackages now imported from filesystem module
-
-// captureOutputs now imported from execution module
-
-// executeFS now imported from filesystem module
-
-// transformCodeForExecution now imported from execution module
-
 export { handleMessage, handleInit, handleExecute, handleFSOperation, handleInputResponse, setupInputHandling };
 
 /**
@@ -212,7 +212,6 @@ export { handleMessage, handleInit, handleExecute, handleFSOperation, handleInpu
  * @typedef {Object} InitMessage
  * @property {'init'} type - Message type
  * @property {string[]} packages - Array of package names to install
- * @property {string} pyodideInitPath - Path to Python initialization script
  * @property {Array<FileToLoad>} filesToLoad - Files to load into filesystem
  */
 

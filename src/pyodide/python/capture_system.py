@@ -7,6 +7,7 @@
 import json
 import io
 import sys
+import builtins
 
 # Store original stdout/stderr so we can restore them if needed
 _original_stdout = sys.stdout
@@ -16,9 +17,11 @@ _original_stderr = sys.stderr
 _stdout_buffer = io.StringIO()
 _stderr_buffer = io.StringIO()
 
-# Storage for missive system
-current_missive: dict | None = None
-missive_already_called: bool = False
+# Storage for missive system - using builtins to ensure global availability
+if not hasattr(builtins, "_nagini_current_missive"):
+    builtins._nagini_current_missive = None
+if not hasattr(builtins, "_nagini_missive_already_called"):
+    builtins._nagini_missive_already_called = False
 
 
 class CaptureStream:
@@ -45,7 +48,6 @@ _stderr_capturer = CaptureStream(_stderr_buffer)
 
 def reset_captures() -> None:
     """Reset capture buffers and activate capturing by replacing sys.stdout/stderr"""
-    global current_missive, missive_already_called
 
     # Clear buffers
     _stdout_buffer.truncate(0)
@@ -53,9 +55,9 @@ def reset_captures() -> None:
     _stderr_buffer.truncate(0)
     _stderr_buffer.seek(0)
 
-    # Clear missive data
-    current_missive = None
-    missive_already_called = False
+    # Clear missive data using builtins for global access
+    builtins._nagini_current_missive = None
+    builtins._nagini_missive_already_called = False
 
     # Close any existing matplotlib figures (if matplotlib is available)
     try:
@@ -103,9 +105,9 @@ def get_missive() -> str | None:
         If user code did: missive({"result": 42, "status": "success"})
         This would return: '{"result": 42, "status": "success"}'
     """
-    if current_missive is None:
+    if builtins._nagini_current_missive is None:
         return None  # No missive was stored
-    return json.dumps(current_missive)  # Convert Python dict to JSON string
+    return json.dumps(builtins._nagini_current_missive)  # Convert Python dict to JSON string
 
 
 def get_figures() -> list:
@@ -144,12 +146,39 @@ def get_figures() -> list:
 
 def missive(data):
     """Send structured data back to JavaScript (once per execution)"""
-    global current_missive, missive_already_called
-    if missive_already_called:
+    if builtins._nagini_missive_already_called:
         raise ValueError(
             "missive() can only be called once per execution. "
             "If you need to send multiple pieces of data, "
             "put them all in one dictionary."
         )
-    current_missive = data
-    missive_already_called = True
+    builtins._nagini_current_missive = data
+    builtins._nagini_missive_already_called = True
+    print(f"[DEBUG] missive() called with data: {data}")
+    print(f"[DEBUG] current_missive set to: {builtins._nagini_current_missive}")
+
+
+# Make the missive function available globally
+builtins.missive = missive
+
+# Legacy global variables for backward compatibility
+current_missive = builtins._nagini_current_missive
+missive_already_called = builtins._nagini_missive_already_called
+
+
+def debug_missive_system():
+    """Debug function to check the current state of the missive system"""
+    print(f"[DEBUG] _nagini_current_missive: {builtins._nagini_current_missive}")
+    print(f"[DEBUG] _nagini_missive_already_called: {builtins._nagini_missive_already_called}")
+    print(f"[DEBUG] get_missive() returns: {get_missive()}")
+    print(f"[DEBUG] missive function available: {hasattr(builtins, 'missive')}")
+    return {
+        "current_missive": builtins._nagini_current_missive,
+        "missive_already_called": builtins._nagini_missive_already_called,
+        "get_missive_result": get_missive(),
+        "missive_function_available": hasattr(builtins, "missive"),
+    }
+
+
+# Make debug function available globally too
+builtins.debug_missive_system = debug_missive_system

@@ -17,12 +17,11 @@ export const Nagini = {
      * @param {Array} filesToLoad - Custom files to load into filesystem
      *                              Array of objects with {url, path} properties
      *                              Supports both local paths and remote URLs (S3, etc.)
-     * @param {string} initPath - Path to the backend initialization file
      * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
      * @param {Object} [options={}] - Backend-specific options (e.g. brythonJsPath for Brython)
      * @returns {Manager} New manager instance
      */
-    createManager: async (backend = 'pyodide', packages, filesToLoad, initPath, workerPath, options = {}) => {
+    createManager: async (backend = 'pyodide', packages, filesToLoad, workerPath, options = {}) => {
       // Validate backend parameter
       ValidationUtils.validateBackend(backend, 'Nagini');
 
@@ -42,11 +41,11 @@ export const Nagini = {
         }
         
         const { PyodideManager } = await import('./pyodide/manager/manager.js');
-        return new PyodideManager(packages, filesToLoad, initPath, finalWorkerPath);
+        return new PyodideManager(packages, filesToLoad, finalWorkerPath);
       } else if (backend.toLowerCase() === 'brython') {
         // Brython doesn't require bundled workers - use as-is
         const { BrythonManager } = await import('./brython/manager/manager.js');
-        return new BrythonManager(packages, filesToLoad, initPath, workerPath, options);
+        return new BrythonManager(packages, filesToLoad, workerPath, options);
       } else {
         throw new Error(`🔧 [Nagini] ${backend} backend not yet implemented`);
       }
