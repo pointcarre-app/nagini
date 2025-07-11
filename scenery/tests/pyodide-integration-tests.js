@@ -395,4 +395,51 @@ missive({"version": version_str})`
             throw error;
         }
     }
-} 
+
+    static async testAntlr4AndSympyInteraction(manager) {
+        const testName = "antlr4 and sympy interaction";
+        logTestStart("PyodideIntegration", testName);
+
+        try {
+            const result = await manager.executeAsync(
+                "antlr4_sympy_test.py",
+                `from importlib.metadata import version
+from sympy import parse_expr
+
+# Check antlr4 version
+antlr4_version = version("antlr4-python3-runtime")
+print(f"ANTLR4 is available, version: {antlr4_version}")
+
+# Parse a sympy expression
+expr_str = "x**2 + 2*x + 1"
+parsed_expr = parse_expr(expr_str)
+print(f"Parsed expression: {parsed_expr}")
+
+# Test that it's a sympy object, for example by getting its args
+expr_args = parsed_expr.args
+print(f"Expression args: {expr_args}")
+
+
+missive({
+    "antlr4_version": antlr4_version,
+    "parsed_expression": str(parsed_expr),
+    "expression_args_count": len(expr_args)
+})`
+            );
+
+            assert(!result.error, "Antlr4 and Sympy test should not have errors");
+            assert(result.missive, "Result should have missive property");
+
+            const missive = JSON.parse(result.missive);
+            assert(missive.antlr4_version, "Missive should contain antlr4 version information");
+            assertEquals(missive.parsed_expression, "x**2 + 2*x + 1", "Parsed expression should match");
+            console.log(`Successfully verified antlr4 version: ${missive.antlr4_version} and sympy parsing.`);
+
+            logTestPass(testName);
+            return { result, testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+}

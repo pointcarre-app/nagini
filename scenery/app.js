@@ -232,6 +232,10 @@ async function runDemo() {
         await PyodideIntegrationTests.testMicropipPackageInstallation(manager);
         window.updateTestStatus('status-integration-6', 'pass');
 
+        console.log("7️⃣ antlr4 and sympy interaction");
+        await PyodideIntegrationTests.testAntlr4AndSympyInteraction(manager);
+        window.updateTestStatus('status-integration-7', 'pass');
+
         // ==============================================
         // BRYTHON BACKEND TESTS
         // ==============================================
