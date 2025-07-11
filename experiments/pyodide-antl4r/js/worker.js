@@ -11,6 +11,7 @@ async function loadPyodideAndPackages() {
             import micropip
             await micropip.install('antlr4-python3-runtime')
         `);
+        await pyodide.loadPackage("sympy")
         postMessage({
             type: 'ready',
             message: 'Pyodide loaded and antlr4-python3-runtime installed successfully!'
@@ -37,11 +38,20 @@ self.onmessage = async function(e) {
                 if (!pyodide) {
                     throw new Error('Pyodide not loaded');
                 }
-                
+
+                let capturedOutput = '';
+                pyodide.setStdout({
+                    batched: (str) => {
+                        capturedOutput += str + '\\n';
+                    }
+                });
+
                 const result = await pyodide.runPythonAsync(code);
+
+                pyodide.setStdout({}); // Reset stdout
                 postMessage({
                     type: 'result',
-                    result: result
+                    result: capturedOutput || result || 'Code executed successfully (no return value)'
                 });
                 break;
         }

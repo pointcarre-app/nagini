@@ -24,3 +24,9 @@ try:
 except Exception as e:
     print(f"Error with ANTLR4: {e}")
     str(e)
+
+
+from sympy import parse_expr
+
+expr = parse_expr("x**2 + 2*x + 1")
+print(expr)

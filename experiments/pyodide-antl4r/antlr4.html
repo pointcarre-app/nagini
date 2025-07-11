@@ -90,6 +90,15 @@
             text-align: center;
             margin: 20px 0;
         }
+
+        .output-container {
+            flex: 1;
+        }
+
+        .outputs-wrapper {
+            display: flex;
+            gap: 20px;
+        }
     </style>
   </head>
   <body>
@@ -100,11 +109,21 @@
 
       <div class="controls">
         <button id="testPackage" disabled>Test ANTLR4 Package</button>
-        <button id="runCustomCode" disabled>Run Custom Python Code</button>
+        <button id="runCustomCode" disabled>Run Sympy Parse Expr</button>
         <button id="clearOutput">Clear Output</button>
       </div>
 
-      <div id="output" class="output">Waiting for worker initialization...</div>
+      <div class="outputs-wrapper">
+        <div class="output-container">
+          <h2>Console Output</h2>
+          <div id="output" class="output">Waiting for worker initialization...</div>
+        </div>
+
+        <div class="output-container">
+          <h2>Python Script Output</h2>
+          <div id="python-output" class="output"></div>
+        </div>
+      </div>
     </div>
 
     <script src="js/main.js" defer></script>

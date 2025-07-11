@@ -1,6 +1,7 @@
 // DOM elements
 const statusDiv = document.getElementById('status');
 const outputDiv = document.getElementById('output');
+const pythonOutputDiv = document.getElementById('python-output');
 const testPackageBtn = document.getElementById('testPackage');
 const runCustomCodeBtn = document.getElementById('runCustomCode');
 const clearOutputBtn = document.getElementById('clearOutput');
@@ -26,7 +27,7 @@ worker.onmessage = function(e) {
             break;
 
         case 'result':
-            outputDiv.textContent += '\\n' + (result || 'Code executed successfully (no return value)');
+            pythonOutputDiv.textContent += '\\n' + (result || 'Code executed successfully (no return value)');
             break;
 
         case 'error':
@@ -43,7 +44,7 @@ worker.postMessage({
 });
 
 async function runPythonFile(path, description) {
-    outputDiv.textContent += `\\n--- ${description} ---`;
+    pythonOutputDiv.textContent += `\\n--- ${description} ---`;
     try {
         const response = await fetch(path);
         if (!response.ok) {
@@ -62,9 +63,10 @@ testPackageBtn.addEventListener('click', () => {
 });
 
 runCustomCodeBtn.addEventListener('click', () => {
-    runPythonFile('python/custom_code.py', 'Running Custom Code');
+    runPythonFile('python/sympy_parse_expr.py', 'Testing Sympy Parse Expr');
 });
 
 clearOutputBtn.addEventListener('click', () => {
     outputDiv.textContent = 'Output cleared.';
+    pythonOutputDiv.textContent = '';
 }); 
