@@ -31,7 +31,10 @@ const workerState = {
   isInitialized: false,
 
   /** @type {Set<string>} Tracks loaded packages to prevent duplicate loading 📦 */
-  packagesLoaded: new Set()
+  packagesLoaded: new Set(),
+  
+  /** @type {Set<string>} Tracks loaded micropip packages to prevent duplicate loading 📦 */
+  micropipPackagesLoaded: new Set()
 };
 
 /**
@@ -60,6 +63,7 @@ self.onmessage = async function (e) {
  * @property {PyodideAPI|null} pyodide - Pyodide instance (null until initialized)
  * @property {boolean} isInitialized - Whether Pyodide is fully initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names for deduplication
+ * @property {Set<string>} micropipPackagesLoaded - Set of loaded micropip package names for deduplication
  */
 
 /**
@@ -69,6 +73,7 @@ self.onmessage = async function (e) {
  * @property {string} [code] - Python code to execute (execute messages)
  * @property {Object} [namespace] - Execution namespace (execute messages)
  * @property {string[]} [packages] - Python packages to install (init messages)
+ * @property {string[]} [micropipPackages] - Python micropip packages to install (init messages)
  * @property {string} [pyodideInitPath] - Path to initialization script (init messages)
  * @property {Array<FileToLoad>} [filesToLoad] - Files to load (init messages)
  * @property {string} [operation] - Filesystem operation type (fs_operation messages)

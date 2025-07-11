@@ -120,10 +120,11 @@ async function handleInit(data, workerState) {
     return;
   }
 
-  const { packages, filesToLoad } = data;
+  const { packages, micropipPackages, filesToLoad } = data;
 
   console.log("🔧 [Worker] handleInit called with data:", {
     packages: packages ? packages.length : 0,
+    micropipPackages: micropipPackages ? micropipPackages.length : 0,
     filesToLoad: filesToLoad ? filesToLoad.length : 0
   });
 
@@ -182,6 +183,25 @@ async function handleInit(data, workerState) {
     // Load packages if provided
     if (packages?.length > 0) await loadPackages(packages, workerState);
 
+    // Load micropip packages if provided
+    if (micropipPackages?.length > 0) {
+      const toLoad = micropipPackages.filter(pkg => !workerState.micropipPackagesLoaded.has(pkg));
+      const loaded = micropipPackages.filter(pkg => workerState.micropipPackagesLoaded.has(pkg));
+
+      if (loaded.length > 0) {
+        postInfo(`[Micropip] Skipping ${loaded.length} already installed packages: ${loaded.join(", ")}`);
+      }
+
+      if (toLoad.length > 0) {
+        postInfo(`[Micropip] Installing ${toLoad.length} packages: ${toLoad.join(", ")}...`);
+        await workerState.pyodide.loadPackage("micropip");
+        const micropip = workerState.pyodide.pyimport("micropip");
+        await micropip.install(toLoad);
+        toLoad.forEach(pkg => workerState.micropipPackagesLoaded.add(pkg));
+        postInfo("[Micropip] Packages installed successfully.");
+      }
+    }
+
     // Set up matplotlib if it was loaded
     try {
       workerState.pyodide.runPython("setup_matplotlib()");
@@ -206,12 +226,14 @@ export { handleMessage, handleInit, handleExecute, handleFSOperation, handleInpu
  * @property {PyodideAPI|null} pyodide - Pyodide instance
  * @property {boolean} isInitialized - Whether Pyodide is initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names
+ * @property {Set<string>} micropipPackagesLoaded - Set of loaded micropip package names
  */
 
 /**
  * @typedef {Object} InitMessage
  * @property {'init'} type - Message type
  * @property {string[]} packages - Array of package names to install
+ * @property {string[]} [micropipPackages] - Optional array of package names to install with micropip
  * @property {Array<FileToLoad>} filesToLoad - Files to load into filesystem
  */
 

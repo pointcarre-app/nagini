@@ -1166,7 +1166,7 @@ function handleInit(_x3, _x4) {
 }
 function _handleInit() {
   _handleInit = worker_handlers_asyncToGenerator(/*#__PURE__*/worker_handlers_regenerator().m(function _callee2(data, workerState) {
-    var packages, filesToLoad, pythonModules, _i, _pythonModules, module, fileLoader, _t, _t2;
+    var packages, micropipPackages, filesToLoad, pythonModules, _i, _pythonModules, module, fileLoader, toLoad, loaded, micropip, _t, _t2;
     return worker_handlers_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -1177,9 +1177,10 @@ function _handleInit() {
           worker_handlers_postError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.ALREADY_INITIALIZED);
           return _context2.a(2);
         case 1:
-          packages = data.packages, filesToLoad = data.filesToLoad;
+          packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad;
           console.log("🔧 [Worker] handleInit called with data:", {
             packages: packages ? packages.length : 0,
+            micropipPackages: micropipPackages ? micropipPackages.length : 0,
             filesToLoad: filesToLoad ? filesToLoad.length : 0
           });
           console.log("🔧 [Worker] filesToLoad details:", filesToLoad);
@@ -1258,6 +1259,36 @@ function _handleInit() {
           _context2.n = 11;
           return loadPackages(packages, workerState);
         case 11:
+          if (!((micropipPackages === null || micropipPackages === void 0 ? void 0 : micropipPackages.length) > 0)) {
+            _context2.n = 14;
+            break;
+          }
+          toLoad = micropipPackages.filter(function (pkg) {
+            return !workerState.micropipPackagesLoaded.has(pkg);
+          });
+          loaded = micropipPackages.filter(function (pkg) {
+            return workerState.micropipPackagesLoaded.has(pkg);
+          });
+          if (loaded.length > 0) {
+            worker_handlers_postInfo("[Micropip] Skipping ".concat(loaded.length, " already installed packages: ").concat(loaded.join(", ")));
+          }
+          if (!(toLoad.length > 0)) {
+            _context2.n = 14;
+            break;
+          }
+          worker_handlers_postInfo("[Micropip] Installing ".concat(toLoad.length, " packages: ").concat(toLoad.join(", "), "..."));
+          _context2.n = 12;
+          return workerState.pyodide.loadPackage("micropip");
+        case 12:
+          micropip = workerState.pyodide.pyimport("micropip");
+          _context2.n = 13;
+          return micropip.install(toLoad);
+        case 13:
+          toLoad.forEach(function (pkg) {
+            return workerState.micropipPackagesLoaded.add(pkg);
+          });
+          worker_handlers_postInfo("[Micropip] Packages installed successfully.");
+        case 14:
           // Set up matplotlib if it was loaded
           try {
             workerState.pyodide.runPython("setup_matplotlib()");
@@ -1268,18 +1299,18 @@ function _handleInit() {
           self.postMessage({
             type: "ready"
           });
-          _context2.n = 13;
+          _context2.n = 16;
           break;
-        case 12:
-          _context2.p = 12;
+        case 15:
+          _context2.p = 15;
           _t2 = _context2.v;
           workerState.pyodide = null;
           workerState.isInitialized = false;
           worker_handlers_postError("".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.INIT_FAILED, ": ").concat(_t2.message));
-        case 13:
+        case 16:
           return _context2.a(2);
       }
-    }, _callee2, null, [[5, 7], [2, 12]]);
+    }, _callee2, null, [[5, 7], [2, 15]]);
   }));
   return _handleInit.apply(this, arguments);
 }
@@ -1290,12 +1321,14 @@ function _handleInit() {
  * @property {PyodideAPI|null} pyodide - Pyodide instance
  * @property {boolean} isInitialized - Whether Pyodide is initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names
+ * @property {Set<string>} micropipPackagesLoaded - Set of loaded micropip package names
  */
 
 /**
  * @typedef {Object} InitMessage
  * @property {'init'} type - Message type
  * @property {string[]} packages - Array of package names to install
+ * @property {string[]} [micropipPackages] - Optional array of package names to install with micropip
  * @property {Array<FileToLoad>} filesToLoad - Files to load into filesystem
  */
 
@@ -1390,7 +1423,9 @@ var workerState = {
   /** @type {boolean} Tracks initialization state */
   isInitialized: false,
   /** @type {Set<string>} Tracks loaded packages to prevent duplicate loading 📦 */
-  packagesLoaded: new Set()
+  packagesLoaded: new Set(),
+  /** @type {Set<string>} Tracks loaded micropip packages to prevent duplicate loading 📦 */
+  micropipPackagesLoaded: new Set()
 };
 
 /**
@@ -1436,6 +1471,7 @@ self.onmessage = /*#__PURE__*/function () {
  * @property {PyodideAPI|null} pyodide - Pyodide instance (null until initialized)
  * @property {boolean} isInitialized - Whether Pyodide is fully initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names for deduplication
+ * @property {Set<string>} micropipPackagesLoaded - Set of loaded micropip package names for deduplication
  */
 
 /**
@@ -1445,6 +1481,7 @@ self.onmessage = /*#__PURE__*/function () {
  * @property {string} [code] - Python code to execute (execute messages)
  * @property {Object} [namespace] - Execution namespace (execute messages)
  * @property {string[]} [packages] - Python packages to install (init messages)
+ * @property {string[]} [micropipPackages] - Python micropip packages to install (init messages)
  * @property {string} [pyodideInitPath] - Path to initialization script (init messages)
  * @property {Array<FileToLoad>} [filesToLoad] - Files to load (init messages)
  * @property {string} [operation] - Filesystem operation type (fs_operation messages)
