@@ -154,13 +154,14 @@ Nagini enables a wide range of applications across different domains:
 
 ### Nagini (High-Level API)
 
-#### `createManager(backend, packages, filesToLoad, pyodideInitPath, workerPath)`
+#### `createManager(backend, packages, micropipPackages, filesToLoad, pyodideInitPath, workerPath)`
 
 Creates a new PyodideManager instance with strict type validation.
 
 **Parameters:**
 - `backend` (String): Backend to use ('pyodide')
 - `packages` (Array): Python packages to install (e.g., `["numpy", "pandas"]`)
+- `micropipPackages` (Array): Python packages to install from PyPI using `micropip` (e.g., `["requests", "beautifulsoup4"]`).
 - `filesToLoad` (Array): Files to load into filesystem (URL objects)
 - `pyodideInitPath` (String): Path to `pyodide_init.py` file
 - `workerPath` (String): Path to web worker file
@@ -172,6 +173,7 @@ Creates a new PyodideManager instance with strict type validation.
 const manager = await Nagini.createManager(
     'pyodide',
     ["sympy", "matplotlib"],
+    ["antlr4-python3-runtime"],
     [
         {
             url: "https://example.com/modules/utils.py",
