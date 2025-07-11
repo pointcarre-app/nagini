@@ -364,4 +364,35 @@ missive({"subplot_count": subplot_count, "total_data_points": total_data_points}
             throw error;
         }
     }
+
+    static async testMicropipPackageInstallation(manager) {
+        const testName = "micropip package installation";
+        logTestStart("PyodideIntegration", testName);
+
+        try {
+            const result = await manager.executeAsync(
+                "micropip_test.py",
+                `from antlr4 import CommonTokenStream, ParseTreeWalker
+from importlib.metadata import version
+
+version_str = version("antlr4-python3-runtime")
+print(f"ANTLR4 Python Runtime Version: {version_str}")
+
+missive({"version": version_str})`
+            );
+
+            assert(!result.error, "Micropip test should not have errors");
+            assert(result.missive, "Result should have missive property");
+
+            const missive = JSON.parse(result.missive);
+            assert(missive.version, "Missive should contain version information");
+            console.log(`Successfully verified antlr4-python3-runtime version: ${missive.version}`);
+
+            logTestPass(testName);
+            return { result, testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
 } 

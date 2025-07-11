@@ -40,6 +40,10 @@
     <h2>Simple Pyodide (Matplotlib & Input)</h2>
     <textarea id="code"># Sample code for Pyodide
 import matplotlib.pyplot as plt
+from antlr4 import CommonTokenStream
+
+print("Successfully imported from antlr4!")
+print(f"CommonTokenStream type: {CommonTokenStream}")
 
 name = input('Enter your name: ')
 print(f'Hello {name}!')
@@ -75,13 +79,13 @@ plt.show()
 
         async function initManager() {
             if (manager) return manager;
-            // Packages required for demo (matplotlib comes with numpy, pynolson older; micropip included just in case)
-            const packages = ['micropip', 'matplotlib'];
+            // Packages required for demo
+            const packages = ['matplotlib'];
+            const micropipPackages = ['antlr4-python3-runtime'];
             // Use full URLs for cross-origin blob worker compatibility
-            const pyInit = 'http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py';
             const workerPath = 'http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js';
 
-            manager = await Nagini.createManager('pyodide', packages, [], pyInit, workerPath);
+            manager = await Nagini.createManager('pyodide', packages, micropipPackages, [], workerPath);
             await Nagini.waitForReady(manager);
             console.log('🧙‍♂️ PyodideManager ready');
             return manager;

@@ -90,6 +90,7 @@ async function runDemo() {
 
         // Test parameters for different backends
         const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy"];
+        const micropipPackages = ["antlr4-python3-runtime"];
         const pyodideWorkerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
         const brythonOptions = {
             brythonJsPath: "/src/brython/lib/brython.js",
@@ -104,7 +105,7 @@ async function runDemo() {
 
         console.log("1️⃣ Nagini.createManager() - Pyodide");
         const pyodideManagerResult = await NaginiTests.test1CreateManager(
-            'pyodide', packages, filesToLoad, pyodideWorkerPath
+            'pyodide', packages, micropipPackages, filesToLoad, pyodideWorkerPath
         );
         manager = pyodideManagerResult.manager;
         // Make manager globally accessible for interactive functions
@@ -227,6 +228,10 @@ async function runDemo() {
         await PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager);
         window.updateTestStatus('status-integration-5', 'pass');
 
+        console.log("6️⃣ micropip package installation");
+        await PyodideIntegrationTests.testMicropipPackageInstallation(manager);
+        window.updateTestStatus('status-integration-6', 'pass');
+
         // ==============================================
         // BRYTHON BACKEND TESTS
         // ==============================================
@@ -235,7 +240,7 @@ async function runDemo() {
 
         console.log("1️⃣ Nagini.createManager() - Brython");
         const brythonManagerResult = await NaginiTests.test1CreateManager(
-            'brython', [], [], '', brythonOptions
+            'brython', [], [], [], '', brythonOptions
         );
         const brythonManager = brythonManagerResult.manager;
         if (window.updateTestStatus) {

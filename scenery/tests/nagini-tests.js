@@ -11,6 +11,7 @@ export class NaginiTests {
     static async test1CreateManager(
         backend,
         packages,
+        micropipPackages,
         filesToLoad,
         workerPath,
         options = {}
@@ -22,6 +23,7 @@ export class NaginiTests {
             const manager = await Nagini.createManager(
                 backend,
                 packages,
+                micropipPackages,
                 filesToLoad,
                 workerPath,
                 options

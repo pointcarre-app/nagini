@@ -17,6 +17,7 @@
  * USAGE EXAMPLE:
  * const manager = new PyodideManager(
  *   ['numpy', 'pandas'],           // Array of packages
+ *   ['antlr4-python3-runtime'],   // Array of micropip packages
  *   [],                           // Array filesToLoad
  *   './pyodide-worker.js' // String worker path
  * );
@@ -37,15 +38,17 @@ class PyodideManager {
    * Create a new PyodideManager instance
    *
    * @param {string[]} packages - Array of Python package names to install
+   * @param {string[]} micropipPackages - Array of Python package names to install with micropip
    * @param {Array<FileToLoad>} filesToLoad - Array of file objects to load into filesystem
    * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
    * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
-  constructor(packages, filesToLoad, workerPath) {
+  constructor(packages, micropipPackages, filesToLoad, workerPath) {
     console.log("🎛️ [PyodideManager] Constructor called");
 
     // Strict type validation using ValidationUtils
     ValidationUtils.validatePackages(packages, 'PyodideManager');
+    ValidationUtils.validatePackages(micropipPackages, 'PyodideManager');
     ValidationUtils.validateFilesToLoad(filesToLoad, 'PyodideManager');
     ValidationUtils.validateString(workerPath, 'workerPath', 'PyodideManager');
 
@@ -65,6 +68,9 @@ class PyodideManager {
 
     /** @type {string[]} Python packages to install during initialization - filtered and validated */
     this.packages = this.validateAndFilterPackages(packages);
+
+    /** @type {string[]} Python packages to install with micropip - filtered and validated */
+    this.micropipPackages = this.validateAndFilterPackages(micropipPackages);
 
     /** @type {Array<FileToLoad>} Files to load into Pyodide filesystem */
     this.filesToLoad = filesToLoad;
@@ -132,6 +138,7 @@ class PyodideManager {
       this.worker.postMessage({
         type: "init",
         packages: this.packages,
+        micropipPackages: this.micropipPackages,
         filesToLoad: this.filesToLoad,
       });
       

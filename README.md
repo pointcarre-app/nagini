@@ -29,6 +29,7 @@ environments.
 
 - **🚀 Worker Architecture** - Python execution isolated in web workers (Pyodide) or main thread (Brython)
 - **🔧 Automatic Blob Workers** - Cross-origin compatibility for Pyodide (Flask, Django, etc.)
+- **📦 Micropip Support** - Install packages from PyPI using micropip (Pyodide only)
 - **🎮 Interactive Input** - Natural `input()` support with queue/callbacks (Pyodide only)
 - **📊 Matplotlib Integration** - Automatic figure capture as base64 images (Pyodide only)
 - **🔗 Remote Module Loading** - Load Python modules from URLs with retry logic (Pyodide only)
@@ -46,11 +47,11 @@ import { Nagini } from './src/nagini.js';
 
 // 1. Create manager with Pyodide (requires bundled worker for cross-origin compatibility)
 const manager = await Nagini.createManager(
-    'pyodide',                                                    // Backend - requires blob workers
-    ["sympy", "matplotlib"],                                      // Python packages  
-    [],                                                          // Files to load (URL objects)
-    "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py", // Full URL required
-    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"   // Bundled worker (automatic blob creation)
+    'pyodide',                                                    // Backend
+    ["sympy", "matplotlib"],                                      // Python packages
+    ["antlr4-python3-runtime"],                                   // Micropip packages
+    [],                                                           // Files to load (URL objects)
+    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"    // Bundled worker
 );
 
 // 2. Wait for initialization
@@ -108,8 +109,8 @@ print("Square drawn!")
 const manager = await Nagini.createManager(
     'pyodide',  // Only Pyodide requires bundled workers
     ["numpy", "matplotlib"],
+    ["antlr4-python3-runtime"],
     [],
-    "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py",  // Full URLs required
     "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"   // Nagini auto-creates blob worker
 );
 ```
@@ -145,8 +146,8 @@ const blobWorkerUrl = await createBlobWorkerUrl(workerPath);
 const manager = await Nagini.createManager(
     'pyodide',
     ["numpy"],
+    [], // No micropip packages in this example
     [],
-    "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py",
     blobWorkerUrl  // Blob URL works across origins
 );
 ```
@@ -225,10 +226,10 @@ const filesToLoad = [
 
 const manager = await Nagini.createManager(
     'pyodide',
-    ["numpy"], 
+    ["numpy"],
+    [], // No micropip packages
     filesToLoad,  // Load from URLs
-    "./src/pyodide/python/pyodide_init.py",
-    "./src/pyodide/worker/worker.js"
+    "./src/pyodide/worker/worker-dist.js"
 );
 
 await Nagini.waitForReady(manager);
@@ -290,10 +291,10 @@ Main Thread Only (No Workers)
 ```javascript
 // Create Pyodide manager (requires bundled worker for cross-origin compatibility)
 const pyodideManager = await Nagini.createManager(
-    'pyodide', 
-    packages, 
-    filesToLoad, 
-    "http://127.0.0.1:8010/src/pyodide/python/pyodide_init.py",  // Full URLs required
+    'pyodide',
+    packages,
+    micropipPackages,
+    filesToLoad,
     "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"   // Auto-converted to blob worker
 );
 

@@ -14,6 +14,7 @@ export const Nagini = {
      * Create a new manager instance with specified backend
      * @param {string} [backend='pyodide'] - Backend to use ('pyodide' or 'brython')
      * @param {string[]} packages - Python packages to install
+     * @param {string[]} micropipPackages - Python packages to install with micropip
      * @param {Array} filesToLoad - Custom files to load into filesystem
      *                              Array of objects with {url, path} properties
      *                              Supports both local paths and remote URLs (S3, etc.)
@@ -21,7 +22,7 @@ export const Nagini = {
      * @param {Object} [options={}] - Backend-specific options (e.g. brythonJsPath for Brython)
      * @returns {Manager} New manager instance
      */
-    createManager: async (backend = 'pyodide', packages, filesToLoad, workerPath, options = {}) => {
+    createManager: async (backend = 'pyodide', packages, micropipPackages, filesToLoad, workerPath, options = {}) => {
       // Validate backend parameter
       ValidationUtils.validateBackend(backend, 'Nagini');
 
@@ -41,7 +42,7 @@ export const Nagini = {
         }
         
         const { PyodideManager } = await import('./pyodide/manager/manager.js');
-        return new PyodideManager(packages, filesToLoad, finalWorkerPath);
+        return new PyodideManager(packages, micropipPackages, filesToLoad, finalWorkerPath);
       } else if (backend.toLowerCase() === 'brython') {
         // Brython doesn't require bundled workers - use as-is
         const { BrythonManager } = await import('./brython/manager/manager.js');
