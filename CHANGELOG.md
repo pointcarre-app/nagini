@@ -1,11 +1,17 @@
 
 
 
+# v0.0.3
+
+- Added micropip support
+    - Added antlr4-python3-runtime support
+
+
 # v0.0.2
 
-- Fix missive handling (ie parse at last moment, outside of the manager)
-- Fix `/scenery` 
-- Fix `/tests` (ie Flask cross origin)
+- Fixed missive handling (ie parse at last moment, outside of the manager)
+- Fixed `/scenery` 
+- Fixed `/tests` (ie Flask cross origin)
 
 
 # v0.0.1 
