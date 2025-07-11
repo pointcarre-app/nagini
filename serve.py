@@ -20,14 +20,37 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
 
+class ReusableTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+
 PORT = 8010
 
 if __name__ == "__main__":
-    with socketserver.TCPServer(("0.0.0.0", PORT), CORSRequestHandler) as httpd:
-        print(f"Server running at http://127.0.0.1:{PORT}/")
-        print("Press Ctrl+C to stop the server")
+    # Big red startup message with emojis and ASCII art
+    print("\n" + "=" * 60)
+    print("🐍 " + "\033[1;31m" + "NAGINI SERVER STARTING" + "\033[0m" + " 🐍")
+    print("=" * 60)
+    print(
+        "📡 "
+        + "\033[1;33m"
+        + "PORT REUSE ENABLED"
+        + "\033[0m"
+        + " - No more 'Address already in use' errors! 🎉"
+    )
+    print("🌐 " + "\033[1;36m" + "CORS ENABLED" + "\033[0m" + " - Cross-origin requests allowed 🔓")
+    print("=" * 60)
+
+    with ReusableTCPServer(("", PORT), CORSRequestHandler) as httpd:
+        print(f"🔥 \033[1;32mServer blazing at http://localhost:{PORT}/\033[0m 🔥")
+        print("⚡ \033[1;35mPress Ctrl+C to stop the server\033[0m ⚡")
+        print("=" * 60 + "\n")
+
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
-            print("\nServer stopped.")
+            print("\n" + "=" * 60)
+            print("🛑 " + "\033[1;31m" + "SERVER STOPPED" + "\033[0m" + " 🛑")
+            print("👋 " + "\033[1;33m" + "Thanks for using Nagini Server!" + "\033[0m" + " 👋")
+            print("=" * 60)
             httpd.shutdown()
