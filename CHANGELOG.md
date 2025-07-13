@@ -1,3 +1,9 @@
+# v0.0.4
+
+- No dual licensing: only AGPLv3
+
+
+
 # v0.0.3
 
 - Added micropip support
