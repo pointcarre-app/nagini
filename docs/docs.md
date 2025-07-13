@@ -42,7 +42,7 @@ Nagini enables a wide range of applications across different domains:
 - **Namespace Isolation**: Complete variable isolation between executions
 - **Unified Test Suite**: Comprehensive side-by-side testing with tactical turtle graphics (Brython) and scientific computing (Pyodide)
 - **Cross-Origin Testing**: Real-world Flask integration with automatic blob worker creation
-- **Flexible Licensing**: Free for non-commercial use, commercial licenses available
+- **Open Source**: Licensed under GNU Affero General Public License v3.0 (AGPL-3.0)
 
 ---
 
@@ -1136,10 +1136,19 @@ The bundled worker includes all necessary modules:
 
 ## Licensing
 
-Nagini is released under a dual-license model:
+Nagini is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
 
-- **Non-Commercial Use**: Free to use for personal, educational, and research purposes under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
-- **Commercial Use**: Requires a commercial license. Please contact us for pricing and terms.
+### Key Requirements:
+- **Source Code Sharing**: Any modifications must be shared under the same license
+- **Network Use**: Users of network services must have access to source code
+- **Derivative Works**: Must use compatible licenses
+- **Copyright Notices**: Must be preserved
+
+### What This Means:
+- ✅ **Free to use** for any purpose (personal, educational, commercial, research)
+- ✅ **Modify and distribute** with source code sharing
+- ✅ **Commercial use** allowed with copyleft compliance
+- ✅ **Network services** permitted with source availability
 
 For complete details, see the [LICENSE](LICENSE) file.
 

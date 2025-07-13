@@ -21,7 +21,7 @@ environments.
 - [Testing](#testing)
 - [Dependencies](#dependencies)
 - [Performance](#performance)
-- [Licensing](#non-commercial-use---gnu-affero-general-public-license-v30-agpl-30)
+- [Licensing](#licensing---gnu-affero-general-public-license-v30-agpl-30)
 
 ---
 
@@ -484,120 +484,35 @@ The unified test suite covers all core features:
 - **Memory**: ~100-300MB (package dependent)
 - **Figure Capture**: Real-time base64 encoding
 
-## Non-Commercial Use - GNU Affero General Public License v3.0 (AGPL-3.0)
+## Licensing - GNU Affero General Public License v3.0 (AGPL-3.0)
 
-For **non-commercial use**, Nagini is licensed under the GNU Affero General Public License v3.0.
-
-### ✅ Free Usage Includes:
-- **Educational institutions** (schools, universities, training centers)
-- **Government agencies** and public administrations
-- **Research organizations** and academic institutions
-- **Individual developers** for personal projects
-- **Open-source projects** and community initiatives
-- **Non-profit organizations** and NGOs
+Nagini is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
 
 ### 📋 AGPL v3.0 Requirements:
-- Source code modifications must be shared
-- Network use triggers copyleft obligations
-- Derivative works must use compatible licenses
-- Copyright notices must be preserved
+- **Source Code Sharing**: Any modifications to Nagini must be shared under the same license
+- **Network Use**: If you run Nagini on a server and let users interact with it remotely, you must make your source code available to those users
+- **Derivative Works**: Must use compatible licenses
+- **Copyright Notices**: Must be preserved
 
----
+### ✅ What You Can Do:
+- **Use freely** for any purpose (personal, educational, commercial, research)
+- **Modify** the source code to fit your needs
+- **Distribute** copies and modifications
+- **Run** on servers and provide network services
 
-## Commercial Use - Commercial License
+### 📝 What You Must Do:
+- **Share source code** of any modifications you make
+- **Provide source access** to users of network services
+- **Include copyright notices** and license information
+- **Use compatible licenses** for derivative works
 
-For **commercial use**, a separate commercial license is required. Additionally, **any organization or individual who prefers not to comply with AGPL v3.0 copyleft obligations** may choose a commercial license regardless of use case.
-
-### 💼 Commercial License Required For:
-- **Private companies** and corporations
-- **Commercial software development**
-- **SaaS platforms** and hosted services
-- **Consulting services** and professional training
-- **Product integration** in commercial offerings
-- **Any profit-generating activities**
-
-### 🆓 Commercial License Also Available For:
-- **Non-commercial users** who prefer proprietary development
-- **Organizations** that cannot comply with copyleft requirements
-- **Projects** requiring private modifications
-- **Any user** who wants to avoid AGPL v3.0 obligations
-
-### 🎯 Commercial License Benefits:
-- **No copyleft obligations** - keep your code private
-- **Commercial support** and priority assistance
-- **Custom development** and feature requests
-- **Deployment flexibility** for proprietary systems
-- **Legal protection** and indemnification
-
----
-
-# Licensing FAQ - Common Scenarios
-
-## 🤔 **Frequently Asked Questions**
-
-### **Q: I'm a teacher building a tool for my classroom. Do I need a commercial license?**
-**A:** No, if you're using it purely for educational purposes in your classroom without charging students or generating revenue.
-
-### **Q: I'm a freelance developer building a client's website. Do I need a commercial license?**
-**A:** Yes, this is commercial use - you're providing professional services for payment.
-
-### **Q: I'm a startup with no revenue yet. Do I need a commercial license?**
-**A:** Yes, if you plan to monetize or are building for business purposes, it's commercial use regardless of current revenue.
-
-### **Q: I work at a non-profit organization. Do I need a commercial license?**
-**A:** No, registered 501(c)(3) organizations qualify for non-commercial use.
-
-### **Q: I'm a government contractor. Do I need a commercial license?**
-**A:** Yes, contractors are commercial entities even when working for government.
-
-### **Q: I'm building an open-source project. Do I need a commercial license?**
-**A:** No, if it's truly community-driven with no commercial backing or monetization plans.
-
-### **Q: I'm a university researcher but my research is funded by a company. Do I need a commercial license?**
-**A:** It depends - contact us to clarify based on your specific arrangement.
-
-### **Q: I want to use it internally at my company. Do I need a commercial license?**
-**A:** Yes, any use within a for-profit organization is commercial use.
-
-### **Q: I'm offering a "free" service but collecting user data. Do I need a commercial license?**
-**A:** Yes, data collection for business purposes is commercial use.
-
-### **Q: I'm a consultant teaching workshops using this software. Do I need a commercial license?**
-**A:** Yes, commercial training and consulting require a commercial license.
-
-### **Q: I'm building a SaaS but only for internal company use. Do I need a commercial license?**
-**A:** Yes, building business tools is commercial use even if internal.
-
-### **Q: I'm a student working on a project that might become a business. Do I need a commercial license?**
-**A:** Start with AGPL for learning, but switch to commercial license before any business activities.
-
-### **Q: I'm using it for academic research that might lead to a patent. Do I need a commercial license?**
-**A:** Contact us - this is a gray area that needs case-by-case evaluation.
-
-### **Q: I'm a YouTube creator making tutorials about the software. Do I need a commercial license?**
-**A:** If you monetize the videos (ads, sponsorships, etc.), then yes.
-
-### **Q: I'm building a portfolio project to get hired. Do I need a commercial license?**
-**A:** No, if it's purely for learning and demonstration purposes without monetization.
-
-## 🎯 **Simple Decision Tree**
-
-```
-Are you making money from it? → YES → Commercial License
-Are you planning to make money? → YES → Commercial License
-Are you using it for business? → YES → Commercial License
-Are you a for-profit company? → YES → Commercial License
-Are you providing services? → YES → Commercial License
-None of the above? → MAYBE → Non-Commercial (AGPL)
-```
-
----
-
-## How to Obtain a Commercial License
-
-To obtain a commercial license or discuss pricing:
-
-🌐 **Website**: [pointcarre.app](https://pointcarre.app)
+### 🎓 Perfect For:
+- **Educational institutions** and training programs
+- **Research organizations** and academic projects
+- **Open-source projects** and community initiatives
+- **Commercial applications** that comply with copyleft requirements
+- **Government agencies** and public organizations
+- **Individual developers** and personal projects
 
 ---
 
@@ -656,4 +571,4 @@ This software incorporates components from the following open-source projects:
 
 ---
 
-*This dual licensing model ensures Nagini remains freely available for educational and research purposes while providing sustainable funding for continued development and commercial support.*
+*Nagini is free and open-source software licensed under AGPL v3.0, ensuring it remains available for all users while promoting open-source collaboration and transparency.*
