@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Interactive Python terminal in the browser using Xterm.js and Nagini" />
+    <meta name="keywords" content="python, terminal, xterm, pyodide, browser, nagini" />
+    <title>Xterm + Nagini Python Terminal</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐍</text></svg>" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+      <style>
+          body {
+              font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+              background-color: #1e1e1e;
+              color: #d4d4d4;
+              margin: 0;
+              padding: 20px;
+          }
+
+          .container {
+              max-width: 1200px;
+              margin: 0 auto;
+          }
+
+          .header {
+              text-align: center;
+              margin-bottom: 20px;
+          }
+
+          .header h1 {
+              color: #569cd6;
+              margin-bottom: 10px;
+          }
+
+          .header p {
+              color: #9cdcfe;
+              font-size: 14px;
+          }
+
+          .controls {
+              margin-bottom: 20px;
+              text-align: center;
+          }
+
+          .controls button {
+              background-color: #0e639c;
+              color: white;
+              border: none;
+              padding: 8px 16px;
+              margin: 0 5px;
+              border-radius: 4px;
+              cursor: pointer;
+              font-family: inherit;
+          }
+
+          .controls button:hover {
+              background-color: #1177bb;
+          }
+
+          .controls button:disabled {
+              background-color: #444;
+              cursor: not-allowed;
+          }
+
+          .terminal-container {
+              border: 1px solid #444;
+              border-radius: 8px;
+              padding: 10px;
+              background-color: #0c0c0c;
+              margin-bottom: 20px;
+              font-family: "Fira Code", "JetBrains Mono", "SF Mono", Consolas, Monaco, "Cascadia Code", "Roboto Mono", monospace;
+              font-variant-ligatures: none;
+              font-feature-settings: "liga" 0;
+          }
+
+          .templates {
+              background-color: #252526;
+              border-radius: 8px;
+              padding: 15px;
+              border: 1px solid #444;
+          }
+
+          .templates h3 {
+              color: #569cd6;
+              margin-top: 0;
+          }
+
+          .template-item {
+              margin: 10px 0;
+              padding: 10px;
+              background-color: #1e1e1e;
+              border-radius: 4px;
+              border: 1px solid #333;
+          }
+
+          .template-name {
+              color: #9cdcfe;
+              font-weight: bold;
+              margin-bottom: 5px;
+          }
+
+          .template-description {
+              color: #d4d4d4;
+              font-size: 12px;
+              margin-bottom: 8px;
+          }
+
+          .template-button {
+              background-color: #0e639c;
+              color: white;
+              border: none;
+              padding: 5px 10px;
+              border-radius: 3px;
+              cursor: pointer;
+              font-size: 12px;
+          }
+
+          .template-button:hover {
+              background-color: #1177bb;
+          }
+
+          .status {
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              padding: 10px;
+              border-radius: 4px;
+              font-size: 12px;
+              z-index: 1000;
+          }
+
+          .status.loading {
+              background-color: #664d03;
+              color: #ffecb5;
+          }
+
+          .status.ready {
+              background-color: #0f5132;
+              color: #b3e5c7;
+          }
+
+          .status.error {
+              background-color: #842029;
+              color: #f8d7da;
+          }
+
+          .template-description-text {
+              color: #d4d4d4;
+              font-size: 14px;
+          }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>🐍 Xterm + Nagini Python Terminal</h1>
+          <p>Execute Python code in the browser with a real terminal interface</p>
+        </div>
+
+        <div class="controls">
+          <button id="clearBtn">Clear Terminal</button>
+          <button id="helpBtn">Help</button>
+          <button id="statusBtn" disabled>Initializing...</button>
+        </div>
+
+        <div class="terminal-container">
+          <div id="terminal"></div>
+        </div>
+
+        <div class="templates">
+          <h3>📋 Python Templates</h3>
+          <p class="template-description-text">Click to execute pre-written Python scripts:</p>
+
+          <div class="template-item">
+            <div class="template-name">hello_world.py</div>
+            <div class="template-description">Simple hello world with user input</div>
+            <button class="template-button" onclick="executeTemplate('hello_world')">Run</button>
+          </div>
+
+          <div class="template-item">
+            <div class="template-name">data_analysis.py</div>
+            <div class="template-description">Basic data analysis with numpy and matplotlib</div>
+            <button class="template-button" onclick="executeTemplate('data_analysis')">Run</button>
+          </div>
+
+          <div class="template-item">
+            <div class="template-name">calculator.py</div>
+            <div class="template-description">Interactive calculator with multiple operations</div>
+            <button class="template-button" onclick="executeTemplate('calculator')">Run</button>
+          </div>
+
+          <div class="template-item">
+            <div class="template-name">plot_demo.py</div>
+            <div class="template-description">Matplotlib plotting demonstration</div>
+            <button class="template-button" onclick="executeTemplate('plot_demo')">Run</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="status" class="status loading">Initializing Nagini...</div>
+
+      <!-- Load dependencies -->
+      <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+
+      <!-- Main application as module -->
+      <script type="module" src="app.js"></script>
+    </body>
+  </html>
