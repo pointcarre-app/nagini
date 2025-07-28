@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import socketserver
+import sys
 from http.server import SimpleHTTPRequestHandler
 
 
@@ -27,6 +28,12 @@ class ReusableTCPServer(socketserver.TCPServer):
 PORT = 8010
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        try:
+            PORT = int(sys.argv[1])
+        except ValueError:
+            print("Invalid port number. Using default port 8010.")
+
     # Big red startup message with emojis and ASCII art
     print("\n" + "=" * 60)
     print("🐍 " + "\033[1;31m" + "NAGINI SERVER STARTING" + "\033[0m" + " 🐍")
