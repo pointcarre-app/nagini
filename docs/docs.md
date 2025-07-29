@@ -25,7 +25,7 @@ Nagini enables a wide range of applications across different domains:
 
 - **Data Analysis & Visualization**: Interactive dashboards, scientific computing, statistical analysis
 - **Educational Platforms**: Coding tutorials, interactive learning environments, programming courses
-- **Development Tools**: Online IDEs, code playgrounds, prototyping environments
+- **Development Tools**: Online IDEs, code playgrounds, prototyping environments, terminal interfaces
 - **Research Applications**: Scientific simulations, data exploration, academic research tools
 - **Business Intelligence**: Report generation, data processing, analytics platforms
 - **Training & Consulting**: Professional development tools, skill assessment platforms
@@ -843,7 +843,11 @@ pca-nagini/
 │       ├── brython-manager-tests.js
 │       └── ... (other test files)
 ├── experiments/                   # Experimental playgrounds
-│   └── brython/ (demo resources)
+│   ├── brython/ (demo resources)
+│   └── xterm/                     # Xterm.js terminal integration
+│       ├── index.html            # Main terminal interface
+│       ├── app.js                # Terminal application logic
+│       └── README.md             # Xterm integration documentation
 ├── tests/                         # Flask integration examples
 │   ├── flask-example.py          # Complete Flask app example
 │   ├── flask-test.html           # Simple HTML test page
@@ -998,6 +1002,56 @@ Like temporarily replacing your mailbox with a special one that:
 - **PyodideManagerInput**: Input handling (similar pattern)
 
 This pattern enables clean, Promise-based APIs while maintaining the performance benefits of web worker execution.
+
+### Xterm Terminal Integration
+
+Nagini includes an experimental **xterm.js terminal integration** that demonstrates how to create a full terminal interface for Python code execution in the browser.
+
+#### Location and Features
+
+The xterm integration is located in `experiments/xterm/` and provides:
+
+- **Real Terminal Interface**: Full xterm.js terminal with cursor, colors, and keyboard navigation
+- **Interactive Python Execution**: Execute Python code using Nagini's Pyodide backend
+- **Template System**: Pre-built Python scripts ready to execute
+- **Command History**: Navigate previous commands with arrow keys
+- **Matplotlib Integration**: Automatic figure display above the terminal
+- **Professional Styling**: VS Code-inspired dark theme
+
+#### Available Templates
+
+1. **hello_world** - Simple hello world script with user input demonstration
+2. **data_analysis** - Basic data analysis using numpy with statistics and histogram plotting
+3. **calculator** - Interactive calculator supporting math operations and scientific functions
+4. **plot_demo** - Comprehensive matplotlib demonstration with multiple plot types
+
+#### Usage Example
+
+```bash
+# Start local server
+python -m http.server 8000
+
+# Open terminal interface
+http://localhost:8000/experiments/xterm/
+
+# Terminal commands
+$ help          # Show available commands
+$ templates     # List Python templates
+$ run hello_world   # Execute a template
+$ status        # Show system status
+$ clear         # Clear screen
+```
+
+#### Technical Implementation
+
+The xterm integration demonstrates:
+- **ES6 Module Integration**: Proper import of Nagini as ES6 module
+- **Terminal Event Handling**: Keyboard input, command parsing, and history management
+- **Python Code Execution**: Seamless integration with Nagini's execution pipeline
+- **Figure Display**: Automatic matplotlib figure rendering in the browser
+- **Error Handling**: Proper display of Python errors and execution feedback
+
+This experiment showcases the potential for creating full-featured browser-based Python development environments using Nagini as the execution backend.
 
 ### Worker Bundling System
 
@@ -1181,7 +1235,7 @@ For complete details, see the [LICENSE](LICENSE) file.
 
 ### Reporting Bugs
 
-Please report any bugs or issues on our [GitHub Issues](https://github.com/your-repo/issues) page. Include the following details:
+Please report any bugs or issues on our [GitHub Issues](https://github.com/pca-nagini/pca-nagini/issues) page. Include the following details:
 - Browser and version
 - Operating system
 - Steps to reproduce the issue
