@@ -33,11 +33,11 @@ export const Nagini = {
           // Auto-convert to bundled worker
           if (workerPath.includes('worker.js')) {
             finalWorkerPath = workerPath.replace('worker.js', 'worker-dist.js');
-            console.warn(`🚨 [Nagini] Auto-converted to bundled worker: ${finalWorkerPath}`);
-            console.warn(`🚨 [Nagini] Only bundled workers are supported for cross-origin compatibility.`);
-            console.warn(`🚨 [Nagini] Please update your code to use worker-dist.js directly.`);
+            console.warn(`🐍 [Nagini] Auto-converted to bundled worker: ${finalWorkerPath}`);
+            console.warn(`🐍 [Nagini] Only bundled workers are supported for cross-origin compatibility.`);
+            console.warn(`🐍 [Nagini] Please update your code to use worker-dist.js directly.`);
           } else {
-            throw new Error(`🚨 [Nagini] Only bundled workers are supported for Pyodide. Expected 'worker-dist.js', got: ${workerPath}. Please build the worker first with 'npm run build' in the worker directory.`);
+            throw new Error(`🐍 [Nagini] Only bundled workers are supported for Pyodide. Expected 'worker-dist.js', got: ${workerPath}. Please build the worker first with 'npm run build' in the worker directory.`);
           }
         }
         
@@ -48,7 +48,7 @@ export const Nagini = {
         const { BrythonManager } = await import('./brython/manager/manager.js');
         return new BrythonManager(packages, filesToLoad, '', workerPath, options);
       } else {
-        throw new Error(`🔧 [Nagini] ${backend} backend not yet implemented`);
+        throw new Error(`🐍 [Nagini] ${backend} backend not yet implemented`);
       }
     },
 
@@ -62,7 +62,7 @@ export const Nagini = {
       const startTime = Date.now();
       while (!manager.isReady) {
         if (Date.now() - startTime > timeout) {
-          throw new Error(`🔧 [Nagini] Manager initialization timeout after ${timeout}ms`);
+          throw new Error(`🐍 [Nagini] Manager initialization timeout after ${timeout}ms`);
         }
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -78,13 +78,13 @@ export const Nagini = {
     executeFromUrl: async (url, manager, namespace = undefined) => {
       if (!manager.isReady) {
         throw new Error(
-          "🔧 [Nagini] Manager not ready. Call Nagini.waitForReady() first."
+          "🐍 [Nagini] Manager not ready. Call Nagini.waitForReady() first."
         );
       }
 
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`🔧 [Nagini] Failed to fetch ${url}: HTTP ${response.status}`);
+        throw new Error(`🐍 [Nagini] Failed to fetch ${url}: HTTP ${response.status}`);
       }
 
       const code = await response.text();
@@ -110,3 +110,5 @@ export const Nagini = {
       return Nagini.getSupportedBackends().includes(backend.toLowerCase());
     }
   };
+
+  export { Nagini };

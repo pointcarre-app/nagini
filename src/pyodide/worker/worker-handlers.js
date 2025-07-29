@@ -122,13 +122,13 @@ async function handleInit(data, workerState) {
 
   const { packages, micropipPackages, filesToLoad } = data;
 
-  console.log("🔧 [Worker] handleInit called with data:", {
+  console.log("🐍 [Worker] handleInit called with data:", {
     packages: packages ? packages.length : 0,
     micropipPackages: micropipPackages ? micropipPackages.length : 0,
     filesToLoad: filesToLoad ? filesToLoad.length : 0
   });
 
-  console.log("🔧 [Worker] filesToLoad details:", filesToLoad);
+  console.log("🐍 [Worker] filesToLoad details:", filesToLoad);
 
   try {
     // Load Pyodide runtime
@@ -152,7 +152,7 @@ async function handleInit(data, workerState) {
         workerState.pyodide.runPython(module.content);
         console.log(`🐍 Loaded and executed bundled Python module: ${module.name}`);
       } catch (error) {
-        console.warn(`⚠️ Could not load bundled Python module ${module.name}:`, error.message);
+        console.warn(`🐍 Could not load bundled Python module ${module.name}:`, error.message);
       }
     }
 
@@ -165,19 +165,18 @@ async function handleInit(data, workerState) {
 
     // Load custom files into filesystem if provided
     if (filesToLoad && filesToLoad.length > 0) {
-      console.log(`📦 [Worker] Loading ${filesToLoad.length} custom files into filesystem`);
-      console.log(`📦 [Worker] Files to load:`, filesToLoad);
+      console.log(`🐍 [Worker] Loading ${filesToLoad.length} custom files into filesystem`);
+      console.log(`🐍 [Worker] Files to load:`, filesToLoad);
       
       try {
-        const fileLoader = new PyodideFileLoader(filesToLoad);
-        await fileLoader.loadFiles(workerState.pyodide);
-        console.log(`📦 [Worker] Successfully loaded ${filesToLoad.length} custom files`);
+        await PyodideFileLoader.loadFiles(filesToLoad, workerState.pyodide);
+        console.log(`🐍 [Worker] Successfully loaded ${filesToLoad.length} custom files`);
       } catch (error) {
-        console.error(`📦 [Worker] Failed to load custom files:`, error);
+        console.error(`🐍 [Worker] Failed to load custom files:`, error);
         throw error;
       }
     } else {
-      console.log(`📦 [Worker] No custom files to load (filesToLoad: ${filesToLoad})`);
+      console.log(`🐍 [Worker] No custom files to load (filesToLoad: ${filesToLoad})`);
     }
 
     // Load packages if provided

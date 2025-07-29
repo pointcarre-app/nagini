@@ -149,7 +149,7 @@ export class PyodideManagerFS {
    */
   static async _sendFSCommand(manager, operation, params) {
     if (!manager.isReady) {
-      throw new Error("🎛️ [PyodideManagerFS] Manager not ready yet. Wait for initialization to complete.");
+      throw new Error("🐍 [PyodideManagerFS] Manager not ready yet. Wait for initialization to complete.");
     }
 
     return new Promise((resolve, reject) => {
@@ -158,9 +158,9 @@ export class PyodideManagerFS {
         try {
           manager.handleMessage = originalHandler;
         } catch (error) {
-          console.warn("🎛️ [PyodideManagerFS] Failed to restore handler on timeout:", error.message);
+          console.warn("🐍 [PyodideManagerFS] Failed to restore handler on timeout:", error.message);
         }
-        reject(new Error("🎛️ [PyodideManagerFS] Filesystem operation timeout"));
+        reject(new Error("🐍 [PyodideManagerFS] Filesystem operation timeout"));
       }, 10000);
 
       // Save original handler and replace with interceptor

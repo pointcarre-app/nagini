@@ -68,7 +68,7 @@ class PyodideFileLoader {
 
       while (retryCount < maxRetries) {
         try {
-          console.log(`📦 [PyodideFileLoader] Loading: ${file.url} (attempt ${retryCount + 1}/${maxRetries})`);
+          console.log(`🐍 [PyodideFileLoader] Loading: ${file.url} (attempt ${retryCount + 1}/${maxRetries})`);
 
           const response = await fetch(file.url);
           if (!response.ok) {
@@ -82,18 +82,18 @@ class PyodideFileLoader {
           if (dir) {
             const dirExists = pyodide.FS.analyzePath(dir).exists;
             if (!dirExists) {
-              console.log(`📦 [PyodideFileLoader] Creating directory: ${dir}`);
+              console.log(`🐍 [PyodideFileLoader] Creating directory: ${dir}`);
               pyodide.FS.mkdir(dir);
             }
           }
 
           pyodide.FS.writeFile(file.path, content);
-          console.log(`📦 [PyodideFileLoader] Saved: ${file.path}`);
+          console.log(`🐍 [PyodideFileLoader] Saved: ${file.path}`);
           break; // Success, exit retry loop
 
         } catch (error) {
           retryCount++;
-          console.warn(`📦 [PyodideFileLoader] Attempt ${retryCount} failed for ${file.url}:`, error.message);
+          console.warn(`🐍 [PyodideFileLoader] Attempt ${retryCount} failed for ${file.url}:`, error.message);
 
           if (retryCount === maxRetries) {
             const errorMsg = `📦 [PyodideFileLoader] Failed to load ${file.url} after ${maxRetries} attempts: ${error.message}`;

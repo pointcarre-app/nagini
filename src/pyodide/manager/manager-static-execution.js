@@ -55,7 +55,8 @@ export class PyodideManagerStaticExecutor {
 
     if (!isReady) {
       console.warn(
-        "⚡ [PyodideManagerStaticExecutor] Worker not ready, skipping execution"
+        "🐍 [PyodideManagerStaticExecutor] Manager not ready, " +
+        "execution will be delayed until initialization completes"
       );
       return;
     }
@@ -75,9 +76,9 @@ export class PyodideManagerStaticExecutor {
 
     try {
       worker.postMessage(message);
-      console.log(`⚡ [PyodideManagerStaticExecutor] Dispatched execution: ${filename}`);
+      console.log(`🐍 [PyodideManagerStaticExecutor] Dispatched execution: ${filename}`);
     } catch (error) {
-      console.error(`⚡ [PyodideManagerStaticExecutor] Failed to dispatch execution: ${error.message}`);
+      console.error(`🐍 [PyodideManagerStaticExecutor] Failed to dispatch execution: ${error.message}`);
     }
   }
 
@@ -155,7 +156,7 @@ export class PyodideManagerStaticExecutor {
         try {
           setHandleMessage(originalHandler);
         } catch (error) {
-          console.warn("⚡ [PyodideManagerStaticExecutor] Failed to restore handler on timeout:", error.message);
+          console.warn("🐍 [PyodideManagerStaticExecutor] Failed to restore handler on timeout:", error.message);
         }
         reject(
           new Error("⚡ [PyodideManagerStaticExecutor] Execution timeout after 30 seconds")

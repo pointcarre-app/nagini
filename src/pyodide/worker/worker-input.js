@@ -16,7 +16,7 @@ import { PYODIDE_WORKER_CONFIG } from './worker-config.js';
 export async function setupInputHandling(pyodide) {
   // Create the requestInput function in the worker's global scope
   self.requestInput = async (prompt = "") => {
-    console.log(`🔧 [Worker] Input requested with prompt: "${prompt}"`);
+    console.log(`🐍 [Worker] Input requested with prompt: "${prompt}"`);
 
     // Send input request to main thread
     self.postMessage({
@@ -26,7 +26,7 @@ export async function setupInputHandling(pyodide) {
 
     // Return a promise that will be resolved when input is received
     return new Promise((resolve) => {
-      console.log("🔧 [Worker] Waiting for input from main thread...");
+      console.log("🐍 [Worker] Waiting for input from main thread...");
       self.pendingInputResolver = resolve;
     });
   };
@@ -70,26 +70,26 @@ export async function handleInputResponse(data, workerState) {
   const { input } = data;
 
   try {
-    console.log("🔧 [Worker] Handling input response:", input);
+    console.log("🐍 [Worker] Handling input response:", input);
 
     // Resolve the pending input promise if it exists
     if (self.pendingInputResolver) {
-      console.log("🔧 [Worker] Resolving pending input promise");
+      console.log("🐍 [Worker] Resolving pending input promise");
       self.pendingInputResolver(input);
       self.pendingInputResolver = null;
     } else {
       console.warn(
-        "🔧 [Worker] No pending input resolver found"
+        "🐍 [Worker] No pending input resolver found"
       );
     }
   } catch (err) {
-    console.error("🔧 [Worker] Failed to provide input:", err);
+    console.error("🐍 [Worker] Failed to provide input:", err);
     postError(`Failed to provide input: ${err.message}`);
   }
 }
 
 // Helper functions
-const postError = (message) => self.postMessage({ type: "error", message: `🔧 [Worker] ${message}` });
+const postError = (message) => self.postMessage({ type: "error", message: `�� [Worker] ${message}` });
 
 /**
  * Validate that worker is properly initialized

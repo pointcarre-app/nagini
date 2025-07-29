@@ -10,7 +10,7 @@ import { loadBrython } from './loader.js';
  */
 class BrythonManager {
   constructor(packages = [], filesToLoad = [], initPath = '', workerPath = '', brythonOptions = {}) {
-    console.log('🐢 [BrythonManager] constructor');
+    console.log('🐍 [BrythonManager] constructor');
 
     // Lightweight validation (we ignore values but want parity)
     try { ValidationUtils.validateArray(packages, 'packages', 'BrythonManager'); } catch (_) {}
@@ -19,8 +19,8 @@ class BrythonManager {
     this.packages = packages;
     this.filesToLoad = filesToLoad;  // Store filesToLoad for API parity
     
-    console.log('🐢 [BrythonManager] filesToLoad set to:', this.filesToLoad);
-    console.log('🐢 [BrythonManager] packages set to:', this.packages);
+    console.log('🐍 [BrythonManager] filesToLoad set to:', this.filesToLoad);
+    console.log('🐍 [BrythonManager] packages set to:', this.packages);
 
     this.executionHistory = [];
     this.isReady = false;
@@ -28,7 +28,7 @@ class BrythonManager {
     // Begin loading Brython runtime immediately with optional configuration
     this._readyPromise = loadBrython(brythonOptions).then(() => {
       this.isReady = true;
-      console.log('🐢 [BrythonManager] ready');
+      console.log('🐍 [BrythonManager] ready');
     });
   }
 

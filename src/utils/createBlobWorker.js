@@ -26,11 +26,11 @@ export async function createBlobWorkerUrl(workerUrl) {
     const blob = new Blob([workerScript], { type: 'application/javascript' });
     const blobUrl = URL.createObjectURL(blob);
     
-    console.log(`🏭 [BlobWorker] Created blob URL for worker: ${workerUrl}`);
+    console.log(`🐍 [BlobWorker] Created blob URL for worker: ${workerUrl}`);
     return blobUrl;
     
   } catch (error) {
-    console.error('🚨 [BlobWorker] Failed to create blob worker:', error);
+    console.error('🐍 [BlobWorker] Failed to create blob worker:', error);
     throw new Error(`Failed to create blob worker from ${workerUrl}: ${error.message}`);
   }
 }
@@ -45,17 +45,17 @@ export async function createBlobWorker(workerUrl) {
   try {
     // Ensure we're using the bundled worker
     if (!workerUrl.includes('worker-dist.js')) {
-      console.warn('🚨 [BlobWorker] Warning: Expected bundled worker (worker-dist.js), got:', workerUrl);
+      console.warn('🐍 [BlobWorker] Warning: Expected bundled worker (worker-dist.js), got:', workerUrl);
     }
     
     const blobUrl = await createBlobWorkerUrl(workerUrl);
     const worker = new Worker(blobUrl);
     
-    console.log(`🏭 [BlobWorker] Worker created successfully from blob URL`);
+    console.log(`🐍 [BlobWorker] Worker created successfully from blob URL`);
     return worker;
     
   } catch (error) {
-    console.error('🚨 [BlobWorker] Worker creation failed:', error);
+    console.error('🐍 [BlobWorker] Worker creation failed:', error);
     throw error;
   }
 }
@@ -67,8 +67,8 @@ export async function createBlobWorker(workerUrl) {
 export function revokeBlobUrl(blobUrl) {
   try {
     URL.revokeObjectURL(blobUrl);
-    console.log(`🧹 [BlobWorker] Blob URL revoked: ${blobUrl.substring(0, 50)}...`);
+    console.log(`🐍 [BlobWorker] Blob URL revoked: ${blobUrl.substring(0, 50)}...`);
   } catch (error) {
-    console.warn('🚨 [BlobWorker] Failed to revoke blob URL:', error);
+    console.warn('🐍 [BlobWorker] Failed to revoke blob URL:', error);
   }
 } 

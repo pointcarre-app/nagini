@@ -168,18 +168,12 @@ function _handleExecute() {
           start = Date.now();
           stdout = "", stderr = "", missive = null, figures = [], error = null;
           _context.p = 2;
-          console.log("🔧 [Worker] Starting execution for", filename);
+          console.log("🐍 [Worker] Starting execution for", filename);
 
           // Transform code for async execution if needed
           result = transformCodeForExecution(code, workerState);
-          console.log("🔧 [Worker] Code transformed, needsAsync:", result.needsAsync);
-          console.log("🔧 [Worker] Transformed code length:", result.code.length);
-
-          // LOG THE ACTUAL TRANSFORMED CODE
-          console.log("🔧 [Worker] ACTUAL TRANSFORMED CODE:");
-          console.log("=".repeat(50));
-          console.log(result.code);
-          console.log("=".repeat(50));
+          console.log("🐍 [Worker] Code transformed, needsAsync:", result.needsAsync);
+          console.log("🐍 [Worker] Transformed code length:", result.code.length);
           workerState.pyodide.runPython("reset_captures()");
 
           // Execute with or without namespace
@@ -188,7 +182,7 @@ function _handleExecute() {
             break;
           }
           console.log(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_NAMESPACE);
-          console.log("🔧 [Worker] Namespace variables:", Object.keys(namespace));
+          console.log("🐍 [Worker] Namespace variables:", Object.keys(namespace));
 
           // Store original values to restore later
           originalValues = {};
@@ -203,14 +197,14 @@ function _handleExecute() {
               keysToRestore.push(key);
             }
             workerState.pyodide.globals.set(key, value);
-            console.log("\uD83D\uDD27 [Worker] Set ".concat(key, " = ").concat(value));
+            console.log("\uD83D\uDC0D [Worker] Set ".concat(key, " = ").concat(value));
           }
           _context.p = 3;
           if (!result.needsAsync) {
             _context.n = 5;
             break;
           }
-          console.log("🔧 [Worker] Running async with namespace");
+          console.log("🐍 [Worker] Running async with namespace");
           _context.n = 4;
           return workerState.pyodide.runPythonAsync(result.code);
         case 4:
@@ -226,11 +220,11 @@ function _handleExecute() {
             if (originalValues.hasOwnProperty(_key)) {
               // Restore original value
               workerState.pyodide.globals.set(_key, originalValues[_key]);
-              console.log("\uD83D\uDD27 [Worker] Restored ".concat(_key, " to original value"));
+              console.log("\uD83D\uDC0D [Worker] Restored ".concat(_key, " to original value"));
             } else {
               // Delete the variable we added
               workerState.pyodide.globals.delete(_key);
-              console.log("\uD83D\uDD27 [Worker] Removed ".concat(_key, " from globals"));
+              console.log("\uD83D\uDC0D [Worker] Removed ".concat(_key, " from globals"));
             }
           }
           return _context.f(6);
@@ -243,7 +237,7 @@ function _handleExecute() {
             _context.n = 10;
             break;
           }
-          console.log("🔧 [Worker] Running async in global scope");
+          console.log("🐍 [Worker] Running async in global scope");
           _context.n = 9;
           return workerState.pyodide.runPythonAsync(result.code);
         case 9:
@@ -252,19 +246,19 @@ function _handleExecute() {
         case 10:
           workerState.pyodide.runPython(result.code);
         case 11:
-          console.log("🔧 [Worker] Execution completed, capturing outputs");
+          console.log("🐍 [Worker] Execution completed, capturing outputs");
           _captureOutputs = captureOutputs(workerState.pyodide);
           stdout = _captureOutputs.stdout;
           stderr = _captureOutputs.stderr;
           missive = _captureOutputs.missive;
           figures = _captureOutputs.figures;
-          console.log("🔧 [Worker] Captured outputs - stdout:", stdout.length, "stderr:", stderr.length, "missive:", missive, "figures:", figures.length);
+          console.log("🐍 [Worker] Captured outputs - stdout:", stdout.length, "stderr:", stderr.length, "missive:", missive, "figures:", figures.length);
           _context.n = 13;
           break;
         case 12:
           _context.p = 12;
           _t = _context.v;
-          console.error("🔧 [Worker] Execution error:", _t);
+          console.error("🐍 [Worker] Execution error:", _t);
           error = {
             name: _t.name || "PythonError",
             message: _t.message || "Unknown execution error"
@@ -274,7 +268,7 @@ function _handleExecute() {
           stderr = _captureOutputs2.stderr;
           figures = _captureOutputs2.figures;
         case 13:
-          console.log("🔧 [Worker] Posting result");
+          console.log("🐍 [Worker] Posting result");
           postResult({
             filename: filename,
             stdout: stdout,
@@ -343,11 +337,11 @@ function captureOutputs(pyodide) {
           figures = figuresResult;
         }
       } catch (e) {
-        console.warn("Failed to capture matplotlib figures:", e.message);
+        console.warn("🐍 Failed to capture matplotlib figures:", e.message);
       }
     }
   } catch (err) {
-    console.warn(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_FAILED, err.message);
+    console.warn("🐍 " + worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_FAILED, err.message);
     if (isErrorCase) stderr = "".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_RETRIEVAL_FAILED, ": ").concat(err.message);
   }
   return {
@@ -367,7 +361,7 @@ var postResult = function postResult(data) {
 var postError = function postError(message) {
   return self.postMessage({
     type: "error",
-    message: "\uD83D\uDD27 [Worker] ".concat(message)
+    message: "\uD83D\uDC0D [Worker] ".concat(message)
   });
 };
 
@@ -451,7 +445,7 @@ function _setupInputHandling() {
               while (1) switch (_context.n) {
                 case 0:
                   prompt = _args.length > 0 && _args[0] !== undefined ? _args[0] : "";
-                  console.log("\uD83D\uDD27 [Worker] Input requested with prompt: \"".concat(prompt, "\""));
+                  console.log("\uD83D\uDC0D [Worker] Input requested with prompt: \"".concat(prompt, "\""));
 
                   // Send input request to main thread
                   self.postMessage({
@@ -461,7 +455,7 @@ function _setupInputHandling() {
 
                   // Return a promise that will be resolved when input is received
                   return _context.a(2, new Promise(function (resolve) {
-                    console.log("🔧 [Worker] Waiting for input from main thread...");
+                    console.log("🐍 [Worker] Waiting for input from main thread...");
                     self.pendingInputResolver = resolve;
                   }));
               }
@@ -497,18 +491,18 @@ function _handleInputResponse() {
         case 1:
           input = data.input;
           try {
-            console.log("🔧 [Worker] Handling input response:", input);
+            console.log("🐍 [Worker] Handling input response:", input);
 
             // Resolve the pending input promise if it exists
             if (self.pendingInputResolver) {
-              console.log("🔧 [Worker] Resolving pending input promise");
+              console.log("🐍 [Worker] Resolving pending input promise");
               self.pendingInputResolver(input);
               self.pendingInputResolver = null;
             } else {
-              console.warn("🔧 [Worker] No pending input resolver found");
+              console.warn("🐍 [Worker] No pending input resolver found");
             }
           } catch (err) {
-            console.error("🔧 [Worker] Failed to provide input:", err);
+            console.error("🐍 [Worker] Failed to provide input:", err);
             worker_input_postError("Failed to provide input: ".concat(err.message));
           }
         case 2:
@@ -521,7 +515,7 @@ function _handleInputResponse() {
 var worker_input_postError = function postError(message) {
   return self.postMessage({
     type: "error",
-    message: "\uD83D\uDD27 [Worker] ".concat(message)
+    message: "\uFFFD\uFFFD [Worker] ".concat(message)
   });
 };
 
@@ -878,7 +872,7 @@ var PyodideFileLoader = /*#__PURE__*/function () {
                         break;
                       }
                       _context.p = 2;
-                      console.log("\uD83D\uDCE6 [PyodideFileLoader] Loading: ".concat(file.url, " (attempt ").concat(retryCount + 1, "/").concat(maxRetries, ")"));
+                      console.log("\uD83D\uDC0D [PyodideFileLoader] Loading: ".concat(file.url, " (attempt ").concat(retryCount + 1, "/").concat(maxRetries, ")"));
                       _context.n = 3;
                       return fetch(file.url);
                     case 3:
@@ -898,18 +892,18 @@ var PyodideFileLoader = /*#__PURE__*/function () {
                       if (dir) {
                         dirExists = pyodide.FS.analyzePath(dir).exists;
                         if (!dirExists) {
-                          console.log("\uD83D\uDCE6 [PyodideFileLoader] Creating directory: ".concat(dir));
+                          console.log("\uD83D\uDC0D [PyodideFileLoader] Creating directory: ".concat(dir));
                           pyodide.FS.mkdir(dir);
                         }
                       }
                       pyodide.FS.writeFile(file.path, content);
-                      console.log("\uD83D\uDCE6 [PyodideFileLoader] Saved: ".concat(file.path));
+                      console.log("\uD83D\uDC0D [PyodideFileLoader] Saved: ".concat(file.path));
                       return _context.a(3, 9);
                     case 6:
                       _context.p = 6;
                       _t = _context.v;
                       retryCount++;
-                      console.warn("\uD83D\uDCE6 [PyodideFileLoader] Attempt ".concat(retryCount, " failed for ").concat(file.url, ":"), _t.message);
+                      console.warn("\uD83D\uDC0D [PyodideFileLoader] Attempt ".concat(retryCount, " failed for ").concat(file.url, ":"), _t.message);
                       if (!(retryCount === maxRetries)) {
                         _context.n = 7;
                         break;
@@ -1166,7 +1160,7 @@ function handleInit(_x3, _x4) {
 }
 function _handleInit() {
   _handleInit = worker_handlers_asyncToGenerator(/*#__PURE__*/worker_handlers_regenerator().m(function _callee2(data, workerState) {
-    var packages, micropipPackages, filesToLoad, pythonModules, _i, _pythonModules, module, fileLoader, toLoad, loaded, micropip, _t, _t2;
+    var packages, micropipPackages, filesToLoad, pythonModules, _i, _pythonModules, module, toLoad, loaded, micropip, _t, _t2;
     return worker_handlers_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -1178,12 +1172,12 @@ function _handleInit() {
           return _context2.a(2);
         case 1:
           packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad;
-          console.log("🔧 [Worker] handleInit called with data:", {
+          console.log("🐍 [Worker] handleInit called with data:", {
             packages: packages ? packages.length : 0,
             micropipPackages: micropipPackages ? micropipPackages.length : 0,
             filesToLoad: filesToLoad ? filesToLoad.length : 0
           });
-          console.log("🔧 [Worker] filesToLoad details:", filesToLoad);
+          console.log("🐍 [Worker] filesToLoad details:", filesToLoad);
           _context2.p = 2;
           // Load Pyodide runtime
           importScripts("".concat(worker_config_PYODIDE_WORKER_CONFIG.PYODIDE_CDN, "pyodide.js"));
@@ -1215,7 +1209,7 @@ function _handleInit() {
               workerState.pyodide.runPython(module.content);
               console.log("\uD83D\uDC0D Loaded and executed bundled Python module: ".concat(module.name));
             } catch (error) {
-              console.warn("\u26A0\uFE0F Could not load bundled Python module ".concat(module.name, ":"), error.message);
+              console.warn("\uD83D\uDC0D Could not load bundled Python module ".concat(module.name, ":"), error.message);
             }
           }
 
@@ -1231,26 +1225,25 @@ function _handleInit() {
             _context2.n = 9;
             break;
           }
-          console.log("\uD83D\uDCE6 [Worker] Loading ".concat(filesToLoad.length, " custom files into filesystem"));
-          console.log("\uD83D\uDCE6 [Worker] Files to load:", filesToLoad);
+          console.log("\uD83D\uDC0D [Worker] Loading ".concat(filesToLoad.length, " custom files into filesystem"));
+          console.log("\uD83D\uDC0D [Worker] Files to load:", filesToLoad);
           _context2.p = 5;
-          fileLoader = new PyodideFileLoader(filesToLoad);
           _context2.n = 6;
-          return fileLoader.loadFiles(workerState.pyodide);
+          return PyodideFileLoader.loadFiles(filesToLoad, workerState.pyodide);
         case 6:
-          console.log("\uD83D\uDCE6 [Worker] Successfully loaded ".concat(filesToLoad.length, " custom files"));
+          console.log("\uD83D\uDC0D [Worker] Successfully loaded ".concat(filesToLoad.length, " custom files"));
           _context2.n = 8;
           break;
         case 7:
           _context2.p = 7;
           _t = _context2.v;
-          console.error("\uD83D\uDCE6 [Worker] Failed to load custom files:", _t);
+          console.error("\uD83D\uDC0D [Worker] Failed to load custom files:", _t);
           throw _t;
         case 8:
           _context2.n = 10;
           break;
         case 9:
-          console.log("\uD83D\uDCE6 [Worker] No custom files to load (filesToLoad: ".concat(filesToLoad, ")"));
+          console.log("\uD83D\uDC0D [Worker] No custom files to load (filesToLoad: ".concat(filesToLoad, ")"));
         case 10:
           if (!((packages === null || packages === void 0 ? void 0 : packages.length) > 0)) {
             _context2.n = 11;

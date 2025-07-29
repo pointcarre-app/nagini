@@ -1,3 +1,25 @@
+# v0.0.7
+
+- **Logging Format Standardization**: Standardized all logging messages to use consistent snake emoji (🐍) prefix
+    - Updated all console.log, console.warn, console.error, and console.info statements across `/src` directory
+    - Replaced various emojis (🔧, 🎛️, 📦, 🏭, 🚨, 🐢, ⚡, etc.) with consistent 🐍 snake emoji
+    - Improved log readability and consistency across all modules
+- **Reduced Verbose Logging**: Removed full file content logging in worker execution
+    - Eliminated logging of entire transformed Python code blocks
+    - Removed ASCII separator lines that cluttered console output
+    - Kept essential execution information while reducing noise
+- **Worker Bundle Update**: Rebuilt worker-dist.js with new logging format
+    - All worker logging now follows consistent snake emoji format
+    - Reduced bundle size by removing verbose code logging
+
+**🌐 jsDelivr CDN URLs for v0.0.7:**
+- **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/src/nagini.js`
+- **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/src/pyodide/worker/worker.js`
+- **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/src/pyodide/worker/worker-dist.js`
+- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/experiments/xterm/`
+
+
+
 # v0.0.5
 
 - **GitHub Migration**: Migrated project to GitHub for better collaboration and open source visibility

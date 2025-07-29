@@ -44,7 +44,7 @@ class PyodideManager {
    * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
   constructor(packages, micropipPackages, filesToLoad, workerPath) {
-    console.log("🎛️ [PyodideManager] Constructor called");
+    console.log("🐍 [PyodideManager] Constructor called");
 
     // Strict type validation using ValidationUtils
     ValidationUtils.validatePackages(packages, 'PyodideManager');
@@ -86,7 +86,7 @@ class PyodideManager {
 
     // Initialize worker asynchronously
     this.initWorker().then(() => {
-      console.log("🎛️ [PyodideManager] Blob worker initialized");
+      console.log("🐍 [PyodideManager] Blob worker initialized");
     }).catch((error) => {
       console.error("🚨 [PyodideManager] Worker initialization failed:", error);
     });
@@ -101,11 +101,11 @@ class PyodideManager {
   validateAndFilterPackages(packages) {
     const validPackages = packages.filter(pkg => {
       if (typeof pkg !== "string") {
-        console.warn(`🎛️ [PyodideManager] Skipping non-string package: ${pkg}`);
+        console.warn(`🐍 [PyodideManager] Skipping non-string package: ${pkg}`);
         return false;
       }
       if (pkg.trim().length === 0) {
-        console.warn(`🎛️ [PyodideManager] Skipping empty package name`);
+        console.warn(`🐍 [PyodideManager] Skipping empty package name`);
         return false;
       }
       return true;
@@ -161,22 +161,22 @@ class PyodideManager {
     // Pyodide initialization complete
     if (data.type === "ready") {
       this.isReady = true;
-      console.log("🎛️ [PyodideManager] Ready for execution");
+      console.log("🐍 [PyodideManager] Ready for execution");
     }
 
     // Pyodide initialization or execution error
     if (data.type === "error") {
-      console.error("🎛️ [PyodideManager] Error:", data.message || data.error || data);
+      console.error("🐍 [PyodideManager] Error:", data.message || data.error || data);
     }
 
     // Package installation warning (non-fatal)
     if (data.type === "warning") {
-      console.warn("🎛️ [PyodideManager] Warning:", data.message || "Unknown warning");
+      console.warn("🐍 [PyodideManager] Warning:", data.message || "Unknown warning");
     }
 
     // Package installation info (optimization messages)
     if (data.type === "info") {
-      console.info("🎛️ [PyodideManager] Info:", data.message || "Unknown info");
+      console.info("🐍 [PyodideManager] Info:", data.message || "Unknown info");
     }
 
     // Handle input-related messages using input module
@@ -186,12 +186,12 @@ class PyodideManager {
     if (data.type === "result") {
       PyodideManagerInput.resetInputState(this);
 
-      console.log("🎛️ [PyodideManager] Execution result received");
-      console.log("🎛️ [PyodideManager] stdout length:", data.stdout ? data.stdout.length : 0);
-      console.log("🎛️ [PyodideManager] stderr length:", data.stderr ? data.stderr.length : 0);
-      console.log("🎛️ [PyodideManager] missive:", data.missive);
-      console.log("🎛️ [PyodideManager] figures:", data.figures ? data.figures.length : 0);
-      console.log("🎛️ [PyodideManager] error:", data.error);
+      console.log("🐍 [PyodideManager] Execution result received");
+      console.log("🐍 [PyodideManager] stdout length:", data.stdout ? data.stdout.length : 0);
+      console.log("🐍 [PyodideManager] stderr length:", data.stderr ? data.stderr.length : 0);
+      console.log("🐍 [PyodideManager] missive:", data.missive);
+      console.log("🐍 [PyodideManager] figures:", data.figures ? data.figures.length : 0);
+      console.log("🐍 [PyodideManager] error:", data.error);
 
       // Create execution entry with all result data
       const entry = {
@@ -290,7 +290,7 @@ class PyodideManager {
    * @returns {void}
    */
   destroy() {
-    console.log("🧹 [PyodideManager] Cleaning up resources");
+    console.log("🐍 [PyodideManager] Cleaning up resources");
     
     // Terminate worker
     if (this.worker) {
@@ -308,7 +308,7 @@ class PyodideManager {
     this.isReady = false;
     this.executionHistory = [];
     
-    console.log("🧹 [PyodideManager] Cleanup complete");
+    console.log("🐍 [PyodideManager] Cleanup complete");
   }
 }
 

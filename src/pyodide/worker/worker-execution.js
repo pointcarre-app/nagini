@@ -23,25 +23,19 @@ export async function handleExecute(data, workerState) {
   let stdout = "", stderr = "", missive = null, figures = [], error = null;
 
   try {
-    console.log("🔧 [Worker] Starting execution for", filename);
+    console.log("🐍 [Worker] Starting execution for", filename);
 
     // Transform code for async execution if needed
     const result = transformCodeForExecution(code, workerState);
-    console.log("🔧 [Worker] Code transformed, needsAsync:", result.needsAsync);
-    console.log("🔧 [Worker] Transformed code length:", result.code.length);
-
-    // LOG THE ACTUAL TRANSFORMED CODE
-    console.log("🔧 [Worker] ACTUAL TRANSFORMED CODE:");
-    console.log("=".repeat(50));
-    console.log(result.code);
-    console.log("=".repeat(50));
+    console.log("🐍 [Worker] Code transformed, needsAsync:", result.needsAsync);
+    console.log("🐍 [Worker] Transformed code length:", result.code.length);
 
     workerState.pyodide.runPython("reset_captures()");
 
     // Execute with or without namespace
     if (namespace !== undefined) {
       console.log(PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_NAMESPACE);
-      console.log("🔧 [Worker] Namespace variables:", Object.keys(namespace));
+      console.log("🐍 [Worker] Namespace variables:", Object.keys(namespace));
       
       // Store original values to restore later
       const originalValues = {};
@@ -57,12 +51,12 @@ export async function handleExecute(data, workerState) {
           keysToRestore.push(key);
         }
         workerState.pyodide.globals.set(key, value);
-        console.log(`🔧 [Worker] Set ${key} = ${value}`);
+        console.log(`🐍 [Worker] Set ${key} = ${value}`);
       }
       
       try {
         if (result.needsAsync) {
-          console.log("🔧 [Worker] Running async with namespace");
+          console.log("🐍 [Worker] Running async with namespace");
           await workerState.pyodide.runPythonAsync(result.code);
         } else {
           workerState.pyodide.runPython(result.code);
@@ -73,35 +67,35 @@ export async function handleExecute(data, workerState) {
           if (originalValues.hasOwnProperty(key)) {
             // Restore original value
             workerState.pyodide.globals.set(key, originalValues[key]);
-            console.log(`🔧 [Worker] Restored ${key} to original value`);
+            console.log(`🐍 [Worker] Restored ${key} to original value`);
           } else {
             // Delete the variable we added
             workerState.pyodide.globals.delete(key);
-            console.log(`🔧 [Worker] Removed ${key} from globals`);
+            console.log(`🐍 [Worker] Removed ${key} from globals`);
           }
         }
       }
     } else {
       console.log(PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_GLOBAL);
       if (result.needsAsync) {
-        console.log("🔧 [Worker] Running async in global scope");
+        console.log("🐍 [Worker] Running async in global scope");
         await workerState.pyodide.runPythonAsync(result.code);
       } else {
         workerState.pyodide.runPython(result.code);
       }
     }
 
-    console.log("🔧 [Worker] Execution completed, capturing outputs");
+    console.log("🐍 [Worker] Execution completed, capturing outputs");
     ({ stdout, stderr, missive, figures } = captureOutputs(workerState.pyodide));
-    console.log("🔧 [Worker] Captured outputs - stdout:", stdout.length, "stderr:", stderr.length, "missive:", missive, "figures:", figures.length);
+    console.log("🐍 [Worker] Captured outputs - stdout:", stdout.length, "stderr:", stderr.length, "missive:", missive, "figures:", figures.length);
 
   } catch (err) {
-    console.error("🔧 [Worker] Execution error:", err);
+    console.error("🐍 [Worker] Execution error:", err);
     error = { name: err.name || "PythonError", message: err.message || "Unknown execution error" };
     ({ stdout, stderr, figures } = captureOutputs(workerState.pyodide, true));
   }
 
-  console.log("🔧 [Worker] Posting result");
+  console.log("🐍 [Worker] Posting result");
   postResult({
     filename, stdout, stderr, missive, figures, error,
     time: Date.now() - start,
@@ -159,11 +153,11 @@ export function captureOutputs(pyodide, isErrorCase = false) {
           figures = figuresResult;
         }
       } catch (e) {
-        console.warn("Failed to capture matplotlib figures:", e.message);
+        console.warn("🐍 Failed to capture matplotlib figures:", e.message);
       }
     }
   } catch (err) {
-    console.warn(PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_FAILED, err.message);
+    console.warn("🐍 " + PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_FAILED, err.message);
     if (isErrorCase) stderr = `${PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_RETRIEVAL_FAILED}: ${err.message}`;
   }
 
@@ -172,7 +166,7 @@ export function captureOutputs(pyodide, isErrorCase = false) {
 
 // Helper functions for messaging
 const postResult = (data) => self.postMessage({ type: "result", ...data });
-const postError = (message) => self.postMessage({ type: "error", message: `🔧 [Worker] ${message}` });
+const postError = (message) => self.postMessage({ type: "error", message: `🐍 [Worker] ${message}` });
 
 /**
  * Validate that worker is properly initialized
