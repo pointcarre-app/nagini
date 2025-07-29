@@ -12,6 +12,12 @@
 - **Enhanced Documentation**: Updated docs with xterm integration examples
 - **ES6 Module Support**: Fixed module import issues for better browser compatibility
 
+**🌐 jsDelivr CDN URLs for v0.0.5:**
+- **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/src/nagini.js`
+- **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/src/pyodide/worker/worker.js`
+- **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/src/pyodide/worker/worker-dist.js`
+- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/experiments/xterm/`
+
 
 
 # v0.0.4
