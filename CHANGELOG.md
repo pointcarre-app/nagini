@@ -1,3 +1,15 @@
+# v0.0.8
+
+- **Code Refactoring**: Removed redundant `Nagini` export in `src/nagini.js` to prevent double exports and improve code clarity.
+
+**🌐 jsDelivr CDN URLs for v0.0.8:**
+- **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/src/nagini.js`
+- **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/src/pyodide/worker/worker.js`
+- **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/src/pyodide/worker/worker-dist.js`
+- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/experiments/xterm/`
+
+
+
 # v0.0.7
 
 - **Logging Format Standardization**: Standardized all logging messages to use consistent snake emoji (🐍) prefix

@@ -110,5 +110,3 @@ export const Nagini = {
       return Nagini.getSupportedBackends().includes(backend.toLowerCase());
     }
   };
-
-  export { Nagini };
