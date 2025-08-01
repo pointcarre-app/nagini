@@ -37,43 +37,16 @@ export async function handleExecute(data, workerState) {
       console.log(PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_NAMESPACE);
       console.log("🐍 [Worker] Namespace variables:", Object.keys(namespace));
       
-      // Store original values to restore later
-      const originalValues = {};
-      const keysToRestore = [];
-      
-      // Temporarily set namespace variables
-      for (const [key, value] of Object.entries(namespace)) {
-        // Store original value if it exists
-        if (workerState.pyodide.globals.has(key)) {
-          originalValues[key] = workerState.pyodide.globals.get(key);
-          keysToRestore.push(key);
-        } else {
-          keysToRestore.push(key);
-        }
-        workerState.pyodide.globals.set(key, value);
-        console.log(`🐍 [Worker] Set ${key} = ${value}`);
-      }
-      
+      const pyodideNamespace = workerState.pyodide.toPy(namespace);
       try {
         if (result.needsAsync) {
           console.log("🐍 [Worker] Running async with namespace");
-          await workerState.pyodide.runPythonAsync(result.code);
+          await workerState.pyodide.runPythonAsync(result.code, { globals: pyodideNamespace });
         } else {
-          workerState.pyodide.runPython(result.code);
+          workerState.pyodide.runPython(result.code, { globals: pyodideNamespace });
         }
       } finally {
-        // Clean up namespace variables
-        for (const key of keysToRestore) {
-          if (originalValues.hasOwnProperty(key)) {
-            // Restore original value
-            workerState.pyodide.globals.set(key, originalValues[key]);
-            console.log(`🐍 [Worker] Restored ${key} to original value`);
-          } else {
-            // Delete the variable we added
-            workerState.pyodide.globals.delete(key);
-            console.log(`🐍 [Worker] Removed ${key} from globals`);
-          }
-        }
+        pyodideNamespace.destroy();
       }
     } else {
       console.log(PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_GLOBAL);

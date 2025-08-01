@@ -117,27 +117,24 @@ export class PyodideManagerInput {
     // Handle input request from worker
     if (data.type === "input_required") {
       console.log("🐍 [PyodideManagerInput] Input required:", data.prompt || "No prompt");
-      
+      manager.inputState.isWaitingForInput = true;
+      manager.inputState.currentPrompt = data.prompt;
+
       // Check if we have queued input
-      if (manager.queuedInput !== null) {
-        const input = manager.queuedInput;
-        manager.queuedInput = null;
+      if (manager.inputState.inputQueue.length > 0) {
+        const input = manager.inputState.inputQueue.shift(); // Dequeue the next input
         console.log("🐍 [PyodideManagerInput] Providing queued input:", input);
-        manager.worker.postMessage({ type: "input_response", input });
+        this.provideInput(manager, input);
       } else {
         // Call the input callback if set
         console.log("🐍 [PyodideManagerInput] Calling input callback");
-        if (manager.inputCallback) {
-          manager.inputCallback(data.prompt || "");
+        if (manager.inputState.inputCallback) {
+          manager.inputState.inputCallback(data.prompt || "");
         } else {
           console.warn(
             "🐍 [PyodideManagerInput] No input callback set and no queued input. " +
             "Use setInputCallback() or queueInput() to handle input requests."
           );
-          console.warn(
-            "🐍 [PyodideManagerInput] Providing empty string as fallback input."
-          );
-          manager.worker.postMessage({ type: "input_response", input: "" });
         }
       }
     }

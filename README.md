@@ -179,6 +179,16 @@ npm run build-dev
 
 ## Interactive Input
 
+Nagini provides robust, asynchronous support for Python's built-in `input()` function, allowing for both programmatic and user-driven interaction without blocking the main browser thread.
+
+### How It Works
+1.  **Code Transformation**: Code containing `input()` is automatically converted to an `async` function.
+2.  **Pause and Wait**: The Python worker pauses execution and sends an `input_required` message to the main thread.
+3.  **Data Provision**: The main thread provides the input from a queue or a user-facing callback.
+4.  **Resume**: The worker receives the input and resumes Python execution.
+
+### Programmatic Input
+
 ```javascript
 // Queue inputs programmatically
 manager.queueInput("Alice");
@@ -189,7 +199,11 @@ name = input("What's your name? ")
 age = int(input("How old are you? "))
 print(f"Hello {name}! You are {age} years old.")
 `);
+```
 
+### Interactive Callbacks
+
+```javascript
 // Or use interactive callbacks
 manager.setInputCallback(async (prompt) => {
     const input = window.prompt(prompt);

@@ -12,6 +12,14 @@ This directory contains the Pyodide web worker modules and the build system for 
 - `worker-config.js` - Configuration constants
 - `worker-dist.js` - **Bundled output file** (generated)
 
+### Input Handling Flow
+The `input()` function in Python is handled via an asynchronous workflow:
+1. `worker-input.js` replaces Python's `input()` with a function that sends an `input_required` message to the main thread.
+2. The worker then pauses, awaiting a promise to be resolved.
+3. The main thread's `manager-input.js` catches the message, gets data from the queue or a callback, and sends it back.
+4. The worker receives the response, resolves the promise, and resumes Python execution.
+5. It is critical that the bundled `worker-dist.js` is kept up-to-date with any changes to the input handling logic.
+
 ## Build Process
 
 ### Prerequisites

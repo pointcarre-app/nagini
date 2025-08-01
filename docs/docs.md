@@ -449,7 +449,16 @@ Properties available: `isReady`, `executionHistory`, `packages`.
 
 ### Interactive Input System
 
-Nagini provides comprehensive support for Python's `input()` function with multiple interaction modes:
+Nagini provides comprehensive support for Python's `input()` function with multiple interaction modes. The system is fully asynchronous, preventing the browser's UI from freezing while waiting for user input.
+
+**How It Works:**
+1.  When `input()` is called in Python, the code is transformed to an `async` function.
+2.  The worker sends an `input_required` message to the main thread and pauses its execution, waiting for a JavaScript promise to resolve.
+3.  The main thread's `PyodideManager` receives this message and uses either the `inputQueue` or an `inputCallback` to get the required data.
+4.  The main thread sends the data back to the worker via an `input_response` message.
+5.  The worker resolves the pending promise, and the Python code resumes execution with the provided input.
+
+This asynchronous flow is critical for a non-blocking user experience.
 
 #### 1. Programmatic Input Queue
 
@@ -1232,6 +1241,13 @@ For complete details, see the [LICENSE](LICENSE) file.
     1. Add the package to the `packages` or `micropipPackages` array during manager creation.
     2. Check the Pyodide or PyPI documentation for package compatibility.
     3. Verify the `filesToLoad` configuration for custom modules.
+
+**`input()` returns an empty string, or `ValueError: invalid literal for int() with base 10: ''`**
+- **Cause**: This indicates a breakdown in the asynchronous input handling mechanism. The Python code is not correctly pausing to wait for user input and instead receives an empty string immediately. This is usually caused by an issue in `manager-input.js` where the `input_required` message from the worker is not handled correctly, failing to pull from the `inputQueue` or trigger the `inputCallback`.
+- **Solution**:
+    1. Ensure you are using the latest version of Nagini, as this was a known issue in older versions.
+    2. If developing locally, ensure `src/pyodide/manager/manager-input.js` correctly references `manager.inputState.inputQueue` and properly dequeues items. The interactive test in `scenery/index.html` is a good way to verify this functionality.
+    3. Verify that the worker bundle (`worker-dist.js`) is up-to-date by running `npm run build` in the worker directory.
 
 ### Reporting Bugs
 
