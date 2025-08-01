@@ -7,6 +7,7 @@ import { PyodideIntegrationTests } from './tests/pyodide-integration-tests.js';
 import { ValidationUtilsTests } from './tests/validation-utils-tests.js';
 import { UtilitiesTests } from './tests/utilities-tests.js';
 import { BrythonManagerTests } from './tests/brython-manager-tests.js';
+import { FailureTests } from './tests/failure-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
@@ -27,6 +28,7 @@ const filesToLoad = [
 ];
 
 let outputDiv = document.getElementById("output");
+let testResults = [];
 
 // Store original console methods
 const originalLog = console.log;
@@ -69,10 +71,67 @@ function updateOutputDisplay() {
     }
 }
 
+function recordTestResult(className, testName, status, error = null) {
+    testResults.push({
+        className,
+        testName,
+        status,
+        error: error ? error.toString() : null,
+        timestamp: new Date().toISOString()
+    });
+}
 
+function finalizeTests() {
+    const resultsContainer = document.getElementById('test-results-json');
+    if (resultsContainer) {
+        resultsContainer.textContent = JSON.stringify(testResults, null, 2);
+    }
+    console.log("All tests completed. Results captured.");
+}
+
+async function runTest(testFunction, ...args) {
+    const testName = args[0] || testFunction.name;
+    const className = args[1] || "Unknown";
+    try {
+        await testFunction(...args.slice(2));
+        recordTestResult(className, testName, 'pass');
+    } catch (error) {
+        recordTestResult(className, testName, 'fail', error);
+        throw error;
+    }
+}
 
 // Global manager instance
 let manager = null;
+
+// Global function to update test status
+window.updateTestStatus = function(testId, status, error = null) {
+    const element = document.getElementById(testId);
+    if (element) {
+        const tr = element.closest('tr');
+        if (tr) {
+            let criticValue;
+            if (status === 'pass') {
+                criticValue = 'wrapp';
+            } else if (status === 'fail') {
+                if (error && error.toString().includes('ASSERTION FAILED')) {
+                    criticValue = 'flop';
+                } else {
+                    criticValue = 'glitch';
+                }
+            }
+            if (criticValue) {
+                tr.setAttribute('data-main_critic', criticValue);
+            }
+        }
+
+        const testName = element.closest('tr').querySelector('td:nth-child(3)').innerText.split('\n')[0];
+        const className = element.closest('tr').querySelector('td:nth-child(2)').innerText;
+        recordTestResult(className, testName, status, error);
+        element.className = `test-status-${status}`;
+        element.textContent = status === 'pass' ? '✅' : status === 'fail' ? '❌' : '⏳';
+    }
+};
 
 async function runDemo() {
     try {
@@ -208,33 +267,61 @@ async function runDemo() {
         console.log("\nPyodideIntegration Tests");
         console.log("=" .repeat(50));
 
-        console.log("1️⃣ complex input data scenarios");
-        await PyodideIntegrationTests.testComplexInputData(manager);
-        window.updateTestStatus('status-integration-1', 'pass');
+        try {
+            console.log("1️⃣ complex input data scenarios");
+            await PyodideIntegrationTests.testComplexInputData(manager);
+            window.updateTestStatus('status-integration-1', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-integration-1', 'fail', e);
+        }
 
-        console.log("2️⃣ data visualization workflow");
-        await PyodideIntegrationTests.testDataVisualizationWorkflow(manager);
-        window.updateTestStatus('status-integration-2', 'pass');
+        try {
+            console.log("2️⃣ data visualization workflow");
+            await PyodideIntegrationTests.testDataVisualizationWorkflow(manager);
+            window.updateTestStatus('status-integration-2', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-integration-2', 'fail', e);
+        }
 
-        console.log("3️⃣ filesystem and import workflow");
-        await PyodideIntegrationTests.testFileSystemAndImportWorkflow(manager);
-        window.updateTestStatus('status-integration-3', 'pass');
+        try {
+            console.log("3️⃣ filesystem and import workflow");
+            await PyodideIntegrationTests.testFileSystemAndImportWorkflow(manager);
+            window.updateTestStatus('status-integration-3', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-integration-3', 'fail', e);
+        }
 
-        console.log("4️⃣ mixed execution scenarios");
-        await PyodideIntegrationTests.testMixedExecutionScenarios(manager);
-        window.updateTestStatus('status-integration-4', 'pass');
+        try {
+            console.log("4️⃣ mixed execution scenarios");
+            await PyodideIntegrationTests.testMixedExecutionScenarios(manager);
+            window.updateTestStatus('status-integration-4', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-integration-4', 'fail', e);
+        }
 
-        console.log("5️⃣ advanced matplotlib workflow");
-        await PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager);
-        window.updateTestStatus('status-integration-5', 'pass');
+        try {
+            console.log("5️⃣ advanced matplotlib workflow");
+            await PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager);
+            window.updateTestStatus('status-integration-5', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-integration-5', 'fail', e);
+        }
 
-        console.log("6️⃣ micropip package installation");
-        await PyodideIntegrationTests.testMicropipPackageInstallation(manager);
-        window.updateTestStatus('status-integration-6', 'pass');
+        try {
+            console.log("6️⃣ micropip package installation");
+            await PyodideIntegrationTests.testMicropipPackageInstallation(manager);
+            window.updateTestStatus('status-integration-6', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-integration-6', 'fail', e);
+        }
 
-        console.log("7️⃣ antlr4 and sympy interaction");
-        await PyodideIntegrationTests.testAntlr4AndSympyInteraction(manager);
-        window.updateTestStatus('status-integration-7', 'pass');
+        try {
+            console.log("7️⃣ antlr4 and sympy interaction");
+            await PyodideIntegrationTests.testAntlr4AndSympyInteraction(manager);
+            window.updateTestStatus('status-integration-7', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-integration-7', 'fail', e);
+        }
 
         // ==============================================
         // BRYTHON BACKEND TESTS
@@ -307,13 +394,35 @@ async function runDemo() {
         await UtilitiesTests.test3StringManipulationUtilities();
         window.updateTestStatus('status-utilities-3', 'pass');
 
-        console.log("\nALL TESTS PASSED!");
+        // Failure Tests
+        console.log("\nFailure Simulation Tests");
+        console.log("=" .repeat(50));
+        
+        try {
+            console.log("1️⃣ Flop Test (Assertion Failure)");
+            await FailureTests.testFlop(manager);
+            window.updateTestStatus('status-failure-1', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-failure-1', 'fail', e);
+        }
+
+        try {
+            console.log("2️⃣ Glitch Test (Runtime Error)");
+            await FailureTests.testGlitch(manager);
+            window.updateTestStatus('status-failure-2', 'pass');
+        } catch (e) {
+            window.updateTestStatus('status-failure-2', 'fail', e);
+        }
+
+        console.log("\nALL TESTS COMPLETED (some may have failed as expected)!");
         console.log("=" .repeat(50));
 
     } catch (error) {
         console.log(`\nTESTS FAILED: ${error.message}`);
         console.log("=" .repeat(50));
         throw error;
+    } finally {
+        finalizeTests();
     }
 }
 

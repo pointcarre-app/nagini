@@ -1,0 +1,306 @@
+[
+  {
+    "className": "Nagini",
+    "testName": "createManager(packages, filesToLoad, pyodideInitPath, workerPath)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:01.681Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "Nagini",
+    "testName": "waitForReady(manager)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:06.949Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "Nagini",
+    "testName": "executeFromUrl(url, manager)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.377Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "Nagini",
+    "testName": "getSupportedBackends()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.377Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "Nagini",
+    "testName": "isBackendSupported(backend)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.377Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "executeAsync(filename, code)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.379Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "executeAsync(filename, code, namespace)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.381Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "executeAsync(filename, code, namespace)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.383Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "executionHistory",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.384Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "worker",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.384Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "isReady",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.384Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "packages",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.384Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "filesToLoad",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.384Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "pyodideInitPath",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.384Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "workerPath",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.385Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "executeAsync(filename, code)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.386Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "executeAsync(filename, code)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.570Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideManager",
+    "testName": "fs(operation, params)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.571Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideFileLoader",
+    "testName": "loadFiles(pyodide, filesToLoad)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.773Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideFileLoader",
+    "testName": "retry logic and file operations",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.774Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideFileLoader",
+    "testName": "error handling",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.776Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideIntegration",
+    "testName": "testComplexInputData()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:08.787Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideIntegration",
+    "testName": "testDataVisualizationWorkflow()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.010Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideIntegration",
+    "testName": "testFileSystemAndImportWorkflow()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.014Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideIntegration",
+    "testName": "testMixedExecutionScenarios()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.019Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideIntegration",
+    "testName": "testAdvancedMatplotlibWorkflow()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.404Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideIntegration",
+    "testName": "testMicropipPackageInstallation()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.455Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "PyodideIntegration",
+    "testName": "testAntlr4AndSympyInteraction()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.459Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "BrythonManager",
+    "testName": "executeAsync(filename, code)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.600Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "ValidationUtils",
+    "testName": "validateArray(array, componentName)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.600Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "ValidationUtils",
+    "testName": "validateString(str, componentName)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.600Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "ValidationUtils",
+    "testName": "validateBackend(backend, componentName)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.601Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "ValidationUtils",
+    "testName": "checkDangerousPatterns(code)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.601Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "TestUtils",
+    "testName": "assert(condition, message)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.601Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "TestUtils",
+    "testName": "assertEquals(expected, actual, message)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.602Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "TestUtils",
+    "testName": "assertContains(haystack, needle, message)",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.602Z",
+    "main_critic": "wrapp"
+  },
+  {
+    "className": "FailureTests",
+    "testName": "testFlop()",
+    "status": "fail",
+    "error": "Error: ASSERTION FAILED: ASSERTION FAILED: 1 + 1 should be 3 (intentionally wrong)\n  Expected: undefined\n  Actual: 3",
+    "timestamp": "2025-08-01T17:25:09.604Z",
+    "main_critic": "flop"
+  },
+  {
+    "className": "FailureTests",
+    "testName": "testGlitch()",
+    "status": "pass",
+    "error": null,
+    "timestamp": "2025-08-01T17:25:09.608Z",
+    "main_critic": "wrapp"
+  }
+]

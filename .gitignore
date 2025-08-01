@@ -8,3 +8,8 @@
 # .vscode
 .DS_Store
 *node_modules*
+/scenery/env/
+/scenery/__pycache__/
+
+# Node.js
+/node_modules/

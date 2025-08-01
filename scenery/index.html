@@ -625,6 +625,36 @@
           </td>
           <td id="status-utilities-3" class="test-status-pending">⏳</td>
         </tr>
+        <!-- Failure Tests -->
+        <tr class="test-group-integration">
+          <td colspan="4">
+            <strong>Failure Simulation Tests</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>1️⃣</td>
+          <td>
+            <code>FailureTests</code>
+          </td>
+          <td>
+            <code>testFlop()</code>
+            <br />
+            Intentionally fails an assertion to test the 'flop' state.
+          </td>
+          <td id="status-failure-1" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td>2️⃣</td>
+          <td>
+            <code>FailureTests</code>
+          </td>
+          <td>
+            <code>testGlitch()</code>
+            <br />
+            Intentionally causes a runtime error to test the 'glitch' state.
+          </td>
+          <td id="status-failure-2" class="test-status-pending">⏳</td>
+        </tr>
       </tbody>
     </table>
     <!---- <h2>Run tests</h2> ---->
@@ -723,6 +753,9 @@ turtle.done()</textarea>
     <button onclick="executeTurtleCode()">Execute Turtle Code</button>
     <pre id="turtle-code-output"></pre>
     <div id="turtle"></div>
+
+    <!-- Hidden container for test results -->
+    <pre id="test-results-json" style="display:none;"></pre>
 
   </body>
 </html>

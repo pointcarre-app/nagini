@@ -155,6 +155,7 @@ async function executeMatplotlibCode() {
 
         // Execute the code
         const result = await mgr.executeAsync('interactive_matplotlib_code', code);
+        console.log("Matplotlib execution result:", result);
 
         // Display results
         if (result.stdout) {

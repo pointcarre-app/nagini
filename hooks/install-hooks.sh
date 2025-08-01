@@ -23,3 +23,4 @@ echo "✅ Git hooks installed successfully!"
 echo ""
 echo "The pre-commit hook will now validate EditorConfig rules before each commit."
 echo "To bypass validation, use: git commit --no-verify"
+cp hooks/pre-push .git/hooks/
