@@ -97,6 +97,14 @@
         .test-status-fail {
             text-align: center;
             color: #dc3545;
+            /* Red for Flop */
+            font-weight: bold;
+        }
+
+        .test-status-glitch {
+            text-align: center;
+            color: #ffc107;
+            /* Amber for Glitch */
             font-weight: bold;
         }
 
@@ -138,6 +146,12 @@
         </tr>
       </thead>
       <tbody>
+        <!--
+          Test Status Mapping:
+          - data-main_critic="wrapp":  .test-status-pass   -> ✅ (Pass)
+          - data-main_critic="flop":   .test-status-fail   -> ❌ (Assertion Failure)
+          - data-main_critic="glitch": .test-status-glitch -> 🐛 (Execution Error)
+        -->
         <!-- Nagini Tests -->
         <tr class="test-group-nagini">
           <td colspan="4">
@@ -666,7 +680,7 @@
             const element = document.getElementById(testId);
             if (element) {
                 element.className = `test-status-${status}`;
-                element.textContent = status === 'pass' ? '✅' : status === 'fail' ? '❌' : '⏳';
+                element.textContent = status === 'pass' ? '✅' : status === 'fail' ? '❌' : status === 'glitch' ? '🐛' : '⏳';
             }
         };
 

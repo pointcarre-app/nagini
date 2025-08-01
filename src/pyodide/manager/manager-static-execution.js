@@ -172,40 +172,37 @@ export class PyodideManagerStaticExecutor {
         return;
       }
 
-      setHandleMessage(function (data) {
-        try {
-          // Call original handler for normal processing
-          originalHandler.call(this, data);
-
-          // Check if this is the result we're waiting for
-          if (data.type === "result") {
-            clearTimeout(timeoutId);
-
-            // Get the result from context (original handler just added it)
-            const result = executionHistory[executionHistory.length - 1];
-
-            if (!result) {
-              reject(new Error("⚡ [PyodideManagerStaticExecutor] No execution result found in history"));
-              return;
-            }
-
-            resolve(result);
-            // Restore original handler
-            setHandleMessage(originalHandler);
-          } else if (data.type === "error") {
-            clearTimeout(timeoutId);
-            setHandleMessage(originalHandler);
-            reject(
-              new Error(
-                `⚡ [PyodideManagerStaticExecutor] Execution error: ${data.message || data.error || 'Unknown error'}`
-              )
-            );
+      setHandleMessage(function(data) {
+          try {
+              // Call original handler for normal processing
+              originalHandler.call(this, data);
+              
+              // Check if this is the result we're waiting for
+              if (data.type === "result") {
+                  clearTimeout(timeoutId);
+                  setHandleMessage(originalHandler); // Restore original handler
+                  
+                  const result = executionHistory[executionHistory.length - 1];
+                  // If the result contains an error from Python, reject the promise
+                  if (result && result.error) {
+                      reject(new Error(`Python execution error: ${result.error.message}`));
+                  } else {
+                      resolve(result);
+                  }
+              } else if (data.type === "error") {
+                  clearTimeout(timeoutId);
+                  setHandleMessage(originalHandler);
+                  reject(
+                    new Error(
+                      `⚡ [PyodideManagerStaticExecutor] Execution error: ${data.message || data.error || 'Unknown error'}`
+                    )
+                  );
+              }
+          } catch (error) {
+              clearTimeout(timeoutId);
+              setHandleMessage(originalHandler);
+              reject(new Error(`⚡ [PyodideManagerStaticExecutor] Handler error: ${error.message}`));
           }
-        } catch (error) {
-          clearTimeout(timeoutId);
-          setHandleMessage(originalHandler);
-          reject(new Error(`⚡ [PyodideManagerStaticExecutor] Handler error: ${error.message}`));
-        }
       });
 
       // Send execution message to worker

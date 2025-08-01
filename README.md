@@ -527,6 +527,16 @@ The unified test suite covers all core features:
 - **Automatic blob worker creation**
 - **Dual backend comparison**
 
+### Automated Release Validation
+
+To ensure the stability of every release, Nagini uses a sophisticated, automated test harness that validates the entire application before any new version can be tagged.
+
+-   **Selenium & Chrome**: A Selenium script runs a headless Chrome browser to execute the full test suite in a real-world environment.
+-   **Failure Simulation**: The test suite includes tests that are *designed* to fail (an assertion failure, or "flop", and a runtime error, or "glitch"). This ensures our error-handling and reporting systems are working correctly.
+-   **`pre-push` Git Hook**: When a new tag is pushed, a `pre-push` hook automatically runs the Selenium tests. It checks the JSON output to ensure that only the expected "flop" and "glitch" tests have failed. If any other test fails, the push is aborted.
+
+This system guarantees that no broken code can ever be tagged for release.
+
 ## Dependencies
 
 - **Pyodide v0.27.7** - Python runtime via WebAssembly (Mozilla Public License 2.0)
