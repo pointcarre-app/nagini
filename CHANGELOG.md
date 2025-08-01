@@ -10,9 +10,10 @@
 - **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/src/pyodide/worker/worker-dist.js`
 - **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/experiments/xterm/`
 
+> [!DANGER]
+> Versions prior to `v0.0.10` are unstable due to a critical bug in the `input()` handling system. These versions should not be used in production.
 
-
-# v0.0.9
+# v0.0.9-unstable
 
 - **Bug Fix**: Corrected an issue where `PyodideFileLoader.loadFiles` was called as a static method instead of an instance method within the web worker, preventing custom files from being loaded.
 - **Worker Bundle Update**: Rebuilt `worker-dist.js` to include the file loader fix.
@@ -25,7 +26,7 @@
 
 
 
-# v0.0.8
+# v0.0.8-unstable
 
 - **Code Refactoring**: Removed redundant `Nagini` export in `src/nagini.js` to prevent double exports and improve code clarity.
 
@@ -37,7 +38,7 @@
 
 
 
-# v0.0.7
+# v0.0.7-unstable
 
 - **Logging Format Standardization**: Standardized all logging messages to use consistent snake emoji (🐍) prefix
     - Updated all console.log, console.warn, console.error, and console.info statements across `/src` directory
@@ -59,7 +60,7 @@
 
 
 
-# v0.0.5
+# v0.0.5-unstable
 
 - **GitHub Migration**: Migrated project to GitHub for better collaboration and open source visibility
 - **Xterm Integration**: Added new xterm.js terminal experiment in `/experiments/xterm/`
@@ -81,26 +82,26 @@
 
 
 
-# v0.0.4
+# v0.0.4-unstable
 
 - No dual licensing: only AGPLv3
 
 
 
-# v0.0.3
+# v0.0.3-unstable
 
 - Added micropip support
     - Added antlr4-python3-runtime support
 
 
-# v0.0.2
+# v0.0.2-unstable
 
 - Fixed missive handling (ie parse at last moment, outside of the manager)
 - Fixed `/scenery` 
 - Fixed `/tests` (ie Flask cross origin)
 
 
-# v0.0.1 
+# v0.0.1-unstable 
 
 - Initial release
 - Worker-based architecture
