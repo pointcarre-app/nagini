@@ -169,7 +169,8 @@ async function handleInit(data, workerState) {
       console.log(`🐍 [Worker] Files to load:`, filesToLoad);
       
       try {
-        await PyodideFileLoader.loadFiles(filesToLoad, workerState.pyodide);
+        const loader = new PyodideFileLoader(filesToLoad);
+        await loader.loadFiles(workerState.pyodide);
         console.log(`🐍 [Worker] Successfully loaded ${filesToLoad.length} custom files`);
       } catch (error) {
         console.error(`🐍 [Worker] Failed to load custom files:`, error);

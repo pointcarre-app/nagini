@@ -1160,7 +1160,7 @@ function handleInit(_x3, _x4) {
 }
 function _handleInit() {
   _handleInit = worker_handlers_asyncToGenerator(/*#__PURE__*/worker_handlers_regenerator().m(function _callee2(data, workerState) {
-    var packages, micropipPackages, filesToLoad, pythonModules, _i, _pythonModules, module, toLoad, loaded, micropip, _t, _t2;
+    var packages, micropipPackages, filesToLoad, pythonModules, _i, _pythonModules, module, loader, toLoad, loaded, micropip, _t, _t2;
     return worker_handlers_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -1228,8 +1228,9 @@ function _handleInit() {
           console.log("\uD83D\uDC0D [Worker] Loading ".concat(filesToLoad.length, " custom files into filesystem"));
           console.log("\uD83D\uDC0D [Worker] Files to load:", filesToLoad);
           _context2.p = 5;
+          loader = new PyodideFileLoader(filesToLoad);
           _context2.n = 6;
-          return PyodideFileLoader.loadFiles(filesToLoad, workerState.pyodide);
+          return loader.loadFiles(workerState.pyodide);
         case 6:
           console.log("\uD83D\uDC0D [Worker] Successfully loaded ".concat(filesToLoad.length, " custom files"));
           _context2.n = 8;
