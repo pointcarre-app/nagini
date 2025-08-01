@@ -58,32 +58,13 @@ def run_scenery_tests():
         # Validate the test outcomes
         failures = [r for r in results if r["status"] == "fail"]
 
-        expected_failures = ["testFlop()", "testGlitch()"]
-        actual_failure_names = {f["testName"] for f in failures}
-
-        unexpected_failures = [f for f in failures if f["testName"] not in expected_failures]
-
-        flop_failed = "testFlop()" in actual_failure_names
-        glitch_failed = "testGlitch()" in actual_failure_names
-
-        if unexpected_failures:
-            print("❌ UNEXPECTED FAILURES FOUND:")
-            for f in unexpected_failures:
+        if failures:
+            print("❌ Programmatic tests failed:")
+            for f in failures:
                 print(f"  - {f['className']} - {f['testName']}: {f['error']}")
             return False
 
-        if not flop_failed:
-            print("❌ VALIDATION FAILED: The 'flop' test was expected to fail, but it passed.")
-            return False
-
-        if not glitch_failed:
-            print("❌ VALIDATION FAILED: The 'glitch' test was expected to fail, but it passed.")
-            return False
-
-        print("\n✅ All tests behaved as expected.")
-        print("   - 'flop' test failed as intended (assertion error).")
-        print("   - 'glitch' test failed as intended (runtime error).")
-        print("   - All other tests passed.")
+        print("\n✅ All programmatic scenery tests passed!")
         return True
 
     except Exception:

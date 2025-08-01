@@ -1,45 +1,28 @@
 #!/bin/bash
-# Pre-commit hook to validate EditorConfig rules
+# Pre-commit hook to run all validation steps.
 
-# Get the directory of this script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+# 1. Validate EditorConfig rules
+echo "🔍 Validating EditorConfig rules..."
+VALIDATOR_SCRIPT="$(git rev-parse --show-toplevel)/hooks/validate_editorconfig.py"
+if ! python3 "$VALIDATOR_SCRIPT"; then
+    echo "❌ EditorConfig validation failed. Aborting commit."
+    exit 1
+fi
+echo "✅ EditorConfig validation passed."
 
-# Change to the repository root
-cd "$ROOT_DIR"
+# 2. Run Scenery tests
+echo -e "\n🐍 Running Scenery test suite..."
+SCENERY_DIR="$(git rev-parse --show-toplevel)/scenery"
+cd "$SCENERY_DIR"
 
-# Check if Python is available
-if ! command -v python3 &> /dev/null; then
-    echo "❌ Python 3 is required but not found"
+# Activate virtual environment
+source env/bin/activate
+
+# Run tests
+if ! python run_tests.py; then
+    echo "❌ Scenery tests failed. Aborting commit."
     exit 1
 fi
 
-# Check if validator script exists
-if [ ! -f "hooks/validate_editorconfig.py" ]; then
-    echo "❌ hooks/validate_editorconfig.py not found"
-    exit 1
-fi
-
-# Get list of staged files
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
-
-if [ -z "$STAGED_FILES" ]; then
-    echo "✅ No staged files to validate"
-    exit 0
-fi
-
-echo "🔍 Validating EditorConfig rules for staged files..."
-
-# Run validator on staged files
-python3 hooks/validate_editorconfig.py $STAGED_FILES
-
-# Check exit code
-if [ $? -ne 0 ]; then
-    echo ""
-    echo "❌ EditorConfig validation failed!"
-    echo "Please fix the issues above or use 'git commit --no-verify' to bypass."
-    exit 1
-fi
-
-echo "✅ All staged files comply with EditorConfig rules"
+echo "✅ Scenery tests passed."
 exit 0

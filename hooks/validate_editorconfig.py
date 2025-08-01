@@ -199,7 +199,8 @@ class EditorConfigValidator:
                 dirs[:] = [
                     d
                     for d in dirs
-                    if not d.startswith(".") and d not in ["node_modules", "__pycache__", "hooks"]
+                    if not d.startswith(".")
+                    and d not in ["node_modules", "__pycache__", "hooks", "env"]
                 ]
 
                 for file in files:

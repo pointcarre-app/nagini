@@ -1,26 +1,17 @@
 #!/bin/bash
-# Script to install git hooks
 
-# Make sure we're in a git repository
-if [ ! -d ".git" ]; then
-    echo "❌ Not in a git repository"
-    exit 1
-fi
+# Define the hooks directory
+HOOKS_DIR="hooks"
+GIT_HOOKS_DIR=".git/hooks"
 
-# Create .git/hooks directory if it doesn't exist
-mkdir -p .git/hooks
+# Ensure the .git/hooks directory exists
+mkdir -p "$GIT_HOOKS_DIR"
 
-# Copy the pre-commit hook
-cp hooks/pre-commit .git/hooks/pre-commit
-
-# Make it executable
-chmod +x .git/hooks/pre-commit
-
-# Make the validator script executable
-chmod +x hooks/validate_editorconfig.py
+# Copy the pre-commit hook and make it executable
+cp "$HOOKS_DIR/pre-commit" "$GIT_HOOKS_DIR/"
+chmod +x "$GIT_HOOKS_DIR/pre-commit"
 
 echo "✅ Git hooks installed successfully!"
 echo ""
-echo "The pre-commit hook will now validate EditorConfig rules before each commit."
+echo "The pre-commit hook will now run EditorConfig validation and the full Scenery test suite."
 echo "To bypass validation, use: git commit --no-verify"
-cp hooks/pre-push .git/hooks/
