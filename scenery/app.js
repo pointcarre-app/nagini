@@ -10,18 +10,19 @@ import { BrythonManagerTests } from './tests/brython-manager-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
-// Use relative paths for portability on deployed sites
+// Build absolute URLs to ensure they can be fetched from within the worker.
+const baseUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}`;
 const filesToLoad = [
     {
-      url: "tests/teachers__init__mock.py",
+      url: `${baseUrl}tests/teachers__init__mock.py`,
       path: "teachers/__init__.py"
     },
     {
-      url: "tests/teachers_generator_mock.py",
+      url: `${baseUrl}tests/teachers_generator_mock.py`,
       path: "teachers/generator.py"
     },
     {
-      url: "tests/teachers_maths_mock.py",
+      url: `${baseUrl}tests/teachers_maths_mock.py`,
       path: "teachers/maths.py"
     }
 ];
