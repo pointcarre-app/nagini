@@ -15,9 +15,9 @@
 
 
 
-- [ ] documents hooks  better 
-    - [] one for tag: selenium/scenery based
-    - [] one for commits (size of files)
+- [ ] do hooks  better 
+    - [] one for tag: selenium/scenery based (is prepush ? or maybe on main and authorize tags only from main ?)
+    - [] one for commits (size of files mostly + static js typing in a python doctest like would be the dream)
 
 
 

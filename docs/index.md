@@ -36,7 +36,7 @@ environments.
 - [Testing](#testing)
 - [Dependencies](#dependencies)
 - [Performance](#performance)
-- [Licensing](#licensing---gnu-affero-general-public-license-v30-agpl-30)
+- [Licensing](#licensing-gnu-affero-general-public-license-v30-agpl-30)
 
 ---
 
@@ -640,4 +640,4 @@ This software incorporates components from the following open-source projects:
 
 ---
 
-*Nagini is free and open-source software licensed under AGPL v3.0, ensuring it remains available for all users while promoting open-source collaboration and transparency.*
+*Nagini is free and open-source software licensed under AGPL v3.0, ensuring it remains available for all users while promoting open-source collaboration and transparency.* 

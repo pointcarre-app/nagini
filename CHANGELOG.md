@@ -1,6 +1,13 @@
+# v0.0.12
+
+- **Documentation**: Added a full documentation site with MkDocs, including a JSDoc-based API reference.
+- **GitHub Actions**: Set up a new workflow to automatically build and deploy the documentation to GitHub Pages.
+
 # v0.0.11
 
 - **Fix**: Corrected a 404 error in the scenery application by removing an import for a non-existent `failure-tests.js` file.
+- **README**: Added a prominent legend to clarify the branching model and production usage guidelines.
+- **README**: Removed outdated information about `pre-push` hooks.
 
 > [!DANGER]
 > Versions prior to `v0.0.11` are unstable due to a critical bug in the `input()` handling system. These versions should not be used in production.

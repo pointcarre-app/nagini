@@ -1,0 +1,11 @@
+{
+  "name": "nagini-docs",
+  "version": "1.0.0",
+  "description": "Documentation generator for Nagini",
+  "scripts": {
+    "docs:api": "jsdoc2md --configure jsdoc.conf.json --files src/**/*.js > docs/api-reference.md"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^8.0.0"
+  }
+} 
