@@ -43,6 +43,8 @@ jobs:
         run: mkdocs build
       - name: Copy scenery to site directory
         run: cp -r scenery site/
+      - name: Copy favicon to site directory
+        run: cp favicon.ico site/
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
