@@ -1,3 +1,7 @@
+# v0.0.17
+
+- **CI/CD Fix**: Corrected the `requirements.txt` to properly install the imaging dependencies for the `mkdocs-material` social plugin. This resolves the final, persistent build error and ensures the documentation deploys successfully.
+
 # v0.0.16
 
 - **CI/CD Fix**: Corrected all deployment pathing issues for the GitHub Pages site. The interactive `scenery` test suite is now fully functional on the live documentation site.

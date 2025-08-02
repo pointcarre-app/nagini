@@ -1,7 +1,5 @@
 mkdocs
-mkdocs-material
+mkdocs-material[imaging]
 pymdown-extensions
 mkdocs-git-revision-date-localized-plugin
-mkdocs-simple-hooks
-Pillow
-CairoSVG 
+mkdocs-simple-hooks 
