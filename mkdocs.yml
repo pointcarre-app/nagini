@@ -41,7 +41,7 @@ extra_css:
 
 plugins:
   - search
-  - sociale
+  - social
   - git-revision-date-localized:
       type: timeago
       locale: en
