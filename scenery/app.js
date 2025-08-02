@@ -161,10 +161,10 @@ async function runAllTests() {
 
     const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy"];
     const micropipPackages = ["antlr4-python3-runtime"];
-    const pyodideWorkerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
+    const pyodideWorkerPath = "../src/pyodide/worker/worker-dist.js"; // Use relative path
     const brythonOptions = {
-        brythonJsPath: "/src/brython/lib/brython.js",
-        brythonStdlibPath: "/src/brython/lib/brython_stdlib.js"
+        brythonJsPath: "../src/brython/lib/brython.js", // Use relative path
+        brythonStdlibPath: "../src/brython/lib/brython_stdlib.js" // Use relative path
     };
 
     const tests = [

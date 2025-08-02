@@ -43,6 +43,8 @@ jobs:
         run: mkdocs build
       - name: Copy scenery to site directory
         run: cp -r scenery site/
+      - name: Copy src to site directory
+        run: cp -r src site/
       - name: Copy favicon to site directory
         run: cp favicon.ico site/
       - name: Copy Brython libs to site directory
