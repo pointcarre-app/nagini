@@ -1,0 +1,2657 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://pointcarre-app.github.io/nagini/">
+      
+      
+      
+        <link rel="next" href="api-reference/">
+      
+      
+      <link rel="icon" href="assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Nagini Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nagini" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Nagini Documentation" class="md-header__button md-logo" aria-label="Nagini Documentation" data-md-component="logo">
+      
+  <img src="assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Nagini Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pointcarre-app/nagini" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pointcarre-app/nagini
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="api-reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="repo_reference/" class="md-tabs__link">
+          
+  
+  
+  Repository Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="3RD-PARTY/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Third-Party Licenses
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Nagini Documentation" class="md-nav__button md-logo" aria-label="Nagini Documentation" data-md-component="logo">
+      
+  <img src="assets/logo.png" alt="logo">
+
+    </a>
+    Nagini Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pointcarre-app/nagini" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pointcarre-app/nagini
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-backend-recommended-automatic-blob-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Backend (Recommended) - Automatic Blob Workers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brython-backend-lightweight-no-workers-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython Backend (Lightweight) - No Workers Needed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worker-bundling-for-pyodide-cross-origin-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Bundling for Pyodide Cross-Origin Use
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worker Bundling for Pyodide Cross-Origin Use">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quick-usage-pyodide-with-bundled-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Usage (Pyodide with Bundled Worker)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-usage-brython-no-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Usage (Brython - No Workers)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blob-worker-creation-flask-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Blob Worker Creation (Flask Example)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-the-pyodide-worker-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building the Pyodide Worker Bundle
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Input
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Input">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#programmatic-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      Programmatic Input
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-callbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Callbacks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matplotlib-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matplotlib Visualization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remote-module-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remote Module Loading
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xterm-terminal-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xterm Terminal Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Xterm Terminal Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-demo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Demo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#available-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Templates
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-backend-web-worker-blob-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Backend (Web Worker + Blob Workers)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brython-backend-main-thread-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython Backend (Main Thread Only)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nagini-high-level-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nagini (High-Level API)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodidemanager-core-manager" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyodideManager (Core Manager)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Structure
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-worker-bundling-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Worker Bundling System
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unified-test-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unified Test Suite
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unified Test Suite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-column-left-full-featured" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Column (Left - Full-Featured)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brython-column-right-lightweight" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython Column (Right - Lightweight)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-test-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Test Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-origin-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cross-Origin Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Coverage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dependencies
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licensing-gnu-affero-general-public-license-v30-agpl-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      Licensing - GNU Affero General Public License v3.0 (AGPL-3.0)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Licensing - GNU Affero General Public License v3.0 (AGPL-3.0)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agpl-v30-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 AGPL v3.0 Requirements:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-you-can-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ What You Can Do:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-you-must-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      📝 What You Must Do:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#perfect-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎓 Perfect For:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gnu-affero-general-public-license-v30" class="md-nav__link">
+    <span class="md-ellipsis">
+      GNU Affero General Public License v3.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GNU Affero General Public License v3.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#additional-terms-for-network-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Terms for Network Use
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#third-party-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Third-Party Dependencies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Third-Party Dependencies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#brython" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Repository Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Repository Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/nagini/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    nagini.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    utils/validation.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/createBlobWorker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    utils/createBlobWorker.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/manager-static-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager-static-execution.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/manager-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager-input.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/manager-fs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager-fs.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/worker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/worker-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-handlers.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/worker-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-execution.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/worker-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-input.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/worker-fs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-fs.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/worker-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-config.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/file-loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/file-loader/file-loader.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/pyodide-init/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/pyodide_init.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/capture-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/capture_system.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/code-transformation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/code_transformation.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/pyodide-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/pyodide_utilities.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/brython-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    brython/manager/manager.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/brython-loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    brython/manager/loader.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="repo_reference/brython-executor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    brython/manager/executor.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="3RD-PARTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Third-Party Licenses
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-backend-recommended-automatic-blob-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Backend (Recommended) - Automatic Blob Workers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brython-backend-lightweight-no-workers-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython Backend (Lightweight) - No Workers Needed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worker-bundling-for-pyodide-cross-origin-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Bundling for Pyodide Cross-Origin Use
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worker Bundling for Pyodide Cross-Origin Use">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quick-usage-pyodide-with-bundled-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Usage (Pyodide with Bundled Worker)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-usage-brython-no-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Usage (Brython - No Workers)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blob-worker-creation-flask-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Blob Worker Creation (Flask Example)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-the-pyodide-worker-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building the Pyodide Worker Bundle
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Input
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Input">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#programmatic-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      Programmatic Input
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-callbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Callbacks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matplotlib-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matplotlib Visualization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remote-module-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remote Module Loading
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xterm-terminal-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xterm Terminal Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Xterm Terminal Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-demo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Demo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#available-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Templates
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-backend-web-worker-blob-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Backend (Web Worker + Blob Workers)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brython-backend-main-thread-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython Backend (Main Thread Only)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nagini-high-level-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nagini (High-Level API)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodidemanager-core-manager" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyodideManager (Core Manager)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Structure
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-worker-bundling-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Worker Bundling System
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unified-test-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unified Test Suite
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unified Test Suite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyodide-column-left-full-featured" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide Column (Left - Full-Featured)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brython-column-right-lightweight" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython Column (Right - Lightweight)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-test-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Test Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-origin-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cross-Origin Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Coverage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dependencies
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licensing-gnu-affero-general-public-license-v30-agpl-30" class="md-nav__link">
+    <span class="md-ellipsis">
+      Licensing - GNU Affero General Public License v3.0 (AGPL-3.0)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Licensing - GNU Affero General Public License v3.0 (AGPL-3.0)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agpl-v30-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 AGPL v3.0 Requirements:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-you-can-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ What You Can Do:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-you-must-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      📝 What You Must Do:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#perfect-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎓 Perfect For:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gnu-affero-general-public-license-v30" class="md-nav__link">
+    <span class="md-ellipsis">
+      GNU Affero General Public License v3.0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GNU Affero General Public License v3.0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#additional-terms-for-network-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Terms for Network Use
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#third-party-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Third-Party Dependencies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Third-Party Dependencies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#brython" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brython
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyodide
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="nagini">Nagini</h1>
+<p><strong>Python in the Browser via Pyodide WebAssembly</strong></p>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Production Usage &amp; Branching</strong></p>
+<ul>
+<li><strong>Production</strong>: For production environments, always use a specific <a href="https://github.com/pointcarre-app/nagini/tags">tagged version</a> to ensure stability.</li>
+<li><strong>Branches</strong>:</li>
+<li><code>main</code>: The main development branch. It is not guaranteed to be stable or correspond to a specific tagged release.</li>
+<li><code>main-dev</code>: A development branch for experimental features.</li>
+</ul>
+<p><strong>Do not use the <code>main</code> branch for production deployments.</strong></p>
+</blockquote>
+<p>A production-ready Python execution system for web applications featuring
+worker-based architecture, interactive input handling, matplotlib visualization,
+and remote module loading. Perfect for data analysis tools, educational
+platforms, scientific computing applications, and interactive development
+environments.</p>
+<p><a href="https://github.com/pca-nagini/pca-nagini"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-pca--nagini-blue?logo=github" /></a>
+<a href="https://www.gnu.org/licenses/agpl-3.0"><img alt="License: AGPL v3" src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" /></a>
+<a href="https://pyodide.org/"><img alt="Python" src="https://img.shields.io/badge/Python-Pyodide%20%7C%20Brython-green" /></a></p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#core-features">Core Features</a></li>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#interactive-input">Interactive Input</a></li>
+<li><a href="#matplotlib-visualization">Matplotlib Visualization</a></li>
+<li><a href="#remote-module-loading">Remote Module Loading</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#api-reference">API Reference</a></li>
+<li><a href="#xterm-terminal-integration">Xterm Terminal Integration</a></li>
+<li><a href="#file-structure">File Structure</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#performance">Performance</a></li>
+<li><a href="#licensing-gnu-affero-general-public-license-v30-agpl-30">Licensing</a></li>
+</ul>
+<hr />
+<h2 id="core-features">Core Features</h2>
+<ul>
+<li><strong>🚀 Worker Architecture</strong> - Python execution isolated in web workers (Pyodide) or main thread (Brython)</li>
+<li><strong>🔧 Automatic Blob Workers</strong> - Cross-origin compatibility for Pyodide (Flask, Django, etc.)</li>
+<li><strong>📦 Micropip Support</strong> - Install packages from PyPI using micropip (Pyodide only)</li>
+<li><strong>🎮 Interactive Input</strong> - Natural <code>input()</code> support with queue/callbacks (Pyodide only)</li>
+<li><strong>📊 Matplotlib Integration</strong> - Automatic figure capture as base64 images (Pyodide only)</li>
+<li><strong>🔗 Remote Module Loading</strong> - Load Python modules from URLs with retry logic (Pyodide only)</li>
+<li><strong>🎯 Namespace Isolation</strong> - Complete execution isolation between runs</li>
+<li><strong>💬 Structured Data Exchange</strong> - "Missive" system for Python ↔ JavaScript communication</li>
+<li><strong>📁 Filesystem Access</strong> - Complete file operations (Pyodide only)</li>
+<li><strong>🎨 Dual Backend Support</strong> - Pyodide (full-featured) &amp; Brython (lightweight, instant startup)</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="pyodide-backend-recommended-automatic-blob-workers">Pyodide Backend (Recommended) - Automatic Blob Workers</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Nagini</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./src/nagini.js&#39;</span><span class="p">;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">// 1. Create manager with Pyodide (requires bundled worker for cross-origin compatibility)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span><span class="w">                                                    </span><span class="c1">// Backend</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;sympy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;matplotlib&quot;</span><span class="p">],</span><span class="w">                                      </span><span class="c1">// Python packages</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;antlr4-python3-runtime&quot;</span><span class="p">],</span><span class="w">                                   </span><span class="c1">// Micropip packages</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p">[],</span><span class="w">                                                           </span><span class="c1">// Files to load (URL objects)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="s2">&quot;http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js&quot;</span><span class="w">    </span><span class="c1">// Bundled worker</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">);</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1">// 2. Wait for initialization</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">);</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1">// 3. Execute Python code</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;demo.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="sb">import sympy as sp</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="sb">x = sp.Symbol(&#39;x&#39;)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="sb">equation = x**2 - 4</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="sb">solutions = sp.solve(equation, x)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="sb">print(f&quot;Solutions: {solutions}&quot;)</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="sb">missive({&quot;solutions&quot;: [str(s) for s in solutions]})</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="sb">`</span><span class="p">);</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">stdout</span><span class="p">);</span><span class="w">   </span><span class="c1">// &quot;Solutions: [-2, 2]&quot;</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">missive</span><span class="p">);</span><span class="w">  </span><span class="c1">// {&quot;solutions&quot;: [&quot;-2&quot;, &quot;2&quot;]}</span>
+</code></pre></div>
+<h3 id="brython-backend-lightweight-no-workers-needed">Brython Backend (Lightweight) - No Workers Needed</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Brython runs directly in main thread - no blob workers required</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="s1">&#39;brython&#39;</span><span class="p">,</span><span class="w">      </span><span class="c1">// Backend - no worker requirements</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">[],</span><span class="w">             </span><span class="c1">// Packages ignored (uses Brython stdlib only)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">[],</span><span class="w">             </span><span class="c1">// Files ignored</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">             </span><span class="c1">// Init path ignored</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="s1">&#39;&#39;</span><span class="w">              </span><span class="c1">// Worker path ignored</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">);</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1">// Execute Python code (transpiled to JavaScript)</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;turtle_demo.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="sb">import turtle</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="sb">t = turtle.Turtle()</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="sb">for _ in range(4):</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="sb">    t.forward(100)</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="sb">    t.left(90)</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="sb">print(&quot;Square drawn!&quot;)</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="worker-bundling-for-pyodide-cross-origin-use">Worker Bundling for Pyodide Cross-Origin Use</h2>
+<p><strong>⚠️ Pyodide Only:</strong> When using the <strong>Pyodide backend</strong> with Flask apps or other cross-origin scenarios, bundled workers are <strong>mandatory</strong> to avoid ES6 import issues. Brython doesn't use workers and is unaffected.</p>
+<p><strong>🔧 Automatic:</strong> Nagini automatically creates blob workers from bundled files for maximum compatibility.</p>
+<h3 id="quick-usage-pyodide-with-bundled-worker">Quick Usage (Pyodide with Bundled Worker)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// For Pyodide in Flask/cross-origin apps - bundled worker is automatically converted to blob</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span><span class="w">  </span><span class="c1">// Only Pyodide requires bundled workers</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;matplotlib&quot;</span><span class="p">],</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;antlr4-python3-runtime&quot;</span><span class="p">],</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="p">[],</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="s2">&quot;http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js&quot;</span><span class="w">   </span><span class="c1">// Nagini auto-creates blob worker</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">);</span>
+</code></pre></div>
+<h3 id="quick-usage-brython-no-workers">Quick Usage (Brython - No Workers)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Brython runs in main thread - no worker bundling needed</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="s1">&#39;brython&#39;</span><span class="p">,</span><span class="w">  </span><span class="c1">// No worker requirements for Brython</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="p">[],</span><span class="w">         </span><span class="c1">// Only Brython stdlib available</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">[],</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">         </span><span class="c1">// Ignored for Brython</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="s1">&#39;&#39;</span><span class="w">          </span><span class="c1">// Ignored for Brython</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">);</span>
+</code></pre></div>
+<h3 id="blob-worker-creation-flask-example">Blob Worker Creation (Flask Example)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Create blob worker URL to avoid CORS issues</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">createBlobWorkerUrl</span><span class="p">(</span><span class="nx">workerPath</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">workerPath</span><span class="p">);</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">workerCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">blob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Blob</span><span class="p">([</span><span class="nx">workerCode</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/javascript&#39;</span><span class="w"> </span><span class="p">});</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">URL</span><span class="p">.</span><span class="nx">createObjectURL</span><span class="p">(</span><span class="nx">blob</span><span class="p">);</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">// Use in Flask app</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="kd">const</span><span class="w"> </span><span class="nx">workerPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js&quot;</span><span class="p">;</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="kd">const</span><span class="w"> </span><span class="nx">blobWorkerUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createBlobWorkerUrl</span><span class="p">(</span><span class="nx">workerPath</span><span class="p">);</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">],</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="p">[],</span><span class="w"> </span><span class="c1">// No micropip packages in this example</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="p">[],</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="nx">blobWorkerUrl</span><span class="w">  </span><span class="c1">// Blob URL works across origins</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="p">);</span>
+</code></pre></div>
+<h3 id="building-the-pyodide-worker-bundle">Building the Pyodide Worker Bundle</h3>
+<p><strong>⚠️ Only required for Pyodide backend</strong> - Brython doesn't use workers.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Navigate to Pyodide worker directory</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">cd</span><span class="w"> </span>src/pyodide/worker
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Install dependencies (first time only)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>npm<span class="w"> </span>install
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Build production bundle for Pyodide</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>npm<span class="w"> </span>run<span class="w"> </span>build
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1"># Build development bundle (with source maps)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>npm<span class="w"> </span>run<span class="w"> </span>build-dev
+</code></pre></div>
+<p><strong>Output</strong>: Creates <code>worker-dist.js</code> (64KB bundled file) that Nagini automatically converts to blob workers for cross-origin compatibility.</p>
+<h2 id="interactive-input">Interactive Input</h2>
+<p>Nagini provides robust, asynchronous support for Python's built-in <code>input()</code> function, allowing for both programmatic and user-driven interaction without blocking the main browser thread.</p>
+<h3 id="how-it-works">How It Works</h3>
+<ol>
+<li><strong>Code Transformation</strong>: Code containing <code>input()</code> is automatically converted to an <code>async</code> function.</li>
+<li><strong>Pause and Wait</strong>: The Python worker pauses execution and sends an <code>input_required</code> message to the main thread.</li>
+<li><strong>Data Provision</strong>: The main thread provides the input from a queue or a user-facing callback.</li>
+<li><strong>Resume</strong>: The worker receives the input and resumes Python execution.</li>
+</ol>
+<h3 id="programmatic-input">Programmatic Input</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// Queue inputs programmatically</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">);</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s2">&quot;25&quot;</span><span class="p">);</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;survey.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="sb">name = input(&quot;What&#39;s your name? &quot;)</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="sb">age = int(input(&quot;How old are you? &quot;))</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="sb">print(f&quot;Hello {name}! You are {age} years old.&quot;)</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="interactive-callbacks">Interactive Callbacks</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Or use interactive callbacks</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">setInputCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">prompt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">prompt</span><span class="p">(</span><span class="nx">prompt</span><span class="p">);</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">provideInput</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">});</span>
+</code></pre></div>
+<h2 id="matplotlib-visualization">Matplotlib Visualization</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;plot.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="sb">import matplotlib.pyplot as plt</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="sb">import numpy as np</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="sb">x = np.linspace(0, 10, 100)</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="sb">y = np.sin(x)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="sb">plt.plot(x, y)</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="sb">plt.title(&quot;Sine Wave&quot;)</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="sb">print(&quot;Plot created!&quot;)</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="sb">`</span><span class="p">);</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="c1">// Access captured figures</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="nx">result</span><span class="p">.</span><span class="nx">figures</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">base64</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">);</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">    </span><span class="nx">img</span><span class="p">.</span><span class="nx">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`data:image/png;base64,</span><span class="si">${</span><span class="nx">base64</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">img</span><span class="p">);</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="p">});</span>
+</code></pre></div>
+<h2 id="remote-module-loading">Remote Module Loading</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">filesToLoad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">        </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/modules/math_utils.py&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">        </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;utils/math_utils.py&quot;</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">];</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">],</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">    </span><span class="p">[],</span><span class="w"> </span><span class="c1">// No micropip packages</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="nx">filesToLoad</span><span class="p">,</span><span class="w">  </span><span class="c1">// Load from URLs</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">    </span><span class="s2">&quot;./src/pyodide/worker/worker-dist.js&quot;</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="p">);</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">);</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="c1">// Use loaded modules</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;test.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="sb">from utils.math_utils import calculate_fibonacci</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="sb">result = calculate_fibonacci(10)</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="sb">print(f&quot;Fibonacci(10) = {result}&quot;)</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="xterm-terminal-integration">Xterm Terminal Integration</h2>
+<p>Nagini includes an experimental <strong>xterm.js terminal integration</strong> that demonstrates creating a full browser-based Python terminal.</p>
+<h3 id="features">Features</h3>
+<ul>
+<li>🖥️ <strong>Real Terminal Interface</strong> - Full xterm.js terminal with cursor and colors</li>
+<li>🐍 <strong>Interactive Python</strong> - Execute Python code via Nagini/Pyodide</li>
+<li>📋 <strong>Template System</strong> - Pre-built Python scripts (data analysis, plotting, calculator)</li>
+<li>⌨️ <strong>Command History</strong> - Arrow key navigation through previous commands</li>
+<li>📊 <strong>Matplotlib Support</strong> - Automatic figure display above terminal</li>
+<li>🎨 <strong>Professional Theme</strong> - VS Code-inspired dark interface</li>
+</ul>
+<h3 id="quick-demo">Quick Demo</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Start server</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Open terminal</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>http://localhost:8000/experiments/xterm/
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># Try commands</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>$<span class="w"> </span><span class="nb">help</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>$<span class="w"> </span>templates
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>$<span class="w"> </span>run<span class="w"> </span>data_analysis
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>$<span class="w"> </span>run<span class="w"> </span>plot_demo
+</code></pre></div>
+<h3 id="available-templates">Available Templates</h3>
+<ul>
+<li><strong>hello_world</strong> - User input demonstration</li>
+<li><strong>data_analysis</strong> - Numpy statistics with matplotlib histogram</li>
+<li><strong>calculator</strong> - Interactive math operations</li>
+<li><strong>plot_demo</strong> - Multiple chart types (line, scatter, bar, pie)</li>
+</ul>
+<p>The xterm integration showcases how Nagini can power full-featured browser-based Python development environments.</p>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<h3 id="pyodide-backend-web-worker-blob-workers">Pyodide Backend (Web Worker + Blob Workers)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Main Thread                          Blob Web Worker (Cross-Origin Compatible)
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>┌─────────────────────┐             ┌─────────────────────┐
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>│                     │             │                     │
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>│  Nagini             │             │  PyodideWorker      │
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>│  ├─ createManager   │   Bundled   │  ├─ Entry Point     │
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>│  ├─ waitForReady    │    Worker   │  ├─ All Modules     │
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>│  ├─ executeFromUrl  │   Messages  │  │   Bundled        │
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>│  └─ Backend Support │◄───────────►│  └─ Configuration   │
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>│                     │             │                     │
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>│  PyodideManager     │   Automatic │  Pyodide Runtime    │
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>│  ├─ executeAsync    │ Blob Worker │  ├─ Python Env      │
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>│  ├─ executeFile     │  Creation   │  ├─ Package Mgmt    │
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>│  ├─ queueInput      │             │  ├─ Matplotlib      │
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>│  ├─ fs()            │             │  ├─ File Loading    │
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>│  └─ Input Callbacks │             │  └─ WebAssembly     │
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>└─────────────────────┘             └─────────────────────┘
+</code></pre></div>
+<h3 id="brython-backend-main-thread-only">Brython Backend (Main Thread Only)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Main Thread Only (No Workers)
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>┌─────────────────────────────────────────┐
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>│                                         │
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>│  Nagini                BrythonManager   │
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>│  ├─ createManager ───► ├─ executeAsync  │
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>│  ├─ waitForReady       ├─ executeFile   │
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>│  └─ executeFromUrl     └─ Transpiler    │
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>│                               │         │
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>│  Brython Runtime             │         │
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>│  ├─ JavaScript Transpilation │         │
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>│  ├─ DOM Integration          │         │
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>│  ├─ Turtle Graphics          │         │
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>│  └─ Instant Startup          │         │
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>└─────────────────────────────────────────┘
+</code></pre></div>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="nagini-high-level-api">Nagini (High-Level API)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// Create Pyodide manager (requires bundled worker for cross-origin compatibility)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">pyodideManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nx">packages</span><span class="p">,</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nx">micropipPackages</span><span class="p">,</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="nx">filesToLoad</span><span class="p">,</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="s2">&quot;http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js&quot;</span><span class="w">   </span><span class="c1">// Auto-converted to blob worker</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="p">);</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="c1">// Create Brython manager (no worker requirements)</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="kd">const</span><span class="w"> </span><span class="nx">brythonManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">    </span><span class="s1">&#39;brython&#39;</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">    </span><span class="p">[],</span><span class="w">      </span><span class="c1">// Packages ignored</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">    </span><span class="p">[],</span><span class="w">      </span><span class="c1">// Files ignored  </span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">    </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w">      </span><span class="c1">// Init path ignored</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">    </span><span class="s1">&#39;&#39;</span><span class="w">       </span><span class="c1">// Worker path ignored</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="p">);</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="c1">// Wait for initialization (both backends)</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">,</span><span class="w"> </span><span class="nx">timeout</span><span class="p">);</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="c1">// Execute code from URL (both backends)</span>
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">executeFromUrl</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="nx">manager</span><span class="p">,</span><span class="w"> </span><span class="nx">namespace</span><span class="p">);</span>
+<a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>
+<a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="c1">// Check supported backends</span>
+<a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a><span class="kd">const</span><span class="w"> </span><span class="nx">backends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">getSupportedBackends</span><span class="p">();</span><span class="w"> </span><span class="c1">// [&#39;pyodide&#39;, &#39;brython&#39;]</span>
+<a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="kd">const</span><span class="w"> </span><span class="nx">isSupported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">isBackendSupported</span><span class="p">(</span><span class="s1">&#39;brython&#39;</span><span class="p">);</span><span class="w"> </span><span class="c1">// true</span>
+</code></pre></div>
+<h3 id="pyodidemanager-core-manager">PyodideManager (Core Manager)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// Execute Python code</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="nx">code</span><span class="p">,</span><span class="w"> </span><span class="nx">namespace</span><span class="p">);</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">executeFile</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="nx">code</span><span class="p">,</span><span class="w"> </span><span class="nx">namespace</span><span class="p">);</span><span class="w"> </span><span class="c1">// Fire-and-forget</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// Input handling</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">setInputCallback</span><span class="p">(</span><span class="nx">callback</span><span class="p">);</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">provideInput</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="kd">const</span><span class="w"> </span><span class="nx">waiting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">isWaitingForInput</span><span class="p">();</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="kd">const</span><span class="w"> </span><span class="nx">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">getCurrentPrompt</span><span class="p">();</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="c1">// Filesystem operations</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;writeFile&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;file.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">});</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="kd">const</span><span class="w"> </span><span class="nx">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;readFile&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;file.txt&quot;</span><span class="p">});</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;mkdir&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;directory&quot;</span><span class="p">});</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="kd">const</span><span class="w"> </span><span class="nx">exists</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;exists&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;file.txt&quot;</span><span class="p">});</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="kd">const</span><span class="w"> </span><span class="nx">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;listdir&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;.&quot;</span><span class="p">});</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="c1">// Manager state</span>
+<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">manager</span><span class="p">.</span><span class="nx">isReady</span><span class="p">);</span>
+<a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">manager</span><span class="p">.</span><span class="nx">packages</span><span class="p">);</span>
+<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">manager</span><span class="p">.</span><span class="nx">executionHistory</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="file-structure">File Structure</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>src/
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>├── nagini.js                        # Main API entry point
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>├── utils/
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>│   ├── validation.js                # Parameter validation utilities
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>│   └── createBlobWorker.js          # Cross-origin worker utilities
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>├── brython/                         # Brython backend
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>│   ├── index.html
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>│   ├── lib/
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>│   │   ├── brython.js
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>│   │   └── brython_stdlib.js
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>│   ├── manager/
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>│   │   ├── manager.js
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>│   │   ├── loader.js
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>│   │   └── executor.js
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>│   └── python/
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>│       └── turtle_min.py
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>└── pyodide/
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>    ├── manager/
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>    │   ├── manager.js               # Core PyodideManager class
+<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>    │   ├── manager-static-execution.js  # Execution logic
+<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>    │   ├── manager-input.js         # Input handling
+<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a>    │   └── manager-fs.js            # Filesystem operations
+<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>    ├── worker/
+<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>    │   ├── worker.js               # Worker entry point (ES6 modules)
+<a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a>    │   ├── worker-config.js        # Configuration constants
+<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a>    │   ├── worker-handlers.js      # Message handlers
+<a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a>    │   ├── worker-execution.js     # Execution logic
+<a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a>    │   ├── worker-input.js         # Input handling
+<a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a>    │   ├── worker-fs.js            # Filesystem operations
+<a id="__codelineno-15-30" name="__codelineno-15-30" href="#__codelineno-15-30"></a>    │   ├── webpack.config.cjs      # Webpack bundling configuration
+<a id="__codelineno-15-31" name="__codelineno-15-31" href="#__codelineno-15-31"></a>    │   ├── package.json            # NPM dependencies and build scripts
+<a id="__codelineno-15-32" name="__codelineno-15-32" href="#__codelineno-15-32"></a>    │   ├── package-lock.json       # Dependency lock file
+<a id="__codelineno-15-33" name="__codelineno-15-33" href="#__codelineno-15-33"></a>    │   ├── worker-dist.js          # **Bundled worker output** (generated)
+<a id="__codelineno-15-34" name="__codelineno-15-34" href="#__codelineno-15-34"></a>    │   ├── .gitignore              # Build artifacts exclusions
+<a id="__codelineno-15-35" name="__codelineno-15-35" href="#__codelineno-15-35"></a>    │   ├── README.md               # Worker bundling documentation
+<a id="__codelineno-15-36" name="__codelineno-15-36" href="#__codelineno-15-36"></a>    │   └── node_modules/           # NPM dependencies (generated)
+<a id="__codelineno-15-37" name="__codelineno-15-37" href="#__codelineno-15-37"></a>    ├── file-loader/
+<a id="__codelineno-15-38" name="__codelineno-15-38" href="#__codelineno-15-38"></a>    │   └── file-loader.js          # Remote file loading
+<a id="__codelineno-15-39" name="__codelineno-15-39" href="#__codelineno-15-39"></a>    └── python/
+<a id="__codelineno-15-40" name="__codelineno-15-40" href="#__codelineno-15-40"></a>        ├── pyodide_init.py         # Python initialization script
+<a id="__codelineno-15-41" name="__codelineno-15-41" href="#__codelineno-15-41"></a>        ├── capture_system.py       # Output capture system
+<a id="__codelineno-15-42" name="__codelineno-15-42" href="#__codelineno-15-42"></a>        ├── code_transformation.py  # Code transformation utilities
+<a id="__codelineno-15-43" name="__codelineno-15-43" href="#__codelineno-15-43"></a>        └── pyodide_utilities.py    # Python helper functions
+<a id="__codelineno-15-44" name="__codelineno-15-44" href="#__codelineno-15-44"></a>tests/
+<a id="__codelineno-15-45" name="__codelineno-15-45" href="#__codelineno-15-45"></a>├── unified-test.html               # **Comprehensive unified test suite**
+<a id="__codelineno-15-46" name="__codelineno-15-46" href="#__codelineno-15-46"></a>├── flask-example.py                # Cross-origin Flask server (port 5001)
+<a id="__codelineno-15-47" name="__codelineno-15-47" href="#__codelineno-15-47"></a>└── README.md                       # Unified test documentation
+</code></pre></div>
+<h3 id="pyodide-worker-bundling-system">Pyodide Worker Bundling System</h3>
+<p>The Pyodide worker directory includes a complete <strong>webpack-based bundling system</strong> to resolve ES6 import issues when creating blob workers across different origins (e.g., Flask apps):</p>
+<ul>
+<li><strong>Development</strong>: Use modular <code>worker.js</code> with ES6 imports (single-origin only)</li>
+<li><strong>Production</strong>: Use bundled <code>worker-dist.js</code> (cross-origin compatible)</li>
+<li><strong>Automatic Conversion</strong>: Nagini automatically converts bundled workers to blob URLs</li>
+<li><strong>Build Process</strong>: <code>npm run build</code> creates optimized bundle</li>
+<li><strong>Cross-Origin Support</strong>: Blob workers work with Flask, Django, any framework</li>
+</ul>
+<p><strong>⚠️ Note</strong>: Brython doesn't use workers, so this system is Pyodide-specific.</p>
+<h2 id="testing">Testing</h2>
+<h3 id="unified-test-suite">Unified Test Suite</h3>
+<p>Nagini includes a <strong>comprehensive unified test suite</strong> that demonstrates both Pyodide and Brython backends in a side-by-side comparison. The unified test provides a complete evaluation of cross-origin compatibility, worker architecture, and dual backend capabilities.</p>
+<p><strong>🎯 Features Tested:</strong></p>
+<h4 id="pyodide-column-left-full-featured">Pyodide Column (Left - Full-Featured)</h4>
+<ul>
+<li>✅ <strong>Basic Python execution</strong> with automatic blob workers</li>
+<li>✅ <strong>NumPy + Matplotlib integration</strong> with figure capture</li>
+<li>✅ <strong>Interactive input() handling</strong> with queue system</li>
+<li>✅ <strong>Cross-origin compatibility</strong> (Flask ↔ Nagini servers)</li>
+<li>✅ <strong>Automatic blob worker creation</strong> for CORS scenarios</li>
+<li>✅ <strong>Matplotlib WebAgg Backend</strong> validation</li>
+</ul>
+<h4 id="brython-column-right-lightweight">Brython Column (Right - Lightweight)</h4>
+<ul>
+<li>✅ <strong>Basic Python execution</strong> (JavaScript transpilation)</li>
+<li>✅ <strong>Tactical turtle graphics</strong> with 300x300 canvas</li>
+<li>✅ <strong>DOM integration</strong> and browser APIs</li>
+<li>✅ <strong>Instant startup</strong> (no downloads required)</li>
+</ul>
+<h3 id="quick-test-setup">Quick Test Setup</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># 1. Start Nagini server (port 8010)</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>python3<span class="w"> </span>serve.py
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># 2. Start Flask cross-origin test server (port 5001) </span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>python3<span class="w"> </span>tests/flask-example.py
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># 3. Open unified test suite</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>open<span class="w"> </span>http://127.0.0.1:8010/tests/unified-test.html
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c1"># 4. Test everything with buttons in both columns</span>
+</code></pre></div>
+<h3 id="cross-origin-testing">Cross-Origin Testing</h3>
+<p>The test suite demonstrates <strong>real-world cross-origin scenarios</strong>:
+- <strong>Nagini Server</strong>: <code>http://127.0.0.1:8010</code> (serves static files)
+- <strong>Flask Server</strong>: <code>http://127.0.0.1:5001</code> (provides CORS headers)
+- <strong>Blob Workers</strong>: Automatically created for cross-origin compatibility
+- <strong>Full URLs</strong>: Required for proper cross-origin module loading</p>
+<h3 id="test-coverage">Test Coverage</h3>
+<p>The unified test suite covers all core features:</p>
+<ul>
+<li><strong>Manager creation and initialization</strong> (both backends)</li>
+<li><strong>Code execution with results tracking</strong></li>
+<li><strong>Namespace isolation and variable scoping</strong></li>
+<li><strong>Interactive input handling with queues</strong> (Pyodide only)</li>
+<li><strong>Matplotlib figure capture and display</strong> (Pyodide only)</li>
+<li><strong>Turtle graphics with tactical patterns</strong> (Brython only)</li>
+<li><strong>DOM integration and browser APIs</strong> (Brython only)</li>
+<li><strong>Cross-origin worker compatibility</strong></li>
+<li><strong>Automatic blob worker creation</strong></li>
+<li><strong>Dual backend comparison</strong></li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li><strong>Pyodide v0.28.0</strong> - Python runtime via WebAssembly (Mozilla Public License 2.0)</li>
+<li><strong>Brython</strong> - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)</li>
+<li><strong>Matplotlib WebAgg Backend</strong> - The new default backend for Matplotlib, providing a more stable and feature-rich experience.</li>
+<li><strong>Modern Browser</strong> - WebWorkers, SharedArrayBuffer support</li>
+<li><strong>No external dependencies</strong> - Self-contained system</li>
+</ul>
+<p><strong>📄 For complete license information and compatibility details, see <a href="3RD-PARTY/">3RD-PARTY.md</a></strong></p>
+<h2 id="performance">Performance</h2>
+<ul>
+<li><strong>Initialization</strong>: ~3-7 seconds (packages + network)</li>
+<li><strong>Execution</strong>: Near-native Python speed in WebAssembly</li>
+<li><strong>Memory</strong>: ~100-300MB (package dependent)</li>
+<li><strong>Figure Capture</strong>: Real-time base64 encoding</li>
+</ul>
+<h2 id="licensing-gnu-affero-general-public-license-v30-agpl-30">Licensing - GNU Affero General Public License v3.0 (AGPL-3.0)</h2>
+<p>Nagini is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).</p>
+<h3 id="agpl-v30-requirements">📋 AGPL v3.0 Requirements:</h3>
+<ul>
+<li><strong>Source Code Sharing</strong>: Any modifications to Nagini must be shared under the same license</li>
+<li><strong>Network Use</strong>: If you run Nagini on a server and let users interact with it remotely, you must make your source code available to those users</li>
+<li><strong>Derivative Works</strong>: Must use compatible licenses</li>
+<li><strong>Copyright Notices</strong>: Must be preserved</li>
+</ul>
+<h3 id="what-you-can-do">✅ What You Can Do:</h3>
+<ul>
+<li><strong>Use freely</strong> for any purpose (personal, educational, commercial, research)</li>
+<li><strong>Modify</strong> the source code to fit your needs</li>
+<li><strong>Distribute</strong> copies and modifications</li>
+<li><strong>Run</strong> on servers and provide network services</li>
+</ul>
+<h3 id="what-you-must-do">📝 What You Must Do:</h3>
+<ul>
+<li><strong>Share source code</strong> of any modifications you make</li>
+<li><strong>Provide source access</strong> to users of network services</li>
+<li><strong>Include copyright notices</strong> and license information</li>
+<li><strong>Use compatible licenses</strong> for derivative works</li>
+</ul>
+<h3 id="perfect-for">🎓 Perfect For:</h3>
+<ul>
+<li><strong>Educational institutions</strong> and training programs</li>
+<li><strong>Research organizations</strong> and academic projects</li>
+<li><strong>Open-source projects</strong> and community initiatives</li>
+<li><strong>Commercial applications</strong> that comply with copyleft requirements</li>
+<li><strong>Government agencies</strong> and public organizations</li>
+<li><strong>Individual developers</strong> and personal projects</li>
+</ul>
+<hr />
+<h2 id="gnu-affero-general-public-license-v30">GNU Affero General Public License v3.0</h2>
+<p>Copyright (C) 2025 SAS POINTCARRE.APP</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.</p>
+<p>You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
+<h3 id="additional-terms-for-network-use">Additional Terms for Network Use</h3>
+<p>If you run a modified version of this software on a server and let users
+interact with it remotely through a computer network, you must make the
+source code of your modified version available to those users.</p>
+<hr />
+<h2 id="third-party-dependencies">Third-Party Dependencies</h2>
+<p>This software incorporates components from the following open-source projects:</p>
+<h3 id="brython">Brython</h3>
+<ul>
+<li><strong>License</strong>: BSD 3-Clause "New" or "Revised" License</li>
+<li><strong>Copyright</strong>: Copyright (c) 2012, Pierre Quentel pierre.quentel@gmail.com</li>
+<li><strong>Project</strong>: brython-dev/brython</li>
+<li><strong>Usage</strong>: Python-to-JavaScript transpilation capabilities</li>
+</ul>
+<p><strong>BSD 3-Clause License Requirements:</strong>
+- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</p>
+<h3 id="pyodide">Pyodide</h3>
+<ul>
+<li><strong>License</strong>: Mozilla Public License 2.0</li>
+<li><strong>Project</strong>: pyodide/pyodide</li>
+<li><strong>Usage</strong>: Python runtime via WebAssembly</li>
+</ul>
+<p><strong>Mozilla Public License 2.0 Requirements:</strong>
+- Source code of licensed files and modifications must be made available under the same license
+- Copyright and license notices must be preserved
+- Patent rights are expressly granted
+- Larger works using the licensed work may be distributed under different terms</p>
+<p><strong>📄 For complete license texts and detailed information about all dependencies, see <a href="3RD-PARTY/">3RD-PARTY.md</a></strong></p>
+<hr />
+<p><em>Nagini is free and open-source software licensed under AGPL v3.0, ensuring it remains available for all users while promoting open-source collaboration and transparency.</em> </p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2941 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://pointcarre-app.github.io/nagini/docs/">
+      
+      
+      
+      
+      <link rel="icon" href="../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Nagini Documentation - Nagini Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nagini-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Nagini Documentation" class="md-header__button md-logo" aria-label="Nagini Documentation" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Nagini Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Nagini Documentation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pointcarre-app/nagini" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pointcarre-app/nagini
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../api-reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../repo_reference/" class="md-tabs__link">
+          
+  
+  
+  Repository Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../3RD-PARTY/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Third-Party Licenses
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Nagini Documentation" class="md-nav__button md-logo" aria-label="Nagini Documentation" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    Nagini Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pointcarre-app/nagini" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pointcarre-app/nagini
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Repository Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Repository Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/nagini/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    nagini.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    utils/validation.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/createBlobWorker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    utils/createBlobWorker.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/manager-static-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager-static-execution.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/manager-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager-input.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/manager-fs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/manager/manager-fs.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/worker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/worker-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-handlers.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/worker-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-execution.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/worker-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-input.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/worker-fs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-fs.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/worker-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/worker/worker-config.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/file-loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/file-loader/file-loader.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/pyodide-init/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/pyodide_init.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/capture-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/capture_system.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/code-transformation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/code_transformation.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/pyodide-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pyodide/python/pyodide_utilities.py
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/brython-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    brython/manager/manager.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/brython-loader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    brython/manager/loader.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repo_reference/brython-executor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    brython/manager/executor.js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3RD-PARTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Third-Party Licenses
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Benefits
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Overview
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Component Responsibilities
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Responsibilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-thread-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Main Thread Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nagini-high-level-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nagini (High-Level API)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Nagini (High-Level API)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#createmanagerbackend-packages-micropippackages-filestoload-workerpath" class="md-nav__link">
+    <span class="md-ellipsis">
+      createManager(backend, packages, micropipPackages, filesToLoad, workerPath)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#waitforreadymanager-timeout" class="md-nav__link">
+    <span class="md-ellipsis">
+      waitForReady(manager, timeout)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#executefromurlurl-manager-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      executeFromUrl(url, manager, namespace)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodidemanager-core-manager" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyodideManager (Core Manager)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyodideManager (Core Manager)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executeasyncfilename-code-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      executeAsync(filename, code, namespace)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input-handling-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input Handling Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filesystem-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Filesystem Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Properties
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyodidemanagerstaticexecutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      PyodideManagerStaticExecutor
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyodideManagerStaticExecutor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executefileworker-isready-filename-code-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      executeFile(worker, isReady, filename, code, namespace)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#executeasyncworker-isready-executionhistory-sethandlemessage-gethandlemessage-filename-code-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      executeAsync(worker, isReady, executionHistory, setHandleMessage, getHandleMessage, filename, code, namespace)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brythonmanager-lightweight-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      BrythonManager (Lightweight Backend)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BrythonManager (Lightweight Backend)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executeasyncfilename-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      executeAsync(filename, code)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#executefilefilename-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      executeFile(filename, code)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsupported-stubbed-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsupported / Stubbed APIs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interactive-input-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interactive Input System
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interactive Input System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-programmatic-input-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Programmatic Input Queue
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-interactive-callbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Interactive Callbacks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-custom-input-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Custom Input UI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matplotlib-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matplotlib Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespace-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Namespace Isolation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missive-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Missive System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remote-module-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remote Module Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#micropip-package-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Micropip Package Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Micropip Package Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How it Works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-suite-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Suite Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test Suite Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-api-tests-nagini" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core API Tests (Nagini)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manager-tests-pyodidemanager" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manager Tests (PyodideManager)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manager-tests-brythonmanager" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manager Tests (BrythonManager)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-loading-tests-pyodidefileloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Loading Tests (PyodideFileLoader)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running Tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Coverage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Project Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Principles
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#separation-of-concerns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Separation of Concerns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modular-worker-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modular Worker Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#static-execution-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Static Execution Pattern
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development-guidelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development Guidelines
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development Guidelines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#constructor-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Constructor Validation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#message-handler-pattern-core-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Message Handler Pattern (Core Architecture)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xterm-terminal-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xterm Terminal Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Xterm Terminal Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#location-and-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Location and Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#available-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Templates
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#technical-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technical Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-bundling-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Bundling System
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worker Bundling System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problem-solved" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problem Solved
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution-two-worker-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solution: Two Worker Versions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build Process
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webpack-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Webpack Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bundle-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bundle Contents
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deployment-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Benefits
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Licensing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Licensing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Requirements:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-this-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      What This Means:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reporting-bugs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reporting Bugs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automated-release-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Release Validation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="nagini-documentation">Nagini Documentation</h1>
+<p><strong>Complete Guide to Python-in-Browser Execution via Pyodide</strong></p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#api-reference">API Reference</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#development">Development</a></li>
+<li><a href="#licensing">Licensing</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ol>
+<hr />
+<h2 id="overview">Overview</h2>
+<p>Nagini is a production-ready Python execution system for web browsers supporting two backends: <strong>Pyodide WebAssembly</strong> (full-featured with automatic blob workers) and <strong>Brython</strong> (lightweight JavaScript transpilation). It provides a clean, modular architecture with worker-based execution for Pyodide, interactive input handling, matplotlib visualization, and remote module loading capabilities.</p>
+<h3 id="use-cases">Use Cases</h3>
+<p>Nagini enables a wide range of applications across different domains:</p>
+<ul>
+<li><strong>Data Analysis &amp; Visualization</strong>: Interactive dashboards, scientific computing, statistical analysis</li>
+<li><strong>Educational Platforms</strong>: Coding tutorials, interactive learning environments, programming courses</li>
+<li><strong>Development Tools</strong>: Online IDEs, code playgrounds, prototyping environments, terminal interfaces</li>
+<li><strong>Research Applications</strong>: Scientific simulations, data exploration, academic research tools</li>
+<li><strong>Business Intelligence</strong>: Report generation, data processing, analytics platforms</li>
+<li><strong>Training &amp; Consulting</strong>: Professional development tools, skill assessment platforms</li>
+</ul>
+<h3 id="key-benefits">Key Benefits</h3>
+<ul>
+<li><strong>Dual Backend Support</strong>: Choose Pyodide (full-featured) or Brython (lightweight, instant startup)</li>
+<li><strong>Automatic Blob Workers</strong>: Cross-origin compatibility for Pyodide (Flask, Django, etc.)</li>
+<li><strong>Isolated Execution</strong>: Python runs in web workers (Pyodide) or main thread (Brython)</li>
+<li><strong>Interactive Support</strong>: Natural <code>input()</code> function support with multiple interaction modes (Pyodide only)</li>
+<li><strong>Visualization Ready</strong>: Automatic matplotlib figure capture and display (Pyodide only)</li>
+<li><strong>Micropip Support</strong>: Install packages from PyPI using <code>micropip</code> (Pyodide only).</li>
+<li><strong>Module Loading</strong>: Load Python modules from S3/URLs at runtime (Pyodide only)</li>
+<li><strong>Namespace Isolation</strong>: Complete variable isolation between executions</li>
+<li><strong>Unified Test Suite</strong>: Comprehensive side-by-side testing with tactical turtle graphics (Brython) and scientific computing (Pyodide)</li>
+<li><strong>Cross-Origin Testing</strong>: Real-world Flask integration with automatic blob worker creation</li>
+<li><strong>Open Source</strong>: Licensed under GNU Affero General Public License v3.0 (AGPL-3.0)</li>
+</ul>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<h3 id="system-overview">System Overview</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                          Main Thread                            │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│                                                                 │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│    ┌─────────────────┐    ┌─────────────────────────────────┐   │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│    │     Nagini      │    │       PyodideManager            │   │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│    │                 │    │                                 │   │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│    │ createManager() │───►│ executeAsync()                  │   │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│    │ waitForReady()  │    │ queueInput()                    │   │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│    │ executeFromUrl()│    │ fs()                            │   │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│    └─────────────────┘    │ setInputCallback()              │   │
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│                           └─────────────────────────────────┘   │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│                                            │                    │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│                                            │                    │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│    ┌─────────────────────────────────────────────────────────┐  │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│    │         PyodideManagerStaticExecutor                    │  │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│    │                                                         │  │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│    │ executeFile()     - Fire-and-forget execution           │  │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│    │ executeAsync()    - Promise-based execution             │  │
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│    │                                                         │  │
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│    │ Static methods for pure, testable execution logic       │  │
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│    └─────────────────────────────────────────────────────────┘  │
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>└─────────────────────────────────────────────────────────────────┘
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>  │
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>  │ postMessage()
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>  │
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>┌─────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│                        Web Worker                               │
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│                                                                 │
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   ┌─────────────────┐    ┌─────────────────────────────────┐    │
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   │ PyodideWorker   │    │   PyodideWorkerHandlers         │    │
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│   │                 │    │                                 │    │
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│   │ Entry Point     │───►│ handleInit()                    │    │
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│   │ Dynamic Import  │    │ handleExecute()                 │    │
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│   │ State Mgmt      │    │ handleFSOperation()             │    │
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│   └─────────────────┘    │ loadPackages()                  │    │
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│                          │ captureOutputs()                │    │
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│                          └─────────────────────────────────┘    │
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│                                           │                     │
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│   ┌─────────────────────────────────────────────────────────┐   │
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>│   │         PyodideWorkerConfig                             │   │
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>│   │                                                         │   │
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>│   │ PYODIDE_CDN: &quot;https://cdn.jsdelivr.net/pyodide/v0.28.0&quot; │   │
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>│   │ MESSAGES: { error/warning/info constants }              │   │
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>│   └─────────────────────────────────────────────────────────┘   │
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>│                                                                 │
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>│   ┌─────────────────────────────────────────────────────────┐   │
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>│   │              Pyodide Runtime                            │   │
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>│   │                                                         │   │
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>│   │ Python Interpreter + Standard Library                   │   │
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>│   │ Package Management (pip/micropip)                       │   │
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>│   │ Virtual Filesystem                                      │   │
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>│   │ Matplotlib Backend                                      │   │
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>│   │ Input/Output Capture System                             │   │
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>│   └─────────────────────────────────────────────────────────┘   │
+<a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>└─────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="component-responsibilities">Component Responsibilities</h3>
+<h4 id="main-thread-components">Main Thread Components</h4>
+<p><strong>Nagini</strong> (High-Level API)
+- <code>createManager()</code> - Factory function for PyodideManager instances
+- <code>waitForReady()</code> - Initialization completion helper
+- <code>executeFromUrl()</code> - URL-based code execution</p>
+<p><strong>PyodideManager</strong> (Core Manager)
+- Worker lifecycle management
+- Message routing and handling
+- Input queue and callback management
+- Filesystem operation proxying
+- Execution history tracking</p>
+<p><strong>PyodideManagerStaticExecutor</strong> (Execution Logic)
+- Pure execution functions separated from manager state
+- <code>executeFile()</code> - Fire-and-forget execution
+- <code>executeAsync()</code> - Promise-based execution with results
+- Parameter validation and namespace handling</p>
+<h4 id="worker-components">Worker Components</h4>
+<p><strong>PyodideWorker</strong> (Entry Point)
+- Worker initialization and state management
+- Dynamic import of handler modules
+- Message delegation to appropriate handlers</p>
+<p><strong>PyodideWorkerHandlers</strong> (Business Logic)
+- <code>handleInit()</code> - Pyodide and package initialization
+- <code>handleExecute()</code> - Python code execution with namespace support
+- <code>handleFSOperation()</code> - Virtual filesystem operations
+- <code>loadPackages()</code> - Smart package loading with caching
+- <code>captureOutputs()</code> - stdout/stderr/matplotlib capture</p>
+<p><strong>PyodideWorkerConfig</strong> (Configuration)
+- Centralized constants and error messages
+- Pyodide CDN version configuration
+- Message templates for consistent communication</p>
+<hr />
+<h2 id="api-reference">API Reference</h2>
+<h3 id="nagini-high-level-api">Nagini (High-Level API)</h3>
+<h4 id="createmanagerbackend-packages-micropippackages-filestoload-workerpath"><code>createManager(backend, packages, micropipPackages, filesToLoad, workerPath)</code></h4>
+<p>Creates a new manager instance with strict type validation.</p>
+<p><strong>Parameters:</strong>
+- <code>backend</code> (String): Backend to use ('pyodide' or 'brython').
+- <code>packages</code> (Array): Pyodide packages to install from the standard channel (e.g., <code>["numpy", "pandas"]</code>).
+- <code>micropipPackages</code> (Array): Python packages to install from PyPI using <code>micropip</code> (e.g., <code>["requests", "beautifulsoup4"]</code>).
+- <code>filesToLoad</code> (Array): Files to load into the virtual filesystem.
+- <code>workerPath</code> (String): Path to the web worker file (for Pyodide).</p>
+<p><strong>Returns:</strong> <code>PyodideManager</code> or <code>BrythonManager</code> instance.</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;sympy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;matplotlib&quot;</span><span class="p">],</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;antlr4-python3-runtime&quot;</span><span class="p">],</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">[</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">            </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/modules/utils.py&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">            </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;utils/utils.py&quot;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">],</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="s2">&quot;./src/pyodide/worker/worker.js&quot;</span><span class="w">         </span><span class="c1">// Development (ES6 modules)</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="c1">// &quot;./src/pyodide/worker/worker-dist.js&quot; // Production (bundled)</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">);</span>
+</code></pre></div></p>
+<h4 id="waitforreadymanager-timeout"><code>waitForReady(manager, timeout)</code></h4>
+<p>Waits for manager initialization to complete.</p>
+<p><strong>Parameters:</strong>
+- <code>manager</code> (PyodideManager): Manager instance
+- <code>timeout</code> (Number): Timeout in milliseconds (default: 30000)</p>
+<p><strong>Returns:</strong> <code>Promise&lt;void&gt;</code></p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">,</span><span class="w"> </span><span class="mf">60000</span><span class="p">);</span><span class="w"> </span><span class="c1">// 60 second timeout</span>
+</code></pre></div></p>
+<h4 id="executefromurlurl-manager-namespace"><code>executeFromUrl(url, manager, namespace)</code></h4>
+<p>Executes Python code from a URL with optional namespace isolation.</p>
+<p><strong>Parameters:</strong>
+- <code>url</code> (String): URL to fetch Python code from
+- <code>manager</code> (PyodideManager): Manager instance
+- <code>namespace</code> (Object, optional): Execution namespace for isolation</p>
+<p><strong>Returns:</strong> <code>Promise&lt;ExecutionResult&gt;</code></p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">executeFromUrl</span><span class="p">(</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="s2">&quot;./scripts/analysis.py&quot;</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nx">manager</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">);</span>
+</code></pre></div></p>
+<h3 id="pyodidemanager-core-manager">PyodideManager (Core Manager)</h3>
+<h4 id="executeasyncfilename-code-namespace"><code>executeAsync(filename, code, namespace)</code></h4>
+<p>Executes Python code asynchronously with comprehensive result tracking.</p>
+<p><strong>Parameters:</strong>
+- <code>filename</code> (String): Name for tracking purposes
+- <code>code</code> (String): Python code to execute
+- <code>namespace</code> (Object, optional): Isolated namespace for execution</p>
+<p><strong>Returns:</strong> <code>Promise&lt;ExecutionResult&gt;</code></p>
+<p><strong>ExecutionResult Structure:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nx">filename</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;test.py&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nx">time</span><span class="o">:</span><span class="w"> </span><span class="mf">125</span><span class="p">,</span><span class="w">                    </span><span class="c1">// Execution time in milliseconds</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nx">stdout</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Hello World\n&quot;</span><span class="p">,</span><span class="w">      </span><span class="c1">// Standard output</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nx">stderr</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w">                   </span><span class="c1">// Standard error</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="nx">missive</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">42</span><span class="p">},</span><span class="w">      </span><span class="c1">// Structured data from Python</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="nx">figures</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;base64...&quot;</span><span class="p">],</span><span class="w">       </span><span class="c1">// Matplotlib figures as base64</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">                  </span><span class="c1">// JavaScript execution errors</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="nx">timestamp</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2025-01-01T12:00:00.000Z&quot;</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;analysis.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="sb">import numpy as np</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="sb">data = np.array([1, 2, 3, 4, 5])</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="sb">mean = np.mean(data)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="sb">print(f&quot;Mean: {mean}&quot;)</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="sb">missive({&quot;mean&quot;: mean, &quot;data_length&quot;: len(data)})</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="sb">`</span><span class="p">);</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">stdout</span><span class="p">);</span><span class="w">   </span><span class="c1">// &quot;Mean: 3.0&quot;</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">missive</span><span class="p">);</span><span class="w">  </span><span class="c1">// {&quot;mean&quot;: 3.0, &quot;data_length&quot;: 5}</span>
+</code></pre></div></p>
+<h4 id="input-handling-methods">Input Handling Methods</h4>
+<p><strong><code>queueInput(input)</code></strong>
+Queue input for automatic provision when Python code requests it.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">);</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s2">&quot;25&quot;</span><span class="p">);</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;survey.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="sb">name = input(&quot;Name: &quot;)</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="sb">age = int(input(&quot;Age: &quot;))</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="sb">print(f&quot;{name} is {age} years old&quot;)</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+<p><strong><code>setInputCallback(callback)</code></strong>
+Set a callback function for interactive input handling.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">setInputCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">prompt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">prompt</span><span class="p">(</span><span class="nx">prompt</span><span class="p">);</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">provideInput</span><span class="p">(</span><span class="nx">userInput</span><span class="p">);</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">});</span>
+</code></pre></div>
+<p><strong><code>provideInput(input)</code></strong>
+Provide input to waiting Python code.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">provideInput</span><span class="p">(</span><span class="s2">&quot;user response&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p><strong><code>isWaitingForInput()</code></strong>
+Check if Python code is currently waiting for input.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">manager</span><span class="p">.</span><span class="nx">isWaitingForInput</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">getCurrentPrompt</span><span class="p">();</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="c1">// Handle input request</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="filesystem-operations">Filesystem Operations</h4>
+<p><strong><code>fs(operation, params)</code></strong></p>
+<p>Perform filesystem operations in the Pyodide environment.</p>
+<p><strong>Supported Operations:</strong>
+- <code>writeFile</code> - Write content to a file
+- <code>readFile</code> - Read file content
+- <code>mkdir</code> - Create directory
+- <code>exists</code> - Check if path exists
+- <code>listdir</code> - List directory contents</p>
+<p><strong>Examples:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Write file</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;writeFile&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;data/config.json&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;gpt-4&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">temperature</span><span class="o">:</span><span class="w"> </span><span class="mf">0.7</span><span class="p">})</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">});</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1">// Read file</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="kd">const</span><span class="w"> </span><span class="nx">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;readFile&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;data/config.json&quot;</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="p">});</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="c1">// Create directory</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;mkdir&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;data/output&quot;</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="p">});</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="c1">// Check existence</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="kd">const</span><span class="w"> </span><span class="nx">exists</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;exists&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;data/config.json&quot;</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="p">});</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="c1">// List directory</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="kd">const</span><span class="w"> </span><span class="nx">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">(</span><span class="s2">&quot;listdir&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;data&quot;</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="p">});</span>
+</code></pre></div></p>
+<h4 id="properties">Properties</h4>
+<ul>
+<li><code>isReady</code> (Boolean): Whether manager is ready for execution</li>
+<li><code>executionHistory</code> (Array): Complete execution history with metadata</li>
+<li><code>packages</code> (Array): List of installed packages</li>
+<li><code>filesToLoad</code> (Array): Files loaded into filesystem</li>
+<li><code>worker</code> (Worker): Web worker instance</li>
+<li><code>pyodideInitPath</code> (String): Path to Python initialization script</li>
+<li><code>workerPath</code> (String): Path to web worker file</li>
+</ul>
+<h3 id="pyodidemanagerstaticexecutor">PyodideManagerStaticExecutor</h3>
+<p>Static utility class containing pure execution logic extracted from PyodideManager.</p>
+<h4 id="executefileworker-isready-filename-code-namespace"><code>executeFile(worker, isReady, filename, code, namespace)</code></h4>
+<p>Execute Python code without waiting for result (fire-and-forget).</p>
+<p><strong>Parameters:</strong>
+- <code>worker</code> (Worker): Web worker instance
+- <code>isReady</code> (Boolean): Whether Pyodide is ready
+- <code>filename</code> (String): Name for tracking
+- <code>code</code> (String): Python code to execute
+- <code>namespace</code> (Object, optional): Execution namespace</p>
+<p><strong>Returns:</strong> <code>void</code></p>
+<h4 id="executeasyncworker-isready-executionhistory-sethandlemessage-gethandlemessage-filename-code-namespace"><code>executeAsync(worker, isReady, executionHistory, setHandleMessage, getHandleMessage, filename, code, namespace)</code></h4>
+<p>Execute Python code asynchronously with result tracking.</p>
+<p><strong>Parameters:</strong>
+- <code>worker</code> (Worker): Web worker instance
+- <code>isReady</code> (Boolean): Whether Pyodide is ready
+- <code>executionHistory</code> (Array): History array for tracking
+- <code>setHandleMessage</code> (Function): Message handler setter
+- <code>getHandleMessage</code> (Function): Message handler getter
+- <code>filename</code> (String): Name for tracking
+- <code>code</code> (String): Python code to execute
+- <code>namespace</code> (Object, optional): Execution namespace</p>
+<p><strong>Returns:</strong> <code>Promise&lt;ExecutionResult&gt;</code></p>
+<h3 id="brythonmanager-lightweight-backend">BrythonManager (Lightweight Backend)</h3>
+<p>The Brython backend executes Python by transpiling it to JavaScript directly in the <strong>main thread</strong> (no WebAssembly, no web-workers). It is great for lightweight demos such as turtle graphics but has several limitations compared to Pyodide.</p>
+<p><strong>Key points</strong>
+- ✅ Instant startup – no WASM download
+- ✅ Same result object shape as Pyodide for <code>executeAsync</code>
+- ⚠️  No package installation (only Brython stdlib)
+- ⚠️  No <code>input()</code> queue / callbacks (methods are stubs that emit console warnings)
+- ⚠️  No virtual filesystem (<code>fs()</code> will throw)
+- ⚠️  Runs on the UI thread – long-running scripts will block the page</p>
+<h4 id="executeasyncfilename-code"><code>executeAsync(filename, code)</code></h4>
+<p>Execute Python code and return a full <code>ExecutionResult</code> object (with <code>stdout</code>, <code>stderr</code>, <code>missive</code>, <code>time</code>, etc.).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="s1">&#39;brython&#39;</span><span class="p">,</span><span class="w">      </span><span class="c1">// Use the Brython backend</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="p">[],</span><span class="w">             </span><span class="c1">// packages ignored</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="p">[],</span><span class="w">             </span><span class="c1">// micropipPackages ignored</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="p">[],</span><span class="w">             </span><span class="c1">// filesToLoad ignored</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="s1">&#39;&#39;</span><span class="w">              </span><span class="c1">// workerPath ignored</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">);</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">);</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s1">&#39;demo.py&#39;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="sb">from browser import document</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="sb">import turtle</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="sb"># Simple square</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="sb">pen = turtle.Turtle()</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="sb">for _ in range(4):</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="sb">    pen.forward(100)</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="sb">    pen.right(90)</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="sb">print(&#39;Finished drawing!&#39;)</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="sb">`</span><span class="p">);</span>
+<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>
+<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">stdout</span><span class="p">);</span><span class="w"> </span><span class="c1">// &quot;Finished drawing!\n&quot;</span>
+</code></pre></div>
+<h4 id="executefilefilename-code"><code>executeFile(filename, code)</code></h4>
+<p>Fire-and-forget wrapper around <code>executeAsync</code> (returns void).</p>
+<h4 id="unsupported-stubbed-apis">Unsupported / Stubbed APIs</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">fs</span><span class="p">();</span><span class="w">                 </span><span class="c1">// ➜ Error: not supported</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">);</span><span class="w">   </span><span class="c1">// ➜ Console warning (ignored)</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">setInputCallback</span><span class="p">(</span><span class="nx">cb</span><span class="p">);</span><span class="w"> </span><span class="c1">// ➜ Console warning (ignored)</span>
+</code></pre></div>
+<p>Properties available: <code>isReady</code>, <code>executionHistory</code>, <code>packages</code>.</p>
+<hr />
+<h2 id="features">Features</h2>
+<h3 id="interactive-input-system">Interactive Input System</h3>
+<p>Nagini provides comprehensive support for Python's <code>input()</code> function with multiple interaction modes. The system is fully asynchronous, preventing the browser's UI from freezing while waiting for user input.</p>
+<p><strong>How It Works:</strong>
+1.  When <code>input()</code> is called in Python, the code is transformed to an <code>async</code> function.
+2.  The worker sends an <code>input_required</code> message to the main thread and pauses its execution, waiting for a JavaScript promise to resolve.
+3.  The main thread's <code>PyodideManager</code> receives this message and uses either the <code>inputQueue</code> or an <code>inputCallback</code> to get the required data.
+4.  The main thread sends the data back to the worker via an <code>input_response</code> message.
+5.  The worker resolves the pending promise, and the Python code resumes execution with the provided input.</p>
+<p>This asynchronous flow is critical for a non-blocking user experience.</p>
+<h4 id="1-programmatic-input-queue">1. Programmatic Input Queue</h4>
+<p>Pre-queue inputs for automated execution:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// Queue inputs before execution</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">);</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s2">&quot;25&quot;</span><span class="p">);</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">queueInput</span><span class="p">(</span><span class="s2">&quot;Engineer&quot;</span><span class="p">);</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;survey.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="sb">print(&quot;Starting survey...&quot;)</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="sb">name = input(&quot;What&#39;s your name? &quot;)</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="sb">age = int(input(&quot;How old are you? &quot;))</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="sb">job = input(&quot;What&#39;s your job? &quot;)</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="sb">print(f&quot;Hello {name}, you&#39;re a {age}-year-old {job}!&quot;)</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+<h4 id="2-interactive-callbacks">2. Interactive Callbacks</h4>
+<p>Handle input requests in real-time:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">setInputCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">prompt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">prompt</span><span class="p">(</span><span class="nx">prompt</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;Enter input:&#39;</span><span class="p">);</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">provideInput</span><span class="p">(</span><span class="nx">userInput</span><span class="p">);</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="p">});</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;interactive.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="sb">name = input(&quot;Enter your name: &quot;)</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="sb">print(f&quot;Hello {name}!&quot;)</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+<h4 id="3-custom-input-ui">3. Custom Input UI</h4>
+<p>Build custom input interfaces:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nx">manager</span><span class="p">.</span><span class="nx">setInputCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">prompt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="c1">// Create custom input UI</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">inputElement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">);</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nx">inputElement</span><span class="p">.</span><span class="nx">placeholder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">prompt</span><span class="p">;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="c1">// Add to DOM and wait for user interaction</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">inputElement</span><span class="p">);</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">userInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">resolve</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">        </span><span class="nx">inputElement</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;keypress&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">key</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;Enter&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">                </span><span class="nx">resolve</span><span class="p">(</span><span class="nx">inputElement</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">                </span><span class="nx">inputElement</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">        </span><span class="p">});</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">    </span><span class="nx">manager</span><span class="p">.</span><span class="nx">provideInput</span><span class="p">(</span><span class="nx">userInput</span><span class="p">);</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="p">});</span>
+</code></pre></div>
+<h3 id="matplotlib-integration">Matplotlib Integration</h3>
+<p>Automatic figure capture and display:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;visualization.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="sb">import matplotlib.pyplot as plt</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="sb">import numpy as np</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="sb"># Create multiple figures</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="sb">fig1, ax1 = plt.subplots()</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="sb">x = np.linspace(0, 10, 100)</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="sb">y = np.sin(x)</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="sb">ax1.plot(x, y)</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="sb">ax1.set_title(&quot;Sine Wave&quot;)</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="sb">fig2, ax2 = plt.subplots()</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="sb">y2 = np.cos(x)</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="sb">ax2.plot(x, y2)</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="sb">ax2.set_title(&quot;Cosine Wave&quot;)</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="sb">print(&quot;Figures created successfully!&quot;)</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="sb">`</span><span class="p">);</span>
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">figures</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span><span class="w"> </span><span class="c1">// 2</span>
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a><span class="nx">result</span><span class="p">.</span><span class="nx">figures</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">base64</span><span class="p">,</span><span class="w"> </span><span class="nx">index</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">);</span>
+<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="w">    </span><span class="nx">img</span><span class="p">.</span><span class="nx">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`data:image/png;base64,</span><span class="si">${</span><span class="nx">base64</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a><span class="w">    </span><span class="nx">img</span><span class="p">.</span><span class="nx">alt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`Figure </span><span class="si">${</span><span class="nx">index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a><span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">img</span><span class="p">);</span>
+<a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="p">});</span>
+</code></pre></div>
+<h3 id="namespace-isolation">Namespace Isolation</h3>
+<p>Complete isolation between executions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1">// Namespace A</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">namespaceA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nx">multiplier</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="p">};</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="kd">const</span><span class="w"> </span><span class="nx">resultA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;test_A.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="sb">result = value * multiplier</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="sb">local_var = &quot;only_in_A&quot;</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="sb">print(f&quot;Result A: {result}&quot;)</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="sb">missive({&quot;result&quot;: result, &quot;local_var&quot;: local_var})</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="nx">namespaceA</span><span class="p">);</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="c1">// Namespace B (completely isolated)</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="kd">const</span><span class="w"> </span><span class="nx">namespaceB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">    </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">    </span><span class="nx">multiplier</span><span class="o">:</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span>
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="p">};</span>
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>
+<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="kd">const</span><span class="w"> </span><span class="nx">resultB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;test_B.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="sb">result = value * multiplier</span>
+<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="sb">local_var = &quot;only_in_B&quot;</span>
+<a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="sb">print(f&quot;Result B: {result}&quot;)</span>
+<a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="sb">missive({&quot;result&quot;: result, &quot;local_var&quot;: local_var})</span>
+<a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="nx">namespaceB</span><span class="p">);</span>
+<a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a>
+<a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="c1">// Results are completely isolated</span>
+<a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">resultA</span><span class="p">.</span><span class="nx">missive</span><span class="p">);</span><span class="w"> </span><span class="c1">// {&quot;result&quot;: &quot;AA&quot;, &quot;local_var&quot;: &quot;only_in_A&quot;}</span>
+<a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">resultB</span><span class="p">.</span><span class="nx">missive</span><span class="p">);</span><span class="w"> </span><span class="c1">// {&quot;result&quot;: &quot;BBB&quot;, &quot;local_var&quot;: &quot;only_in_B&quot;}</span>
+</code></pre></div>
+<h3 id="missive-system">Missive System</h3>
+<p>Structured data exchange between Python and JavaScript:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Python side - can only be called once per execution</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">missive</span><span class="p">({</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="s2">&quot;statistics&quot;</span><span class="p">:</span> <span class="p">{</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>        <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>        <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>        <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="mf">1.58</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="p">},</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="p">})</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="c1"># Calling missive() again raises ValueError</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="c1"># missive({&quot;another&quot;: &quot;value&quot;})  # Error!</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">// JavaScript side</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;analysis.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">pythonCode</span><span class="p">);</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">missive</span><span class="p">.</span><span class="nx">results</span><span class="p">);</span><span class="w">     </span><span class="c1">// [1, 2, 3, 4, 5]</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">missive</span><span class="p">.</span><span class="nx">statistics</span><span class="p">);</span><span class="w">  </span><span class="c1">// {mean: 3.0, median: 3.0, std: 1.58}</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">missive</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span><span class="w">      </span><span class="c1">// &quot;success&quot;</span>
+</code></pre></div>
+<h3 id="remote-module-loading">Remote Module Loading</h3>
+<p>Load remote Python modules at runtime:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">filesToLoad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">        </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/modules/analytics.py&quot;</span><span class="p">,</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">        </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;analytics/analytics.py&quot;</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">        </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/modules/utils.py&quot;</span><span class="p">,</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">        </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;analytics/utils.py&quot;</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">        </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/modules/__init__.py&quot;</span><span class="p">,</span>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">        </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;analytics/__init__.py&quot;</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="p">];</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pandas&quot;</span><span class="p">],</span>
+<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="w">    </span><span class="p">[],</span><span class="w"> </span><span class="c1">// No micropip packages</span>
+<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="w">    </span><span class="nx">filesToLoad</span><span class="p">,</span>
+<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="w">    </span><span class="s2">&quot;./src/pyodide/worker/worker.js&quot;</span>
+<a id="__codelineno-20-22" name="__codelineno-20-22" href="#__codelineno-20-22"></a><span class="p">);</span>
+<a id="__codelineno-20-23" name="__codelineno-20-23" href="#__codelineno-20-23"></a>
+<a id="__codelineno-20-24" name="__codelineno-20-24" href="#__codelineno-20-24"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">);</span>
+<a id="__codelineno-20-25" name="__codelineno-20-25" href="#__codelineno-20-25"></a>
+<a id="__codelineno-20-26" name="__codelineno-20-26" href="#__codelineno-20-26"></a><span class="c1">// Use loaded modules</span>
+<a id="__codelineno-20-27" name="__codelineno-20-27" href="#__codelineno-20-27"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;analysis.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-20-28" name="__codelineno-20-28" href="#__codelineno-20-28"></a><span class="sb">from analytics.analytics import compute_statistics</span>
+<a id="__codelineno-20-29" name="__codelineno-20-29" href="#__codelineno-20-29"></a><span class="sb">from analytics.utils import format_results</span>
+<a id="__codelineno-20-30" name="__codelineno-20-30" href="#__codelineno-20-30"></a>
+<a id="__codelineno-20-31" name="__codelineno-20-31" href="#__codelineno-20-31"></a><span class="sb">data = [1, 2, 3, 4, 5]</span>
+<a id="__codelineno-20-32" name="__codelineno-20-32" href="#__codelineno-20-32"></a><span class="sb">stats = compute_statistics(data)</span>
+<a id="__codelineno-20-33" name="__codelineno-20-33" href="#__codelineno-20-33"></a><span class="sb">formatted = format_results(stats)</span>
+<a id="__codelineno-20-34" name="__codelineno-20-34" href="#__codelineno-20-34"></a><span class="sb">print(formatted)</span>
+<a id="__codelineno-20-35" name="__codelineno-20-35" href="#__codelineno-20-35"></a><span class="sb">missive({&quot;statistics&quot;: stats})</span>
+<a id="__codelineno-20-36" name="__codelineno-20-36" href="#__codelineno-20-36"></a><span class="sb">`</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="micropip-package-installation">Micropip Package Installation</h3>
+<p>In addition to the standard Pyodide packages, Nagini supports installing packages from the Python Package Index (PyPI) using <code>micropip</code>. This feature is only available for the <strong>Pyodide backend</strong>.</p>
+<p><code>micropip</code> allows you to install pure Python packages or packages with wheel files that are compatible with the Pyodide environment.</p>
+<h4 id="usage">Usage</h4>
+<p>To install packages with <code>micropip</code>, pass an array of package names to the <code>micropipPackages</code> parameter of <code>Nagini.createManager</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="p">[],</span><span class="w"> </span><span class="c1">// No standard packages</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;requests&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;beautifulsoup4&quot;</span><span class="p">],</span><span class="w"> </span><span class="c1">// Install from PyPI</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="p">[],</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="s2">&quot;./src/pyodide/worker/worker-dist.js&quot;</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="p">);</span>
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
+<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">waitForReady</span><span class="p">(</span><span class="nx">manager</span><span class="p">);</span>
+<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>
+<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;network_test.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="sb">import requests</span>
+<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>
+<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="sb">try:</span>
+<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="sb">    response = requests.get(&quot;https://api.github.com&quot;)</span>
+<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="sb">    print(f&quot;GitHub API Status: {response.status_code}&quot;)</span>
+<a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a><span class="sb">    missive({&quot;status&quot;: response.status_code})</span>
+<a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="sb">except Exception as e:</span>
+<a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="sb">    print(f&quot;Error: {e}&quot;)</span>
+<a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="sb">    missive({&quot;error&quot;: str(e)})</span>
+<a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a><span class="sb">`</span><span class="p">);</span>
+<a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>
+<a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">stdout</span><span class="p">);</span>
+<a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a><span class="c1">// Expected output: GitHub API Status: 200</span>
+</code></pre></div>
+<h4 id="how-it-works">How it Works</h4>
+<p>When <code>micropipPackages</code> are provided, Nagini instructs the Pyodide worker to:
+1. Load the <code>micropip</code> package itself.
+2. Use <code>micropip.install()</code> to download and install the specified packages from PyPI.
+3. The worker maintains a cache of installed <code>micropip</code> packages to avoid re-installing them on subsequent executions.</p>
+<p>This process happens automatically during the manager's initialization phase.</p>
+<hr />
+<h2 id="testing">Testing</h2>
+<h3 id="test-suite-overview">Test Suite Overview</h3>
+<p>Nagini includes 18 comprehensive test cases covering all major features:</p>
+<h4 id="core-api-tests-nagini">Core API Tests (Nagini)</h4>
+<ol>
+<li><strong>Manager Creation</strong> - <code>Nagini.createManager()</code> with validation</li>
+<li><strong>Initialization</strong> - <code>Nagini.waitForReady()</code> with timeout handling</li>
+<li><strong>URL Execution</strong> - <code>Nagini.executeFromUrl()</code> with error handling</li>
+</ol>
+<h4 id="manager-tests-pyodidemanager">Manager Tests (PyodideManager)</h4>
+<ol>
+<li><strong>Direct Execution</strong> - <code>executeAsync()</code> with result validation</li>
+<li><strong>Namespace Functionality</strong> - Variable access in custom namespaces</li>
+<li><strong>Namespace Isolation</strong> - Complete isolation between executions</li>
+<li><strong>Execution History</strong> - Result tracking with timestamps</li>
+<li><strong>Worker Access</strong> - Web worker instance validation</li>
+<li><strong>Ready State</strong> - Initialization state tracking</li>
+<li><strong>Package List</strong> - Installed package validation</li>
+<li><strong>Files to Load</strong> - File loading configuration</li>
+<li><strong>Init Path</strong> - Python initialization script path</li>
+<li><strong>Worker Path</strong> - Web worker script path</li>
+<li><strong>Input Handling</strong> - Queue system and stdout verification</li>
+<li><strong>Matplotlib Integration</strong> - Figure capture and base64 encoding</li>
+<li><strong>Micropip Package Installation</strong> - Verification of package installation from PyPI.</li>
+</ol>
+<h4 id="manager-tests-brythonmanager">Manager Tests (BrythonManager)</h4>
+<ol>
+<li><strong>Simple Execution</strong> - <code>executeAsync()</code> basic stdout validation</li>
+</ol>
+<h4 id="file-loading-tests-pyodidefileloader">File Loading Tests (PyodideFileLoader)</h4>
+<ol>
+<li><strong>Remote Integration</strong> - Remote file loading and Python imports</li>
+</ol>
+<h3 id="running-tests">Running Tests</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Start local server</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># Open test interface</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>open<span class="w"> </span>http://localhost:8000/scenery/
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1"># Tests run automatically on page load</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="c1"># Results displayed in real-time with pass/fail indicators</span>
+</code></pre></div>
+<h3 id="test-structure">Test Structure</h3>
+<p>Each test follows a consistent pattern:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">static</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="nx">test_name</span><span class="p">(</span><span class="nx">manager</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">testName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;descriptive test name&quot;</span><span class="p">;</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">    </span><span class="nx">logTestStart</span><span class="p">(</span><span class="s2">&quot;Component&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">testName</span><span class="p">);</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">        </span><span class="c1">// Test implementation</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;test.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="sb">            # Python test code</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="sb">        `</span><span class="p">);</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="w">        </span><span class="c1">// Assertions</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="w">        </span><span class="nx">assert</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Result should be returned&quot;</span><span class="p">);</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="w">        </span><span class="nx">assertContains</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">stdout</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected output&quot;</span><span class="p">);</span>
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="w">        </span><span class="nx">assertEquals</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">missive</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">expectedValue</span><span class="p">);</span>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a>
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="w">        </span><span class="nx">logTestPass</span><span class="p">(</span><span class="nx">testName</span><span class="p">);</span>
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">testName</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a><span class="w">        </span><span class="nx">logTestFail</span><span class="p">(</span><span class="nx">testName</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<a id="__codelineno-23-21" name="__codelineno-23-21" href="#__codelineno-23-21"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-23-22" name="__codelineno-23-22" href="#__codelineno-23-22"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-coverage">Test Coverage</h3>
+<ul>
+<li><strong>API Coverage</strong>: All public methods and properties</li>
+<li><strong>Error Handling</strong>: Timeout, invalid parameters, execution errors</li>
+<li><strong>Data Types</strong>: Validation of inputs and outputs</li>
+<li><strong>Integration</strong>: End-to-end workflows with real Python code</li>
+<li><strong>Performance</strong>: Execution timing and memory usage</li>
+<li><strong>Browser Support</strong>: Works across modern browsers</li>
+</ul>
+<hr />
+<h2 id="development">Development</h2>
+<h3 id="project-structure">Project Structure</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>pca-nagini/
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>├── src/                           # Core source code
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>│   ├── nagini.js                  # High-level API
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>│   ├── utils/
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>│   │   ├── validation.js          # Parameter validation utilities
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>│   │   └── createBlobWorker.js    # Cross-origin worker utilities
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>│   ├── brython/                   # Brython backend
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>│   │   ├── index.html
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>│   │   ├── lib/
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>│   │   │   ├── brython.js
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>│   │   │   └── brython_stdlib.js
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a>│   │   ├── manager/
+<a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a>│   │   │   ├── manager.js
+<a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>│   │   │   ├── loader.js
+<a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a>│   │   │   └── executor.js
+<a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>│   │   └── python/
+<a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a>│   │       └── turtle_min.py
+<a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a>│   └── pyodide/
+<a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>│       ├── manager/
+<a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>│       │   ├── manager.js         # Core PyodideManager class
+<a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a>│       │   ├── manager-static-execution.js  # Execution logic
+<a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>│       │   ├── manager-input.js   # Input handling
+<a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a>│       │   └── manager-fs.js      # Filesystem operations
+<a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a>│       ├── worker/
+<a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a>│       │   ├── worker.js          # Worker entry point (ES6 modules)
+<a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a>│       │   ├── worker-config.js   # Configuration constants
+<a id="__codelineno-24-27" name="__codelineno-24-27" href="#__codelineno-24-27"></a>│       │   ├── worker-handlers.js # Message handlers
+<a id="__codelineno-24-28" name="__codelineno-24-28" href="#__codelineno-24-28"></a>│       │   ├── worker-execution.js # Execution logic
+<a id="__codelineno-24-29" name="__codelineno-24-29" href="#__codelineno-24-29"></a>│       │   ├── worker-input.js    # Input handling
+<a id="__codelineno-24-30" name="__codelineno-24-30" href="#__codelineno-24-30"></a>│       │   ├── worker-fs.js       # Filesystem operations
+<a id="__codelineno-24-31" name="__codelineno-24-31" href="#__codelineno-24-31"></a>│       │   ├── webpack.config.cjs # Webpack bundling configuration
+<a id="__codelineno-24-32" name="__codelineno-24-32" href="#__codelineno-24-32"></a>│       │   ├── package.json       # NPM dependencies and build scripts
+<a id="__codelineno-24-33" name="__codelineno-24-33" href="#__codelineno-24-33"></a>│       │   ├── package-lock.json  # Dependency lock file
+<a id="__codelineno-24-34" name="__codelineno-24-34" href="#__codelineno-24-34"></a>│       │   ├── worker-dist.js     # **Bundled worker output** (generated)
+<a id="__codelineno-24-35" name="__codelineno-24-35" href="#__codelineno-24-35"></a>│       │   ├── bundle-worker.py   # Python bundling script (alternative)
+<a id="__codelineno-24-36" name="__codelineno-24-36" href="#__codelineno-24-36"></a>│       │   ├── .gitignore         # Build artifacts exclusions
+<a id="__codelineno-24-37" name="__codelineno-24-37" href="#__codelineno-24-37"></a>│       │   ├── README.md          # Worker bundling documentation
+<a id="__codelineno-24-38" name="__codelineno-24-38" href="#__codelineno-24-38"></a>│       │   └── node_modules/      # NPM dependencies (generated)
+<a id="__codelineno-24-39" name="__codelineno-24-39" href="#__codelineno-24-39"></a>│       ├── file-loader/
+<a id="__codelineno-24-40" name="__codelineno-24-40" href="#__codelineno-24-40"></a>│       │   └── file-loader.js     # Remote file loading
+<a id="__codelineno-24-41" name="__codelineno-24-41" href="#__codelineno-24-41"></a>│       └── python/
+<a id="__codelineno-24-42" name="__codelineno-24-42" href="#__codelineno-24-42"></a>│           ├── pyodide_init.py    # Python initialization script
+<a id="__codelineno-24-43" name="__codelineno-24-43" href="#__codelineno-24-43"></a>│           ├── capture_system.py  # Output capture system
+<a id="__codelineno-24-44" name="__codelineno-24-44" href="#__codelineno-24-44"></a>│           ├── code_transformation.py # Code transformation utilities
+<a id="__codelineno-24-45" name="__codelineno-24-45" href="#__codelineno-24-45"></a>│           └── pyodide_utilities.py # Python helper functions
+<a id="__codelineno-24-46" name="__codelineno-24-46" href="#__codelineno-24-46"></a>├── scenery/                       # Testing and demo
+<a id="__codelineno-24-47" name="__codelineno-24-47" href="#__codelineno-24-47"></a>│   ├── app.js
+<a id="__codelineno-24-48" name="__codelineno-24-48" href="#__codelineno-24-48"></a>│   ├── index.html
+<a id="__codelineno-24-49" name="__codelineno-24-49" href="#__codelineno-24-49"></a>│   ├── interactive-functions.js
+<a id="__codelineno-24-50" name="__codelineno-24-50" href="#__codelineno-24-50"></a>│   └── tests/                     # Test modules
+<a id="__codelineno-24-51" name="__codelineno-24-51" href="#__codelineno-24-51"></a>│       ├── brython-manager-tests.js
+<a id="__codelineno-24-52" name="__codelineno-24-52" href="#__codelineno-24-52"></a>│       └── ... (other test files)
+<a id="__codelineno-24-53" name="__codelineno-24-53" href="#__codelineno-24-53"></a>├── experiments/                   # Experimental playgrounds
+<a id="__codelineno-24-54" name="__codelineno-24-54" href="#__codelineno-24-54"></a>│   ├── brython/ (demo resources)
+<a id="__codelineno-24-55" name="__codelineno-24-55" href="#__codelineno-24-55"></a>│   └── xterm/                     # Xterm.js terminal integration
+<a id="__codelineno-24-56" name="__codelineno-24-56" href="#__codelineno-24-56"></a>│       ├── index.html            # Main terminal interface
+<a id="__codelineno-24-57" name="__codelineno-24-57" href="#__codelineno-24-57"></a>│       ├── app.js                # Terminal application logic
+<a id="__codelineno-24-58" name="__codelineno-24-58" href="#__codelineno-24-58"></a>│       └── README.md             # Xterm integration documentation
+<a id="__codelineno-24-59" name="__codelineno-24-59" href="#__codelineno-24-59"></a>├── tests/                         # Flask integration examples
+<a id="__codelineno-24-60" name="__codelineno-24-60" href="#__codelineno-24-60"></a>│   ├── flask-example.py          # Complete Flask app example
+<a id="__codelineno-24-61" name="__codelineno-24-61" href="#__codelineno-24-61"></a>│   ├── flask-test.html           # Simple HTML test page
+<a id="__codelineno-24-62" name="__codelineno-24-62" href="#__codelineno-24-62"></a>│   ├── DEPLOYMENT.md             # Two-port deployment guide
+<a id="__codelineno-24-63" name="__codelineno-24-63" href="#__codelineno-24-63"></a>│   └── README.md                 # Test documentation
+<a id="__codelineno-24-64" name="__codelineno-24-64" href="#__codelineno-24-64"></a>├── hooks/                         # Git / editor hooks
+<a id="__codelineno-24-65" name="__codelineno-24-65" href="#__codelineno-24-65"></a>│   ├── install-hooks.sh
+<a id="__codelineno-24-66" name="__codelineno-24-66" href="#__codelineno-24-66"></a>│   ├── pre-commit
+<a id="__codelineno-24-67" name="__codelineno-24-67" href="#__codelineno-24-67"></a>│   └── validate_editorconfig.py
+<a id="__codelineno-24-68" name="__codelineno-24-68" href="#__codelineno-24-68"></a>├── docs/
+<a id="__codelineno-24-69" name="__codelineno-24-69" href="#__codelineno-24-69"></a>│   └── docs.md                   # This comprehensive documentation
+<a id="__codelineno-24-70" name="__codelineno-24-70" href="#__codelineno-24-70"></a>├── README.md                     # Project overview
+<a id="__codelineno-24-71" name="__codelineno-24-71" href="#__codelineno-24-71"></a>├── LICENSE
+<a id="__codelineno-24-72" name="__codelineno-24-72" href="#__codelineno-24-72"></a>├── 3RD-PARTY.md
+<a id="__codelineno-24-73" name="__codelineno-24-73" href="#__codelineno-24-73"></a>├── serve.py                      # Static file server for development
+<a id="__codelineno-24-74" name="__codelineno-24-74" href="#__codelineno-24-74"></a>└── todo.md
+</code></pre></div>
+<h3 id="architecture-principles">Architecture Principles</h3>
+<h4 id="separation-of-concerns">Separation of Concerns</h4>
+<ul>
+<li><strong>Nagini</strong>: High-level convenience API</li>
+<li><strong>PyodideManager</strong>: Lifecycle and worker management</li>
+<li><strong>PyodideManagerStaticExecutor</strong>: Pure execution logic</li>
+<li><strong>Worker Components</strong>: Isolated execution environment</li>
+</ul>
+<h4 id="modular-worker-design">Modular Worker Design</h4>
+<ul>
+<li><strong>Entry Point</strong>: Dynamic imports and state management</li>
+<li><strong>Handlers</strong>: Business logic for different message types</li>
+<li><strong>Configuration</strong>: Centralized constants and messages</li>
+</ul>
+<h4 id="static-execution-pattern">Static Execution Pattern</h4>
+<ul>
+<li>Core execution logic extracted to static methods</li>
+<li>Improves testability with pure functions</li>
+<li>Clear separation between state and behavior</li>
+</ul>
+<h3 id="development-guidelines">Development Guidelines</h3>
+<h4 id="constructor-validation">Constructor Validation</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1">// Strict type validation - no defaults or coercion</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">packages</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;packages must be an array&quot;</span><span class="p">);</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="p">}</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">workerPath</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;workerPath must be a string&quot;</span><span class="p">);</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="error-handling">Error Handling</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">manager</span><span class="p">.</span><span class="nx">executeAsync</span><span class="p">(</span><span class="s2">&quot;test.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">code</span><span class="p">);</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span><span class="c1">// Handle success</span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&quot;Execution failed:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">    </span><span class="c1">// Handle failure</span>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="message-handler-pattern-core-architecture">Message Handler Pattern (Core Architecture)</h4>
+<p>The <strong>Handler Replacement Pattern</strong> is a fundamental architectural technique that enables Promise-based APIs over web worker message passing. This pattern is essential for converting asynchronous message communication into synchronous-looking JavaScript code.</p>
+<p><strong>The Problem:</strong>
+Web workers communicate via messages, not direct function calls. When we send a message to the worker, we get a response later via <code>handleMessage()</code>. But JavaScript functions expect immediate return values or Promises.</p>
+<p><strong>Normal Flow:</strong>
+1. User calls: <code>manager.executeAsync("test.py", "print('hello')")</code>
+2. Manager sends message to worker
+3. Worker executes Python code<br />
+4. Worker sends result back
+5. <code>handleMessage()</code> receives the result
+6. But how do we get the result back to the original caller?</p>
+<p><strong>The Solution - Handler Replacement:</strong>
+We temporarily "hijack" the <code>handleMessage</code> function to capture the specific result for the specific caller, then restore the original function.</p>
+<p><strong>Step-by-Step Process:</strong>
+1. <strong>Save Original Handler</strong>: <code>const originalHandler = this.getHandleMessage()</code>
+2. <strong>Replace with Interceptor</strong>: Replace <code>handleMessage</code> with a custom function that:
+   - Still calls the original handler (for normal processing)<br />
+   - BUT ALSO checks if this is the result we're waiting for
+   - If yes: resolve the Promise with the result
+   - Then restore the original <code>handleMessage</code>
+3. <strong>Send Message</strong>: Send the message to the worker
+4. <strong>Capture Result</strong>: When the result comes back, our custom handler catches it
+5. <strong>Restore Handler</strong>: Original handler is restored for future calls</p>
+<p><strong>Why This is Safe:</strong>
+JavaScript is single-threaded, so only one execution can happen at a time. No race conditions are possible - each call completes before the next starts.</p>
+<p><strong>Implementation Example:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1">// Core implementation of the handler replacement pattern</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="k">static</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="nx">executeAsync</span><span class="p">(</span><span class="nx">worker</span><span class="p">,</span><span class="w"> </span><span class="nx">isReady</span><span class="p">,</span><span class="w"> </span><span class="nx">executionHistory</span><span class="p">,</span><span class="w"> </span><span class="nx">setHandleMessage</span><span class="p">,</span><span class="w"> </span><span class="nx">getHandleMessage</span><span class="p">,</span><span class="w"> </span><span class="nx">filename</span><span class="p">,</span><span class="w"> </span><span class="nx">code</span><span class="p">,</span><span class="w"> </span><span class="nx">namespace</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span><span class="w"> </span><span class="nx">reject</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">        </span><span class="c1">// Add timeout to prevent hanging</span>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">timeoutId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">            </span><span class="nx">setHandleMessage</span><span class="p">(</span><span class="nx">originalHandler</span><span class="p">);</span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">            </span><span class="nx">reject</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Execution timeout after 30 seconds&quot;</span><span class="p">));</span>
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">        </span><span class="p">},</span><span class="w"> </span><span class="mf">30000</span><span class="p">);</span>
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">        </span><span class="c1">// Save original handler and replace with interceptor</span>
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">originalHandler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getHandleMessage</span><span class="p">();</span>
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>
+<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">        </span><span class="nx">setHandleMessage</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">                </span><span class="c1">// Call original handler for normal processing</span>
+<a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="w">                </span><span class="nx">originalHandler</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">);</span>
+<a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a>
+<a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="w">                </span><span class="c1">// Check if this is the result we&#39;re waiting for</span>
+<a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">type</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;result&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="w">                    </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timeoutId</span><span class="p">);</span>
+<a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="w">                    </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">executionHistory</span><span class="p">[</span><span class="nx">executionHistory</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1</span><span class="p">];</span>
+<a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a><span class="w">                    </span><span class="nx">resolve</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+<a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="w">                    </span><span class="c1">// Restore original handler</span>
+<a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a><span class="w">                    </span><span class="nx">setHandleMessage</span><span class="p">(</span><span class="nx">originalHandler</span><span class="p">);</span>
+<a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a><span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">type</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a><span class="w">                    </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timeoutId</span><span class="p">);</span>
+<a id="__codelineno-27-27" name="__codelineno-27-27" href="#__codelineno-27-27"></a><span class="w">                    </span><span class="nx">setHandleMessage</span><span class="p">(</span><span class="nx">originalHandler</span><span class="p">);</span>
+<a id="__codelineno-27-28" name="__codelineno-27-28" href="#__codelineno-27-28"></a><span class="w">                    </span><span class="nx">reject</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`Execution error: </span><span class="si">${</span><span class="nx">data</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="sb">`</span><span class="p">));</span>
+<a id="__codelineno-27-29" name="__codelineno-27-29" href="#__codelineno-27-29"></a><span class="w">                </span><span class="p">}</span>
+<a id="__codelineno-27-30" name="__codelineno-27-30" href="#__codelineno-27-30"></a><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-31" name="__codelineno-27-31" href="#__codelineno-27-31"></a><span class="w">                </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timeoutId</span><span class="p">);</span>
+<a id="__codelineno-27-32" name="__codelineno-27-32" href="#__codelineno-27-32"></a><span class="w">                </span><span class="nx">setHandleMessage</span><span class="p">(</span><span class="nx">originalHandler</span><span class="p">);</span>
+<a id="__codelineno-27-33" name="__codelineno-27-33" href="#__codelineno-27-33"></a><span class="w">                </span><span class="nx">reject</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`Handler error: </span><span class="si">${</span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="sb">`</span><span class="p">));</span>
+<a id="__codelineno-27-34" name="__codelineno-27-34" href="#__codelineno-27-34"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-27-35" name="__codelineno-27-35" href="#__codelineno-27-35"></a><span class="w">        </span><span class="p">});</span>
+<a id="__codelineno-27-36" name="__codelineno-27-36" href="#__codelineno-27-36"></a>
+<a id="__codelineno-27-37" name="__codelineno-27-37" href="#__codelineno-27-37"></a><span class="w">        </span><span class="c1">// Send execution message to worker</span>
+<a id="__codelineno-27-38" name="__codelineno-27-38" href="#__codelineno-27-38"></a><span class="w">        </span><span class="nx">worker</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">({</span>
+<a id="__codelineno-27-39" name="__codelineno-27-39" href="#__codelineno-27-39"></a><span class="w">            </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;execute&quot;</span><span class="p">,</span>
+<a id="__codelineno-27-40" name="__codelineno-27-40" href="#__codelineno-27-40"></a><span class="w">            </span><span class="nx">filename</span><span class="p">,</span>
+<a id="__codelineno-27-41" name="__codelineno-27-41" href="#__codelineno-27-41"></a><span class="w">            </span><span class="nx">code</span><span class="p">,</span>
+<a id="__codelineno-27-42" name="__codelineno-27-42" href="#__codelineno-27-42"></a><span class="w">            </span><span class="nx">namespace</span>
+<a id="__codelineno-27-43" name="__codelineno-27-43" href="#__codelineno-27-43"></a><span class="w">        </span><span class="p">});</span>
+<a id="__codelineno-27-44" name="__codelineno-27-44" href="#__codelineno-27-44"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-27-45" name="__codelineno-27-45" href="#__codelineno-27-45"></a><span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Analogy:</strong>
+Like temporarily replacing your mailbox with a special one that:
+1. Still puts mail in your house (original function)
+2. But ALSO checks for a specific letter you're expecting<br />
+3. When that letter arrives, immediately gives it to you
+4. Then puts your normal mailbox back</p>
+<p><strong>Pattern Usage in Nagini:</strong>
+- <strong>PyodideManagerStaticExecutor.executeAsync()</strong>: Core execution with results
+- <strong>PyodideManagerFS._sendFSCommand()</strong>: Filesystem operations<br />
+- <strong>PyodideManagerInput</strong>: Input handling (similar pattern)</p>
+<p>This pattern enables clean, Promise-based APIs while maintaining the performance benefits of web worker execution.</p>
+<h3 id="xterm-terminal-integration">Xterm Terminal Integration</h3>
+<p>Nagini includes an experimental <strong>xterm.js terminal integration</strong> that demonstrates how to create a full terminal interface for Python code execution in the browser.</p>
+<h4 id="location-and-features">Location and Features</h4>
+<p>The xterm integration is located in <code>experiments/xterm/</code> and provides:</p>
+<ul>
+<li><strong>Real Terminal Interface</strong>: Full xterm.js terminal with cursor, colors, and keyboard navigation</li>
+<li><strong>Interactive Python Execution</strong>: Execute Python code using Nagini's Pyodide backend</li>
+<li><strong>Template System</strong>: Pre-built Python scripts ready to execute</li>
+<li><strong>Command History</strong>: Navigate previous commands with arrow keys</li>
+<li><strong>Matplotlib Integration</strong>: Automatic figure display above the terminal</li>
+<li><strong>Professional Styling</strong>: VS Code-inspired dark theme</li>
+</ul>
+<h4 id="available-templates">Available Templates</h4>
+<ol>
+<li><strong>hello_world</strong> - Simple hello world script with user input demonstration</li>
+<li><strong>data_analysis</strong> - Basic data analysis using numpy with statistics and histogram plotting</li>
+<li><strong>calculator</strong> - Interactive calculator supporting math operations and scientific functions</li>
+<li><strong>plot_demo</strong> - Comprehensive matplotlib demonstration with multiple plot types</li>
+</ol>
+<h4 id="usage-example">Usage Example</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Start local server</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="c1"># Open terminal interface</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>http://localhost:8000/experiments/xterm/
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="c1"># Terminal commands</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>$<span class="w"> </span><span class="nb">help</span><span class="w">          </span><span class="c1"># Show available commands</span>
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>$<span class="w"> </span>templates<span class="w">     </span><span class="c1"># List Python templates</span>
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a>$<span class="w"> </span>run<span class="w"> </span>hello_world<span class="w">   </span><span class="c1"># Execute a template</span>
+<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>$<span class="w"> </span>status<span class="w">        </span><span class="c1"># Show system status</span>
+<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a>$<span class="w"> </span>clear<span class="w">         </span><span class="c1"># Clear screen</span>
+</code></pre></div>
+<h4 id="technical-implementation">Technical Implementation</h4>
+<p>The xterm integration demonstrates:
+- <strong>ES6 Module Integration</strong>: Proper import of Nagini as ES6 module
+- <strong>Terminal Event Handling</strong>: Keyboard input, command parsing, and history management
+- <strong>Python Code Execution</strong>: Seamless integration with Nagini's execution pipeline
+- <strong>Figure Display</strong>: Automatic matplotlib figure rendering in the browser
+- <strong>Error Handling</strong>: Proper display of Python errors and execution feedback</p>
+<p>This experiment showcases the potential for creating full-featured browser-based Python development environments using Nagini as the execution backend.</p>
+<h3 id="worker-bundling-system">Worker Bundling System</h3>
+<p>Nagini includes a comprehensive <strong>webpack-based bundling system</strong> to handle cross-origin deployment scenarios, particularly for Flask apps and other web frameworks.</p>
+<h4 id="problem-solved">Problem Solved</h4>
+<p>When creating web workers from blob URLs across different origins (e.g., loading Nagini from port 8010 while Flask runs on port 5001), ES6 dynamic imports fail due to CORS restrictions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1">// This fails in cross-origin blob workers:</span>
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">handleMessage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./worker-handlers.js&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// CORS error</span>
+</code></pre></div>
+<h4 id="solution-two-worker-versions">Solution: Two Worker Versions</h4>
+<p><strong>1. Development Version (<code>worker.js</code>)</strong>
+- Uses ES6 imports for clean, modular development
+- Perfect for same-origin development
+- Easy debugging and hot reloading</p>
+<p><strong>2. Production Version (<code>worker-dist.js</code>)</strong>
+- Single bundled file with all dependencies resolved
+- No ES6 imports - works in any blob worker context
+- Optimized with webpack + babel transpilation
+- ~64KB compressed bundle</p>
+<h4 id="build-process">Build Process</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1"># Navigate to worker directory</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="nb">cd</span><span class="w"> </span>src/pyodide/worker
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="c1"># Install dependencies (first time only)</span>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>npm<span class="w"> </span>install
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="c1"># Build production bundle</span>
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>npm<span class="w"> </span>run<span class="w"> </span>build<span class="w">                </span><span class="c1"># Creates worker-dist.js (production)</span>
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>npm<span class="w"> </span>run<span class="w"> </span>build-dev<span class="w">           </span><span class="c1"># Creates worker-dist.js (development mode)</span>
+</code></pre></div>
+<h4 id="webpack-configuration">Webpack Configuration</h4>
+<p>The bundling system uses a specialized webpack configuration optimized for web workers:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1">// webpack.config.cjs</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">  </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;production&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">  </span><span class="nx">entry</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;./worker.js&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="w">  </span><span class="nx">output</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="w">    </span><span class="nx">filename</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;worker-dist.js&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="w">    </span><span class="nx">globalObject</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;self&#39;</span><span class="p">,</span><span class="w">     </span><span class="c1">// Important for web workers</span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;webworker&#39;</span><span class="p">,</span><span class="w">        </span><span class="c1">// Optimize for web worker environment</span>
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="w">  </span><span class="nx">module</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a><span class="w">    </span><span class="nx">rules</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span>
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="w">      </span><span class="nx">test</span><span class="o">:</span><span class="w"> </span><span class="sr">/\.js$/</span><span class="p">,</span>
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a><span class="w">      </span><span class="nx">exclude</span><span class="o">:</span><span class="w"> </span><span class="sr">/node_modules/</span><span class="p">,</span>
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a><span class="w">      </span><span class="nx">use</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a><span class="w">        </span><span class="nx">loader</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;babel-loader&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a><span class="w">        </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a><span class="w">          </span><span class="nx">presets</span><span class="o">:</span><span class="w"> </span><span class="p">[[</span><span class="s1">&#39;@babel/preset-env&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a><span class="w">            </span><span class="nx">targets</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">browsers</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;last 2 versions&#39;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a><span class="w">          </span><span class="p">}]]</span>
+<a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a><span class="w">      </span><span class="p">}</span>
+<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a><span class="w">    </span><span class="p">}]</span>
+<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-31-24" name="__codelineno-31-24" href="#__codelineno-31-24"></a><span class="p">};</span>
+</code></pre></div>
+<h4 id="usage-examples">Usage Examples</h4>
+<p><strong>Same-Origin Development:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">],</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">    </span><span class="p">[],</span><span class="w"> </span><span class="c1">// No micropip packages</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">    </span><span class="p">[],</span>
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="w">    </span><span class="s2">&quot;./src/pyodide/worker/worker.js&quot;</span><span class="w">        </span><span class="c1">// ES6 modules version</span>
+<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="p">);</span>
+</code></pre></div></p>
+<p><strong>Cross-Origin Production (Flask):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1">// Direct bundled worker usage</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">],</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">    </span><span class="p">[],</span><span class="w"> </span><span class="c1">// No micropip packages</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">    </span><span class="p">[],</span>
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">    </span><span class="s2">&quot;http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js&quot;</span><span class="w">  </span><span class="c1">// Bundled version</span>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="p">);</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="c1">// Or with blob worker for maximum compatibility</span>
+<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">createBlobWorkerUrl</span><span class="p">(</span><span class="nx">workerPath</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">workerPath</span><span class="p">);</span>
+<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">workerCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">blob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Blob</span><span class="p">([</span><span class="nx">workerCode</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/javascript&#39;</span><span class="w"> </span><span class="p">});</span>
+<a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">URL</span><span class="p">.</span><span class="nx">createObjectURL</span><span class="p">(</span><span class="nx">blob</span><span class="p">);</span>
+<a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a><span class="p">}</span>
+<a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a>
+<a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a><span class="kd">const</span><span class="w"> </span><span class="nx">workerPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js&quot;</span><span class="p">;</span>
+<a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a><span class="kd">const</span><span class="w"> </span><span class="nx">blobWorkerUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createBlobWorkerUrl</span><span class="p">(</span><span class="nx">workerPath</span><span class="p">);</span>
+<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a>
+<a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a><span class="kd">const</span><span class="w"> </span><span class="nx">manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">Nagini</span><span class="p">.</span><span class="nx">createManager</span><span class="p">(</span>
+<a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a><span class="w">    </span><span class="s1">&#39;pyodide&#39;</span><span class="p">,</span>
+<a id="__codelineno-33-23" name="__codelineno-33-23" href="#__codelineno-33-23"></a><span class="w">    </span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">],</span>
+<a id="__codelineno-33-24" name="__codelineno-33-24" href="#__codelineno-33-24"></a><span class="w">    </span><span class="p">[],</span><span class="w"> </span><span class="c1">// No micropip packages</span>
+<a id="__codelineno-33-25" name="__codelineno-33-25" href="#__codelineno-33-25"></a><span class="w">    </span><span class="p">[],</span>
+<a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a><span class="w">    </span><span class="nx">blobWorkerUrl</span><span class="w">  </span><span class="c1">// Blob URL works across any origin</span>
+<a id="__codelineno-33-27" name="__codelineno-33-27" href="#__codelineno-33-27"></a><span class="p">);</span>
+</code></pre></div></p>
+<h4 id="bundle-contents">Bundle Contents</h4>
+<p>The bundled worker includes all necessary modules:
+- <code>worker.js</code> (entry point)
+- <code>worker-handlers.js</code> (message handling)
+- <code>worker-execution.js</code> (Python execution)
+- <code>worker-fs.js</code> (filesystem operations)
+- <code>worker-input.js</code> (input handling)
+- <code>worker-config.js</code> (configuration constants)</p>
+<h4 id="deployment-benefits">Deployment Benefits</h4>
+<ul>
+<li><strong>Flask Integration</strong>: Seamless integration with Flask and other web frameworks</li>
+<li><strong>CORS Compatibility</strong>: No cross-origin restrictions with blob workers</li>
+<li><strong>CDN Distribution</strong>: Single file can be served from CDNs</li>
+<li><strong>Performance</strong>: Optimized bundle with minimal overhead</li>
+<li><strong>Browser Support</strong>: Works across all modern browsers</li>
+</ul>
+<hr />
+<h2 id="licensing">Licensing</h2>
+<p>Nagini is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).</p>
+<h3 id="key-requirements">Key Requirements:</h3>
+<ul>
+<li><strong>Source Code Sharing</strong>: Any modifications must be shared under the same license</li>
+<li><strong>Network Use</strong>: Users of network services must have access to source code</li>
+<li><strong>Derivative Works</strong>: Must use compatible licenses</li>
+<li><strong>Copyright Notices</strong>: Must be preserved</li>
+</ul>
+<h3 id="what-this-means">What This Means:</h3>
+<ul>
+<li>✅ <strong>Free to use</strong> for any purpose (personal, educational, commercial, research)</li>
+<li>✅ <strong>Modify and distribute</strong> with source code sharing</li>
+<li>✅ <strong>Commercial use</strong> allowed with copyleft compliance</li>
+<li>✅ <strong>Network services</strong> permitted with source availability</li>
+</ul>
+<p>For complete details, see the <a href="../LICENSE">LICENSE</a> file.</p>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<p><strong><code>TypeError: Failed to fetch dynamically imported module</code></strong>
+- <strong>Cause</strong>: Cross-origin restrictions on dynamic imports in blob workers.
+- <strong>Solution</strong>: Use the bundled <code>worker-dist.js</code> instead of <code>worker.js</code>. See <a href="#worker-bundling-system">Worker Bundling System</a>.</p>
+<p><strong><code>Execution timeout after 30 seconds</code></strong>
+- <strong>Cause</strong>: Python code is taking too long to execute, or Pyodide initialization is slow.
+- <strong>Solution</strong>:
+    1. Increase the timeout in <code>Nagini.waitForReady()</code>.
+    2. Optimize your Python code for performance.
+    3. Ensure a stable network connection for package loading.</p>
+<p><strong><code>ModuleNotFoundError: No module named '...'</code></strong>
+- <strong>Cause</strong>:
+    1. The required package was not included in the <code>packages</code> or <code>micropipPackages</code> array.
+    2. The package is not compatible with Pyodide.
+    3. The module is from a custom file that was not loaded correctly.
+- <strong>Solution</strong>:
+    1. Add the package to the <code>packages</code> or <code>micropipPackages</code> array during manager creation.
+    2. Check the Pyodide or PyPI documentation for package compatibility.
+    3. Verify the <code>filesToLoad</code> configuration for custom modules.</p>
+<p><strong><code>input()</code> returns an empty string, or <code>ValueError: invalid literal for int() with base 10: ''</code></strong>
+- <strong>Cause</strong>: This indicates a breakdown in the asynchronous input handling mechanism. The Python code is not correctly pausing to wait for user input and instead receives an empty string immediately. This is usually caused by an issue in <code>manager-input.js</code> where the <code>input_required</code> message from the worker is not handled correctly, failing to pull from the <code>inputQueue</code> or trigger the <code>inputCallback</code>.
+- <strong>Solution</strong>:
+    1. Ensure you are using the latest version of Nagini, as this was a known issue in older versions.
+    2. If developing locally, ensure <code>src/pyodide/manager/manager-input.js</code> correctly references <code>manager.inputState.inputQueue</code> and properly dequeues items. The interactive test in <code>scenery/index.html</code> is a good way to verify this functionality.
+    3. Verify that the worker bundle (<code>worker-dist.js</code>) is up-to-date by running <code>npm run build</code> in the worker directory.</p>
+<h3 id="reporting-bugs">Reporting Bugs</h3>
+<p>Please report any bugs or issues on our <a href="https://github.com/pca-nagini/pca-nagini/issues">GitHub Issues</a> page. Include the following details:
+- Browser and version
+- Operating system
+- Steps to reproduce the issue
+- Console logs and error messages
+- A minimal, reproducible example if possible</p>
+<p>We appreciate your contributions to making Nagini better! </p>
+<h3 id="automated-release-validation">Automated Release Validation</h3>
+<p>To ensure the stability of every release, Nagini uses a sophisticated, automated test harness that validates the entire application before any new version can be tagged. This system is a critical part of our quality assurance process.</p>
+<ul>
+<li><strong>Selenium &amp; Chrome</strong>: A Selenium script (<code>scenery/run_tests.py</code>) runs a headless Chrome browser to execute the full test suite in a real-world environment.</li>
+<li><strong>Failure Simulation</strong>: The test suite includes tests that are <em>designed</em> to fail (an assertion failure, or "flop", and a runtime error, or "glitch"). These tests are located in <code>scenery/tests/failure-tests.js</code>. They are crucial for ensuring that our error-handling and reporting systems are working correctly.</li>
+<li><strong><code>pre-push</code> Git Hook</strong>: When a new tag is pushed (e.g., <code>git push origin v0.0.11</code>), a <code>pre-push</code> hook (<code>hooks/pre-push</code>) automatically runs the Selenium tests. It checks the JSON output in the <code>scenery/critics/</code> directory to ensure that only the expected "flop" and "glitch" tests have failed. If any other test fails, or if the failure tests unexpectedly pass, the push is aborted.</li>
+</ul>
+<p>This system guarantees that no broken code can ever be tagged for release.</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>
