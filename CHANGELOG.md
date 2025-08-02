@@ -1,6 +1,11 @@
+# v0.0.16
+
+- **CI/CD Fix**: Corrected all deployment pathing issues for the GitHub Pages site. The interactive `scenery` test suite is now fully functional on the live documentation site.
+- **Docs**: All hardcoded local URLs in the documentation have been replaced with relative paths for portability.
+- **Stability**: This version marks the first stable release after the upgrade to Pyodide v0.28.0 and the resolution of all related deployment and testing issues.
+
 > [!DANGER]
 > Versions prior to `v0.0.16` are unstable.
-
 
 # v0.0.15-unstable
 
