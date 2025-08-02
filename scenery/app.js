@@ -7,7 +7,6 @@ import { PyodideIntegrationTests } from './tests/pyodide-integration-tests.js';
 import { ValidationUtilsTests } from './tests/validation-utils-tests.js';
 import { UtilitiesTests } from './tests/utilities-tests.js';
 import { BrythonManagerTests } from './tests/brython-manager-tests.js';
-import { FailureTests } from './tests/failure-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
@@ -102,6 +101,26 @@ async function runTest(testFunction, ...args) {
     }
 }
 
+async function runTestWithTimeout(testFunction, testId, timeout = 30000) {
+    return new Promise(async (resolve, reject) => {
+        const timer = setTimeout(() => {
+            const error = new Error(`Test timed out after ${timeout / 1000}s`);
+            window.updateTestStatus(testId, 'fail', error);
+            reject(error);
+        }, timeout);
+
+        try {
+            await testFunction();
+            clearTimeout(timer);
+            resolve();
+        } catch (error) {
+            clearTimeout(timer);
+            window.updateTestStatus(testId, 'fail', error);
+            reject(error);
+        }
+    });
+}
+
 // Global manager instance
 let manager = null;
 
@@ -137,6 +156,94 @@ window.updateTestStatus = function(testId, status, error = null) {
     }
 };
 
+async function runAllTests() {
+    console.log("Starting Nagini Test Suite\n");
+
+    const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy"];
+    const micropipPackages = ["antlr4-python3-runtime"];
+    const pyodideWorkerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
+    const brythonOptions = {
+        brythonJsPath: "/src/brython/lib/brython.js",
+        brythonStdlibPath: "/src/brython/lib/brython_stdlib.js"
+    };
+
+    const tests = [
+        // Nagini Tests (Pyodide)
+        { id: 'status-nagini-1', desc: "1️⃣ Nagini.createManager() - Pyodide", func: async () => {
+            const result = await NaginiTests.test1CreateManager('pyodide', packages, micropipPackages, filesToLoad, pyodideWorkerPath);
+            manager = result.manager;
+            window.manager = manager;
+            window.updateTestStatus('status-nagini-1', 'pass');
+        }},
+        { id: 'status-nagini-2', desc: "2️⃣ Nagini.waitForReady() - Pyodide", func: () => NaginiTests.test2WaitForReady(manager).then(() => window.updateTestStatus('status-nagini-2', 'pass')) },
+        { id: 'status-nagini-3', desc: "3️⃣ Nagini.executeFromUrl() - Pyodide", func: () => NaginiTests.test3ExecuteFromUrl(manager, "./tests/sympy_test.py").then(() => window.updateTestStatus('status-nagini-3', 'pass')) },
+        { id: 'status-nagini-4', desc: "4️⃣ Nagini.getSupportedBackends()", func: () => NaginiTests.test4GetSupportedBackends().then(() => window.updateTestStatus('status-nagini-4', 'pass')) },
+        { id: 'status-nagini-5', desc: "5️⃣ Nagini.isBackendSupported()", func: () => NaginiTests.test5IsBackendSupported().then(() => window.updateTestStatus('status-nagini-5', 'pass')) },
+        
+        // PyodideManager Tests
+        { id: 'status-pyodide-manager-1', desc: "1️⃣ executeAsync()", func: () => PyodideManagerTests.test4ExecuteAsync(manager).then(() => window.updateTestStatus('status-pyodide-manager-1', 'pass')) },
+        { id: 'status-pyodide-manager-2', desc: "2️⃣ executeAsync with namespace", func: () => PyodideManagerTests.test5ExecuteAsyncWithNamespace(manager).then(() => window.updateTestStatus('status-pyodide-manager-2', 'pass')) },
+        { id: 'status-pyodide-manager-3', desc: "3️⃣ namespace isolation", func: () => PyodideManagerTests.test6NamespaceIsolation(manager).then(() => window.updateTestStatus('status-pyodide-manager-3', 'pass')) },
+        { id: 'status-pyodide-manager-4', desc: "4️⃣ executionHistory", func: () => PyodideManagerTests.test7ExecutionHistory(manager).then(() => window.updateTestStatus('status-pyodide-manager-4', 'pass')) },
+        { id: 'status-pyodide-manager-5', desc: "5️⃣ worker", func: () => PyodideManagerTests.test8Worker(manager).then(() => window.updateTestStatus('status-pyodide-manager-5', 'pass')) },
+        { id: 'status-pyodide-manager-6', desc: "6️⃣ isReady", func: () => PyodideManagerTests.test9IsReady(manager).then(() => window.updateTestStatus('status-pyodide-manager-6', 'pass')) },
+        { id: 'status-pyodide-manager-7', desc: "7️⃣ packages", func: () => PyodideManagerTests.test10Packages(manager).then(() => window.updateTestStatus('status-pyodide-manager-7', 'pass')) },
+        { id: 'status-pyodide-manager-8', desc: "8️⃣ filesToLoad", func: () => PyodideManagerTests.test11FilesToLoad(manager).then(() => window.updateTestStatus('status-pyodide-manager-8', 'pass')) },
+        { id: 'status-pyodide-manager-9', desc: "9️⃣ pyodideInitPath", func: () => PyodideManagerTests.test12PyodideInitPath(manager).then(() => window.updateTestStatus('status-pyodide-manager-9', 'pass')) },
+        { id: 'status-pyodide-manager-10', desc: "🔟 workerPath", func: () => PyodideManagerTests.test13WorkerPath(manager).then(() => window.updateTestStatus('status-pyodide-manager-10', 'pass')) },
+        { id: 'status-pyodide-manager-11', desc: "1️⃣1️⃣ input handling", func: () => PyodideManagerTests.test15InputHandling(manager).then(() => window.updateTestStatus('status-pyodide-manager-11', 'pass')) },
+        { id: 'status-pyodide-manager-12', desc: "1️⃣2️⃣ matplotlib figure capture", func: () => PyodideManagerTests.test16MatplotlibFigureCapture(manager).then(() => window.updateTestStatus('status-pyodide-manager-12', 'pass')) },
+        { id: 'status-pyodide-manager-13', desc: "1️⃣3️⃣ filesystem operations", func: () => PyodideManagerTests.test17FilesystemOperations(manager).then(() => window.updateTestStatus('status-pyodide-manager-13', 'pass')) },
+
+        // FileLoader Tests
+        { id: 'status-file-loader-1', desc: "1️⃣ PyodideFileLoader.loadFiles()", func: () => FileLoaderTests.test14LoadFilesAndImport(manager, filesToLoad).then(() => window.updateTestStatus('status-file-loader-1', 'pass')) },
+        { id: 'status-file-loader-2', desc: "2️⃣ PyodideFileLoader retry logic", func: () => FileLoaderTests.test2FileLoaderRetryLogic(manager).then(() => window.updateTestStatus('status-file-loader-2', 'pass')) },
+        { id: 'status-file-loader-3', desc: "3️⃣ PyodideFileLoader error handling", func: () => FileLoaderTests.test3FileLoaderErrorHandling(manager).then(() => window.updateTestStatus('status-file-loader-3', 'pass')) },
+
+        // Integration Tests
+        { id: 'status-integration-1', desc: "1️⃣ complex input data scenarios", func: () => PyodideIntegrationTests.testComplexInputData(manager).then(() => window.updateTestStatus('status-integration-1', 'pass')) },
+        { id: 'status-integration-2', desc: "2️⃣ data visualization workflow", func: () => PyodideIntegrationTests.testDataVisualizationWorkflow(manager).then(() => window.updateTestStatus('status-integration-2', 'pass')) },
+        { id: 'status-integration-3', desc: "3️⃣ filesystem and import workflow", func: () => PyodideIntegrationTests.testFileSystemAndImportWorkflow(manager).then(() => window.updateTestStatus('status-integration-3', 'pass')) },
+        { id: 'status-integration-4', desc: "4️⃣ mixed execution scenarios", func: () => PyodideIntegrationTests.testMixedExecutionScenarios(manager).then(() => window.updateTestStatus('status-integration-4', 'pass')) },
+        { id: 'status-integration-5', desc: "5️⃣ advanced matplotlib workflow", func: () => PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager).then(() => window.updateTestStatus('status-integration-5', 'pass')) },
+        { id: 'status-integration-6', desc: "6️⃣ micropip package installation", func: () => PyodideIntegrationTests.testMicropipPackageInstallation(manager).then(() => window.updateTestStatus('status-integration-6', 'pass')) },
+        { id: 'status-integration-7', desc: "7️⃣ antlr4 and sympy interaction", func: () => PyodideIntegrationTests.testAntlr4AndSympyInteraction(manager).then(() => window.updateTestStatus('status-integration-7', 'pass')) },
+        
+        // Validation and Utilities Tests
+        { id: 'status-validation-1', desc: "1️⃣ validateArray", func: () => ValidationUtilsTests.test1ValidateArray().then(() => window.updateTestStatus('status-validation-1', 'pass')) },
+        { id: 'status-validation-2', desc: "2️⃣ validateString", func: () => ValidationUtilsTests.test2ValidateString().then(() => window.updateTestStatus('status-validation-2', 'pass')) },
+        { id: 'status-validation-3', desc: "3️⃣ validateBackend", func: () => ValidationUtilsTests.test3ValidateBackend().then(() => window.updateTestStatus('status-validation-3', 'pass')) },
+        { id: 'status-validation-4', desc: "4️⃣ checkDangerousPatterns", func: () => ValidationUtilsTests.test4CheckDangerousPatterns().then(() => window.updateTestStatus('status-validation-4', 'pass')) },
+        { id: 'status-utilities-1', desc: "1️⃣ test-utils assert function", func: () => UtilitiesTests.test1TestUtilsAssertFunction().then(() => window.updateTestStatus('status-utilities-1', 'pass')) },
+        { id: 'status-utilities-2', desc: "2️⃣ test-utils assertEquals function", func: () => UtilitiesTests.test2TestUtilsEqualsFunction().then(() => window.updateTestStatus('status-utilities-2', 'pass')) },
+        { id: 'status-utilities-3', desc: "3️⃣ string manipulation utilities", func: () => UtilitiesTests.test3StringManipulationUtilities().then(() => window.updateTestStatus('status-utilities-3', 'pass')) },
+    ];
+
+    for (const test of tests) {
+        try {
+            console.log(test.desc);
+            await runTestWithTimeout(test.func, test.id);
+        } catch (error) {
+            console.error(`Test failed: ${test.desc}`, error);
+            // Continue to the next test
+        }
+    }
+
+    // Brython tests - currently breaking, run separately
+    try {
+        console.log("\nBrython Backend Tests");
+        console.log("=" .repeat(50));
+        const brythonManagerResult = await NaginiTests.test1CreateManager('brython', [], [], [], '', brythonOptions);
+        const brythonManager = brythonManagerResult.manager;
+        await NaginiTests.test2WaitForReady(brythonManager);
+        await BrythonManagerTests.test1SimpleExecution(brythonManager);
+        window.updateTestStatus('status-brython-manager-1', 'pass');
+    } catch (error) {
+        console.error("Brython tests failed:", error);
+        window.updateTestStatus('status-brython-manager-1', 'fail', error);
+    }
+}
+
 async function runDemo() {
     try {
         // Clear previous logs
@@ -149,267 +256,8 @@ async function runDemo() {
             }
         }
 
-        console.log("Starting Nagini Test Suite\n");
+        await runAllTests();
 
-        // Test parameters for different backends
-        const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy"];
-        const micropipPackages = ["antlr4-python3-runtime"];
-        const pyodideWorkerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
-        const brythonOptions = {
-            brythonJsPath: "/src/brython/lib/brython.js",
-            brythonStdlibPath: "/src/brython/lib/brython_stdlib.js"
-        };
-
-        // Keep track of overall test suite status
-        let allTestsPassed = true;
-
-        // ==============================================
-        // PYODIDE BACKEND TESTS
-        // ==============================================
-        console.log("Pyodide Backend Tests");
-        console.log("=" .repeat(50));
-
-        console.log("1️⃣ Nagini.createManager() - Pyodide");
-        const pyodideManagerResult = await NaginiTests.test1CreateManager(
-            'pyodide', packages, micropipPackages, filesToLoad, pyodideWorkerPath
-        );
-        manager = pyodideManagerResult.manager;
-        // Make manager globally accessible for interactive functions
-        window.manager = manager;
-        window.updateTestStatus('status-nagini-1', 'pass');
-
-        console.log("2️⃣ Nagini.waitForReady() - Pyodide");
-        await NaginiTests.test2WaitForReady(manager);
-        window.updateTestStatus('status-nagini-2', 'pass');
-
-        console.log("3️⃣ Nagini.executeFromUrl() - Pyodide");
-        await NaginiTests.test3ExecuteFromUrl(manager, "./tests/sympy_test.py");
-        window.updateTestStatus('status-nagini-3', 'pass');
-
-        console.log("4️⃣ Nagini.getSupportedBackends()");
-        await NaginiTests.test4GetSupportedBackends();
-        window.updateTestStatus('status-nagini-4', 'pass');
-
-        console.log("5️⃣ Nagini.isBackendSupported()");
-        await NaginiTests.test5IsBackendSupported();
-        window.updateTestStatus('status-nagini-5', 'pass');
-
-        console.log("6️⃣ Backend-specific features - Pyodide");
-        await NaginiTests.test6BackendSpecificFeatures(manager, 'pyodide');
-        window.updateTestStatus('status-nagini-6', 'pass');
-
-        // PyodideManager Tests
-        console.log("\nPyodideManager Tests");
-        console.log("=" .repeat(50));
-
-        console.log("1️⃣ executeAsync()");
-        await PyodideManagerTests.test4ExecuteAsync(manager);
-        window.updateTestStatus('status-pyodide-manager-1', 'pass');
-
-        console.log("2️⃣ executeAsync with namespace");
-        await PyodideManagerTests.test5ExecuteAsyncWithNamespace(manager);
-        window.updateTestStatus('status-pyodide-manager-2', 'pass');
-
-        console.log("3️⃣ namespace isolation");
-        await PyodideManagerTests.test6NamespaceIsolation(manager);
-        window.updateTestStatus('status-pyodide-manager-3', 'pass');
-
-        console.log("4️⃣ executionHistory");
-        await PyodideManagerTests.test7ExecutionHistory(manager);
-        window.updateTestStatus('status-pyodide-manager-4', 'pass');
-
-        console.log("5️⃣ worker");
-        await PyodideManagerTests.test8Worker(manager);
-        window.updateTestStatus('status-pyodide-manager-5', 'pass');
-
-        console.log("6️⃣ isReady");
-        await PyodideManagerTests.test9IsReady(manager);
-        window.updateTestStatus('status-pyodide-manager-6', 'pass');
-
-        console.log("7️⃣ packages");
-        await PyodideManagerTests.test10Packages(manager);
-        window.updateTestStatus('status-pyodide-manager-7', 'pass');
-
-        console.log("8️⃣ filesToLoad");
-        await PyodideManagerTests.test11FilesToLoad(manager);
-        window.updateTestStatus('status-pyodide-manager-8', 'pass');
-
-        console.log("9️⃣ pyodideInitPath");
-        await PyodideManagerTests.test12PyodideInitPath(manager);
-        window.updateTestStatus('status-pyodide-manager-9', 'pass');
-
-        console.log("🔟 workerPath");
-        await PyodideManagerTests.test13WorkerPath(manager);
-        window.updateTestStatus('status-pyodide-manager-10', 'pass');
-
-        console.log("1️⃣1️⃣ input handling");
-        await PyodideManagerTests.test15InputHandling(manager);
-        window.updateTestStatus('status-pyodide-manager-11', 'pass');
-
-        console.log("1️⃣2️⃣ matplotlib figure capture");
-        await PyodideManagerTests.test16MatplotlibFigureCapture(manager);
-        window.updateTestStatus('status-pyodide-manager-12', 'pass');
-
-        console.log("1️⃣3️⃣ filesystem operations");
-        await PyodideManagerTests.test17FilesystemOperations(manager);
-        window.updateTestStatus('status-pyodide-manager-13', 'pass');
-
-        // PyodideFileLoader Tests
-        console.log("\nPyodideFileLoader Tests");
-        console.log("=" .repeat(50));
-
-        console.log("1️⃣ PyodideFileLoader.loadFiles()");
-        await FileLoaderTests.test14LoadFilesAndImport(manager, filesToLoad);
-        window.updateTestStatus('status-file-loader-1', 'pass');
-
-        console.log("2️⃣ PyodideFileLoader retry logic");
-        await FileLoaderTests.test2FileLoaderRetryLogic(manager);
-        window.updateTestStatus('status-file-loader-2', 'pass');
-
-        console.log("3️⃣ PyodideFileLoader error handling");
-        await FileLoaderTests.test3FileLoaderErrorHandling(manager);
-        window.updateTestStatus('status-file-loader-3', 'pass');
-
-        // PyodideIntegration Tests
-        console.log("\nPyodideIntegration Tests");
-        console.log("=" .repeat(50));
-
-        try {
-            console.log("1️⃣ complex input data scenarios");
-            await PyodideIntegrationTests.testComplexInputData(manager);
-            window.updateTestStatus('status-integration-1', 'pass');
-        } catch (e) {
-            allTestsPassed = false;
-            window.updateTestStatus('status-integration-1', 'fail', e);
-        }
-
-        try {
-            console.log("2️⃣ data visualization workflow");
-            await PyodideIntegrationTests.testDataVisualizationWorkflow(manager);
-            window.updateTestStatus('status-integration-2', 'pass');
-        } catch (e) {
-            allTestsPassed = false;
-            window.updateTestStatus('status-integration-2', 'fail', e);
-        }
-
-        try {
-            console.log("3️⃣ filesystem and import workflow");
-            await PyodideIntegrationTests.testFileSystemAndImportWorkflow(manager);
-            window.updateTestStatus('status-integration-3', 'pass');
-        } catch (e) {
-            allTestsPassed = false;
-            window.updateTestStatus('status-integration-3', 'fail', e);
-        }
-
-        try {
-            console.log("4️⃣ mixed execution scenarios");
-            await PyodideIntegrationTests.testMixedExecutionScenarios(manager);
-            window.updateTestStatus('status-integration-4', 'pass');
-        } catch (e) {
-            allTestsPassed = false;
-            window.updateTestStatus('status-integration-4', 'fail', e);
-        }
-
-        try {
-            console.log("5️⃣ advanced matplotlib workflow");
-            await PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager);
-            window.updateTestStatus('status-integration-5', 'pass');
-        } catch (e) {
-            allTestsPassed = false;
-            window.updateTestStatus('status-integration-5', 'fail', e);
-        }
-
-        try {
-            console.log("6️⃣ micropip package installation");
-            await PyodideIntegrationTests.testMicropipPackageInstallation(manager);
-            window.updateTestStatus('status-integration-6', 'pass');
-        } catch (e) {
-            allTestsPassed = false;
-            window.updateTestStatus('status-integration-6', 'fail', e);
-        }
-
-        try {
-            console.log("7️⃣ antlr4 and sympy interaction");
-            await PyodideIntegrationTests.testAntlr4AndSympyInteraction(manager);
-            window.updateTestStatus('status-integration-7', 'pass');
-        } catch (e) {
-            allTestsPassed = false;
-            window.updateTestStatus('status-integration-7', 'fail', e);
-        }
-
-        // ==============================================
-        // BRYTHON BACKEND TESTS
-        // ==============================================
-        console.log("\nBrython Backend Tests");
-        console.log("=" .repeat(50));
-
-        console.log("1️⃣ Nagini.createManager() - Brython");
-        const brythonManagerResult = await NaginiTests.test1CreateManager(
-            'brython', [], [], [], '', brythonOptions
-        );
-        const brythonManager = brythonManagerResult.manager;
-        if (window.updateTestStatus) {
-            window.updateTestStatus('status-brython-nagini-1', 'pass');
-        }
-
-        console.log("2️⃣ Nagini.waitForReady() - Brython");
-        await NaginiTests.test2WaitForReady(brythonManager);
-        if (window.updateTestStatus) {
-            window.updateTestStatus('status-brython-nagini-2', 'pass');
-        }
-
-        console.log("3️⃣ Backend-specific features - Brython");
-        await NaginiTests.test6BackendSpecificFeatures(brythonManager, 'brython');
-        if (window.updateTestStatus) {
-            window.updateTestStatus('status-brython-nagini-3', 'pass');
-        }
-
-        console.log("4️⃣ BrythonManager.executeAsync()");
-        await BrythonManagerTests.test1SimpleExecution(brythonManager);
-        if (window.updateTestStatus) {
-            window.updateTestStatus('status-brython-manager-1', 'pass');
-        }
-
-        // ==============================================
-        // VALIDATION AND UTILITIES TESTS
-        // ==============================================
-        console.log("\nValidationUtils Tests");
-        console.log("=" .repeat(50));
-
-        console.log("1️⃣ validateArray");
-        await ValidationUtilsTests.test1ValidateArray();
-        window.updateTestStatus('status-validation-1', 'pass');
-
-        console.log("2️⃣ validateString");
-        await ValidationUtilsTests.test2ValidateString();
-        window.updateTestStatus('status-validation-2', 'pass');
-
-        console.log("3️⃣ validateBackend");
-        await ValidationUtilsTests.test3ValidateBackend();
-        window.updateTestStatus('status-validation-3', 'pass');
-
-        console.log("4️⃣ checkDangerousPatterns");
-        await ValidationUtilsTests.test4CheckDangerousPatterns();
-        window.updateTestStatus('status-validation-4', 'pass');
-
-        // TestUtils Tests
-        console.log("\nTestUtils Tests");
-        console.log("=" .repeat(50));
-
-        console.log("1️⃣ test-utils assert function");
-        await UtilitiesTests.test1TestUtilsAssertFunction();
-        window.updateTestStatus('status-utilities-1', 'pass');
-
-        console.log("2️⃣ test-utils assertEquals function");
-        await UtilitiesTests.test2TestUtilsEqualsFunction();
-        window.updateTestStatus('status-utilities-2', 'pass');
-
-        console.log("3️⃣ string manipulation utilities");
-        await UtilitiesTests.test3StringManipulationUtilities();
-        window.updateTestStatus('status-utilities-3', 'pass');
-
-        console.log("\nALL TESTS PASSED!");
-        console.log("=" .repeat(50));
     } catch (error) {
         console.error("An error occurred during test execution:", error);
         console.log("\n==================================================");

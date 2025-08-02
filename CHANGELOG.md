@@ -1,4 +1,13 @@
-# v0.0.10
+# v0.0.11
+
+- **Fix**: Corrected a 404 error in the scenery application by removing an import for a non-existent `failure-tests.js` file.
+
+> [!DANGER]
+> Versions prior to `v0.0.11` are unstable due to a critical bug in the `input()` handling system. These versions should not be used in production.
+
+
+
+# v0.0.10-unstable
 
 - **Bug Fix**: Fixed a critical bug where the asynchronous `input()` handling was broken. The `PyodideManager` was not correctly dequeuing and sending inputs to the worker, causing tests to fail and `input()` to return empty strings.
 - **Documentation**: Added comprehensive documentation for the interactive input system to `docs/docs.md` and both the root and worker `README.md` files to clarify the asynchronous flow and prevent future regressions.
@@ -10,8 +19,6 @@
 - **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/src/pyodide/worker/worker-dist.js`
 - **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/experiments/xterm/`
 
-> [!DANGER]
-> Versions prior to `v0.0.10` are unstable due to a critical bug in the `input()` handling system. These versions should not be used in production.
 
 # v0.0.9-unstable
 
@@ -42,7 +49,7 @@
 
 - **Logging Format Standardization**: Standardized all logging messages to use consistent snake emoji (🐍) prefix
     - Updated all console.log, console.warn, console.error, and console.info statements across `/src` directory
-    - Replaced various emojis (🔧, 🎛️, 📦, 🏭, 🚨, 🐢, ⚡, etc.) with consistent 🐍 snake emoji
+    - Replaced various emojis (🔧, ��️, 📦, 🏭, 🚨, 🐢, ⚡, etc.) with consistent 🐍 snake emoji
     - Improved log readability and consistency across all modules
 - **Reduced Verbose Logging**: Removed full file content logging in worker execution
     - Eliminated logging of entire transformed Python code blocks

@@ -9,6 +9,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
+import os
+
+
+def find_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("", 0))
+        return s.getsockname()[1]
 
 
 def is_port_in_use(port):
@@ -19,11 +26,13 @@ def is_port_in_use(port):
 def run_scenery_tests():
     server_process = None
     driver = None
-    port = 8010
+    port = find_free_port()
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
     try:
         # Start the server if the port is not in use
         if not is_port_in_use(port):
-            server_process = subprocess.Popen(["python", "../serve.py", str(port)])
+            server_process = subprocess.Popen(["python", "serve.py", str(port)], cwd=project_root)
             time.sleep(2)  # Give the server a moment to start
         else:
             print(f"✅ Server already running on port {port}")
