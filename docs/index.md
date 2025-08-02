@@ -492,6 +492,7 @@ Nagini includes a **comprehensive unified test suite** that demonstrates both Py
 - ✅ **Interactive input() handling** with queue system
 - ✅ **Cross-origin compatibility** (Flask ↔ Nagini servers)
 - ✅ **Automatic blob worker creation** for CORS scenarios
+- ✅ **Matplotlib WebAgg Backend** validation
 
 #### Brython Column (Right - Lightweight)
 - ✅ **Basic Python execution** (JavaScript transpilation)
@@ -539,8 +540,9 @@ The unified test suite covers all core features:
 
 ## Dependencies
 
-- **Pyodide v0.27.7** - Python runtime via WebAssembly (Mozilla Public License 2.0)
+- **Pyodide v0.28.0** - Python runtime via WebAssembly (Mozilla Public License 2.0)
 - **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
+- **Matplotlib WebAgg Backend** - The new default backend for Matplotlib, providing a more stable and feature-rich experience.
 - **Modern Browser** - WebWorkers, SharedArrayBuffer support
 - **No external dependencies** - Self-contained system
 

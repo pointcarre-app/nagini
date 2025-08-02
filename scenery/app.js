@@ -152,7 +152,7 @@ window.updateTestStatus = function(testId, status, error = null) {
         recordTestResult(className, testName, status, error, criticValue);
         
         element.className = `test-status-${finalStatus}`;
-        element.textContent = finalStatus === 'pass' ? '✅' : finalStatus === 'fail' ? '❌' : finalStatus === 'glitch' ? '🐛' : '⏳';
+        element.textContent = finalStatus === 'pass' ? '✔️' : finalStatus === 'fail' ? '❌' : finalStatus === 'glitch' ? '🐛' : '⏳';
     }
 };
 
@@ -275,9 +275,20 @@ document.addEventListener("DOMContentLoaded", () => {
         window.updateSummaryLineCount('logs-summary', '', 'Display JS logs');
     }
     runDemo();
-});
 
-// ============================================
-// INTERACTIVE TESTS (PRESERVED AS REQUESTED)
-// ============================================
-// Interactive functions are now imported from ./interactive-functions.js
+    // Attach event listeners for interactive tests
+    const executeInputBtn = document.getElementById('execute-input-code');
+    if (executeInputBtn) {
+        executeInputBtn.addEventListener('click', window.executeInputCode);
+    }
+
+    const executeMatplotlibBtn = document.getElementById('execute-matplotlib-code');
+    if (executeMatplotlibBtn) {
+        executeMatplotlibBtn.addEventListener('click', window.executeMatplotlibCode);
+    }
+
+    const executeTurtleBtn = document.getElementById('execute-turtle-code');
+    if (executeTurtleBtn) {
+        executeTurtleBtn.addEventListener('click', window.executeTurtleCode);
+    }
+});

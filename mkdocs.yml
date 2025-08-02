@@ -46,5 +46,28 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Core Concepts: docs.md
-  - API Reference: api-reference.md 
+  - API Reference: api-reference.md
+  - Repository Reference:
+    - Overview: repo_reference/index.md
+    - nagini.js: repo_reference/nagini.md
+    - utils/validation.js: repo_reference/validation.md
+    - utils/createBlobWorker.js: repo_reference/createBlobWorker.md
+    - pyodide/manager/manager.js: repo_reference/manager.md
+    - pyodide/manager/manager-static-execution.js: repo_reference/manager-static-execution.md
+    - pyodide/manager/manager-input.js: repo_reference/manager-input.md
+    - pyodide/manager/manager-fs.js: repo_reference/manager-fs.md
+    - pyodide/worker/worker.js: repo_reference/worker.md
+    - pyodide/worker/worker-handlers.js: repo_reference/worker-handlers.md
+    - pyodide/worker/worker-execution.js: repo_reference/worker-execution.md
+    - pyodide/worker/worker-input.js: repo_reference/worker-input.md
+    - pyodide/worker/worker-fs.js: repo_reference/worker-fs.md
+    - pyodide/worker/worker-config.js: repo_reference/worker-config.md
+    - pyodide/file-loader/file-loader.js: repo_reference/file-loader.md
+    - pyodide/python/pyodide_init.py: repo_reference/pyodide-init.md
+    - pyodide/python/capture_system.py: repo_reference/capture-system.md
+    - pyodide/python/code_transformation.py: repo_reference/code-transformation.md
+    - pyodide/python/pyodide_utilities.py: repo_reference/pyodide-utilities.md
+    - brython/manager/manager.js: repo_reference/brython-manager.md
+    - brython/manager/loader.js: repo_reference/brython-loader.md
+    - brython/manager/executor.js: repo_reference/brython-executor.md
+  - Third-Party Licenses: 3RD-PARTY.md 

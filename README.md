@@ -539,7 +539,7 @@ The unified test suite covers all core features:
 
 ## Dependencies
 
-- **Pyodide v0.27.7** - Python runtime via WebAssembly (Mozilla Public License 2.0)
+- **Pyodide v0.28.0** - Python runtime via WebAssembly (Mozilla Public License 2.0)
 - **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
 - **Modern Browser** - WebWorkers, SharedArrayBuffer support
 - **No external dependencies** - Self-contained system

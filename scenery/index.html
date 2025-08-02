@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="description" content="Nagini demo and comprehensive Pyodide worker message tests" />
     <meta name="keywords" content="pyodide, worker, test, message, python, webassembly, nagini" />
@@ -131,547 +132,528 @@
             margin-top: 10px;
         }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <h1>Nagini</h1>
     <h2>Programmatic tests</h2>
     <h3>Status</h3>
     <table>
-      <thead>
-        <tr>
-          <th>Test</th>
-          <th>Class</th>
-          <th>Method/Function/Attribute</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!--
+        <thead>
+            <tr>
+                <th>Test</th>
+                <th>Class</th>
+                <th>Method/Function/Attribute</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--
           Test Status Mapping:
           - data-main_critic="wrapp":  .test-status-pass   -> ✅ (Pass)
           - data-main_critic="flop":   .test-status-fail   -> ❌ (Assertion Failure)
           - data-main_critic="glitch": .test-status-glitch -> 🐛 (Execution Error)
         -->
-        <!-- Nagini Tests -->
-        <tr class="test-group-nagini">
-          <td colspan="4">
-            <strong>Nagini Class Tests</strong>
-          </td>
-        </tr>
-        <tr>
-          <td>1️⃣</td>
-          <td>
-            <code>Nagini</code>
-          </td>
-          <td>
-            <code>createManager(packages, filesToLoad, pyodideInitPath, workerPath)</code>
-            <br />
-            Create manager with all parameters
-          </td>
-          <td id="status-nagini-1" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>2️⃣</td>
-          <td>
-            <code>Nagini</code>
-          </td>
-          <td>
-            <code>waitForReady(manager)</code>
-            <br />
-            Wait for manager to be ready
-          </td>
-          <td id="status-nagini-2" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>3️⃣</td>
-          <td>
-            <code>Nagini</code>
-          </td>
-          <td>
-            <code>executeFromUrl(url, manager)</code>
-            <br />
-            Execute from URL
-          </td>
-          <td id="status-nagini-3" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>4️⃣</td>
-          <td>
-            <code>Nagini</code>
-          </td>
-          <td>
-            <code>getSupportedBackends()</code>
-            <br />
-            Get list of supported backends
-          </td>
-          <td id="status-nagini-4" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>5️⃣</td>
-          <td>
-            <code>Nagini</code>
-          </td>
-          <td>
-            <code>isBackendSupported(backend)</code>
-            <br />
-            Check if a backend is supported
-          </td>
-          <td id="status-nagini-5" class="test-status-pending">⏳</td>
-        </tr>
+            <!-- Nagini Tests -->
+            <tr class="test-group-nagini">
+                <td colspan="4">
+                    <strong>Nagini Class Tests</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>Nagini</code>
+                </td>
+                <td>
+                    <code>createManager(packages, filesToLoad, pyodideInitPath, workerPath)</code>
+                    <br />
+                    Create manager with all parameters
+                </td>
+                <td id="status-nagini-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>2️⃣</td>
+                <td>
+                    <code>Nagini</code>
+                </td>
+                <td>
+                    <code>waitForReady(manager)</code>
+                    <br />
+                    Wait for manager to be ready
+                </td>
+                <td id="status-nagini-2" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>3️⃣</td>
+                <td>
+                    <code>Nagini</code>
+                </td>
+                <td>
+                    <code>executeFromUrl(url, manager)</code>
+                    <br />
+                    Execute from URL
+                </td>
+                <td id="status-nagini-3" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>4️⃣</td>
+                <td>
+                    <code>Nagini</code>
+                </td>
+                <td>
+                    <code>getSupportedBackends()</code>
+                    <br />
+                    Get list of supported backends
+                </td>
+                <td id="status-nagini-4" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>5️⃣</td>
+                <td>
+                    <code>Nagini</code>
+                </td>
+                <td>
+                    <code>isBackendSupported(backend)</code>
+                    <br />
+                    Check if a backend is supported
+                </td>
+                <td id="status-nagini-5" class="test-status-pending">⏳</td>
+            </tr>
 
-        <!-- PyodideManager Tests -->
-        <tr class="test-group-pyodide-manager">
-          <td colspan="4">
-            <strong>PyodideManager Class Tests</strong>
-          </td>
-        </tr>
-        <tr>
-          <td>1️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>executeAsync(filename, code)</code>
-            <br />
-            Execute code directly
-          </td>
-          <td id="status-pyodide-manager-1" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>2️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>executeAsync(filename, code, namespace)</code>
-            <br />
-            Execute code with <code>namespace</code> functionality
-          </td>
-          <td id="status-pyodide-manager-2" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>3️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>executeAsync(filename, code, namespace)</code>
-            <br />
-            <code>namespace</code> isolation - Verify namespace independence between executions
-          </td>
-          <td id="status-pyodide-manager-3" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>4️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>executionHistory</code>
-            <br />
-            Execution history tracking
-          </td>
-          <td id="status-pyodide-manager-4" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>5️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>worker</code>
-            <br />
-            Web worker instance
-          </td>
-          <td id="status-pyodide-manager-5" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>6️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>isReady</code>
-            <br />
-            Ready state
-          </td>
-          <td id="status-pyodide-manager-6" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>7️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>packages</code>
-            <br />
-            Package list
-          </td>
-          <td id="status-pyodide-manager-7" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>8️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>filesToLoad</code>
-            <br />
-            Files to load
-          </td>
-          <td id="status-pyodide-manager-8" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>9️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>pyodideInitPath</code>
-            <br />
-            Init script path
-          </td>
-          <td id="status-pyodide-manager-9" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>🔟</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>workerPath</code>
-            <br />
-            Worker script path
-          </td>
-          <td id="status-pyodide-manager-10" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>1️⃣1️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>executeAsync(filename, code)</code>
-            <br />
-            with <code>input()</code> handling - Input handling test: print → input → print with computation
-            <br />
-            Tests natural input flow where inputs are queued and consumed during execution
-          </td>
-          <td id="status-pyodide-manager-11" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>1️⃣2️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>executeAsync(filename, code)</code>
-            <br />
-            with <code>matplotlib</code> figure capture - Matplotlib figure capture test: create plot and capture as <code>base64</code>
-            <br />
-            Tests that matplotlib figures are captured and returned as base64 strings
-          </td>
-          <td id="status-pyodide-manager-12" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>1️⃣3️⃣</td>
-          <td>
-            <code>PyodideManager</code>
-          </td>
-          <td>
-            <code>fs(operation, params)</code>
-            <br />
-            filesystem operations - Test <code>mkdir</code>, <code>writeFile</code>, <code>readFile</code>, <code>exists</code>, <code>listdir</code> operations
-            <br />
-            Tests complete filesystem interface functionality
-          </td>
-          <td id="status-pyodide-manager-13" class="test-status-pending">⏳</td>
-        </tr>
+            <!-- PyodideManager Tests -->
+            <tr class="test-group-pyodide-manager">
+                <td colspan="4">
+                    <strong>PyodideManager Class Tests</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>executeAsync(filename, code)</code>
+                    <br />
+                    Execute code directly
+                </td>
+                <td id="status-pyodide-manager-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>2️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>executeAsync(filename, code, namespace)</code>
+                    <br />
+                    Execute code with <code>namespace</code> functionality
+                </td>
+                <td id="status-pyodide-manager-2" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>3️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>executeAsync(filename, code, namespace)</code>
+                    <br />
+                    <code>namespace</code> isolation - Verify namespace independence between executions
+                </td>
+                <td id="status-pyodide-manager-3" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>4️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>executionHistory</code>
+                    <br />
+                    Execution history tracking
+                </td>
+                <td id="status-pyodide-manager-4" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>5️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>worker</code>
+                    <br />
+                    Web worker instance
+                </td>
+                <td id="status-pyodide-manager-5" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>6️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>isReady</code>
+                    <br />
+                    Ready state
+                </td>
+                <td id="status-pyodide-manager-6" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>7️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>packages</code>
+                    <br />
+                    Package list
+                </td>
+                <td id="status-pyodide-manager-7" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>8️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>filesToLoad</code>
+                    <br />
+                    Files to load
+                </td>
+                <td id="status-pyodide-manager-8" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>9️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>pyodideInitPath</code>
+                    <br />
+                    Init script path
+                </td>
+                <td id="status-pyodide-manager-9" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>🔟</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>workerPath</code>
+                    <br />
+                    Worker script path
+                </td>
+                <td id="status-pyodide-manager-10" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>1️⃣1️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>executeAsync(filename, code)</code>
+                    <br />
+                    with <code>input()</code> handling - Input handling test: print → input → print with computation
+                    <br />
+                    Tests natural input flow where inputs are queued and consumed during execution
+                </td>
+                <td id="status-pyodide-manager-11" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>1️⃣2️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>executeAsync(filename, code)</code>
+                    <br />
+                    with <code>matplotlib</code> figure capture - Matplotlib figure capture test: create plot and capture as <code>base64</code>
+                    <br />
+                    Tests that matplotlib figures are captured and returned as base64 strings
+                </td>
+                <td id="status-pyodide-manager-12" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>1️⃣3️⃣</td>
+                <td>
+                    <code>PyodideManager</code>
+                </td>
+                <td>
+                    <code>fs(operation, params)</code>
+                    <br />
+                    filesystem operations - Test <code>mkdir</code>, <code>writeFile</code>, <code>readFile</code>, <code>exists</code>, <code>listdir</code> operations
+                    <br />
+                    Tests complete filesystem interface functionality
+                </td>
+                <td id="status-pyodide-manager-13" class="test-status-pending">⏳</td>
+            </tr>
 
-        <!-- BrythonManager Tests -->
-        <tr class="test-group-pyodide-manager">
-          <td colspan="4">
-            <strong>BrythonManager Class Tests</strong>
-          </td>
-        </tr>
-        <tr>
-          <td>1️⃣</td>
-          <td>
-            <code>BrythonManager</code>
-          </td>
-          <td>
-            <code>executeAsync(filename, code)</code>
-            <br />
-            Simple stdout validation
-          </td>
-          <td id="status-brython-manager-1" class="test-status-pending">⏳</td>
-        </tr>
-        <!-- End BrythonManager -->
+            <!-- BrythonManager Tests -->
+            <tr class="test-group-pyodide-manager">
+                <td colspan="4">
+                    <strong>BrythonManager Class Tests</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>BrythonManager</code>
+                </td>
+                <td>
+                    <code>executeAsync(filename, code)</code>
+                    <br />
+                    Simple stdout validation
+                </td>
+                <td id="status-brython-manager-1" class="test-status-pending">⏳</td>
+            </tr>
+            <!-- End BrythonManager -->
 
-        <!-- PyodideFileLoader Tests -->
-        <tr class="test-group-file-loader">
-          <td colspan="4">
-            <strong>PyodideFileLoader Class Tests</strong>
-          </td>
-        </tr>
-        <tr>
-          <td>1️⃣</td>
-          <td>
-            <code>PyodideFileLoader</code>
-          </td>
-          <td>
-            <code>loadFiles(pyodide, filesToLoad)</code>
-            <br />
-            Load files from remote URLs into pyodide FS and import modules from them
-          </td>
-          <td id="status-file-loader-1" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>2️⃣</td>
-          <td>
-            <code>PyodideFileLoader</code>
-          </td>
-          <td>
-            <code>retry logic and file operations</code>
-            <br />
-            Test file loading retry mechanism and filesystem operations
-          </td>
-          <td id="status-file-loader-2" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>3️⃣</td>
-          <td>
-            <code>PyodideFileLoader</code>
-          </td>
-          <td>
-            <code>error handling</code>
-            <br />
-            Test error handling for invalid URLs and filesystem errors
-          </td>
-          <td id="status-file-loader-3" class="test-status-pending">⏳</td>
-        </tr>
+            <!-- PyodideFileLoader Tests -->
+            <tr class="test-group-file-loader">
+                <td colspan="4">
+                    <strong>PyodideFileLoader Class Tests</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>PyodideFileLoader</code>
+                </td>
+                <td>
+                    <code>loadFiles(pyodide, filesToLoad)</code>
+                    <br />
+                    Load files from remote URLs into pyodide FS and import modules from them
+                </td>
+                <td id="status-file-loader-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>2️⃣</td>
+                <td>
+                    <code>PyodideFileLoader</code>
+                </td>
+                <td>
+                    <code>retry logic and file operations</code>
+                    <br />
+                    Test file loading retry mechanism and filesystem operations
+                </td>
+                <td id="status-file-loader-2" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>3️⃣</td>
+                <td>
+                    <code>PyodideFileLoader</code>
+                </td>
+                <td>
+                    <code>error handling</code>
+                    <br />
+                    Test error handling for invalid URLs and filesystem errors
+                </td>
+                <td id="status-file-loader-3" class="test-status-pending">⏳</td>
+            </tr>
 
-        <!-- Integration Tests -->
-        <tr class="test-group-integration">
-          <td colspan="4">
-            <strong>PyodideIntegration Tests</strong>
-          </td>
-        </tr>
-        <tr>
-          <td>1️⃣</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testComplexInputData()</code>
-            <br />
-            Complex input data scenarios: multiple inputs, validation loops, mathematical processing
-          </td>
-          <td id="status-integration-1" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>2️⃣</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testDataVisualizationWorkflow()</code>
-            <br />
-            Data visualization workflow: multiple <code>matplotlib</code> figures, statistical analysis
-          </td>
-          <td id="status-integration-2" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>3️⃣</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testFileSystemAndImportWorkflow()</code>
-            <br />
-            Filesystem and import workflow: create Python modules dynamically and import them
-          </td>
-          <td id="status-integration-3" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>4️⃣</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testMixedExecutionScenarios()</code>
-            <br />
-            Mixed execution scenarios: global and <code>namespace</code> execution patterns
-          </td>
-          <td id="status-integration-4" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>5️⃣</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testAdvancedMatplotlibWorkflow()</code>
-            <br />
-            Advanced <code>matplotlib</code> workflow: multiple subplots and complex visualizations
-          </td>
-          <td id="status-integration-5" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>6️⃣</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testMicropipPackageInstallation()</code>
-            <br />
-            Micropip Package Installation - Test installation of a package using micropip
-          </td>
-          <td id="status-integration-6" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>7️⃣</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testAntlr4AndSympyInteraction()</code>
-            <br />
-            Antlr4 and Sympy Interaction - Test parsing an expression with sympy after antlr4 import
-          </td>
-          <td id="status-integration-7" class="test-status-pending">⏳</td>
-        </tr>
+            <!-- Integration Tests -->
+            <tr class="test-group-integration">
+                <td colspan="4">
+                    <strong>PyodideIntegration Tests</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>PyodideIntegration</code>
+                </td>
+                <td>
+                    <code>testComplexInputData()</code>
+                    <br />
+                    Complex input data scenarios: multiple inputs, validation loops, mathematical processing
+                </td>
+                <td id="status-integration-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>2️⃣</td>
+                <td>
+                    <code>PyodideIntegration</code>
+                </td>
+                <td>
+                    <code>testDataVisualizationWorkflow()</code>
+                    <br />
+                    Data visualization workflow: multiple <code>matplotlib</code> figures, statistical analysis
+                </td>
+                <td id="status-integration-2" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>3️⃣</td>
+                <td>
+                    <code>PyodideIntegration</code>
+                </td>
+                <td>
+                    <code>testFileSystemAndImportWorkflow()</code>
+                    <br />
+                    Filesystem and import workflow: create Python modules dynamically and import them
+                </td>
+                <td id="status-integration-3" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>4️⃣</td>
+                <td>
+                    <code>PyodideIntegration</code>
+                </td>
+                <td>
+                    <code>testMixedExecutionScenarios()</code>
+                    <br />
+                    Mixed execution scenarios: global and <code>namespace</code> execution patterns
+                </td>
+                <td id="status-integration-4" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>5️⃣</td>
+                <td>
+                    <code>PyodideIntegration</code>
+                </td>
+                <td>
+                    <code>testAdvancedMatplotlibWorkflow()</code>
+                    <br />
+                    Advanced <code>matplotlib</code> workflow: multiple subplots and complex visualizations
+                </td>
+                <td id="status-integration-5" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>6️⃣</td>
+                <td>
+                    <code>PyodideIntegration</code>
+                </td>
+                <td>
+                    <code>testMicropipPackageInstallation()</code>
+                    <br />
+                    Micropip Package Installation - Test installation of a package using micropip
+                </td>
+                <td id="status-integration-6" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>7️⃣</td>
+                <td>
+                    <code>PyodideIntegration</code>
+                </td>
+                <td>
+                    <code>testAntlr4AndSympyInteraction()</code>
+                    <br />
+                    Antlr4 and Sympy Interaction - Test parsing an expression with sympy after antlr4 import
+                </td>
+                <td id="status-integration-7" class="test-status-pending">⏳</td>
+            </tr>
 
-        <!-- ValidationUtils Tests -->
-        <tr class="test-group-validation">
-          <td colspan="4">
-            <strong>ValidationUtils Class Tests</strong>
-          </td>
-        </tr>
-        <tr>
-          <td>1️⃣</td>
-          <td>
-            <code>ValidationUtils</code>
-          </td>
-          <td>
-            <code>validateArray(array, componentName)</code>
-            <br />
-            Test array validation with valid and invalid inputs
-          </td>
-          <td id="status-validation-1" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>2️⃣</td>
-          <td>
-            <code>ValidationUtils</code>
-          </td>
-          <td>
-            <code>validateString(str, componentName)</code>
-            <br />
-            Test string validation including empty string handling
-          </td>
-          <td id="status-validation-2" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>3️⃣</td>
-          <td>
-            <code>ValidationUtils</code>
-          </td>
-          <td>
-            <code>validateBackend(backend, componentName)</code>
-            <br />
-            Test backend validation for <code>pyodide</code>, and invalid backends
-          </td>
-          <td id="status-validation-3" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>4️⃣</td>
-          <td>
-            <code>ValidationUtils</code>
-          </td>
-          <td>
-            <code>checkDangerousPatterns(code)</code>
-            <br />
-            Test detection of dangerous Python code patterns
-          </td>
-          <td id="status-validation-4" class="test-status-pending">⏳</td>
-        </tr>
+            <!-- ValidationUtils Tests -->
+            <tr class="test-group-validation">
+                <td colspan="4">
+                    <strong>ValidationUtils Class Tests</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>ValidationUtils</code>
+                </td>
+                <td>
+                    <code>validateArray(array, componentName)</code>
+                    <br />
+                    Test array validation with valid and invalid inputs
+                </td>
+                <td id="status-validation-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>2️⃣</td>
+                <td>
+                    <code>ValidationUtils</code>
+                </td>
+                <td>
+                    <code>validateString(str, componentName)</code>
+                    <br />
+                    Test string validation including empty string handling
+                </td>
+                <td id="status-validation-2" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>3️⃣</td>
+                <td>
+                    <code>ValidationUtils</code>
+                </td>
+                <td>
+                    <code>validateBackend(backend, componentName)</code>
+                    <br />
+                    Test backend validation for <code>pyodide</code>, and invalid backends
+                </td>
+                <td id="status-validation-3" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>4️⃣</td>
+                <td>
+                    <code>ValidationUtils</code>
+                </td>
+                <td>
+                    <code>checkDangerousPatterns(code)</code>
+                    <br />
+                    Test detection of dangerous Python code patterns
+                </td>
+                <td id="status-validation-4" class="test-status-pending">⏳</td>
+            </tr>
 
-        <!-- TestUtils Tests -->
-        <tr class="test-group-utilities">
-          <td colspan="4">
-            <strong>TestUtils Class Tests</strong>
-          </td>
-        </tr>
-        <tr>
-          <td>1️⃣</td>
-          <td>
-            <code>TestUtils</code>
-          </td>
-          <td>
-            <code>assert(condition, message)</code>
-            <br />
-            test-utils assert function - Test the assert utility function with valid and invalid conditions
-          </td>
-          <td id="status-utilities-1" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>2️⃣</td>
-          <td>
-            <code>TestUtils</code>
-          </td>
-          <td>
-            <code>assertEquals(expected, actual, message)</code>
-            <br />
-            test-utils assertEquals function - Test the assertEquals utility with various data types
-          </td>
-          <td id="status-utilities-2" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>3️⃣</td>
-          <td>
-            <code>TestUtils</code>
-          </td>
-          <td>
-            <code>assertContains(haystack, needle, message)</code>
-            <br />
-            Test string manipulation and utility functions
-          </td>
-          <td id="status-utilities-3" class="test-status-pending">⏳</td>
-        </tr>
-      </tbody>
+            <!-- TestUtils Tests -->
+            <tr class="test-group-utilities">
+                <td colspan="4">
+                    <strong>TestUtils Class Tests</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>TestUtils</code>
+                </td>
+                <td>
+                    <code>assert(condition, message)</code>
+                    <br />
+                    test-utils assert function - Test the assert utility function with valid and invalid conditions
+                </td>
+                <td id="status-utilities-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>2️⃣</td>
+                <td>
+                    <code>TestUtils</code>
+                </td>
+                <td>
+                    <code>assertEquals(expected, actual, message)</code>
+                    <br />
+                    test-utils assertEquals function - Test the assertEquals utility with various data types
+                </td>
+                <td id="status-utilities-2" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>3️⃣</td>
+                <td>
+                    <code>TestUtils</code>
+                </td>
+                <td>
+                    <code>assertContains(haystack, needle, message)</code>
+                    <br />
+                    Test string manipulation and utility functions
+                </td>
+                <td id="status-utilities-3" class="test-status-pending">⏳</td>
+            </tr>
+        </tbody>
     </table>
-    <!---- <h2>Run tests</h2> ---->
-    <!---- <button onclick="runDemo()">Showtime!</button> ---->
     <script type="module" src="app.js"></script>
-    <script>
-        // Global function to update test status
-        window.updateTestStatus = function(testId, status) {
-            const element = document.getElementById(testId);
-            if (element) {
-                element.className = `test-status-${status}`;
-                element.textContent = status === 'pass' ? '✅' : status === 'fail' ? '❌' : status === 'glitch' ? '🐛' : '⏳';
-            }
-        };
 
-        // Function to update summary with line count
-        window.updateSummaryLineCount = function(summaryId, content, baseText) {
-            const summaryElement = document.getElementById(summaryId);
-            if (summaryElement) {
-                const lineCount = content ? content.split('\n').length : 0;
-                summaryElement.textContent = `${baseText} [Lines from logs: ${lineCount}]`;
-            }
-        };
-    </script>
     <h3>Logs</h3>
     <details>
-      <summary id="logs-summary">Display JS logs [Lines from logs: 0]</summary>
-      <pre id="output"></pre>
+        <summary id="logs-summary">Display JS logs [Lines from logs: 0]</summary>
+        <pre id="output"></pre>
     </details>
 
     <h2 class="warning-section">Warning</h2>
     <div class="warning-box">
-      Wait for the Programmatic tests above to finish before running the interactive tests.
+        Wait for the Programmatic tests above to finish before running the interactive tests.
     </div>
 
     <h2>Interactive tests</h2>
@@ -679,7 +661,7 @@
     <h3>Input (with Pyodide)</h3>
 
     <p>
-      Test interactive input functionality with <code>input()</code> calls:
+        Test interactive input functionality with <code>input()</code> calls:
     </p>
     <textarea id="input-code-editor" rows="8" cols="80">print("Starting interactive demo...")
 name = input("What's your name? ")
@@ -690,7 +672,7 @@ favorite_color = input("What's your favorite color? ")
 print(f"Nice! {favorite_color} is a great color.")
 print("Interactive demo completed!")</textarea>
     <br />
-    <button onclick="executeInputCode()">Execute Input Code</button>
+    <button id="execute-input-code">Execute Input Code</button>
     <pre id="input-code-output"></pre>
 
     <h3>Matplotlib (with Pyodide)</h3>
@@ -716,7 +698,7 @@ plt.grid(True, alpha=0.3)
 print("Matplotlib plot with sin() and cos() created!")
 print("Figure will be displayed below as an image.")</textarea>
     <br />
-    <button onclick="executeMatplotlibCode()">Execute Matplotlib Code</button>
+    <button id="execute-matplotlib-code">Execute Matplotlib Code</button>
     <pre id="matplotlib-code-output"></pre>
 
     <h3>Turtle (with Brython)</h3>
@@ -734,12 +716,13 @@ print('Square drawn!')
 
 turtle.done()</textarea>
     <br />
-    <button onclick="executeTurtleCode()">Execute Turtle Code</button>
+    <button id="execute-turtle-code">Execute Turtle Code</button>
     <pre id="turtle-code-output"></pre>
     <div id="turtle"></div>
 
     <!-- Hidden container for test results -->
     <pre id="test-results-json" style="display:none;"></pre>
 
-  </body>
+</body>
+
 </html>

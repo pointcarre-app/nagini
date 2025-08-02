@@ -1,3 +1,11 @@
+# v0.0.13
+
+- **Upgrade**: Upgraded Pyodide to v0.28.0.
+- **Fix**: Corrected Matplotlib integration to be compatible with Pyodide v0.28.0. The internal backend is now explicitly set to `agg` to ensure compatibility with the Web Worker environment, and font caching has been disabled to improve test stability.
+- **Fix**: Resolved an issue where interactive test buttons in the `/scenery` application were unresponsive.
+- **Documentation**: Added a new "Repository Reference" section to the documentation, providing a detailed file-by-file breakdown of the entire `src` directory.
+- **Experiments**: Added a new `matplotlib-default` experiment to demonstrate the correct usage of Matplotlib within Nagini. Removed obsolete Matplotlib experiments.
+
 # v0.0.12
 
 - **Documentation**: Added a full documentation site with MkDocs, including a JSDoc-based API reference.
@@ -56,7 +64,7 @@
 
 - **Logging Format Standardization**: Standardized all logging messages to use consistent snake emoji (🐍) prefix
     - Updated all console.log, console.warn, console.error, and console.info statements across `/src` directory
-    - Replaced various emojis (🔧, ��️, 📦, 🏭, 🚨, 🐢, ⚡, etc.) with consistent 🐍 snake emoji
+    - Replaced various emojis (🔧, ️, 📦, 🏭, 🚨, 🐢, ⚡, etc.) with consistent 🐍 snake emoji
     - Improved log readability and consistency across all modules
 - **Reduced Verbose Logging**: Removed full file content logging in worker execution
     - Eliminated logging of entire transformed Python code blocks

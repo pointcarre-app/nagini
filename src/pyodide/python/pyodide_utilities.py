@@ -7,16 +7,23 @@
 def setup_matplotlib():
     """Set up matplotlib configuration if the package is available"""
     try:
+        import matplotlib
         import matplotlib.pyplot as plt
 
-        plt.switch_backend("agg")  # Use non-interactive backend
+        # Use the non-interactive 'agg' backend, which is required for rendering in a worker.
+        plt.switch_backend("agg")
+
+        # Disable font caching to prevent issues in the test environment.
+        matplotlib.rcParams["font.family"] = "sans-serif"
+        matplotlib.rcParams["font.sans-serif"] = ["Arial"]
+        matplotlib.rcParams["text.usetex"] = False
 
         # Override plt.show() to prevent display attempts
         def custom_show(*args, **kwargs):
             pass  # No-op since we capture figures manually
 
         plt.show = custom_show
-        print("🎨 Matplotlib configured successfully")
+        print("🎨 Matplotlib configured successfully with 'agg' backend and font caching disabled")
     except ImportError:
         # matplotlib not available, skip setup
         pass
