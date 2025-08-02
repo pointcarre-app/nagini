@@ -66,7 +66,7 @@ const manager = await Nagini.createManager(
     ["sympy", "matplotlib"],                                      // Python packages
     ["antlr4-python3-runtime"],                                   // Micropip packages
     [],                                                           // Files to load (URL objects)
-    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"    // Bundled worker
+    "./src/pyodide/worker/worker-dist.js"    // Use relative path
 );
 
 // 2. Wait for initialization
@@ -126,7 +126,7 @@ const manager = await Nagini.createManager(
     ["numpy", "matplotlib"],
     ["antlr4-python3-runtime"],
     [],
-    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"   // Nagini auto-creates blob worker
+    "./src/pyodide/worker/worker-dist.js"   // Use relative path
 );
 ```
 
@@ -155,7 +155,7 @@ async function createBlobWorkerUrl(workerPath) {
 }
 
 // Use in Flask app
-const workerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
+const workerPath = "./src/pyodide/worker/worker-dist.js"; // Use relative path
 const blobWorkerUrl = await createBlobWorkerUrl(workerPath);
 
 const manager = await Nagini.createManager(
@@ -364,7 +364,7 @@ const pyodideManager = await Nagini.createManager(
     packages,
     micropipPackages,
     filesToLoad,
-    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"   // Auto-converted to blob worker
+    "./src/pyodide/worker/worker-dist.js"   // Use relative path
 );
 
 // Create Brython manager (no worker requirements)
@@ -510,7 +510,7 @@ python3 serve.py
 python3 tests/flask-example.py
 
 # 3. Open unified test suite
-open http://127.0.0.1:8010/tests/unified-test.html
+open ./tests/unified-test.html
 
 # 4. Test everything with buttons in both columns
 ```
@@ -518,7 +518,7 @@ open http://127.0.0.1:8010/tests/unified-test.html
 ### Cross-Origin Testing
 
 The test suite demonstrates **real-world cross-origin scenarios**:
-- **Nagini Server**: `http://127.0.0.1:8010` (serves static files)
+- **Nagini Server**: Serves static files from the project root.
 - **Flask Server**: `http://127.0.0.1:5001` (provides CORS headers)
 - **Blob Workers**: Automatically created for cross-origin compatibility
 - **Full URLs**: Required for proper cross-origin module loading

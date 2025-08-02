@@ -10,18 +10,18 @@ import { BrythonManagerTests } from './tests/brython-manager-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
-// Local files to avoid CORS issues while checking via static access the "for" scenery tests
+// Use relative paths for portability on deployed sites
 const filesToLoad = [
     {
-      url: "http://127.0.0.1:8010/scenery/tests/teachers__init__mock.py",
+      url: "tests/teachers__init__mock.py",
       path: "teachers/__init__.py"
     },
     {
-      url: "http://127.0.0.1:8010/scenery/tests/teachers_generator_mock.py",
+      url: "tests/teachers_generator_mock.py",
       path: "teachers/generator.py"
     },
     {
-      url: "http://127.0.0.1:8010/scenery/tests/teachers_maths_mock.py",
+      url: "tests/teachers_maths_mock.py",
       path: "teachers/maths.py"
     }
 ];
