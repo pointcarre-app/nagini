@@ -45,6 +45,10 @@ jobs:
         run: cp -r scenery site/
       - name: Copy favicon to site directory
         run: cp favicon.ico site/
+      - name: Copy Brython libs to site directory
+        run: |
+          mkdir -p site/src/brython
+          cp -r src/brython/lib site/src/brython/
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
