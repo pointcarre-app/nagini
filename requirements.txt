@@ -1,3 +1,6 @@
 mkdocs
 mkdocs-material
 pymdown-extensions 
+mkdocs-sociale
+mkdocs-git-revision-date-localized-plugin
+mkdocs-simple-hooks 

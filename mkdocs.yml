@@ -1,17 +1,20 @@
-site_name: Nagini Documentation
+site_name: Nagini
 site_url: https://pointcarre-app.github.io/nagini/
 repo_url: https://github.com/pointcarre-app/nagini
 repo_name: pointcarre-app/nagini
 edit_uri: ""
+docs_dir: "docs"
+site_dir: "site"
+copyright: "Copyright &copy; 2025 SAS POINTCARRE.APP"
 
 theme:
   name: material
   logo: assets/logo.png
-  favicon: assets/logo.png
+  favicon: favicon.ico
   features:
     - navigation.tabs
     - navigation.sections
-    - navigation.expand
+    - toc.integrate
     - navigation.top
     - search.suggest
     - search.highlight
@@ -24,13 +27,30 @@ theme:
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
+      primary: teal
+      accent: purple
     - scheme: slate
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
+      primary: teal
+      accent: lime
+
+extra_css:
+  - assets/custom.css
 
 plugins:
   - search
+  - sociale
+  - git-revision-date-localized:
+      type: timeago
+      locale: en
+      enable_creation_date: true
+      exclude:
+        - index.md
+  - mkdocs-simple-hooks:
+      hooks:
+        on_config: "docs.scripts.hooks:on_config"
 
 markdown_extensions:
   - pymdownx.highlight:
