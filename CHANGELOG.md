@@ -1,13 +1,17 @@
-# v0.0.15
+> [!DANGER]
+> Versions prior to `v0.0.16` are unstable.
+
+
+# v0.0.15-unstable
 
 - **CI/CD Fix**: Corrected the MkDocs deployment workflow by installing the necessary imaging dependencies (`mkdocs-material[imaging]`) for the social plugin. This resolves the final build error and ensures the documentation deploys successfully.
 
-# v0.0.14
+# v0.0.14-unstable
 
 - **CI/CD**: Refactored the GitHub Pages deployment workflow to use a more robust, two-stage process. This resolves 404 errors for documentation pages by ensuring the entire `site` directory, including the `scenery` test application, is correctly deployed.
 - **Docs**: Added links to the live documentation and interactive demos at the top of the `README.md` for easy access.
 
-# v0.0.13
+# v0.0.13-unstable
 
 - **Upgrade**: Upgraded Pyodide to v0.28.0.
 - **Fix**: Corrected Matplotlib integration to be compatible with Pyodide v0.28.0. The internal backend is now explicitly set to `agg` to ensure compatibility with the Web Worker environment, and font caching has been disabled to improve test stability.
@@ -15,19 +19,17 @@
 - **Documentation**: Added a new "Repository Reference" section to the documentation, providing a detailed file-by-file breakdown of the entire `src` directory.
 - **Experiments**: Added a new `matplotlib-default` experiment to demonstrate the correct usage of Matplotlib within Nagini. Removed obsolete Matplotlib experiments.
 
-# v0.0.12
+# v0.0.12-unstable
 
 - **Documentation**: Added a full documentation site with MkDocs, including a JSDoc-based API reference.
 - **GitHub Actions**: Set up a new workflow to automatically build and deploy the documentation to GitHub Pages.
 
-# v0.0.11
+# v0.0.11-unstable
 
 - **Fix**: Corrected a 404 error in the scenery application by removing an import for a non-existent `failure-tests.js` file.
 - **README**: Added a prominent legend to clarify the branching model and production usage guidelines.
 - **README**: Removed outdated information about `pre-push` hooks.
 
-> [!DANGER]
-> Versions prior to `v0.0.11` are unstable due to a critical bug in the `input()` handling system. These versions should not be used in production.
 
 
 
