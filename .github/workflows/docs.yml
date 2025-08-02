@@ -30,5 +30,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Build MkDocs site
+        run: mkdocs build
+      - name: Copy scenery to site directory
+        run: cp -r scenery site/
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force --clean --verbose 
