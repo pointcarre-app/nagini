@@ -1,3 +1,8 @@
+# v0.0.14
+
+- **CI/CD**: Refactored the GitHub Pages deployment workflow to use a more robust, two-stage process. This resolves 404 errors for documentation pages by ensuring the entire `site` directory, including the `scenery` test application, is correctly deployed.
+- **Docs**: Added links to the live documentation and interactive demos at the top of the `README.md` for easy access.
+
 # v0.0.13
 
 - **Upgrade**: Upgraded Pyodide to v0.28.0.
