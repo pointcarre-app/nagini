@@ -24,9 +24,10 @@ and remote module loading. Perfect for data analysis tools, educational
 platforms, scientific computing applications, and interactive development
 environments.
 
-[![GitHub](https://img.shields.io/badge/GitHub-pca--nagini-blue?logo=github)](https://github.com/pca-nagini/pca-nagini)
+[![GitHub](https://img.shields.io/badge/GitHub-nagini-blue?logo=github)](https://github.com/pointcarre-app/nagini)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Python](https://img.shields.io/badge/Python-Pyodide%20%7C%20Brython-green)](https://pyodide.org/)
+[![Pyodide](https://img.shields.io/badge/Pyodide-v0.28.0-blue.svg)](https://pyodide.org/)
+[![Brython](https://img.shields.io/badge/Brython-stable-green.svg)](https://brython.info/)
 
 ## Table of Contents
 
