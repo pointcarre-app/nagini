@@ -202,8 +202,8 @@
                 justify-content: center;
                 align-items: center;
                 overflow: hidden;
-                width: 335px;
-                height: 335px;
+                width: 340px;
+                height: 340px;
             }
             
             .graph-container svg {
@@ -421,7 +421,33 @@
             try {
                 const utilsResponse = await fetch('svg_utils.py?v=' + Date.now());
                 const utilsCode = await utilsResponse.text();
+                
+                // First, execute svg_utils.py in the global namespace
                 await pyodide.runPython(utilsCode);
+                
+                // Then make it available as an importable module
+                await pyodide.runPython(`
+import sys
+import types
+
+# Create a module and populate it with the globals that were just defined
+svg_utils = types.ModuleType('svg_utils')
+
+# Copy all the functions and classes from globals to the module
+for name in ['resolve_color', 'define_arrow_marker', 'draw_axes', 
+             'create_multi_curve_svg', 'create_svg_scene', 'SVGScene']:
+    if name in globals():
+        setattr(svg_utils, name, globals()[name])
+
+# Add compatibility wrapper for create_svg
+def create_svg(*args, **kwargs):
+    return create_svg_scene(*args, **kwargs)
+
+svg_utils.create_svg = create_svg
+
+# Add to sys.modules so it can be imported
+sys.modules['svg_utils'] = svg_utils
+                `);
                 console.log('SVG utilities loaded successfully');
             } catch (error) {
                 console.error('Error loading svg_utils.py:', error);
@@ -435,19 +461,32 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('graphs').style.display = 'grid';
             
-            // Load and execute each graph file
+            // Combine all graph files into a single string
             const graphFiles = ['graph1.py', 'graph2.py', 'graph3.py', 'graph4.py', 
                                 'graph5.py', 'graph6.py', 'graph7.py', 'graph8.py', 'graph9.py'];
             
-            for (let i = 0; i < graphFiles.length; i++) {
-                try {
-                    const response = await fetch(graphFiles[i] + '?v=' + Date.now());
-                    const code = await response.text();
-                    await pyodide.runPython(code);
-                    const svg = pyodide.globals.get('svg_output');
-                    document.getElementById(`graph${i + 1}`).innerHTML = svg;
-                } catch (error) {
-                    console.error(`Error loading ${graphFiles[i]}:`, error);
+            let combinedCode = "";
+            for (const file of graphFiles) {
+                const response = await fetch(file + '?v=' + Date.now());
+                combinedCode += await response.text() + "\n\n";
+            }
+
+            // Execute all scripts at once
+            try {
+                await pyodide.runPython(combinedCode);
+                
+                // Render each graph
+                for (let i = 0; i < graphFiles.length; i++) {
+                    const svg = pyodide.globals.get(`svg_output_${i + 1}`);
+                    if (svg) {
+                        document.getElementById(`graph${i + 1}`).innerHTML = svg;
+                    } else {
+                        throw new Error(`svg_output_${i + 1} not found.`);
+                    }
+                }
+            } catch (error) {
+                console.error("Error executing combined Python script:", error);
+                for (let i = 0; i < graphFiles.length; i++) {
                     document.getElementById(`graph${i + 1}`).innerHTML = 
                         `<p class="text-error">Error loading graph</p>`;
                 }

@@ -21,18 +21,25 @@
 
 
 
-
-
-
-
-
-
-
-- [] #low Consider adding support for `input()` with Brython Manager
-
 - [] Add Licence buy button
 
 - [] Update hooks for ensuring checking of ALL files at every commit
 
 - [] decide about how to use scenery (externally - no install here) 
     - [] check the outputs in the table in `/scenery/index.html`
+
+
+
+
+
+# Low
+
+- [ ] Analyse very precisely by generated the meta code from `/pyodide/py` to understand what's loaded / what wrappers are used etc.... 
+    - [ ] Make some stuff optional to try to build the lightest fastest 
+    - [ ] See if you can have one or two with dedicated set of option (full / nothing except missive ? maybe)
+
+
+
+
+
+- [] Consider adding support for `input()` with Brython Manager

@@ -1,3 +1,6 @@
+import numpy as np
+from svg_utils import create_multi_curve_svg
+
 # Graph 1: Identity and Minus Identity on [-1, 1]
 x = np.linspace(-1, 1, 100)
 y_identity = x  # y = x
@@ -6,12 +9,34 @@ y_minus_identity = -x  # y = -x
 # Use nice hex colors directly
 bg_color = "#f5f7fb"  # Very light blue-grey
 grid_color = "#dde3ed"  # Light grey
-axes_color = "#3a3d47"  # Dark blue-grey
 curve1_color = "#6b46c1"  # Purple
 curve2_color = "#c7366f"  # Red-pink
 
-# Custom lines (optional) - for example, reference lines at x=0.5 and y=0.5
-custom_lines = [
+# Lines (including axes and reference lines)
+lines = [
+    # X-axis
+    {
+        "x1": -1,
+        "y1": 0,
+        "x2": 1,
+        "y2": 0,
+        "stroke": "#3a3d47",  # Dark blue-grey
+        "stroke_width": 2,
+        "class": "axis x-axis",
+        "type": "axis",  # Add arrow to axis
+    },
+    # Y-axis
+    {
+        "x1": 0,
+        "y1": -1,
+        "x2": 0,
+        "y2": 1,
+        "stroke": "#3a3d47",  # Dark blue-grey
+        "stroke_width": 2,
+        "class": "axis y-axis",
+        "type": "axis",  # Add arrow to axis
+    },
+    # Reference lines
     {
         "x1": 0.5,
         "y1": -1,
@@ -61,14 +86,16 @@ foreign_objects = [
     },
 ]
 
-svg_output = create_multi_curve_svg(
+# Final SVG output
+# The variable name must be unique for each graph in a combined script
+svg_output_1 = create_multi_curve_svg(
     x_data=x,
     y_data_list=[y_identity, y_minus_identity],
-    size=335,
+    size=340,
     colors=[curve1_color, curve2_color],
     bg_color=bg_color,
-    axes_color=axes_color,
     grid_color=grid_color,
     foreign_objects=foreign_objects,
-    lines=custom_lines,
+    lines=lines,
+    show_axes=False,  # Disable automatic axes since we're defining them in lines
 )

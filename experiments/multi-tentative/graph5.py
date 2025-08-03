@@ -1,6 +1,35 @@
+import numpy as np
+from svg_utils import create_svg
+
 # Graph 1: Parabola with lots of LaTeX
 x = np.linspace(-5, 5, 100)
 y = x**2 - 4 * x + 3
+
+# Lines (including axes)
+lines = [
+    # X-axis with arrow
+    {
+        "x1": -5,
+        "y1": 0,
+        "x2": 5,
+        "y2": 0,
+        "stroke": "#333333",  # Dark grey
+        "stroke_width": 2,
+        "class": "axis x-axis",
+        "type": "axis",  # Add arrow
+    },
+    # Y-axis without arrow (demonstrating no-arrow class)
+    {
+        "x1": 0,
+        "y1": -5,
+        "x2": 0,
+        "y2": 40,  # Adjusted for the parabola range
+        "stroke": "#333333",  # Dark grey
+        "stroke_width": 2,
+        "class": "axis y-axis no-arrow",  # no-arrow class prevents arrow
+        "type": "axis",  # Still marked as axis but no arrow due to class
+    },
+]
 
 foreign_objects = [
     {
@@ -73,4 +102,12 @@ foreign_objects = [
     },
 ]
 
-svg_output = create_svg(x_data=x, y_data=y, size=335, foreign_objects=foreign_objects)
+# Final SVG output
+svg_output_5 = create_svg(
+    x_data=x,
+    y_data=y,
+    size=340,
+    foreign_objects=foreign_objects,
+    lines=lines,
+    show_axes=False,  # Disable automatic axes since we're defining them in lines
+)
