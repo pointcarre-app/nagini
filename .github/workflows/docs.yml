@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: false # Disabled; merged into static workflow
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

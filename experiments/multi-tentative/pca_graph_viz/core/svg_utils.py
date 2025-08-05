@@ -322,8 +322,55 @@ def create_svg_scene(
     # Scale data to fit
     margin = 5  # Fixed margin of 5 as requested
     plot_size = size - 2 * margin
-    x_min, x_max = np.min(x_data), np.max(x_data)
-    y_min, y_max = np.min(y_data), np.max(y_data)
+
+    # Determine data bounds. If x_data / y_data are empty, infer bounds from provided line and foreign object elements.
+    if x_data is None or len(x_data) == 0 or y_data is None or len(y_data) == 0:
+        bounds_x = []
+        bounds_y = []
+
+        # Gather bounds from line/shape objects
+        if lines:
+            iter_lines = lines if isinstance(lines, list) else [lines]
+            for obj in iter_lines:
+                # Line or axis with x1,x2,y1,y2
+                if "x1" in obj and "x2" in obj:
+                    bounds_x.extend([obj["x1"], obj["x2"]])
+                if "y1" in obj and "y2" in obj:
+                    bounds_y.extend([obj["y1"], obj["y2"]])
+                # Circle with center and radius
+                if "cx" in obj and "cy" in obj:
+                    r = obj.get("r", 0)
+                    bounds_x.extend([obj["cx"] - r, obj["cx"] + r])
+                    bounds_y.extend([obj["cy"] - r, obj["cy"] + r])
+                # Path – extract numeric coordinates heuristically
+                if "d" in obj:
+                    import re
+
+                    coords = [
+                        float(v) for v in re.findall(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?", obj["d"])
+                    ]
+                    bounds_x.extend(coords[0::2])
+                    bounds_y.extend(coords[1::2])
+
+        # Foreign objects (LaTeX labels)
+        if foreign_objects:
+            for fo in foreign_objects:
+                if isinstance(fo, dict):
+                    # Treat x and y values from foreign objects as data-space anchor points only.
+                    if "x" in fo:
+                        bounds_x.append(fo["x"])
+                    if "y" in fo:
+                        bounds_y.append(fo["y"])
+
+        # Fallback if still empty
+        if bounds_x and bounds_y:
+            x_min, x_max = min(bounds_x), max(bounds_x)
+            y_min, y_max = min(bounds_y), max(bounds_y)
+        else:
+            x_min, x_max, y_min, y_max = 0, 1, 0, 1
+    else:
+        x_min, x_max = np.min(x_data), np.max(x_data)
+        y_min, y_max = np.min(y_data), np.max(y_data)
 
     # Add minimal padding (2% instead of 10%)
     x_range = x_max - x_min

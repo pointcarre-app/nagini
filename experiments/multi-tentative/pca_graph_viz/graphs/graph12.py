@@ -9,14 +9,14 @@ y_circle = np.sin(theta)
 # Important angles (in radians)
 angles = [
     0,
-    np.pi / 6,
-    np.pi / 4,
-    np.pi / 3,
-    np.pi / 2,
-    2 * np.pi / 3,
-    np.pi,
-    5 * np.pi / 4,
-    3 * np.pi / 2,
+    float(np.pi / 6),
+    float(np.pi / 4),
+    float(np.pi / 3),
+    float(np.pi / 2),
+    float(2 * np.pi / 3),
+    float(np.pi),
+    float(5 * np.pi / 4),
+    float(3 * np.pi / 2),
 ]
 angle_labels = [
     "0",
@@ -75,8 +75,8 @@ lines = [
 
 # Add radius lines and points for key angles
 for i, angle in enumerate(angles[:4]):  # Show first 4 angles
-    x = np.cos(angle)
-    y = np.sin(angle)
+    x = float(np.cos(angle))
+    y = float(np.sin(angle))
 
     # Radius line
     lines.append(

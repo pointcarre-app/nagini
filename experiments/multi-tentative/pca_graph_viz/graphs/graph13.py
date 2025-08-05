@@ -77,7 +77,7 @@ lines = [
     {
         "type": "circle",
         "cx": 1,
-        "cy": np.e,
+        "cy": float(np.e),
         "r": 4,
         "fill": exp_color,
         "stroke": "#4a148c",
@@ -87,7 +87,7 @@ lines = [
     # Point at (e, 1)
     {
         "type": "circle",
-        "cx": np.e,
+        "cx": float(np.e),
         "cy": 1,
         "r": 4,
         "fill": log_color,
@@ -158,7 +158,7 @@ foreign_objects = [
     # Point (1, e) label
     {
         "x": 1,
-        "y": np.e + 0.3,
+        "y": float(np.e + 0.3),
         "latex": r"(1, e)",
         "width": 50,
         "height": 25,
@@ -168,7 +168,7 @@ foreign_objects = [
     },
     # Point (e, 1) label
     {
-        "x": np.e,
+        "x": float(np.e),
         "y": 1.3,
         "latex": r"(e, 1)",
         "width": 50,

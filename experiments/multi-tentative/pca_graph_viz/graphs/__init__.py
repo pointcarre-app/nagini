@@ -14,6 +14,10 @@ from .graph10 import get_graph_dict as get_graph10_dict
 from .graph11 import get_graph_dict as get_graph11_dict
 from .graph12 import get_graph_dict as get_graph12_dict
 from .graph13 import get_graph_dict as get_graph13_dict
+from .graph14 import get_graph_dict as get_graph14_dict
+from .graph15 import get_graph_dict as get_graph15_dict
+from .graph16 import get_graph_dict as get_graph16_dict
+from .graph17 import get_graph_dict as get_graph17_dict
 
 
 # Convenience function to get all graphs
@@ -33,6 +37,10 @@ def get_all_graphs():
         "graph11": get_graph11_dict(),
         "graph12": get_graph12_dict(),
         "graph13": get_graph13_dict(),
+        "graph14": get_graph14_dict(),
+        "graph15": get_graph15_dict(),
+        "graph16": get_graph16_dict(),
+        "graph17": get_graph17_dict(),
     }
 
 
@@ -50,5 +58,9 @@ __all__ = [
     "get_graph11_dict",
     "get_graph12_dict",
     "get_graph13_dict",
+    "get_graph14_dict",
+    "get_graph15_dict",
+    "get_graph16_dict",
+    "get_graph17_dict",
     "get_all_graphs",
 ]

@@ -65,8 +65,8 @@ lines = [
     # Point of tangency
     {
         "type": "circle",
-        "cx": x_tangent,
-        "cy": y_tangent,
+        "cx": float(x_tangent),
+        "cy": float(y_tangent),
         "r": 4,
         "fill": "#ff5722",
         "stroke": "#d84315",
@@ -97,9 +97,9 @@ foreign_objects = [
         "border_radius": "0.5rem",
     },
     {
-        "x": x_tangent,
-        "y": y_tangent + 0.7,
-        "latex": rf"({x_tangent}, {y_tangent:.2f})",
+        "x": float(x_tangent),
+        "y": float(y_tangent + 0.7),
+        "latex": rf"({float(x_tangent)}, {float(y_tangent):.2f})",
         "width": 70,
         "height": 25,
         "bg_color": "rgba(255, 87, 34, 0.9)",
@@ -110,7 +110,7 @@ foreign_objects = [
     {
         "x": -1.5,
         "y": 6,
-        "latex": rf"\text{{Slope}} = {slope}",
+        "latex": rf"\text{{Slope}} = {float(slope)}",
         "width": 100,
         "height": 30,
         "bg_color": "rgba(76, 175, 80, 0.15)",

@@ -1,97 +1,59 @@
 # PCA Graph Visualization
 
-Interactive mathematical graph visualization using Python in the browser via Pyodide.
+Interactive mathematical graphs in the browser using Python + Pyodide.
 
 ## 🚀 Quick Start
 
 ```bash
-# Start server (you already have this running)
 python serve.py
-
-# Open the test suite
-http://localhost:8000/scenery/
+# Open http://localhost:8000/scenery/
 ```
 
-## 📁 Project Structure
+## 📊 Features
+
+- **13 Mathematical Graphs**: From simple lines to complex educational visualizations
+- **Pure Python SVG**: Generated with svgwrite, no JS libraries needed
+- **LaTeX Support**: Mathematical annotations via KaTeX
+- **Flexible Format**: Unified structure for curves, axes, and shapes
+
+## 📁 Structure
 
 ```
-.
-├── scenery/
-│   └── index.html          # 🎯 Main test suite (all tests in one place)
-├── pca_graph_viz/          # 📦 Python package
-│   ├── core/               # Core SVG generation
-│   ├── models/             # Data models (Line, Curve, etc.)
-│   └── graphs/             # Graph definitions (1-9 + v2 examples)
-├── docs/                   # 📚 Documentation
-│   ├── NEW_CURVE_FORMAT_SUMMARY.md
-│   ├── PACKAGE_STRUCTURE.md
-│   └── ...
-├── requirements.txt        # Python dependencies
-├── setup.py               # Package setup
-└── serve.py               # Development server
+pca_graph_viz/          # Python package
+├── core/               # SVG generation
+├── models/             # Data models
+└── graphs/             # 13 pre-built graphs
 
+scenery/index.html      # Test interface
+docs/                   # Documentation
 ```
 
-## 🎨 Features
+## 🔧 Installation
 
-- **9 Mathematical Graphs**: Identity, parabola, sine, gaussian, cubic, circle
-- **LaTeX Support**: Mathematical annotations with KaTeX
-- **Pure Python SVG**: No JS libraries, just Python + svgwrite
-- **New V2 Format**: Curves as line elements for unlimited flexibility
-
-## 🔧 Graph Format
-
-### Old Format ❌
-```json
-{
-  "data": {
-    "x": [points],
-    "y": [points]  // Only ONE curve!
-  }
-}
+```bash
+pip install -r requirements.txt
+pip install -e .  # Development mode
 ```
 
-### New V2 Format ✅
-```json
-{
-  "lines": [
-    {
-      "type": "curve",
-      "id": "cubic",
-      "data": {"x": [...], "y": [...]},
-      "stroke": "#1976d2"
-    }
-  ]
-}
-```
+## 📖 Documentation
 
-## 📊 Available Graphs
+- [Technical Details](docs/TECHNICAL.md) - Architecture and implementation
+- [API Reference](docs/API.md) - Functions and examples
+- [Changelog](CHANGELOG.md) - Version history
 
-- **graph1-4**: Identity functions (y=x, y=-x)
-- **graph5**: Parabola with LaTeX annotations
-- **graph6**: Sine wave
-- **graph7**: Gaussian curve
-- **graph8**: Cubic function
-- **graph9**: Parametric circle
-- **graph1_v2, graph8_v2**: Examples using new format
-
-## 🛠️ Development
-
-The main test page (`scenery/index.html`) includes:
-- **All Graphs**: View all 9 graphs with JSON
-- **V2 Format Demo**: New curve format examples
-- **Format Comparison**: Old vs new side-by-side
-- **About**: Documentation and features
-
-## 📦 Package Usage
+## 🎨 Example
 
 ```python
-from pca_graph_viz import graph_from_dict_v2
+from pca_graph_viz import graph_from_dict
 
 graph = {
     "lines": [
-        {"type": "curve", "data": {"x": [...], "y": [...]}}
+        {
+            "type": "curve",
+            "data": {"x": [...], "y": [...]},
+            "stroke": "#1976d2"
+        }
     ]
 }
-svg = graph_from_dict_v2(graph)
+svg = graph_from_dict(graph)
 ```
