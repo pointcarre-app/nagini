@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCA Graph Visualization</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f5f5f5;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    h1 {
+        color: #1976d2;
+        margin-bottom: 30px;
+    }
+    .graph-row {
+        background: white;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        overflow: hidden;
+    }
+    .graph-svg {
+        width: 340px;
+        height: 340px;
+        padding: 20px;
+        flex-shrink: 0;
+        border-right: 1px solid #e0e0e0;
+    }
+    .graph-json {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        max-height: 380px;
+        background: #f8f8f8;
+    }
+    .graph-json pre {
+        margin: 0;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    .graph-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #1976d2;
+        font-size: 16px;
+    }
+    #loading {
+        text-align: center;
+        color: #666;
+        padding: 40px;
+        font-size: 18px;
+    }
+    .error {
+        color: #d32f2f;
+        padding: 20px;
+        background: #ffebee;
+        border-radius: 4px;
+        margin: 20px 0;
+    }
+    .svg-latex {
+        /* This is the div inside the foreignObject */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 0; /* Removed padding for perfect centering */
+        box-sizing: border-box;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+    }
+    
+    foreignObject .katex {
+        /* Reset KaTeX's default styling to allow flexbox to work */
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        font-size: inherit !important;
+        color: inherit !important;
+        text-align: center;
+    }
+    foreignObject div {
+        /* The div needs to fill the foreignObject and allow color inheritance */
+        height: 100%;
+        width: 100%;
+        color: inherit !important;
+    }
+</style>
+</head>
+<body>
+    <h1>🎨 PCA Graph Visualization</h1>
+    
+    <div id="loading">Loading Pyodide and graphs...</div>
+    <div id="error-container"></div>
+    <div id="graphs-container"></div>
+
+    <script>
+        let pyodide;
+        let allGraphs = {};
+        
+        async function main() {
+            try {
+                // Load Pyodide
+                pyodide = await loadPyodide();
+                await pyodide.loadPackage(["numpy", "svgwrite"]);
+                
+                // Python files to load
+                const pythonFiles = [
+                    'pca_graph_viz/__init__.py',
+                    'pca_graph_viz/core/__init__.py',
+                    'pca_graph_viz/core/svg_utils.py',
+                    'pca_graph_viz/core/color_utils.py',
+                    'pca_graph_viz/models/__init__.py',
+                    'pca_graph_viz/models/line_model.py',
+                    'pca_graph_viz/models/curve_model.py',
+                    'pca_graph_viz/models/line_object.py',
+                    'pca_graph_viz/models/foreign_object.py',
+                    'pca_graph_viz/graphs/__init__.py',
+                    'pca_graph_viz/graphs/graph1.py',
+                    'pca_graph_viz/graphs/graph2.py',
+                    'pca_graph_viz/graphs/graph3.py',
+                    'pca_graph_viz/graphs/graph4.py',
+                    'pca_graph_viz/graphs/graph5.py',
+                    'pca_graph_viz/graphs/graph6.py',
+                    'pca_graph_viz/graphs/graph7.py',
+                    'pca_graph_viz/graphs/graph8.py',
+                    'pca_graph_viz/graphs/graph9.py',
+                    'pca_graph_viz/graphs/graph10.py',
+                    'pca_graph_viz/graphs/graph11.py',
+                    'pca_graph_viz/graphs/graph12.py',
+                    'pca_graph_viz/graphs/graph13.py',
+                ];
+                
+                // Create directory structure
+                await pyodide.runPythonAsync(`
+                    import os
+                    os.makedirs('pca_graph_viz/core', exist_ok=True)
+                    os.makedirs('pca_graph_viz/models', exist_ok=True)
+                    os.makedirs('pca_graph_viz/graphs', exist_ok=True)
+                `);
+                
+                // Load all Python files
+                for (const file of pythonFiles) {
+                    const url = `../${file}`;
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${file}: ${response.statusText}`);
+                    }
+                    const content = await response.text();
+                    
+                    // Write file to Pyodide filesystem
+                    await pyodide.runPythonAsync(`
+                        with open('${file}', 'w') as f:
+                            f.write(${JSON.stringify(content)})
+                    `);
+                }
+                
+                // Clear any cached modules and import fresh
+                await pyodide.runPythonAsync(`
+                    import sys
+                    # Clear module cache for our package
+                    for key in list(sys.modules.keys()):
+                        if key.startswith('pca_graph_viz'):
+                            del sys.modules[key]
+                `);
+                
+                // Load all graphs
+                await loadAllGraphs();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Display all graphs
+                displayAllGraphs();
+                
+            } catch (error) {
+                showError(`Initialization error: ${error.message}`);
+                console.error(error);
+            }
+        }
+        
+        async function loadAllGraphs() {
+            const result = await pyodide.runPythonAsync(`
+                import json
+                from pca_graph_viz.graphs import get_all_graphs
+                from pca_graph_viz import graph_from_dict
+                
+                all_graphs = get_all_graphs()
+                json.dumps(all_graphs)
+            `);
+            
+            allGraphs = JSON.parse(result);
+        }
+        
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            document.getElementById('error-container').appendChild(errorDiv);
+        }
+        
+        async function displayGraph(graphId, graphDict, container) {
+            const row = document.createElement('div');
+            row.className = 'graph-row';
+            
+            // SVG container
+            const svgContainer = document.createElement('div');
+            svgContainer.className = 'graph-svg';
+            svgContainer.innerHTML = `<div class="graph-title">${graphDict.title || graphId}</div>`;
+            
+            // JSON container
+            const jsonContainer = document.createElement('div');
+            jsonContainer.className = 'graph-json';
+            jsonContainer.innerHTML = `<div class="graph-title">JSON Entry Point</div><pre>${JSON.stringify(graphDict, null, 2)}</pre>`;
+            
+            row.appendChild(svgContainer);
+            row.appendChild(jsonContainer);
+            container.appendChild(row);
+            
+            try {
+                // Generate SVG using Python
+                const svg = await pyodide.runPythonAsync(`
+                    import json
+                    # Use repr to properly escape the JSON string
+                    json_str = ${JSON.stringify(JSON.stringify(graphDict))}
+                    graph_dict = json.loads(json_str)
+                    graph_from_dict(graph_dict)
+                `);
+                
+                const svgDiv = document.createElement('div');
+                svgDiv.innerHTML = svg;
+                svgContainer.appendChild(svgDiv);
+                
+                // Process LaTeX in foreign objects
+                setTimeout(() => {
+                    const foreignObjects = svgContainer.querySelectorAll('foreignObject');
+                    foreignObjects.forEach(fo => {
+                        const divs = fo.querySelectorAll('div.svg-latex');
+                        divs.forEach(div => {
+                            const latex = div.textContent.trim();
+                            console.log('Processing LaTeX:', latex);
+                            
+                            if (latex) {
+                                try {
+                                    // Save the original styles
+                                    const originalBgColor = div.style.backgroundColor;
+                                    const originalColor = div.style.color;
+                                    
+                                    // Render LaTeX
+                                    div.innerHTML = '';
+                                    katex.render(latex, div, {
+                                        throwOnError: false,
+                                        displayMode: false
+                                    });
+                                    
+                                    // Reapply the original styles
+                                    if (originalBgColor) {
+                                        div.style.backgroundColor = originalBgColor;
+                                    }
+                                    if (originalColor) {
+                                        // Apply color to the KaTeX elements
+                                        const katexElements = div.querySelectorAll('.katex, .katex *');
+                                        katexElements.forEach(el => {
+                                            el.style.color = originalColor;
+                                        });
+                                    }
+                                } catch (e) {
+                                    console.error('KaTeX error:', e);
+                                    // If KaTeX fails, restore original text
+                                    div.textContent = latex;
+                                }
+                            }
+                        });
+                    });
+                }, 100);
+                
+            } catch (error) {
+                console.error(`Error displaying ${graphId}:`, error);
+                svgContainer.innerHTML += `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        function displayAllGraphs() {
+            const container = document.getElementById('graphs-container');
+            container.innerHTML = '';
+            
+            // Display all graphs
+            Object.entries(allGraphs).forEach(([graphId, graphDict]) => {
+                displayGraph(graphId, graphDict, container);
+            });
+        }
+        
+        // Start the app
+        main();
+    </script>
+</body>
+</html>
