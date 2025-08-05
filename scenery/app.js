@@ -7,6 +7,8 @@ import { PyodideIntegrationTests } from './tests/pyodide-integration-tests.js';
 import { ValidationUtilsTests } from './tests/validation-utils-tests.js';
 import { UtilitiesTests } from './tests/utilities-tests.js';
 import { BrythonManagerTests } from './tests/brython-manager-tests.js';
+import { CDNVersionTests } from './tests/cdn-version-tests.js';
+import { CDNExecutionTests } from './tests/cdn-execution-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
@@ -218,6 +220,15 @@ async function runAllTests() {
         { id: 'status-utilities-1', desc: "1️⃣ test-utils assert function", func: () => UtilitiesTests.test1TestUtilsAssertFunction().then(() => window.updateTestStatus('status-utilities-1', 'pass')) },
         { id: 'status-utilities-2', desc: "2️⃣ test-utils assertEquals function", func: () => UtilitiesTests.test2TestUtilsEqualsFunction().then(() => window.updateTestStatus('status-utilities-2', 'pass')) },
         { id: 'status-utilities-3', desc: "3️⃣ string manipulation utilities", func: () => UtilitiesTests.test3StringManipulationUtilities().then(() => window.updateTestStatus('status-utilities-3', 'pass')) },
+        
+        // CDN Version Tests
+        { id: 'status-cdn-1', desc: "1️⃣ CDN Version - Load from jsDelivr (v0.0.17)", func: () => CDNVersionTests.test1LoadFromCDN('v0.0.17').then(() => window.updateTestStatus('status-cdn-1', 'pass')) },
+        { id: 'status-cdn-2', desc: "2️⃣ CDN Version - Basic Functionality (v0.0.17)", func: () => CDNVersionTests.test2BasicCDNFunctionality('v0.0.17').then(() => window.updateTestStatus('status-cdn-2', 'pass')) },
+        { id: 'status-cdn-3', desc: "3️⃣ CDN Version - Check File Availability (v0.0.17)", func: () => CDNVersionTests.test3CheckCDNFiles('v0.0.17').then(() => window.updateTestStatus('status-cdn-3', 'pass')) },
+        
+        // CDN Execution Tests
+        { id: 'status-cdn-exec-1', desc: "1️⃣ CDN Execution - Simple Code (v0.0.17)", func: () => CDNExecutionTests.test1ExecuteSimpleCode('v0.0.17').then(() => window.updateTestStatus('status-cdn-exec-1', 'pass')) },
+        { id: 'status-cdn-exec-2', desc: "2️⃣ CDN Execution - With Imports (v0.0.17)", func: () => CDNExecutionTests.test2ExecuteWithImports('v0.0.17').then(() => window.updateTestStatus('status-cdn-exec-2', 'pass')) },
     ];
 
     for (const test of tests) {

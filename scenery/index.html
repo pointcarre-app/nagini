@@ -83,6 +83,17 @@
         .test-group-utilities {
             background-color: #e6e6fa;
         }
+        
+        /* Style for all test group headers */
+        .test-group-header {
+            background-color: #d3d3d3;
+            font-weight: bold;
+        }
+        
+        .test-group-header td {
+            padding: 12px 8px;
+            border-bottom: 2px solid #999;
+        }
 
         .test-status-pending {
             text-align: center;
@@ -115,7 +126,7 @@
 
         .warning-box {
             padding: 10px;
-            background-color: #dc3545;
+            background-color: #70030e;
             color: #f0f8ff;
         }
 
@@ -155,7 +166,7 @@
           - data-main_critic="glitch": .test-status-glitch -> 🐛 (Execution Error)
         -->
             <!-- Nagini Tests -->
-            <tr class="test-group-nagini">
+            <tr class="test-group-header">
                 <td colspan="4">
                     <strong>Nagini Class Tests</strong>
                 </td>
@@ -222,7 +233,7 @@
             </tr>
 
             <!-- PyodideManager Tests -->
-            <tr class="test-group-pyodide-manager">
+            <tr class="test-group-header">
                 <td colspan="4">
                     <strong>PyodideManager Class Tests</strong>
                 </td>
@@ -391,7 +402,7 @@
             </tr>
 
             <!-- BrythonManager Tests -->
-            <tr class="test-group-pyodide-manager">
+            <tr class="test-group-header">
                 <td colspan="4">
                     <strong>BrythonManager Class Tests</strong>
                 </td>
@@ -411,7 +422,7 @@
             <!-- End BrythonManager -->
 
             <!-- PyodideFileLoader Tests -->
-            <tr class="test-group-file-loader">
+            <tr class="test-group-header">
                 <td colspan="4">
                     <strong>PyodideFileLoader Class Tests</strong>
                 </td>
@@ -454,7 +465,7 @@
             </tr>
 
             <!-- Integration Tests -->
-            <tr class="test-group-integration">
+            <tr class="test-group-header">
                 <td colspan="4">
                     <strong>PyodideIntegration Tests</strong>
                 </td>
@@ -545,7 +556,7 @@
             </tr>
 
             <!-- ValidationUtils Tests -->
-            <tr class="test-group-validation">
+            <tr class="test-group-header">
                 <td colspan="4">
                     <strong>ValidationUtils Class Tests</strong>
                 </td>
@@ -600,7 +611,7 @@
             </tr>
 
             <!-- TestUtils Tests -->
-            <tr class="test-group-utilities">
+            <tr class="test-group-header">
                 <td colspan="4">
                     <strong>TestUtils Class Tests</strong>
                 </td>
@@ -641,6 +652,73 @@
                 </td>
                 <td id="status-utilities-3" class="test-status-pending">⏳</td>
             </tr>
+            
+            <!-- CDN Tests -->
+            <tr class="test-group-header">
+                <td colspan="4">
+                    <strong>CDN Tests (jsDelivr v0.0.17)</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>1️⃣</td>
+                <td>
+                    <code>CDNVersion</code>
+                </td>
+                <td>
+                    <code>loadFromCDN(version)</code>
+                    <br />
+                    Test loading Nagini from jsDelivr CDN with version v0.0.17
+                </td>
+                <td id="status-cdn-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>2️⃣</td>
+                <td>
+                    <code>CDNVersion</code>
+                </td>
+                <td>
+                    <code>basicCDNFunctionality(version)</code>
+                    <br />
+                    Test basic API availability and functionality from CDN version v0.0.17
+                </td>
+                <td id="status-cdn-2" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>3️⃣</td>
+                <td>
+                    <code>CDNVersion</code>
+                </td>
+                <td>
+                    <code>checkCDNFiles(version)</code>
+                    <br />
+                    Verify all key files are accessible via CDN for version v0.0.17
+                </td>
+                <td id="status-cdn-3" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>4️⃣</td>
+                <td>
+                    <code>CDNExecution</code>
+                </td>
+                <td>
+                    <code>executeSimpleCode(version)</code>
+                    <br />
+                    Test actual Python code execution using CDN version v0.0.17
+                </td>
+                <td id="status-cdn-exec-1" class="test-status-pending">⏳</td>
+            </tr>
+            <tr>
+                <td>5️⃣</td>
+                <td>
+                    <code>CDNExecution</code>
+                </td>
+                <td>
+                    <code>executeWithImports(version)</code>
+                    <br />
+                    Test execution with standard library imports using CDN version v0.0.17
+                </td>
+                <td id="status-cdn-exec-2" class="test-status-pending">⏳</td>
+            </tr>
         </tbody>
     </table>
     <script type="module" src="app.js"></script>
@@ -653,7 +731,7 @@
 
     <h2 class="warning-section">Warning</h2>
     <div class="warning-box">
-        Wait for the Programmatic tests above to finish before running the interactive tests.
+        Wait for the Programmatic tests above to finish before running the interactive tests. <br>We could use a separate Manager but tests are already long enough ro run.
     </div>
 
     <h2>Interactive tests</h2>

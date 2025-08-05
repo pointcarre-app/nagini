@@ -18,7 +18,7 @@
 - [ ] do hooks  better 
     - [] one for tag: selenium/scenery based (is prepush ? or maybe on main and authorize tags only from main ?)
     - [] one for commits (size of files mostly + static js typing in a python doctest like would be the dream)
-
+    - [ ] critics json to wrapp in git tagging process + visible from scenery/index.html 
 
 
 - [] Add Licence buy button
@@ -29,7 +29,10 @@
     - [] check the outputs in the table in `/scenery/index.html`
 
 
+- [ ] Put `/tests` with flask app in `/scenery`
 
+
+- [ ] Make this amount of logging optional / define levels (but keep it - it so useful)
 
 # Low
 

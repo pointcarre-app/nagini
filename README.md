@@ -39,7 +39,6 @@ environments.
 - [Remote Module Loading](#remote-module-loading)
 - [Architecture](#architecture)
 - [API Reference](#api-reference)
-- [Xterm Terminal Integration](#xterm-terminal-integration)
 - [File Structure](#file-structure)
 - [Testing](#testing)
 - [Dependencies](#dependencies)
@@ -278,46 +277,6 @@ result = calculate_fibonacci(10)
 print(f"Fibonacci(10) = {result}")
 `);
 ```
-
-## Xterm Terminal Integration
-
-Nagini includes an experimental **xterm.js terminal integration** that demonstrates creating a full browser-based Python terminal.
-
-### Features
-
-- 🖥️ **Real Terminal Interface** - Full xterm.js terminal with cursor and colors
-- 🐍 **Interactive Python** - Execute Python code via Nagini/Pyodide
-- 📋 **Template System** - Pre-built Python scripts (data analysis, plotting, calculator)
-- ⌨️ **Command History** - Arrow key navigation through previous commands
-- 📊 **Matplotlib Support** - Automatic figure display above terminal
-- 🎨 **Professional Theme** - VS Code-inspired dark interface
-
-### Quick Demo
-
-```bash
-# Start server
-python -m http.server 8000
-
-# Open terminal
-http://localhost:8000/experiments/xterm/
-
-# Try commands
-$ help
-$ templates
-$ run data_analysis
-$ run plot_demo
-```
-
-### Available Templates
-
-- **hello_world** - User input demonstration
-- **data_analysis** - Numpy statistics with matplotlib histogram
-- **calculator** - Interactive math operations
-- **plot_demo** - Multiple chart types (line, scatter, bar, pie)
-
-The xterm integration showcases how Nagini can power full-featured browser-based Python development environments.
-
----
 
 ## Architecture
 

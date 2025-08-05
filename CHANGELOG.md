@@ -1,3 +1,7 @@
+# v0.0.18
+
+- **Testing**: Added comprehensive CDN version and execution tests to the `scenery` test suite. These new tests validate that Nagini can be properly loaded and executed from the jsDelivr CDN, ensuring production readiness for CDN-based deployments.
+
 # v0.0.17
 
 - **CI/CD Fix**: Corrected the `requirements.txt` to properly install the imaging dependencies for the `mkdocs-material` social plugin. This resolves the final, persistent build error and ensures the documentation deploys successfully.
@@ -52,7 +56,6 @@
 - **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/src/nagini.js`
 - **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/src/pyodide/worker/worker.js`
 - **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/src/pyodide/worker/worker-dist.js`
-- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.10/experiments/xterm/`
 
 
 # v0.0.9-unstable
@@ -64,7 +67,6 @@
 - **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.9/src/nagini.js`
 - **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.9/src/pyodide/worker/worker.js`
 - **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.9/src/pyodide/worker/worker-dist.js`
-- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.9/experiments/xterm/`
 
 
 
@@ -76,7 +78,6 @@
 - **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/src/nagini.js`
 - **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/src/pyodide/worker/worker.js`
 - **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/src/pyodide/worker/worker-dist.js`
-- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.8/experiments/xterm/`
 
 
 
@@ -98,29 +99,19 @@
 - **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/src/nagini.js`
 - **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/src/pyodide/worker/worker.js`
 - **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/src/pyodide/worker/worker-dist.js`
-- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.7/experiments/xterm/`
 
 
 
 # v0.0.5-unstable
 
 - **GitHub Migration**: Migrated project to GitHub for better collaboration and open source visibility
-- **Xterm Integration**: Added new xterm.js terminal experiment in `/experiments/xterm/`
-    - Real terminal interface with xterm.js integration
-    - Interactive Python execution via Nagini/Pyodide
-    - Template system with 4 pre-built Python scripts (hello_world, data_analysis, calculator, plot_demo)
-    - Command history support with arrow keys
-    - Professional VS Code-inspired dark theme
-    - Matplotlib figure display integration
-    - ASCII box frame improvements for better cross-platform compatibility
-- **Enhanced Documentation**: Updated docs with xterm integration examples
+- **Enhanced Documentation**: Updated documentation for better clarity
 - **ES6 Module Support**: Fixed module import issues for better browser compatibility
 
 **🌐 jsDelivr CDN URLs for v0.0.5:**
 - **Main Nagini Module**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/src/nagini.js`
 - **Pyodide Worker (ES6)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/src/pyodide/worker/worker.js`
 - **Pyodide Worker (Bundled)**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/src/pyodide/worker/worker-dist.js`
-- **Xterm Integration**: `https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.5/experiments/xterm/`
 
 
 
