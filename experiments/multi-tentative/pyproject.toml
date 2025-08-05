@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pca-graph-viz"
+version = "0.2.0"
+description = "Mathematical visualizations with LaTeX annotations for Pyodide/browser"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "PCA Nagini Project"},
+]
+keywords = ["visualization", "mathematics", "education", "pyodide", "svg", "graphs"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Environment :: WebAssembly :: Emscripten",
+    "Environment :: WebAssembly :: WASI",
+]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "svgwrite>=1.4.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/pointcarre-app/nagini"
+Repository = "https://github.com/pointcarre-app/nagini"
+Issues = "https://github.com/pointcarre-app/nagini/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pca_graph_viz*"]
+exclude = ["tests*", "docs*", "scenery*"]
+
+[tool.setuptools.package-data]
+pca_graph_viz = ["py.typed"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501", # line too long (handled by black)
+    "B008", # do not perform function calls in argument defaults
+]
+
+[tool.ruff.isort]
+known-first-party = ["pca_graph_viz"]

@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCA Graph Visualization</title>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <style>
@@ -106,19 +108,43 @@
     <div id="error-container"></div>
     <div id="graphs-container"></div>
 
-    <script>
-        let pyodide;
+    <!-- Cache busting: Add timestamp to force reload -->
+    <script type="module">
+        // ===== URL CONFIGURATION =====
+        // All URLs are declared here for easy configuration
+        
+        // Nagini import path
+        const NAGINI_PATH = '../../../src/nagini.js';
+        // const NAGINI_PATH = 'http://127.0.0.1:8010/src/nagini.js';
+        
+        // Worker path for Pyodide
+        const WORKER_PATH = '../../../src/pyodide/worker/worker-dist.js';
+        // const WORKER_PATH = 'http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js';
+        
+        // Base URL for loading Python files
+        // NOTE: Workers require absolute URLs, relative paths won't work in worker context
+        const PYTHON_FILES_BASE = 'http://127.0.0.1:8010/experiments/multi-tentative/';
+        // const PYTHON_FILES_BASE = '../';  // This only works in main thread, not in workers
+        
+        // KaTeX CDN URLs (keeping as external CDN)
+        const KATEX_JS_URL = 'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js';
+        const KATEX_CSS_URL = 'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css';
+        
+        // ===== END URL CONFIGURATION =====
+        
+        import { Nagini } from '../../../src/nagini.js';
+        
+        let manager;
         let allGraphs = {};
         
         async function main() {
             try {
-                // Load Pyodide
-                pyodide = await loadPyodide();
-                await pyodide.loadPackage(["numpy", "svgwrite"]);
+                // Initialize Nagini with Pyodide backend
                 
-                // Python files to load
+                // Python files to load - ALL 17 GRAPHS INCLUDED
                 const pythonFiles = [
                     'pca_graph_viz/__init__.py',
+                    'pca_graph_viz/tests/__init__.py',
                     'pca_graph_viz/core/__init__.py',
                     'pca_graph_viz/core/svg_utils.py',
                     'pca_graph_viz/core/color_utils.py',
@@ -127,6 +153,7 @@
                     'pca_graph_viz/models/curve_model.py',
                     'pca_graph_viz/models/line_object.py',
                     'pca_graph_viz/models/foreign_object.py',
+                    'pca_graph_viz/tests/graphs/__init__.py',
                     'pca_graph_viz/graphs/__init__.py',
                     'pca_graph_viz/graphs/graph1.py',
                     'pca_graph_viz/graphs/graph2.py',
@@ -147,38 +174,25 @@
                     'pca_graph_viz/graphs/graph17.py',
                 ];
                 
-                // Create directory structure
-                await pyodide.runPythonAsync(`
-                    import os
-                    os.makedirs('pca_graph_viz/core', exist_ok=True)
-                    os.makedirs('pca_graph_viz/models', exist_ok=True)
-                    os.makedirs('pca_graph_viz/graphs', exist_ok=True)
-                `);
+                // Prepare files for Nagini
+                const filesToLoad = pythonFiles.map(file => ({
+                    url: `${PYTHON_FILES_BASE}${file}`,
+                    path: file
+                }));
                 
-                // Load all Python files
-                for (const file of pythonFiles) {
-                    const url = `../${file}`;
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`Failed to load ${file}: ${response.statusText}`);
-                    }
-                    const content = await response.text();
-                    
-                    // Write file to Pyodide filesystem
-                    await pyodide.runPythonAsync(`
-                        with open('${file}', 'w') as f:
-                            f.write(${JSON.stringify(content)})
-                    `);
-                }
+                // Create Nagini manager with Pyodide backend
+                console.log('🚀 Initializing Nagini with Pyodide backend...');
+                manager = await Nagini.createManager(
+                    'pyodide',                                          // Backend
+                    ["numpy", "svgwrite"],                             // Python packages
+                    [],                                                 // Micropip packages
+                    filesToLoad,                                        // Files to load
+                    WORKER_PATH                                         // Bundled worker path
+                );
                 
-                // Clear any cached modules and import fresh
-                await pyodide.runPythonAsync(`
-                    import sys
-                    # Clear module cache for our package
-                    for key in list(sys.modules.keys()):
-                        if key.startswith('pca_graph_viz'):
-                            del sys.modules[key]
-                `);
+                // Wait for initialization
+                await Nagini.waitForReady(manager);
+                console.log('✅ Nagini PyodideManager ready!');
                 
                 // Load all graphs
                 await loadAllGraphs();
@@ -186,8 +200,12 @@
                 // Hide loading
                 document.getElementById('loading').style.display = 'none';
                 
-                // Display all graphs
-                displayAllGraphs();
+                // Display all graphs only if we have loaded some
+                if (Object.keys(allGraphs).length > 0) {
+                    displayAllGraphs();
+                } else {
+                    showError('No graphs were loaded successfully!');
+                }
                 
             } catch (error) {
                 showError(`Initialization error: ${error.message}`);
@@ -196,16 +214,53 @@
         }
         
         async function loadAllGraphs() {
-            const result = await pyodide.runPythonAsync(`
-                import json
-                from pca_graph_viz.graphs import get_all_graphs
-                from pca_graph_viz import graph_from_dict
-                
-                all_graphs = get_all_graphs()
-                json.dumps(all_graphs)
-            `);
+            // Load each graph in its own namespace
+            allGraphs = {};
             
-            allGraphs = JSON.parse(result);
+            // List of all 17 graphs
+            const graphNumbers = Array.from({length: 17}, (_, i) => i + 1);
+            
+            console.log('Loading graphs individually...');
+            
+            for (const num of graphNumbers) {
+                const graphId = `graph${num}`;
+                try {
+                    // Create a unique namespace for each graph
+                    const namespace = { __name__: `graph${num}_namespace` };
+                    
+                    const result = await manager.executeAsync(`load_${graphId}.py`, `
+import json
+from pca_graph_viz.graphs.graph${num} import get_graph_dict
+
+# Get the graph dictionary
+graph_dict = get_graph_dict()
+
+# Send it back via missive
+missive({"graph": graph_dict})
+print(f"Loaded ${graphId} successfully!")
+                    `, namespace);
+                    
+                    if (result.missive) {
+                        // Parse missive if it's a string
+                        const missiveData = typeof result.missive === 'string' 
+                            ? JSON.parse(result.missive) 
+                            : result.missive;
+                        
+                        if (missiveData.graph) {
+                            allGraphs[graphId] = missiveData.graph;
+                            console.log(`✅ Loaded ${graphId}: ${missiveData.graph.title || 'No title'}`);
+                        } else {
+                            console.error(`No graph data in missive for ${graphId}:`, missiveData);
+                        }
+                    } else {
+                        console.error(`No missive in result for ${graphId}:`, result);
+                    }
+                } catch (error) {
+                    console.error(`Error loading ${graphId}:`, error);
+                }
+            }
+            
+            console.log(`Total graphs loaded: ${Object.keys(allGraphs).length}`);
         }
         
         function showError(message) {
@@ -234,14 +289,32 @@
             container.appendChild(row);
             
             try {
-                // Generate SVG using Python
-                const svg = await pyodide.runPythonAsync(`
-                    import json
-                    # Use repr to properly escape the JSON string
-                    json_str = ${JSON.stringify(JSON.stringify(graphDict))}
-                    graph_dict = json.loads(json_str)
-                    graph_from_dict(graph_dict)
-                `);
+                // Generate SVG using Python via Nagini with unique namespace
+                const namespace = { __name__: `render_${graphId}_namespace` };
+                
+                const result = await manager.executeAsync(`render_${graphId}.py`, `
+import json
+from pca_graph_viz import graph_from_dict
+
+# Parse the graph dictionary
+graph_dict = json.loads(${JSON.stringify(JSON.stringify(graphDict))})
+
+# Generate SVG
+svg_output = graph_from_dict(graph_dict)
+
+# Send back via missive
+missive({"svg": svg_output})
+print(f"Rendered ${graphId} successfully")
+                `, namespace);
+                
+                console.log(result.stdout);
+                
+                // Parse missive if it's a string
+                const missiveData = typeof result.missive === 'string' 
+                    ? JSON.parse(result.missive) 
+                    : result.missive;
+                
+                const svg = missiveData.svg;
                 
                 const svgDiv = document.createElement('div');
                 svgDiv.innerHTML = svg;
@@ -300,6 +373,22 @@
             const container = document.getElementById('graphs-container');
             container.innerHTML = '';
             
+            // Check if allGraphs is properly loaded
+            if (!allGraphs || typeof allGraphs !== 'object') {
+                showError('ERROR: Graphs data not loaded properly!');
+                console.error('allGraphs is:', allGraphs);
+                return;
+            }
+            
+            // Verify we have all 17 graphs
+            const graphCount = Object.keys(allGraphs).length;
+            if (graphCount !== 17) {
+                showError(`WARNING: Expected 17 graphs but found ${graphCount}!`);
+                console.error('Graphs loaded:', Object.keys(allGraphs));
+            } else {
+                console.log('✅ All 17 graphs loaded successfully!');
+            }
+            
             // Display all graphs
             Object.entries(allGraphs).forEach(([graphId, graphDict]) => {
                 displayGraph(graphId, graphDict, container);
@@ -307,7 +396,13 @@
         }
         
         // Start the app
-        main();
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, starting main()...');
+            main().catch(error => {
+                console.error('Fatal error in main:', error);
+                showError(`Fatal error: ${error.message}`);
+            });
+        });
     </script>
 </body>
 </html>
