@@ -6,7 +6,7 @@ This directory contains the unified test interface for PCA Graph Visualization.
 
 Open [index.html](http://localhost:8000/scenery/) to access:
 
-- **All Graphs Tab**: View all 9 graphs with their JSON representations
+- **All Graphs Tab**: View all 17 graphs with their JSON representations
 - **V2 Format Demo**: Examples of the new curve-in-lines format
 - **Format Comparison**: Side-by-side comparison of old vs new format
 - **About**: Documentation and feature overview

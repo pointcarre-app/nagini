@@ -16,10 +16,31 @@ from pca_graph_viz.graphs import graph3  # legacy, still valid
 convenient iteration.
 """
 
-from importlib import import_module
 import sys
+from importlib import import_module
 from types import ModuleType
 from typing import Dict
+
+# Import individual graph modules directly
+from . import (
+    graph1,
+    graph2,
+    graph3,
+    graph4,
+    graph5,
+    graph6,
+    graph7,
+    graph8,
+    graph9,
+    graph10,
+    graph11,
+    graph12,
+    graph13,
+    graph14,
+    graph15,
+    graph16,
+    graph17,
+)
 
 # ---------------------------------------------------------------------------
 # Public helpers
@@ -30,13 +51,10 @@ __all__ = [f"graph{n}" for n in _GRAPH_NUMBERS] + ["get_all_graphs"]
 # Make *this* package visible as the legacy "pca_graph_viz.graphs" package
 sys.modules.setdefault("pca_graph_viz.graphs", sys.modules[__name__])
 
-# Import all graph modules and register legacy aliases
+# Register legacy aliases for each graph module
 for n in _GRAPH_NUMBERS:
-    # Import from the actual graphs location
-    mod: ModuleType = import_module(f"pca_graph_viz.graphs.graph{n}")
-
-    # Expose as attribute for `from ... import graphN`
-    globals()[f"graph{n}"] = mod  # type: ignore[assignment]
+    # Get the module from our local imports
+    mod = globals()[f"graph{n}"]
 
     # Legacy alias (old path)
     legacy_name = f"pca_graph_viz.graphs.graph{n}"

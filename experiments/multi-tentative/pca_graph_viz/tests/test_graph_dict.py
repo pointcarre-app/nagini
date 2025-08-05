@@ -4,8 +4,9 @@ Quick test to verify the graph dict refactoring works correctly.
 This can be run in Python to test the functions before browser integration.
 """
 
-import numpy as np
 import json
+
+import numpy as np
 
 
 # Test the new functions
@@ -75,7 +76,7 @@ def test_graph_dict():
 # Test importing a real graph
 def test_real_graph():
     try:
-        from pca_graph_viz.graphs.graph1 import get_graph_dict
+        from pca_graph_viz.tests.graphs.graph1 import get_graph_dict
 
         graph_dict = get_graph_dict()
         print("\nGraph1 dict loaded successfully!")

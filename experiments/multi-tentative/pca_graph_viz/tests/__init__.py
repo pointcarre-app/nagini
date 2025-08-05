@@ -14,8 +14,8 @@ _GRAPH_NUMBERS = list(range(1, 18))  # graph1 .. graph17
 
 
 def _load_graph_module(n: int) -> ModuleType:
-    """Import and return the aliased `graph<n>` module from graphs."""
-    return import_module(f"pca_graph_viz.graphs.graph{n}")
+    """Import and return the aliased `graph<n>` module from tests.graphs."""
+    return import_module(f"pca_graph_viz.tests.graphs.graph{n}")
 
 
 # Dynamically create get_graph<n>_dict functions
