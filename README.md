@@ -59,8 +59,75 @@ environments.
 - **💬 Structured Data Exchange** - "Missive" system for Python ↔ JavaScript communication
 - **📁 Filesystem Access** - Complete file operations (Pyodide only)
 - **🎨 Dual Backend Support** - Pyodide (full-featured) & Brython (lightweight, instant startup)
+- **🌐 CDN-Ready** - Multiple import solutions for static websites, web apps, and Cordova apps
 
 ## Quick Start
+
+### CDN Import ⭐ (Static Websites, Web Apps, Cordova)
+
+For static websites, web apps, and Cordova applications, use the **esm.sh CDN** - our recommended solution:
+
+#### esm.sh CDN (Recommended - One Line Solution)
+```html
+<script type="module">
+    // esm.sh automatically resolves ALL ES6 imports - no configuration needed!
+    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.19/src/nagini.js');
+    const Nagini = naginiModule.Nagini;
+    
+    // Create manager and start using Python immediately
+    const manager = await Nagini.createManager('pyodide', ['numpy'], [], [], 
+        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/pyodide/worker/worker-dist.js');
+    
+    await Nagini.waitForReady(manager);
+    
+    // Execute Python code
+    const result = await manager.executeAsync('demo.py', `
+        import numpy as np
+        data = np.array([1, 2, 3, 4, 5])
+        print(f"Mean: {data.mean()}")
+    `);
+    
+    console.log(result.stdout); // "Mean: 3.0"
+</script>
+```
+
+**Why esm.sh?**
+- ✅ **One-line import** - no configuration needed
+- ✅ **Universal compatibility** - works everywhere
+- ✅ **Free for commercial use** - no restrictions
+- ✅ **Automatic dependency resolution** - handles all ES6 imports
+- ✅ **Zero maintenance** - no bundles to update
+
+#### Alternative Solutions
+
+<details>
+<summary>Click to see other CDN options (UMD Bundle, Import Maps)</summary>
+
+**UMD Bundle (Maximum Compatibility):**
+```html
+<script type="module">
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/nagini.umd.js');
+    const Nagini = naginiModule.default || naginiModule;
+</script>
+```
+
+**Import Maps (Modern Browsers Only):**
+```html
+<script type="importmap">
+{
+  "imports": {
+    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/utils/validation.js",
+    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/pyodide/manager/manager.js"
+  }
+}
+</script>
+<script type="module">
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/nagini.js');
+    const Nagini = naginiModule.Nagini;
+</script>
+```
+
+</details>
 
 ### Pyodide Backend (Recommended) - Automatic Blob Workers
 

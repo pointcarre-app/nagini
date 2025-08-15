@@ -5,7 +5,13 @@
 
 - [ ] Clean the `/tests`  (templates / views)
     - [x] Find a way to do a two bird with one stone with `/scenery` (but careful, it requires a server for Flask)
-    - [ ] do it the other way around; scenery has its own python environment and therefore can be safely eecetued after isntall any where (and it's not a dependency of nagini) 
+    - [ ] do it the other way around; scenery has its own python environment and therefore can be safely eecetued after isntall any where (and it's not a dependency of nagini)
+
+- [x] CDN Import Solutions
+    - [x] Created UMD bundle (`nagini.umd.js`) for universal compatibility
+    - [x] Documented esm.sh CDN solution for automatic ES6 import resolution
+    - [x] Added import maps solution for modern browsers
+    - [ ] Add UMD test to scenery test suite 
 
     - [ ] git tag hook to ensure all tests in scenery made it
 

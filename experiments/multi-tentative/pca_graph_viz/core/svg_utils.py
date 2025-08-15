@@ -2,7 +2,6 @@
 import numpy as np
 import svgwrite
 
-
 # Note: ForeignObject, Line and related functions are loaded in global namespace by Pyodide
 
 

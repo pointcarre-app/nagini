@@ -9,6 +9,9 @@ import { UtilitiesTests } from './tests/utilities-tests.js';
 import { BrythonManagerTests } from './tests/brython-manager-tests.js';
 import { CDNVersionTests } from './tests/cdn-version-tests.js';
 import { CDNExecutionTests } from './tests/cdn-execution-tests.js';
+import { UMDTests } from './tests/umd-tests.js';
+import { EsmShTests } from './tests/esm-sh-tests.js';
+import { EsmShExecutionTests } from './tests/esm-sh-execution-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
@@ -229,6 +232,21 @@ async function runAllTests() {
         // CDN Execution Tests
         { id: 'status-cdn-exec-1', desc: "1️⃣ CDN Execution - Simple Code (v0.0.17)", func: () => CDNExecutionTests.test1ExecuteSimpleCode('v0.0.17').then(() => window.updateTestStatus('status-cdn-exec-1', 'pass')) },
         { id: 'status-cdn-exec-2', desc: "2️⃣ CDN Execution - With Imports (v0.0.17)", func: () => CDNExecutionTests.test2ExecuteWithImports('v0.0.17').then(() => window.updateTestStatus('status-cdn-exec-2', 'pass')) },
+        
+        // UMD Tests
+        { id: 'status-umd-1', desc: "1️⃣ UMD - Load Bundle from CDN (v0.0.17)", func: () => UMDTests.test1LoadUMDFromCDN('v0.0.17').then(() => window.updateTestStatus('status-umd-1', 'pass')) },
+        { id: 'status-umd-2', desc: "2️⃣ UMD - Compatibility Test (v0.0.17)", func: () => UMDTests.test2UMDCompatibility('v0.0.17').then(() => window.updateTestStatus('status-umd-2', 'pass')) },
+        { id: 'status-umd-3', desc: "3️⃣ UMD - Dependency Resolution (v0.0.17)", func: () => UMDTests.test3UMDDependencyResolution('v0.0.17').then(() => window.updateTestStatus('status-umd-3', 'pass')) },
+        
+        // esm.sh Tests ⭐ (Recommended Solution)
+        { id: 'status-esm-sh-1', desc: "1️⃣ esm.sh ⭐ - Load from CDN (v0.0.19)", func: () => EsmShTests.test1LoadFromEsmSh('v0.0.19').then(() => window.updateTestStatus('status-esm-sh-1', 'pass')) },
+        { id: 'status-esm-sh-2', desc: "2️⃣ esm.sh ⭐ - Dependency Resolution (v0.0.19)", func: () => EsmShTests.test2EsmShDependencyResolution('v0.0.19').then(() => window.updateTestStatus('status-esm-sh-2', 'pass')) },
+        { id: 'status-esm-sh-3', desc: "3️⃣ esm.sh ⭐ - Performance Test (v0.0.19)", func: () => EsmShTests.test3EsmShPerformance('v0.0.19').then(() => window.updateTestStatus('status-esm-sh-3', 'pass')) },
+        
+        // esm.sh Execution Tests ⭐
+        { id: 'status-esm-sh-exec-1', desc: "1️⃣ esm.sh Execution ⭐ - Simple Code (v0.0.19)", func: () => EsmShExecutionTests.test1ExecuteSimpleCode('v0.0.19').then(() => window.updateTestStatus('status-esm-sh-exec-1', 'pass')) },
+        { id: 'status-esm-sh-exec-2', desc: "2️⃣ esm.sh Execution ⭐ - With Libraries (v0.0.19)", func: () => EsmShExecutionTests.test2ExecuteWithLibraries('v0.0.19').then(() => window.updateTestStatus('status-esm-sh-exec-2', 'pass')) },
+        { id: 'status-esm-sh-exec-3', desc: "3️⃣ esm.sh Execution ⭐ - vs jsDelivr (v0.0.19)", func: () => EsmShExecutionTests.test3EsmShVsRawJsDelivr('v0.0.19').then(() => window.updateTestStatus('status-esm-sh-exec-3', 'pass')) },
     ];
 
     for (const test of tests) {

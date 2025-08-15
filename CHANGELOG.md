@@ -1,6 +1,18 @@
+# v0.0.19
+
+- **CDN Import Solutions**: Implemented comprehensive CDN import solutions for ES6 module compatibility:
+  - **esm.sh CDN** ⭐ (Recommended): Smart CDN with automatic ES6 dependency resolution - free for commercial use
+  - **UMD Bundle** (`nagini.umd.js`): Universal module definition for maximum compatibility across all environments
+  - **Import Maps**: Modern browser solution for fine-grained dependency control
+  - **Comprehensive Testing**: Added dedicated test suites for each CDN import method in scenery
+  - **Documentation**: Created detailed comparison table and implementation guides for all solutions
+- **Primary Solution**: esm.sh CDN chosen as the recommended approach for its simplicity and universal compatibility
+
+
 # v0.0.18
 
 - **Testing**: Added comprehensive CDN version and execution tests to the `scenery` test suite. These new tests validate that Nagini can be properly loaded and executed from the jsDelivr CDN, ensuring production readiness for CDN-based deployments.
+
 
 # v0.0.17
 
