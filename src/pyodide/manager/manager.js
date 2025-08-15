@@ -44,7 +44,7 @@ class PyodideManager {
    * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
   constructor(packages, micropipPackages, filesToLoad, workerPath) {
-    console.log("🐍 [PyodideManager] Constructor called");
+    // Minimal logging - constructor called
 
     // Strict type validation using ValidationUtils
     ValidationUtils.validatePackages(packages, 'PyodideManager');
@@ -85,9 +85,7 @@ class PyodideManager {
     PyodideManagerInput.initializeInputState(this);
 
     // Initialize worker asynchronously
-    this.initWorker().then(() => {
-      console.log("🐍 [PyodideManager] Blob worker initialized");
-    }).catch((error) => {
+    this.initWorker().catch((error) => {
       console.error("🚨 [PyodideManager] Worker initialization failed:", error);
     });
   }
@@ -100,12 +98,7 @@ class PyodideManager {
    */
   validateAndFilterPackages(packages) {
     const validPackages = packages.filter(pkg => {
-      if (typeof pkg !== "string") {
-        console.warn(`🐍 [PyodideManager] Skipping non-string package: ${pkg}`);
-        return false;
-      }
-      if (pkg.trim().length === 0) {
-        console.warn(`🐍 [PyodideManager] Skipping empty package name`);
+      if (typeof pkg !== "string" || pkg.trim().length === 0) {
         return false;
       }
       return true;
@@ -123,8 +116,6 @@ class PyodideManager {
    */
   async initWorker() {
     try {
-      console.log(`🏭 [PyodideManager] Creating blob worker from: ${this.workerPath}`);
-      
       // Create blob URL first for cleanup tracking
       this.blobUrl = await createBlobWorkerUrl(this.workerPath);
       
@@ -141,8 +132,6 @@ class PyodideManager {
         micropipPackages: this.micropipPackages,
         filesToLoad: this.filesToLoad,
       });
-      
-      console.log(`🏭 [PyodideManager] Blob worker created successfully`);
       
     } catch (error) {
       console.error("🚨 [PyodideManager] Failed to initialize blob worker:", error);
@@ -161,7 +150,6 @@ class PyodideManager {
     // Pyodide initialization complete
     if (data.type === "ready") {
       this.isReady = true;
-      console.log("🐍 [PyodideManager] Ready for execution");
     }
 
     // Pyodide initialization or execution error
@@ -174,10 +162,8 @@ class PyodideManager {
       console.warn("🐍 [PyodideManager] Warning:", data.message || "Unknown warning");
     }
 
-    // Package installation info (optimization messages)
-    if (data.type === "info") {
-      console.info("🐍 [PyodideManager] Info:", data.message || "Unknown info");
-    }
+    // Package installation info (optimization messages) - minimized
+    // if (data.type === "info") { /* minimized */ }
 
     // Handle input-related messages using input module
     PyodideManagerInput.handleInputMessage(this, data);
@@ -186,12 +172,14 @@ class PyodideManager {
     if (data.type === "result") {
       PyodideManagerInput.resetInputState(this);
 
-      console.log("🐍 [PyodideManager] Execution result received");
-      console.log("🐍 [PyodideManager] stdout length:", data.stdout ? data.stdout.length : 0);
-      console.log("🐍 [PyodideManager] stderr length:", data.stderr ? data.stderr.length : 0);
-      console.log("🐍 [PyodideManager] missive:", data.missive);
-      console.log("🐍 [PyodideManager] figures:", data.figures ? data.figures.length : 0);
-      console.log("🐍 [PyodideManager] error:", data.error);
+      // 🐍 EXECUTION RESULTS (always logged with snake emoji)
+      console.log("🐍 Execution completed:", {
+        stdout: data.stdout ? data.stdout.length + " chars" : "empty",
+        stderr: data.stderr ? data.stderr.length + " chars" : "empty",
+        missive: data.missive,
+        figures: data.figures ? data.figures.length + " figures" : "none",
+        error: data.error
+      });
 
       // Create execution entry with all result data
       const entry = {
@@ -290,8 +278,6 @@ class PyodideManager {
    * @returns {void}
    */
   destroy() {
-    console.log("🐍 [PyodideManager] Cleaning up resources");
-    
     // Terminate worker
     if (this.worker) {
       this.worker.terminate();
@@ -307,8 +293,6 @@ class PyodideManager {
     // Reset state
     this.isReady = false;
     this.executionHistory = [];
-    
-    console.log("🐍 [PyodideManager] Cleanup complete");
   }
 }
 

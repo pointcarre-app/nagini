@@ -122,20 +122,14 @@ async function handleInit(data, workerState) {
 
   const { packages, micropipPackages, filesToLoad } = data;
 
-  console.log("🐍 [Worker] handleInit called with data:", {
-    packages: packages ? packages.length : 0,
-    micropipPackages: micropipPackages ? micropipPackages.length : 0,
-    filesToLoad: filesToLoad ? filesToLoad.length : 0
-  });
-
-  console.log("🐍 [Worker] filesToLoad details:", filesToLoad);
+  // Minimal init logging
 
   try {
     // Load Pyodide runtime
     importScripts(`${PYODIDE_WORKER_CONFIG.PYODIDE_CDN}pyodide.js`);
     workerState.pyodide = await loadPyodide({ indexURL: PYODIDE_WORKER_CONFIG.PYODIDE_CDN });
 
-    console.log("🐍 Using bundled Python modules");
+    // Using bundled Python modules
 
     // Load bundled Python modules directly (no HTTP fetching needed!)
     const pythonModules = [
@@ -150,14 +144,13 @@ async function handleInit(data, workerState) {
         workerState.pyodide.FS.writeFile(module.name, module.content);
         // Execute the module so it can be imported
         workerState.pyodide.runPython(module.content);
-        console.log(`🐍 Loaded and executed bundled Python module: ${module.name}`);
+        // Module loaded successfully
       } catch (error) {
-        console.warn(`🐍 Could not load bundled Python module ${module.name}:`, error.message);
+        console.warn(`Could not load bundled Python module ${module.name}:`, error.message);
       }
     }
 
     // Load main Python initialization script from bundle
-    console.log("🐍 Loading bundled pyodide_init.py");
     workerState.pyodide.runPython(pyodideInitPy);
 
     // Set up input handling system
@@ -165,19 +158,13 @@ async function handleInit(data, workerState) {
 
     // Load custom files into filesystem if provided
     if (filesToLoad && filesToLoad.length > 0) {
-      console.log(`🐍 [Worker] Loading ${filesToLoad.length} custom files into filesystem`);
-      console.log(`🐍 [Worker] Files to load:`, filesToLoad);
-      
       try {
         const loader = new PyodideFileLoader(filesToLoad);
         await loader.loadFiles(workerState.pyodide);
-        console.log(`🐍 [Worker] Successfully loaded ${filesToLoad.length} custom files`);
       } catch (error) {
-        console.error(`🐍 [Worker] Failed to load custom files:`, error);
+        console.error(`Failed to load custom files:`, error);
         throw error;
       }
-    } else {
-      console.log(`🐍 [Worker] No custom files to load (filesToLoad: ${filesToLoad})`);
     }
 
     // Load packages if provided
@@ -206,7 +193,7 @@ async function handleInit(data, workerState) {
     try {
       workerState.pyodide.runPython("setup_matplotlib()");
     } catch (e) {
-      console.log("🎨 Matplotlib setup skipped (not available):", e.message);
+      // Matplotlib setup skipped (not available)
     }
 
     workerState.isInitialized = true;

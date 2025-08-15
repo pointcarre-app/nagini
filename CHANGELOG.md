@@ -1,3 +1,13 @@
+# v0.0.21
+
+- **Logging Optimization**: Significantly minimized verbose logging across pyodide and utils directories while preserving essential execution results
+  - **🐍 Enhanced Execution Logging**: All execution results (stdout/stderr/error/missive) now prominently displayed with snake emoji for easy identification
+  - **Reduced Noise**: Removed verbose constructor, initialization, package loading, and file operation logs
+  - **Clean Console**: Minimized worker creation, input handling, and validation logs while maintaining error reporting
+  - **Performance**: Cleaner console output improves debugging experience and reduces log overhead
+- **Code Quality**: Maintained all functionality while significantly improving log signal-to-noise ratio
+- **Developer Experience**: Execution results are now the primary focus in console output with clear 🐍 snake emoji markers
+
 # v0.0.20
 
 - **Bug Fixes**: Fixed template literal syntax errors in esm.sh execution tests - replaced triple backslashes with clean string concatenation

@@ -23,24 +23,16 @@ export async function handleExecute(data, workerState) {
   let stdout = "", stderr = "", missive = null, figures = [], error = null;
 
   try {
-    console.log("🐍 [Worker] Starting execution for", filename);
-
     // Transform code for async execution if needed
     const result = transformCodeForExecution(code, workerState);
-    console.log("🐍 [Worker] Code transformed, needsAsync:", result.needsAsync);
-    console.log("🐍 [Worker] Transformed code length:", result.code.length);
 
     workerState.pyodide.runPython("reset_captures()");
 
     // Execute with or without namespace
     if (namespace !== undefined) {
-      console.log(PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_NAMESPACE);
-      console.log("🐍 [Worker] Namespace variables:", Object.keys(namespace));
-      
       const pyodideNamespace = workerState.pyodide.toPy(namespace);
       try {
         if (result.needsAsync) {
-          console.log("🐍 [Worker] Running async with namespace");
           await workerState.pyodide.runPythonAsync(result.code, { globals: pyodideNamespace });
         } else {
           workerState.pyodide.runPython(result.code, { globals: pyodideNamespace });
@@ -49,26 +41,31 @@ export async function handleExecute(data, workerState) {
         pyodideNamespace.destroy();
       }
     } else {
-      console.log(PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_GLOBAL);
       if (result.needsAsync) {
-        console.log("🐍 [Worker] Running async in global scope");
         await workerState.pyodide.runPythonAsync(result.code);
       } else {
         workerState.pyodide.runPython(result.code);
       }
     }
 
-    console.log("🐍 [Worker] Execution completed, capturing outputs");
     ({ stdout, stderr, missive, figures } = captureOutputs(workerState.pyodide));
-    console.log("🐍 [Worker] Captured outputs - stdout:", stdout.length, "stderr:", stderr.length, "missive:", missive, "figures:", figures.length);
 
   } catch (err) {
-    console.error("🐍 [Worker] Execution error:", err);
     error = { name: err.name || "PythonError", message: err.message || "Unknown execution error" };
     ({ stdout, stderr, figures } = captureOutputs(workerState.pyodide, true));
   }
 
-  console.log("🐍 [Worker] Posting result");
+  // 🐍 POST EXECUTION RESULTS (always logged with snake emoji)
+  console.log("🐍 Worker execution result:", {
+    filename,
+    stdout: stdout.length + " chars",
+    stderr: stderr.length + " chars", 
+    missive,
+    figures: figures.length + " figures",
+    error,
+    time: (Date.now() - start) + "ms"
+  });
+  
   postResult({
     filename, stdout, stderr, missive, figures, error,
     time: Date.now() - start,

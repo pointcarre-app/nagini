@@ -158,7 +158,7 @@ export class PyodideManagerFS {
         try {
           manager.handleMessage = originalHandler;
         } catch (error) {
-          console.warn("🐍 [PyodideManagerFS] Failed to restore handler on timeout:", error.message);
+          console.warn("Failed to restore handler on timeout:", error.message);
         }
         reject(new Error("🐍 [PyodideManagerFS] Filesystem operation timeout"));
       }, 10000);
