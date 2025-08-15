@@ -66,6 +66,9 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - CDN Import Solutions:
+    - Overview: cdn-import-solutions.md
+    - esm.sh CDN (Recommended): esm-sh-cdn-solution.md
   - API Reference: api-reference.md
   - Repository Reference:
     - Overview: repo_reference/index.md

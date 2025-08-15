@@ -23,10 +23,18 @@ export class UMDTests {
             
             // Use dynamic import to load the UMD module
             const module = await import(umdUrl);
-            const NaginiUMD = module.default || module;
             
-            if (!NaginiUMD) {
-                throw new Error('Nagini UMD not found in imported module');
+            // UMD bundles loaded via import() might not expose exports correctly
+            // Try multiple ways to access the Nagini object
+            let NaginiUMD = module.default || module.Nagini || module;
+            
+            // If still not found, try accessing from global scope (UMD sets window.Nagini)
+            if (!NaginiUMD || typeof NaginiUMD.getSupportedBackends !== 'function') {
+                if (typeof window !== 'undefined' && window.Nagini) {
+                    NaginiUMD = window.Nagini;
+                } else {
+                    throw new Error('Nagini UMD not found in imported module or global scope');
+                }
             }
             
             // Verify basic functionality
@@ -71,7 +79,17 @@ export class UMDTests {
             
             // Test 1: ES Module import (what we're already doing)
             const esModule = await import(umdUrl);
-            const NaginiES = esModule.default || esModule;
+            
+            // UMD bundles loaded via import() might not expose exports correctly
+            let NaginiES = esModule.default || esModule.Nagini || esModule;
+            
+            // If still not found, try accessing from global scope (UMD sets window.Nagini)
+            if (!NaginiES || typeof NaginiES.getSupportedBackends !== 'function') {
+                if (typeof window !== 'undefined' && window.Nagini) {
+                    NaginiES = window.Nagini;
+                }
+            }
+            
             assert(NaginiES, 'Should load as ES module');
             
             // Test 2: Verify it would work as global script (simulate)
@@ -114,7 +132,16 @@ export class UMDTests {
             
             // Import the UMD bundle
             const module = await import(umdUrl);
-            const NaginiUMD = module.default || module;
+            
+            // UMD bundles loaded via import() might not expose exports correctly
+            let NaginiUMD = module.default || module.Nagini || module;
+            
+            // If still not found, try accessing from global scope (UMD sets window.Nagini)
+            if (!NaginiUMD || typeof NaginiUMD.getSupportedBackends !== 'function') {
+                if (typeof window !== 'undefined' && window.Nagini) {
+                    NaginiUMD = window.Nagini;
+                }
+            }
             
             // The key test: UMD should not require external dependencies
             // If this works, it means ValidationUtils is bundled inline

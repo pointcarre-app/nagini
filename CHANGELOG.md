@@ -1,3 +1,11 @@
+# v0.0.20
+
+- **Bug Fixes**: Fixed template literal syntax errors in esm.sh execution tests - replaced triple backslashes with clean string concatenation
+- **UMD Bundle Fixes**: Resolved UMD bundle import issues by enhancing test methods to handle multiple import scenarios (module exports + global fallback)
+- **Test Improvements**: Updated UMD tests to use v0.0.19 (where UMD bundle was actually created) instead of v0.0.17
+- **Documentation**: All CDN import solutions now fully tested and working - esm.sh ⭐, UMD Bundle, and Import Maps
+- **Production Ready**: Complete CDN import solution with comprehensive test coverage and clean, maintainable code
+
 # v0.0.19
 
 - **CDN Import Solutions**: Implemented comprehensive CDN import solutions for ES6 module compatibility:
