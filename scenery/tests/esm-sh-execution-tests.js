@@ -69,7 +69,7 @@ export class EsmShExecutionTests {
     <script type="module">
         async function runEsmShExecutionTest() {
             const startTime = Date.now();
-            const log = (msg) => console.log(\`[esm.sh Test] \${msg}\`);
+            const log = (msg) => console.log('[esm.sh Test] ' + msg);
             
             try {
                 log('Starting esm.sh execution test for version ${version}');
@@ -117,9 +117,9 @@ result
                                   executionResult.value !== undefined ? executionResult.value :
                                   executionResult.return_value;
                 
-                log(\`Output: \${output}\`);
-                log(\`Return value: \${returnValue}\`);
-                log(\`Full result object keys: \${Object.keys(executionResult).join(', ')}\`);
+                log('Output: ' + output);
+                log('Return value: ' + returnValue);
+                log('Full result object keys: ' + Object.keys(executionResult).join(', '));
                 
                 // Clean up
                 if (manager.terminate) {
@@ -127,7 +127,7 @@ result
                 }
                 
                 const elapsed = Date.now() - startTime;
-                log(\`✅ esm.sh execution test completed in \${elapsed}ms\`);
+                log('✅ esm.sh execution test completed in ' + elapsed + 'ms');
                 log('🌟 esm.sh CDN provides seamless Python execution with zero configuration!');
                 
                 // Send result to parent
@@ -141,7 +141,7 @@ result
                 }, '*');
                 
             } catch (error) {
-                log(\`❌ Error: \${error.message}\`);
+                log('❌ Error: ' + error.message);
                 console.error(error);
                 
                 window.parent.postMessage({
@@ -262,7 +262,7 @@ result
             } catch (rawError) {
                 rawJsDelivrFailed = true;
                 console.log('✅ Expected: Raw jsDelivr import failed due to ES6 dependency issues');
-                console.log(\`   Error: \${rawError.message}\`);
+                console.log('   Error: ' + rawError.message);
             }
             
             // Test 2: Try esm.sh (should succeed)
@@ -277,13 +277,13 @@ result
                     esmShSucceeded = true;
                     const backends = Nagini.getSupportedBackends();
                     console.log('✅ esm.sh import succeeded with full functionality');
-                    console.log(\`   Available backends: \${backends.join(', ')}\`);
+                    console.log('   Available backends: ' + backends.join(', '));
                 } else {
                     throw new Error('esm.sh import incomplete');
                 }
             } catch (esmShError) {
                 console.log('❌ Unexpected: esm.sh import failed');
-                console.log(\`   Error: \${esmShError.message}\`);
+                console.log('   Error: ' + esmShError.message);
             }
             
             // Verify the comparison results
@@ -294,14 +294,14 @@ result
                 console.log('   🌟 esm.sh solves the fundamental CDN import problem!');
             } else {
                 console.warn('⚠️ Comparison results not as expected:');
-                console.warn(\`   Raw jsDelivr failed: \${rawJsDelivrFailed}\`);
-                console.warn(\`   esm.sh succeeded: \${esmShSucceeded}\`);
+                console.warn('   Raw jsDelivr failed: ' + rawJsDelivrFailed);
+                console.warn('   esm.sh succeeded: ' + esmShSucceeded);
             }
             
             // This test passes if esm.sh works (regardless of jsDelivr behavior)
             assert(esmShSucceeded, 'esm.sh should always work');
             
-            console.log(\`✅ esm.sh vs jsDelivr comparison completed for version \${version}\`);
+            console.log('✅ esm.sh vs jsDelivr comparison completed for version ' + version);
             console.log('🏆 esm.sh is clearly the superior CDN solution!');
             
             logTestPass(testName);
