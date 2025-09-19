@@ -418,7 +418,7 @@ print("🎯 Pan or zoom in one plot - others follow!")`,
             widgets: `# Dashboard Layout with Multiple Visualizations
 from bokeh.plotting import figure, curdoc
 from bokeh.layouts import column, row, gridplot
-from bokeh.models import Panel, Tabs, Div
+from bokeh.models import Div
 import numpy as np
 
 # Create multiple plots for a dashboard
@@ -429,12 +429,14 @@ p1 = figure(width=400, height=300, title="Sales Trend")
 p1.line(x, np.sin(x) * 100 + 100, line_width=2, color="navy", legend_label="Revenue")
 p1.line(x, np.cos(x) * 50 + 100, line_width=2, color="red", legend_label="Costs")
 p1.legend.location = "top_right"
+p1.legend.click_policy = "hide"
 
 # Plot 2: Bar chart simulation
 p2 = figure(width=400, height=300, title="Monthly Performance")
 months = np.arange(12)
 values = np.random.randint(50, 150, 12)
-p2.vbar(x=months, top=values, width=0.8, color="green", alpha=0.7)
+colors_bar = ['#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#d7191c'] * 3
+p2.vbar(x=months, top=values, width=0.8, color=colors_bar[:12], alpha=0.8)
 p2.xaxis.axis_label = "Month"
 p2.yaxis.axis_label = "Value"
 
@@ -443,51 +445,61 @@ p3 = figure(width=400, height=300, title="Customer Segments")
 n = 100
 cx = np.random.normal(0, 1, n)
 cy = np.random.normal(0, 1, n)
-colors = np.random.choice(['red', 'green', 'blue'], n)
-p3.scatter(cx, cy, size=8, color=colors, alpha=0.6)
+colors_scatter = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00'] * 20
+p3.scatter(cx, cy, size=10, color=colors_scatter[:n], alpha=0.6)
+p3.xaxis.axis_label = "Feature 1"
+p3.yaxis.axis_label = "Feature 2"
 
 # Plot 4: Area chart
-p4 = figure(width=400, height=300, title="Resource Usage")
+p4 = figure(width=400, height=300, title="Resource Usage Over Time")
 y1 = np.sin(x/2) * 30 + 50
 y2 = np.cos(x/2) * 20 + 30
 p4.varea(x=x, y1=0, y2=y1, color="lightblue", alpha=0.5, legend_label="CPU")
 p4.varea(x=x, y1=y1, y2=y1+y2, color="lightgreen", alpha=0.5, legend_label="Memory")
 p4.legend.location = "top_left"
+p4.xaxis.axis_label = "Time"
+p4.yaxis.axis_label = "Usage %"
 
-# Create info panels
-info1 = Div(text="""
-<h3>Dashboard Overview</h3>
-<p>This demonstrates Bokeh's layout capabilities in Nagini.</p>
-<ul>
-    <li>Multiple plot types in a grid</li>
-    <li>Tab panels for organization</li>
-    <li>Responsive layouts</li>
-</ul>
-""", width=400, height=150)
+# Create info header
+header = Div(text="""
+<h2 style="color: #2c3e50; margin-bottom: 10px;">📊 Executive Dashboard</h2>
+<p style="color: #7f8c8d;">Real-time business metrics and analytics</p>
+""", width=800, height=60)
 
-info2 = Div(text="""
-<h3>Key Metrics</h3>
-<table style="width:100%">
-    <tr><td>Total Revenue:</td><td style="text-align:right"><b>$1,234,567</b></td></tr>
-    <tr><td>Active Users:</td><td style="text-align:right"><b>45,678</b></td></tr>
-    <tr><td>Conversion Rate:</td><td style="text-align:right"><b>3.4%</b></td></tr>
-</table>
-""", width=400, height=150)
+# Create metrics panel
+metrics = Div(text="""
+<div style="display: flex; justify-content: space-around; background: #ecf0f1; padding: 15px; border-radius: 5px;">
+    <div style="text-align: center;">
+        <div style="font-size: 24px; font-weight: bold; color: #27ae60;">$1,234,567</div>
+        <div style="color: #7f8c8d;">Total Revenue</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 24px; font-weight: bold; color: #3498db;">45,678</div>
+        <div style="color: #7f8c8d;">Active Users</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 24px; font-weight: bold; color: #e74c3c;">3.4%</div>
+        <div style="color: #7f8c8d;">Conversion Rate</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 24px; font-weight: bold; color: #f39c12;">92%</div>
+        <div style="color: #7f8c8d;">Satisfaction</div>
+    </div>
+</div>
+""", width=800, height=80)
 
-# Create grid layout
+# Create grid layout for plots
 grid = gridplot([[p1, p2], [p3, p4]], width=400, height=300)
 
-# Create tabs
-tab1 = Panel(child=grid, title="Charts")
-tab2 = Panel(child=column(info1, info2), title="Info")
-tabs = Tabs(tabs=[tab1, tab2])
+# Combine everything in a column layout
+dashboard = column(header, metrics, grid)
 
 # Add to document
-curdoc().add_root(tabs)
+curdoc().add_root(dashboard)
 
-print("✅ Created dashboard layout with tabs!")
-print("🎯 Click the tabs to switch views")
-print("📊 All plots are interactive - pan, zoom, and explore!")`,
+print("✅ Created executive dashboard with 4 interactive plots!")
+print("📊 All plots support: pan, zoom, reset, and hover")
+print("🎯 Click legend items to hide/show series (where applicable)")`,
 
             heatmap: `# Heatmap with Color Bar
 from bokeh.plotting import figure, curdoc
