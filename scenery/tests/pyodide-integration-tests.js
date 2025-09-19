@@ -180,6 +180,103 @@ missive({"x_points": len(x), "datasets": 3, "figures": 2, "mean_y1": mean_y1, "s
         }
     }
 
+    static async testBokehCaptureWorkflow(manager) {
+        const testName = "bokeh capture workflow";
+        logTestStart("PyodideIntegration", testName);
+
+        try {
+            const result = await manager.executeAsync(
+                "bokeh_capture_test",
+                `from bokeh.plotting import figure, curdoc
+from bokeh.models import HoverTool
+from bokeh.layouts import column, row
+import numpy as np
+import json
+
+# Create first plot
+p1 = figure(title="Test Plot 1", width=400, height=300)
+x = np.linspace(0, 4*np.pi, 100)
+y = np.sin(x)
+p1.line(x, y, line_width=2, color="navy", legend_label="sin(x)")
+p1.circle(x[::10], y[::10], size=8, color="red", alpha=0.5)
+
+# Add hover tool
+hover = HoverTool(tooltips=[("(x,y)", "($x, $y)")])
+p1.add_tools(hover)
+
+# Create second plot
+p2 = figure(title="Test Plot 2", width=400, height=300)
+y2 = np.cos(x)
+p2.line(x, y2, line_width=2, color="green", legend_label="cos(x)")
+
+# Create layout
+layout = row(p1, p2)
+
+# Add to document
+curdoc().add_root(layout)
+
+# Verify we can access the document
+doc = curdoc()
+num_roots = len(doc.roots)
+
+print(f"Created Bokeh document with {num_roots} root(s)")
+print("Bokeh plots created successfully")
+
+# Test that we can also create standalone figures not in doc
+p3 = figure(title="Standalone Plot", width=300, height=200)
+p3.line([1, 2, 3], [4, 5, 6])
+
+# Send structured data about what we created
+missive({
+    "num_roots": num_roots,
+    "plot1_title": "Test Plot 1",
+    "plot2_title": "Test Plot 2",
+    "has_hover": True,
+    "layout_type": "row"
+})`
+            );
+
+            assert(!result.error, "Bokeh capture should not have errors");
+            assertContains(result.stdout, "Created Bokeh document", "Should confirm document creation");
+            assertContains(result.stdout, "Bokeh plots created successfully", "Should confirm plot creation");
+            
+            // Check that bokeh_figures were captured
+            assert(result.bokeh_figures !== undefined, "Should have bokeh_figures property");
+            assert(Array.isArray(result.bokeh_figures), "bokeh_figures should be an array");
+            assert(result.bokeh_figures.length > 0, "Should have captured at least one Bokeh figure");
+            
+            // Verify the captured figures are valid JSON strings
+            for (let i = 0; i < result.bokeh_figures.length; i++) {
+                assert(typeof result.bokeh_figures[i] === 'string', `Figure ${i} should be a string`);
+                
+                // Try to parse the JSON to verify it's valid
+                try {
+                    const figureJson = JSON.parse(result.bokeh_figures[i]);
+                    assert(figureJson !== null, `Figure ${i} should parse to non-null object`);
+                    // Basic check that it looks like a Bokeh JSON item
+                    assert(figureJson.target_id || figureJson.doc || figureJson.roots, 
+                           `Figure ${i} should have Bokeh JSON structure`);
+                } catch (e) {
+                    throw new Error(`Figure ${i} is not valid JSON: ${e.message}`);
+                }
+            }
+            
+            // Parse and verify missive data
+            const missiveData = JSON.parse(result.missive);
+            assertEquals(missiveData.plot1_title, "Test Plot 1", "Should have correct plot1 title");
+            assertEquals(missiveData.plot2_title, "Test Plot 2", "Should have correct plot2 title");
+            assertEquals(missiveData.has_hover, true, "Should have hover tool");
+            assertEquals(missiveData.layout_type, "row", "Should have row layout");
+            assert(missiveData.num_roots > 0, "Should have at least one root in document");
+
+            logTestPass(testName);
+            return { result, testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+
     static async testFileSystemAndImportWorkflow(manager) {
         const testName = "filesystem and import workflow";
         logTestStart("PyodideIntegration", testName);
