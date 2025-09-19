@@ -221,6 +221,7 @@ export class PyodideManagerStaticExecutor {
  * @property {string} stderr - Standard error from Python execution
  * @property {Object|null} missive - Structured JSON data from Python
  * @property {string[]} figures - Base64 encoded matplotlib figures
+ * @property {string[]} bokeh_figures - JSON strings of Bokeh figures
  * @property {Object|null} error - JavaScript execution error object
  * @property {string} timestamp - ISO timestamp of execution
  * @property {boolean} [executedWithNamespace] - Whether execution used namespace

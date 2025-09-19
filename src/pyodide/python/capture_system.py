@@ -70,6 +70,17 @@ def reset_captures() -> None:
     except Exception:
         pass  # Ignore other errors
 
+    # Clear any existing Bokeh figures (if bokeh is available)
+    try:
+        from bokeh.plotting import curdoc
+
+        doc = curdoc()
+        doc.clear()
+    except ImportError:
+        pass  # bokeh not available, skip
+    except Exception:
+        pass  # Ignore other errors
+
     # Activate capturing by replacing sys.stdout/stderr
     sys.stdout = _stdout_capturer
     sys.stderr = _stderr_capturer
@@ -146,6 +157,56 @@ def get_figures() -> list:
         print(f"Error importing matplotlib: {e}")
 
     return figures
+
+
+def get_bokeh_figures() -> list:
+    """
+    Capture Bokeh figures and return them as JSON for frontend rendering.
+
+    Returns:
+        list: List of JSON strings representing Bokeh figures
+    """
+    bokeh_figures = []
+
+    try:
+        # Import bokeh only when needed
+        from bokeh.plotting import curdoc
+        from bokeh.embed import json_item
+
+        # Get the current document
+        doc = curdoc()
+
+        # Check if there are any roots (plots/layouts) in the document
+        if doc.roots:
+            for root in doc.roots:
+                try:
+                    # Convert each root to JSON format
+                    item_json = json_item(root)
+                    bokeh_figures.append(json.dumps(item_json))
+                except Exception as e:
+                    print(f"Error converting Bokeh figure to JSON: {e}")
+
+        # Also check for figures that might not be in curdoc yet
+        # This handles cases where figures are created but not added to document
+        try:
+            from bokeh import plotting
+
+            # Check if there are any current plots
+            if hasattr(plotting, "curplot") and plotting.curplot() is not None:
+                plot = plotting.curplot()
+                if plot not in doc.roots:
+                    item_json = json_item(plot)
+                    bokeh_figures.append(json.dumps(item_json))
+        except:
+            pass  # curplot might not exist in all versions
+
+    except ImportError:
+        # bokeh not available, return empty list
+        pass
+    except Exception as e:
+        print(f"Error capturing Bokeh figures: {e}")
+
+    return bokeh_figures
 
 
 def missive(data):

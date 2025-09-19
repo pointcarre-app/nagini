@@ -178,6 +178,7 @@ class PyodideManager {
         stderr: data.stderr ? data.stderr.length + " chars" : "empty",
         missive: data.missive,
         figures: data.figures ? data.figures.length + " figures" : "none",
+        bokeh_figures: data.bokeh_figures ? data.bokeh_figures.length + " bokeh figures" : "none",
         error: data.error
       });
 
@@ -189,6 +190,7 @@ class PyodideManager {
         stderr: data.stderr,
         missive: data.missive,
         figures: data.figures,
+        bokeh_figures: data.bokeh_figures,
         error: data.error,
         timestamp: new Date().toISOString(),
       };

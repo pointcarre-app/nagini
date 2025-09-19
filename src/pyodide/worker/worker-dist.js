@@ -148,7 +148,7 @@ function handleExecute(_x, _x2) {
  */
 function _handleExecute() {
   _handleExecute = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(data, workerState) {
-    var code, filename, namespace, start, stdout, stderr, missive, figures, error, result, pyodideNamespace, _captureOutputs, _captureOutputs2, _t;
+    var code, filename, namespace, start, stdout, stderr, missive, figures, bokeh_figures, error, result, pyodideNamespace, _captureOutputs, _captureOutputs2, _t;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
@@ -160,14 +160,10 @@ function _handleExecute() {
         case 1:
           code = data.code, filename = data.filename, namespace = data.namespace;
           start = Date.now();
-          stdout = "", stderr = "", missive = null, figures = [], error = null;
+          stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [], error = null;
           _context.p = 2;
-          console.log("🐍 [Worker] Starting execution for", filename);
-
           // Transform code for async execution if needed
           result = transformCodeForExecution(code, workerState);
-          console.log("🐍 [Worker] Code transformed, needsAsync:", result.needsAsync);
-          console.log("🐍 [Worker] Transformed code length:", result.code.length);
           workerState.pyodide.runPython("reset_captures()");
 
           // Execute with or without namespace
@@ -175,15 +171,12 @@ function _handleExecute() {
             _context.n = 8;
             break;
           }
-          console.log(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_NAMESPACE);
-          console.log("🐍 [Worker] Namespace variables:", Object.keys(namespace));
           pyodideNamespace = workerState.pyodide.toPy(namespace);
           _context.p = 3;
           if (!result.needsAsync) {
             _context.n = 5;
             break;
           }
-          console.log("🐍 [Worker] Running async with namespace");
           _context.n = 4;
           return workerState.pyodide.runPythonAsync(result.code, {
             globals: pyodideNamespace
@@ -203,12 +196,10 @@ function _handleExecute() {
           _context.n = 11;
           break;
         case 8:
-          console.log(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.EXEC_GLOBAL);
           if (!result.needsAsync) {
             _context.n = 10;
             break;
           }
-          console.log("🐍 [Worker] Running async in global scope");
           _context.n = 9;
           return workerState.pyodide.runPythonAsync(result.code);
         case 9:
@@ -217,19 +208,17 @@ function _handleExecute() {
         case 10:
           workerState.pyodide.runPython(result.code);
         case 11:
-          console.log("🐍 [Worker] Execution completed, capturing outputs");
           _captureOutputs = captureOutputs(workerState.pyodide);
           stdout = _captureOutputs.stdout;
           stderr = _captureOutputs.stderr;
           missive = _captureOutputs.missive;
           figures = _captureOutputs.figures;
-          console.log("🐍 [Worker] Captured outputs - stdout:", stdout.length, "stderr:", stderr.length, "missive:", missive, "figures:", figures.length);
+          bokeh_figures = _captureOutputs.bokeh_figures;
           _context.n = 13;
           break;
         case 12:
           _context.p = 12;
           _t = _context.v;
-          console.error("🐍 [Worker] Execution error:", _t);
           error = {
             name: _t.name || "PythonError",
             message: _t.message || "Unknown execution error"
@@ -238,14 +227,26 @@ function _handleExecute() {
           stdout = _captureOutputs2.stdout;
           stderr = _captureOutputs2.stderr;
           figures = _captureOutputs2.figures;
+          bokeh_figures = _captureOutputs2.bokeh_figures;
         case 13:
-          console.log("🐍 [Worker] Posting result");
+          // 🐍 POST EXECUTION RESULTS (always logged with snake emoji)
+          console.log("🐍 Worker execution result:", {
+            filename: filename,
+            stdout: stdout.length + " chars",
+            stderr: stderr.length + " chars",
+            missive: missive,
+            figures: figures.length + " figures",
+            bokeh_figures: bokeh_figures.length + " bokeh figures",
+            error: error,
+            time: Date.now() - start + "ms"
+          });
           postResult({
             filename: filename,
             stdout: stdout,
             stderr: stderr,
             missive: missive,
             figures: figures,
+            bokeh_figures: bokeh_figures,
             error: error,
             time: Date.now() - start,
             executedWithNamespace: namespace !== undefined
@@ -276,19 +277,20 @@ function transformCodeForExecution(code, workerState) {
 }
 
 /**
- * Capture Python outputs (stdout, stderr, missive, figures)
+ * Capture Python outputs (stdout, stderr, missive, figures, bokeh_figures)
  * Retrieves execution outputs from Python runtime
  *
  * @param {PyodideAPI} pyodide - Pyodide instance
  * @param {boolean} [isErrorCase=false] - Whether this is capturing after an error
- * @returns {CapturedOutputs} Object containing stdout, stderr, missive, and figures
+ * @returns {CapturedOutputs} Object containing stdout, stderr, missive, figures, and bokeh_figures
  */
 function captureOutputs(pyodide) {
   var isErrorCase = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var stdout = "",
     stderr = "",
     missive = null,
-    figures = [];
+    figures = [],
+    bokeh_figures = [];
   try {
     stdout = pyodide.runPython("get_stdout()") || "";
     stderr = pyodide.runPython("get_stderr()") || "";
@@ -310,6 +312,18 @@ function captureOutputs(pyodide) {
       } catch (e) {
         console.warn("🐍 Failed to capture matplotlib figures:", e.message);
       }
+
+      // Capture Bokeh figures
+      try {
+        var bokehResult = pyodide.runPython("get_bokeh_figures()");
+        if (bokehResult && bokehResult.toJs) {
+          bokeh_figures = bokehResult.toJs();
+        } else if (Array.isArray(bokehResult)) {
+          bokeh_figures = bokehResult;
+        }
+      } catch (e) {
+        console.warn("🐍 Failed to capture Bokeh figures:", e.message);
+      }
     }
   } catch (err) {
     console.warn("🐍 " + worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_FAILED, err.message);
@@ -319,7 +333,8 @@ function captureOutputs(pyodide) {
     stdout: stdout,
     stderr: stderr,
     missive: missive,
-    figures: figures
+    figures: figures,
+    bokeh_figures: bokeh_figures
   };
 }
 
@@ -363,6 +378,7 @@ function validateInitialized(workerState) {
  * @property {string} stderr - Standard error
  * @property {Object|null} missive - Structured JSON data
  * @property {string[]} figures - Base64 encoded matplotlib figures
+ * @property {string[]} bokeh_figures - JSON strings of Bokeh figures
  */
 
 /**
@@ -416,8 +432,6 @@ function _setupInputHandling() {
               while (1) switch (_context.n) {
                 case 0:
                   prompt = _args.length > 0 && _args[0] !== undefined ? _args[0] : "";
-                  console.log("\uD83D\uDC0D [Worker] Input requested with prompt: \"".concat(prompt, "\""));
-
                   // Send input request to main thread
                   self.postMessage({
                     type: "input_required",
@@ -426,7 +440,6 @@ function _setupInputHandling() {
 
                   // Return a promise that will be resolved when input is received
                   return _context.a(2, new Promise(function (resolve) {
-                    console.log("🐍 [Worker] Waiting for input from main thread...");
                     self.pendingInputResolver = resolve;
                   }));
               }
@@ -462,18 +475,15 @@ function _handleInputResponse() {
         case 1:
           input = data.input;
           try {
-            console.log("🐍 [Worker] Handling input response:", input);
-
             // Resolve the pending input promise if it exists
             if (self.pendingInputResolver) {
-              console.log("🐍 [Worker] Resolving pending input promise");
               self.pendingInputResolver(input);
               self.pendingInputResolver = null;
             } else {
-              console.warn("🐍 [Worker] No pending input resolver found");
+              console.warn("No pending input resolver found");
             }
           } catch (err) {
-            console.error("🐍 [Worker] Failed to provide input:", err);
+            console.error("Failed to provide input:", err);
             worker_input_postError("Failed to provide input: ".concat(err.message));
           }
         case 2:
@@ -950,7 +960,7 @@ var PyodideFileLoader = /*#__PURE__*/function () {
  * @property {Function} FS.mkdir - Create directory
  */
 ;// ../python/capture_system.py
-const capture_system_namespaceObject = "# =============================================================================\n# Output Capture System for Pyodide\n# =============================================================================\n# This module handles stdout/stderr capture and the missive system\n# Uses direct sys.stdout/stderr replacement for reliable capture in WebAssembly\n\nimport json\nimport io\nimport sys\nimport builtins\n\n# Store original stdout/stderr so we can restore them if needed\n_original_stdout = sys.stdout\n_original_stderr = sys.stderr\n\n# Create capture buffers\n_stdout_buffer = io.StringIO()\n_stderr_buffer = io.StringIO()\n\n# Storage for missive system - using builtins to ensure global availability\nif not hasattr(builtins, \"_nagini_current_missive\"):\n    builtins._nagini_current_missive = None\nif not hasattr(builtins, \"_nagini_missive_already_called\"):\n    builtins._nagini_missive_already_called = False\n\n\nclass CaptureStream:\n    \"\"\"Custom stream that captures all write operations\"\"\"\n\n    def __init__(self, buffer):\n        self.buffer = buffer\n\n    def write(self, text):\n        self.buffer.write(text)\n        return len(text)\n\n    def flush(self):\n        self.buffer.flush()\n\n    def isatty(self):\n        return False\n\n\n# Create capture streams\n_stdout_capturer = CaptureStream(_stdout_buffer)\n_stderr_capturer = CaptureStream(_stderr_buffer)\n\n\ndef reset_captures() -> None:\n    \"\"\"Reset capture buffers and activate capturing by replacing sys.stdout/stderr\"\"\"\n    print(\"[DEBUG] reset_captures() called. Clearing missive state.\")\n\n    # Clear buffers\n    _stdout_buffer.truncate(0)\n    _stdout_buffer.seek(0)\n    _stderr_buffer.truncate(0)\n    _stderr_buffer.seek(0)\n\n    # Clear missive data using builtins for global access\n    builtins._nagini_current_missive = None\n    builtins._nagini_missive_already_called = False\n\n    # Close any existing matplotlib figures (if matplotlib is available)\n    try:\n        import matplotlib.pyplot as plt\n\n        plt.close(\"all\")\n    except ImportError:\n        pass  # matplotlib not available, skip\n    except Exception:\n        pass  # Ignore other errors\n\n    # Activate capturing by replacing sys.stdout/stderr\n    sys.stdout = _stdout_capturer\n    sys.stderr = _stderr_capturer\n\n\ndef get_stdout() -> str:\n    \"\"\"Get captured stdout content\"\"\"\n    return _stdout_buffer.getvalue()\n\n\ndef get_stderr() -> str:\n    \"\"\"Get captured stderr content\"\"\"\n    return _stderr_buffer.getvalue()\n\n\ndef restore_original_streams() -> None:\n    \"\"\"Restore original stdout/stderr (for debugging if needed)\"\"\"\n    sys.stdout = _original_stdout\n    sys.stderr = _original_stderr\n\n\ndef get_missive() -> str | None:\n    \"\"\"\n    Get the current missive dictionary as a JSON string.\n\n    A \"missive\" is our term for structured data that user code wants to send\n    back to JavaScript. It's always a Python dictionary that gets converted\n    to JSON format (which JavaScript can easily understand).\n\n    Returns:\n        str | None: JSON string of the missive data, or None if no missive was sent\n\n    Example:\n        If user code did: missive({\"result\": 42, \"status\": \"success\"})\n        This would return: '{\"result\": 42, \"status\": \"success\"}'\n    \"\"\"\n    print(\n        f\"[DEBUG] get_missive() called. _nagini_current_missive is: {builtins._nagini_current_missive}\"\n    )\n    if builtins._nagini_current_missive is None:\n        return None  # No missive was stored\n    return json.dumps(builtins._nagini_current_missive)  # Convert Python dict to JSON string\n\n\ndef get_figures() -> list:\n    \"\"\"\n    Capture matplotlib figures and return them as base64 encoded strings.\n\n    Returns:\n        list: List of base64 encoded PNG images of matplotlib figures\n    \"\"\"\n    figures = []\n\n    try:\n        # Import matplotlib only when needed (after packages are loaded)\n        import matplotlib.pyplot as plt\n        import base64\n\n        if hasattr(plt, \"get_fignums\"):\n            try:\n                for fig_num in plt.get_fignums():\n                    plt.figure(fig_num)\n                    buf = io.BytesIO()\n                    plt.savefig(buf, format=\"png\", dpi=100, bbox_inches=\"tight\")\n                    buf.seek(0)\n                    figures.append(base64.b64encode(buf.read()).decode(\"utf-8\"))\n                    plt.close(fig_num)\n            except Exception as e:\n                print(f\"Error capturing figures: {e}\")\n    except ImportError:\n        # matplotlib not available, return empty list\n        pass\n    except Exception as e:\n        print(f\"Error importing matplotlib: {e}\")\n\n    return figures\n\n\ndef missive(data):\n    \"\"\"Send structured data back to JavaScript (once per execution)\"\"\"\n    print(f\"[DEBUG] missive() called with data: {data}\")\n    if builtins._nagini_missive_already_called:\n        print(\"[DEBUG] missive() called more than once. Raising ValueError.\")\n        raise ValueError(\n            \"missive() can only be called once per execution. \"\n            \"If you need to send multiple pieces of data, \"\n            \"put them all in one dictionary.\"\n        )\n    builtins._nagini_current_missive = data\n    builtins._nagini_missive_already_called = True\n    print(f\"[DEBUG] _nagini_current_missive is now set to: {builtins._nagini_current_missive}\")\n\n\n# Make the missive function available globally\nbuiltins.missive = missive\n\n# Legacy global variables for backward compatibility\ncurrent_missive = builtins._nagini_current_missive\nmissive_already_called = builtins._nagini_missive_already_called\n\n\ndef debug_missive_system():\n    \"\"\"Debug function to check the current state of the missive system\"\"\"\n    print(f\"[DEBUG] _nagini_current_missive: {builtins._nagini_current_missive}\")\n    print(f\"[DEBUG] _nagini_missive_already_called: {builtins._nagini_missive_already_called}\")\n    print(f\"[DEBUG] get_missive() returns: {get_missive()}\")\n    print(f\"[DEBUG] missive function available: {hasattr(builtins, 'missive')}\")\n    return {\n        \"current_missive\": builtins._nagini_current_missive,\n        \"missive_already_called\": builtins._nagini_missive_already_called,\n        \"get_missive_result\": get_missive(),\n        \"missive_function_available\": hasattr(builtins, \"missive\"),\n    }\n\n\n# Make debug function available globally too\nbuiltins.debug_missive_system = debug_missive_system\n";
+const capture_system_namespaceObject = "# =============================================================================\n# Output Capture System for Pyodide\n# =============================================================================\n# This module handles stdout/stderr capture and the missive system\n# Uses direct sys.stdout/stderr replacement for reliable capture in WebAssembly\n\nimport json\nimport io\nimport sys\nimport builtins\n\n# Store original stdout/stderr so we can restore them if needed\n_original_stdout = sys.stdout\n_original_stderr = sys.stderr\n\n# Create capture buffers\n_stdout_buffer = io.StringIO()\n_stderr_buffer = io.StringIO()\n\n# Storage for missive system - using builtins to ensure global availability\nif not hasattr(builtins, \"_nagini_current_missive\"):\n    builtins._nagini_current_missive = None\nif not hasattr(builtins, \"_nagini_missive_already_called\"):\n    builtins._nagini_missive_already_called = False\n\n\nclass CaptureStream:\n    \"\"\"Custom stream that captures all write operations\"\"\"\n\n    def __init__(self, buffer):\n        self.buffer = buffer\n\n    def write(self, text):\n        self.buffer.write(text)\n        return len(text)\n\n    def flush(self):\n        self.buffer.flush()\n\n    def isatty(self):\n        return False\n\n\n# Create capture streams\n_stdout_capturer = CaptureStream(_stdout_buffer)\n_stderr_capturer = CaptureStream(_stderr_buffer)\n\n\ndef reset_captures() -> None:\n    \"\"\"Reset capture buffers and activate capturing by replacing sys.stdout/stderr\"\"\"\n    print(\"[DEBUG] reset_captures() called. Clearing missive state.\")\n\n    # Clear buffers\n    _stdout_buffer.truncate(0)\n    _stdout_buffer.seek(0)\n    _stderr_buffer.truncate(0)\n    _stderr_buffer.seek(0)\n\n    # Clear missive data using builtins for global access\n    builtins._nagini_current_missive = None\n    builtins._nagini_missive_already_called = False\n\n    # Close any existing matplotlib figures (if matplotlib is available)\n    try:\n        import matplotlib.pyplot as plt\n\n        plt.close(\"all\")\n    except ImportError:\n        pass  # matplotlib not available, skip\n    except Exception:\n        pass  # Ignore other errors\n    \n    # Clear any existing Bokeh figures (if bokeh is available)\n    try:\n        from bokeh.plotting import curdoc\n        doc = curdoc()\n        doc.clear()\n    except ImportError:\n        pass  # bokeh not available, skip\n    except Exception:\n        pass  # Ignore other errors\n\n    # Activate capturing by replacing sys.stdout/stderr\n    sys.stdout = _stdout_capturer\n    sys.stderr = _stderr_capturer\n\n\ndef get_stdout() -> str:\n    \"\"\"Get captured stdout content\"\"\"\n    return _stdout_buffer.getvalue()\n\n\ndef get_stderr() -> str:\n    \"\"\"Get captured stderr content\"\"\"\n    return _stderr_buffer.getvalue()\n\n\ndef restore_original_streams() -> None:\n    \"\"\"Restore original stdout/stderr (for debugging if needed)\"\"\"\n    sys.stdout = _original_stdout\n    sys.stderr = _original_stderr\n\n\ndef get_missive() -> str | None:\n    \"\"\"\n    Get the current missive dictionary as a JSON string.\n\n    A \"missive\" is our term for structured data that user code wants to send\n    back to JavaScript. It's always a Python dictionary that gets converted\n    to JSON format (which JavaScript can easily understand).\n\n    Returns:\n        str | None: JSON string of the missive data, or None if no missive was sent\n\n    Example:\n        If user code did: missive({\"result\": 42, \"status\": \"success\"})\n        This would return: '{\"result\": 42, \"status\": \"success\"}'\n    \"\"\"\n    print(\n        f\"[DEBUG] get_missive() called. _nagini_current_missive is: {builtins._nagini_current_missive}\"\n    )\n    if builtins._nagini_current_missive is None:\n        return None  # No missive was stored\n    return json.dumps(builtins._nagini_current_missive)  # Convert Python dict to JSON string\n\n\ndef get_figures() -> list:\n    \"\"\"\n    Capture matplotlib figures and return them as base64 encoded strings.\n\n    Returns:\n        list: List of base64 encoded PNG images of matplotlib figures\n    \"\"\"\n    figures = []\n\n    try:\n        # Import matplotlib only when needed (after packages are loaded)\n        import matplotlib.pyplot as plt\n        import base64\n\n        if hasattr(plt, \"get_fignums\"):\n            try:\n                for fig_num in plt.get_fignums():\n                    plt.figure(fig_num)\n                    buf = io.BytesIO()\n                    plt.savefig(buf, format=\"png\", dpi=100, bbox_inches=\"tight\")\n                    buf.seek(0)\n                    figures.append(base64.b64encode(buf.read()).decode(\"utf-8\"))\n                    plt.close(fig_num)\n            except Exception as e:\n                print(f\"Error capturing figures: {e}\")\n    except ImportError:\n        # matplotlib not available, return empty list\n        pass\n    except Exception as e:\n        print(f\"Error importing matplotlib: {e}\")\n\n    return figures\n\n\ndef get_bokeh_figures() -> list:\n    \"\"\"\n    Capture Bokeh figures and return them as JSON for frontend rendering.\n    \n    Returns:\n        list: List of JSON strings representing Bokeh figures\n    \"\"\"\n    bokeh_figures = []\n    \n    try:\n        # Import bokeh only when needed\n        from bokeh.plotting import curdoc\n        from bokeh.embed import json_item\n        \n        # Get the current document\n        doc = curdoc()\n        \n        # Check if there are any roots (plots/layouts) in the document\n        if doc.roots:\n            for root in doc.roots:\n                try:\n                    # Convert each root to JSON format\n                    item_json = json_item(root)\n                    bokeh_figures.append(json.dumps(item_json))\n                except Exception as e:\n                    print(f\"Error converting Bokeh figure to JSON: {e}\")\n        \n        # Also check for figures that might not be in curdoc yet\n        # This handles cases where figures are created but not added to document\n        try:\n            from bokeh import plotting\n            # Check if there are any current plots\n            if hasattr(plotting, 'curplot') and plotting.curplot() is not None:\n                plot = plotting.curplot()\n                if plot not in doc.roots:\n                    item_json = json_item(plot)\n                    bokeh_figures.append(json.dumps(item_json))\n        except:\n            pass  # curplot might not exist in all versions\n            \n    except ImportError:\n        # bokeh not available, return empty list\n        pass\n    except Exception as e:\n        print(f\"Error capturing Bokeh figures: {e}\")\n    \n    return bokeh_figures\n\n\ndef missive(data):\n    \"\"\"Send structured data back to JavaScript (once per execution)\"\"\"\n    print(f\"[DEBUG] missive() called with data: {data}\")\n    if builtins._nagini_missive_already_called:\n        print(\"[DEBUG] missive() called more than once. Raising ValueError.\")\n        raise ValueError(\n            \"missive() can only be called once per execution. \"\n            \"If you need to send multiple pieces of data, \"\n            \"put them all in one dictionary.\"\n        )\n    builtins._nagini_current_missive = data\n    builtins._nagini_missive_already_called = True\n    print(f\"[DEBUG] _nagini_current_missive is now set to: {builtins._nagini_current_missive}\")\n\n\n# Make the missive function available globally\nbuiltins.missive = missive\n\n# Legacy global variables for backward compatibility\ncurrent_missive = builtins._nagini_current_missive\nmissive_already_called = builtins._nagini_missive_already_called\n\n\ndef debug_missive_system():\n    \"\"\"Debug function to check the current state of the missive system\"\"\"\n    print(f\"[DEBUG] _nagini_current_missive: {builtins._nagini_current_missive}\")\n    print(f\"[DEBUG] _nagini_missive_already_called: {builtins._nagini_missive_already_called}\")\n    print(f\"[DEBUG] get_missive() returns: {get_missive()}\")\n    print(f\"[DEBUG] missive function available: {hasattr(builtins, 'missive')}\")\n    return {\n        \"current_missive\": builtins._nagini_current_missive,\n        \"missive_already_called\": builtins._nagini_missive_already_called,\n        \"get_missive_result\": get_missive(),\n        \"missive_function_available\": hasattr(builtins, \"missive\"),\n    }\n\n\n# Make debug function available globally too\nbuiltins.debug_missive_system = debug_missive_system\n";
 ;// ../python/code_transformation.py
 const code_transformation_namespaceObject = "# =============================================================================\n# Code Transformation for Async Input Support\n# =============================================================================\n# This module handles transforming Python code to support async input() calls\n# when input handling is detected in user code\n\n\ndef prepare_code_for_async_input(code):\n    \"\"\"\n    Transform code to support async input handling.\n    This replaces input() calls with await input() calls since we'll replace\n    the built-in input function with an async version.\n    \"\"\"\n    lines = []\n    for line in code.split(\"\\n\"):\n        # Make sure input() uses await, but don't modify comments\n        has_input = \"input(\" in line\n        no_await = \"await input(\" not in line\n        not_comment = not line.strip().startswith(\"#\")\n        if has_input and no_await and not_comment:\n            # Replace the input call with await input\n            line = line.replace(\"input(\", \"await input(\")\n        lines.append(line)\n    return \"\\n\".join(lines)\n\n\ndef transform_code_for_execution(code):\n    \"\"\"\n    Transform user code to support input handling only when needed.\n    If code doesn't contain input() calls, execute it directly without transformation.\n    \"\"\"\n    try:\n        print(\"🔧 [Python] Transforming code with input() calls\")\n        # Check if code contains input() calls\n        if \"input(\" in code:\n            # Only transform if input() is present\n            prepared = prepare_code_for_async_input(code)\n\n            # Properly indent the user code for the async function (8 spaces for try block)\n            indented_code = \"\"\n            for line in prepared.split(\"\\n\"):\n                if line.strip():  # Skip empty lines for indentation\n                    indented_code += \"        \" + line + \"\\n\"  # 8 spaces for try block\n                else:\n                    indented_code += \"\\n\"  # Keep empty lines\n\n            transformed = f\"\"\"import asyncio\n\nasync def __run_code():\n    try:\n{indented_code}\n    except Exception as e:\n        import traceback\n        error_type = type(e).__name__\n        error_msg = str(e)\n        print(f\"Error occurred: \" + error_type + \": \" + error_msg)\n        traceback.print_exc()\n\n# Execute the async code\nawait __run_code()\n\"\"\"\n            print(f\"🔧 [Python] Transformation complete, code length: {len(transformed)}\")\n            return transformed\n        else:\n            # No input() calls, execute code directly without transformation\n            print(\"🔧 [Python] No input() calls found, returning original code\")\n            return code\n    except Exception as e:\n        print(f\"🔧 [Python] Error during transformation: {e}\")\n        import traceback\n\n        traceback.print_exc()\n        return code  # Return original code if transformation fails\n";
 ;// ../python/pyodide_utilities.py
@@ -1142,13 +1152,7 @@ function _handleInit() {
           worker_handlers_postError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.ALREADY_INITIALIZED);
           return _context2.a(2);
         case 1:
-          packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad;
-          console.log("🐍 [Worker] handleInit called with data:", {
-            packages: packages ? packages.length : 0,
-            micropipPackages: micropipPackages ? micropipPackages.length : 0,
-            filesToLoad: filesToLoad ? filesToLoad.length : 0
-          });
-          console.log("🐍 [Worker] filesToLoad details:", filesToLoad);
+          packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad; // Minimal init logging
           _context2.p = 2;
           // Load Pyodide runtime
           importScripts("".concat(worker_config_PYODIDE_WORKER_CONFIG.PYODIDE_CDN, "pyodide.js"));
@@ -1158,8 +1162,7 @@ function _handleInit() {
           });
         case 3:
           workerState.pyodide = _context2.v;
-          console.log("🐍 Using bundled Python modules");
-
+          // Using bundled Python modules
           // Load bundled Python modules directly (no HTTP fetching needed!)
           pythonModules = [{
             name: 'capture_system.py',
@@ -1178,14 +1181,13 @@ function _handleInit() {
               workerState.pyodide.FS.writeFile(module.name, module.content);
               // Execute the module so it can be imported
               workerState.pyodide.runPython(module.content);
-              console.log("\uD83D\uDC0D Loaded and executed bundled Python module: ".concat(module.name));
+              // Module loaded successfully
             } catch (error) {
-              console.warn("\uD83D\uDC0D Could not load bundled Python module ".concat(module.name, ":"), error.message);
+              console.warn("Could not load bundled Python module ".concat(module.name, ":"), error.message);
             }
           }
 
           // Load main Python initialization script from bundle
-          console.log("🐍 Loading bundled pyodide_init.py");
           workerState.pyodide.runPython(pyodide_init_namespaceObject);
 
           // Set up input handling system
@@ -1193,39 +1195,31 @@ function _handleInit() {
           return setupInputHandling(workerState.pyodide);
         case 4:
           if (!(filesToLoad && filesToLoad.length > 0)) {
-            _context2.n = 9;
+            _context2.n = 8;
             break;
           }
-          console.log("\uD83D\uDC0D [Worker] Loading ".concat(filesToLoad.length, " custom files into filesystem"));
-          console.log("\uD83D\uDC0D [Worker] Files to load:", filesToLoad);
           _context2.p = 5;
           loader = new PyodideFileLoader(filesToLoad);
           _context2.n = 6;
           return loader.loadFiles(workerState.pyodide);
         case 6:
-          console.log("\uD83D\uDC0D [Worker] Successfully loaded ".concat(filesToLoad.length, " custom files"));
           _context2.n = 8;
           break;
         case 7:
           _context2.p = 7;
           _t = _context2.v;
-          console.error("\uD83D\uDC0D [Worker] Failed to load custom files:", _t);
+          console.error("Failed to load custom files:", _t);
           throw _t;
         case 8:
-          _context2.n = 10;
-          break;
-        case 9:
-          console.log("\uD83D\uDC0D [Worker] No custom files to load (filesToLoad: ".concat(filesToLoad, ")"));
-        case 10:
           if (!((packages === null || packages === void 0 ? void 0 : packages.length) > 0)) {
-            _context2.n = 11;
+            _context2.n = 9;
             break;
           }
-          _context2.n = 11;
+          _context2.n = 9;
           return loadPackages(packages, workerState);
-        case 11:
+        case 9:
           if (!((micropipPackages === null || micropipPackages === void 0 ? void 0 : micropipPackages.length) > 0)) {
-            _context2.n = 14;
+            _context2.n = 12;
             break;
           }
           toLoad = micropipPackages.filter(function (pkg) {
@@ -1238,44 +1232,44 @@ function _handleInit() {
             worker_handlers_postInfo("[Micropip] Skipping ".concat(loaded.length, " already installed packages: ").concat(loaded.join(", ")));
           }
           if (!(toLoad.length > 0)) {
-            _context2.n = 14;
+            _context2.n = 12;
             break;
           }
           worker_handlers_postInfo("[Micropip] Installing ".concat(toLoad.length, " packages: ").concat(toLoad.join(", "), "..."));
-          _context2.n = 12;
+          _context2.n = 10;
           return workerState.pyodide.loadPackage("micropip");
-        case 12:
+        case 10:
           micropip = workerState.pyodide.pyimport("micropip");
-          _context2.n = 13;
+          _context2.n = 11;
           return micropip.install(toLoad);
-        case 13:
+        case 11:
           toLoad.forEach(function (pkg) {
             return workerState.micropipPackagesLoaded.add(pkg);
           });
           worker_handlers_postInfo("[Micropip] Packages installed successfully.");
-        case 14:
+        case 12:
           // Set up matplotlib if it was loaded
           try {
             workerState.pyodide.runPython("setup_matplotlib()");
           } catch (e) {
-            console.log("🎨 Matplotlib setup skipped (not available):", e.message);
+            // Matplotlib setup skipped (not available)
           }
           workerState.isInitialized = true;
           self.postMessage({
             type: "ready"
           });
-          _context2.n = 16;
+          _context2.n = 14;
           break;
-        case 15:
-          _context2.p = 15;
+        case 13:
+          _context2.p = 13;
           _t2 = _context2.v;
           workerState.pyodide = null;
           workerState.isInitialized = false;
           worker_handlers_postError("".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.INIT_FAILED, ": ").concat(_t2.message));
-        case 16:
+        case 14:
           return _context2.a(2);
       }
-    }, _callee2, null, [[5, 7], [2, 15]]);
+    }, _callee2, null, [[5, 7], [2, 13]]);
   }));
   return _handleInit.apply(this, arguments);
 }

@@ -20,7 +20,7 @@ export async function handleExecute(data, workerState) {
 
   const { code, filename, namespace } = data;
   const start = Date.now();
-  let stdout = "", stderr = "", missive = null, figures = [], error = null;
+  let stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [], error = null;
 
   try {
     // Transform code for async execution if needed
@@ -48,11 +48,11 @@ export async function handleExecute(data, workerState) {
       }
     }
 
-    ({ stdout, stderr, missive, figures } = captureOutputs(workerState.pyodide));
+    ({ stdout, stderr, missive, figures, bokeh_figures } = captureOutputs(workerState.pyodide));
 
   } catch (err) {
     error = { name: err.name || "PythonError", message: err.message || "Unknown execution error" };
-    ({ stdout, stderr, figures } = captureOutputs(workerState.pyodide, true));
+    ({ stdout, stderr, figures, bokeh_figures } = captureOutputs(workerState.pyodide, true));
   }
 
   // 🐍 POST EXECUTION RESULTS (always logged with snake emoji)
@@ -62,12 +62,13 @@ export async function handleExecute(data, workerState) {
     stderr: stderr.length + " chars", 
     missive,
     figures: figures.length + " figures",
+    bokeh_figures: bokeh_figures.length + " bokeh figures",
     error,
     time: (Date.now() - start) + "ms"
   });
   
   postResult({
-    filename, stdout, stderr, missive, figures, error,
+    filename, stdout, stderr, missive, figures, bokeh_figures, error,
     time: Date.now() - start,
     executedWithNamespace: namespace !== undefined
   });
@@ -93,15 +94,15 @@ export function transformCodeForExecution(code, workerState) {
 }
 
 /**
- * Capture Python outputs (stdout, stderr, missive, figures)
+ * Capture Python outputs (stdout, stderr, missive, figures, bokeh_figures)
  * Retrieves execution outputs from Python runtime
  *
  * @param {PyodideAPI} pyodide - Pyodide instance
  * @param {boolean} [isErrorCase=false] - Whether this is capturing after an error
- * @returns {CapturedOutputs} Object containing stdout, stderr, missive, and figures
+ * @returns {CapturedOutputs} Object containing stdout, stderr, missive, figures, and bokeh_figures
  */
 export function captureOutputs(pyodide, isErrorCase = false) {
-  let stdout = "", stderr = "", missive = null, figures = [];
+  let stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [];
 
   try {
     stdout = pyodide.runPython("get_stdout()") || "";
@@ -125,13 +126,25 @@ export function captureOutputs(pyodide, isErrorCase = false) {
       } catch (e) {
         console.warn("🐍 Failed to capture matplotlib figures:", e.message);
       }
+
+      // Capture Bokeh figures
+      try {
+        const bokehResult = pyodide.runPython("get_bokeh_figures()");
+        if (bokehResult && bokehResult.toJs) {
+          bokeh_figures = bokehResult.toJs();
+        } else if (Array.isArray(bokehResult)) {
+          bokeh_figures = bokehResult;
+        }
+      } catch (e) {
+        console.warn("🐍 Failed to capture Bokeh figures:", e.message);
+      }
     }
   } catch (err) {
     console.warn("🐍 " + PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_FAILED, err.message);
     if (isErrorCase) stderr = `${PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_RETRIEVAL_FAILED}: ${err.message}`;
   }
 
-  return { stdout, stderr, missive, figures };
+  return { stdout, stderr, missive, figures, bokeh_figures };
 }
 
 // Helper functions for messaging
@@ -165,6 +178,7 @@ function validateInitialized(workerState) {
  * @property {string} stderr - Standard error
  * @property {Object|null} missive - Structured JSON data
  * @property {string[]} figures - Base64 encoded matplotlib figures
+ * @property {string[]} bokeh_figures - JSON strings of Bokeh figures
  */
 
 /**

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+          content="Nagini Bokeh Integration - Interactive Python Visualizations in Browser" />
+    <title>Nagini - Bokeh Interactive Example</title>
+
+    <!-- Bokeh JS Libraries -->
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.2.min.js"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output {
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 100px;
+            margin: 10px 0;
+        }
+
+        .bokeh-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            min-height: 400px;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .example-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            background: #6c757d;
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+
+        .example-btn.active {
+            background: #28a745;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: #17a2b8;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🐍 Nagini + Bokeh Integration</h1>
+      <p class="subtitle">Interactive Python Visualizations in the Browser</p>
+
+      <div class="info-box">
+        <h3>ℹ️ About This Demo</h3>
+        <p>
+          This example demonstrates how Nagini captures Bokeh figures from Python code and renders them interactively in the browser.
+          Bokeh plots are captured as JSON and rendered using BokehJS, maintaining full interactivity including pan, zoom, and hover tools.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>📊 Bokeh Examples</h2>
+
+        <div class="example-selector">
+          <button class="example-btn" onclick="loadExample('simple')">Simple Line Plot</button>
+          <button class="example-btn" onclick="loadExample('scatter')">Interactive Scatter</button>
+          <button class="example-btn" onclick="loadExample('multi')">Multiple Subplots</button>
+          <button class="example-btn" onclick="loadExample('widgets')">With Widgets</button>
+          <button class="example-btn" onclick="loadExample('heatmap')">Heatmap</button>
+        </div>
+
+        <textarea id="bokeh-code" class="code-editor">
+# Simple Bokeh Line Plot
+from bokeh.plotting import figure, curdoc
+from bokeh.models import HoverTool
+import numpy as np
+
+# Create data
+x = np.linspace(0, 4*np.pi, 100)
+y = np.sin(x)
+
+# Create a new plot with tools
+p = figure(
+    title="Interactive Sine Wave",
+    width=800, 
+    height=400,
+    tools="pan,wheel_zoom,box_zoom,reset,save"
+)
+
+# Add a line renderer with legend and line thickness
+line = p.line(x, y, legend_label="sin(x)", line_width=2, color='navy', alpha=0.8)
+
+# Add circle markers
+p.circle(x[::5], y[::5], size=8, color='red', alpha=0.5, legend_label="Points")
+
+# Add hover tool
+hover = HoverTool(tooltips=[("(x,y)", "($x, $y)")])
+p.add_tools(hover)
+
+# Customize the plot
+p.xaxis.axis_label = "x"
+p.yaxis.axis_label = "y"
+p.legend.location = "top_right"
+p.legend.click_policy = "hide"
+
+# Add the plot to the document
+curdoc().add_root(p)
+
+print("✅ Bokeh plot created successfully!")
+print("🎯 Try: Pan, Zoom, Hover over points, Click legend items")
+</textarea>
+
+        <div class="button-group">
+          <button id="execute-btn" onclick="executeBokehCode()">▶️ Execute Code</button>
+          <button onclick="clearOutputs()">🗑️ Clear All</button>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+
+        <h3>Console Output:</h3>
+        <pre id="output" class="output">Ready to execute Bokeh code...</pre>
+
+        <h3>Bokeh Visualization:</h3>
+        <div id="bokeh-plot" class="bokeh-container">
+          <p style="color: #999; text-align: center;">Execute code to see interactive Bokeh plot here...</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🔧 Technical Details</h2>
+        <p>This demo showcases the following Nagini features:</p>
+        <ul>
+          <li>
+            <strong>Bokeh Figure Capture:</strong> Automatically captures Bokeh figures from Python's current document
+          </li>
+          <li>
+            <strong>JSON Export:</strong> Converts Bokeh plots to JSON using <code>bokeh.embed.json_item()</code>
+          </li>
+          <li>
+            <strong>Interactive Rendering:</strong> Uses BokehJS to render plots with full interactivity
+          </li>
+          <li>
+            <strong>Worker Architecture:</strong> Python runs in isolated Web Worker via Pyodide
+          </li>
+          <li>
+            <strong>Multiple Plot Support:</strong> Can capture and display multiple Bokeh figures
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script type="module">
+        import {
+            Nagini
+        } from '../src/nagini.js';
+
+        let manager = null;
+        let isInitializing = false;
+
+        // Example code templates
+        const examples = {
+            simple: `# Simple Bokeh Line Plot
+from bokeh.plotting import figure, curdoc
+from bokeh.models import HoverTool
+import numpy as np
+
+# Create data
+x = np.linspace(0, 4*np.pi, 100)
+y = np.sin(x)
+
+# Create a new plot with tools
+p = figure(
+    title="Interactive Sine Wave",
+    width=800, 
+    height=400,
+    tools="pan,wheel_zoom,box_zoom,reset,save"
+)
+
+# Add a line renderer with legend and line thickness
+line = p.line(x, y, legend_label="sin(x)", line_width=2, color='navy', alpha=0.8)
+
+# Add circle markers
+p.circle(x[::5], y[::5], size=8, color='red', alpha=0.5, legend_label="Points")
+
+# Add hover tool
+hover = HoverTool(tooltips=[("(x,y)", "($x, $y)")])
+p.add_tools(hover)
+
+# Customize the plot
+p.xaxis.axis_label = "x"
+p.yaxis.axis_label = "y"
+p.legend.location = "top_right"
+p.legend.click_policy = "hide"
+
+# Add the plot to the document
+curdoc().add_root(p)
+
+print("✅ Bokeh plot created successfully!")
+print("🎯 Try: Pan, Zoom, Hover over points, Click legend items")`,
+
+            scatter: `# Interactive Scatter Plot with Color Mapping
+from bokeh.plotting import figure, curdoc
+from bokeh.models import HoverTool, ColorBar
+from bokeh.transform import linear_cmap
+from bokeh.palettes import Viridis256
+import numpy as np
+
+# Generate random data
+n = 500
+x = np.random.random(n) * 100
+y = np.random.random(n) * 100
+colors = np.random.random(n) * 100
+sizes = np.random.randint(10, 30, n)
+
+# Create figure
+p = figure(
+    title="Interactive Scatter Plot with Color Mapping",
+    width=800,
+    height=600,
+    tools="pan,wheel_zoom,box_select,lasso_select,reset,save"
+)
+
+# Create color mapper
+mapper = linear_cmap(field_name='colors', palette=Viridis256, low=min(colors), high=max(colors))
+
+# Add scatter with color mapping
+scatter = p.scatter(
+    x, y, 
+    size=sizes, 
+    color=mapper,
+    alpha=0.6,
+    line_color="navy",
+    line_alpha=0.3
+)
+
+# Add hover tool with custom tooltips
+hover = HoverTool(tooltips=[
+    ("Index", "$index"),
+    ("(X,Y)", "($x, $y)"),
+    ("Value", "@colors{0.00}"),
+    ("Size", "@sizes")
+])
+p.add_tools(hover)
+
+# Style the plot
+p.xaxis.axis_label = "X Coordinate"
+p.yaxis.axis_label = "Y Coordinate"
+
+# Add to document
+curdoc().add_root(p)
+
+print(f"✅ Created scatter plot with {n} points")
+print("🎯 Try: Select points with box or lasso select tools!")`,
+
+            multi: `# Multiple Subplots with Linked Axes
+from bokeh.plotting import figure, curdoc
+from bokeh.layouts import column, row
+from bokeh.models import Range1d
+import numpy as np
+
+# Generate data
+x = np.linspace(0, 4*np.pi, 100)
+
+# Create figures with shared x-range
+shared_x_range = Range1d(0, 4*np.pi)
+
+# Top plot - Sine and Cosine
+p1 = figure(width=800, height=250, title="Trigonometric Functions", x_range=shared_x_range)
+p1.line(x, np.sin(x), legend_label="sin(x)", line_width=2, color="navy")
+p1.line(x, np.cos(x), legend_label="cos(x)", line_width=2, color="red")
+p1.legend.click_policy = "hide"
+
+# Middle plot - Exponential decay
+p2 = figure(width=800, height=250, title="Exponential Decay", x_range=shared_x_range)
+p2.line(x, np.exp(-x/5) * np.sin(x), legend_label="e^(-x/5) * sin(x)", line_width=2, color="green")
+p2.circle(x[::5], np.exp(-x[::5]/5) * np.sin(x[::5]), size=6, color="orange")
+
+# Bottom plot - Polynomial
+p3 = figure(width=800, height=250, title="Polynomial", x_range=shared_x_range)
+y3 = (x - 2*np.pi)**2 / 20 - 2
+p3.line(x, y3, legend_label="(x - 2π)²/20 - 2", line_width=2, color="purple")
+
+# Arrange plots
+layout = column(p1, p2, p3)
+
+# Add to document
+curdoc().add_root(layout)
+
+print("✅ Created multiple linked plots!")
+print("🎯 Pan or zoom in one plot - others follow!")`,
+
+            widgets: `# Interactive Plot with Widgets
+from bokeh.plotting import figure, curdoc
+from bokeh.layouts import column, row
+from bokeh.models import Slider, Select, Button, Div
+import numpy as np
+
+# Create plot
+p = figure(width=600, height=400, title="Interactive Function Plotter")
+
+# Initial data
+x = np.linspace(0, 4*np.pi, 200)
+y = np.sin(x)
+line = p.line(x, y, line_width=2, color="navy")
+
+# Create widgets
+amplitude_slider = Slider(title="Amplitude", value=1.0, start=0.1, end=3.0, step=0.1)
+frequency_slider = Slider(title="Frequency", value=1.0, start=0.1, end=5.0, step=0.1)
+phase_slider = Slider(title="Phase", value=0.0, start=0.0, end=2*np.pi, step=0.1)
+function_select = Select(title="Function:", value="sin", options=["sin", "cos", "tan", "exp"])
+
+# Info div
+info_div = Div(text="<b>Function:</b> sin(x)<br /><b>Parameters:</b> A=1.0, f=1.0, φ=0.0")
+
+# Note: In Pyodide/browser context, we can't use Bokeh server callbacks
+# This is a static example showing the widget layout
+
+# Create layout
+controls = column(amplitude_slider, frequency_slider, phase_slider, function_select, info_div)
+layout = row(controls, p)
+
+# Add to document
+curdoc().add_root(layout)
+
+print("✅ Created plot with widgets!")
+print("⚠️ Note: Widgets are displayed but not interactive without Bokeh server")
+print("This demonstrates the layout capabilities of Bokeh in Nagini")`,
+
+            heatmap: `# Heatmap with Color Bar
+from bokeh.plotting import figure, curdoc
+from bokeh.models import ColorBar, LinearColorMapper
+from bokeh.palettes import RdYlBu11
+import numpy as np
+
+# Generate data
+N = 50
+x = np.linspace(0, 10, N)
+y = np.linspace(0, 10, N)
+xx, yy = np.meshgrid(x, y)
+z = np.sin(xx) * np.cos(yy) + np.random.normal(0, 0.1, (N, N))
+
+# Flatten for plotting
+x_flat = xx.flatten()
+y_flat = yy.flatten()
+z_flat = z.flatten()
+
+# Create color mapper
+color_mapper = LinearColorMapper(palette=RdYlBu11, low=z_flat.min(), high=z_flat.max())
+
+# Create figure
+p = figure(
+    title="Heatmap: sin(x) * cos(y) + noise",
+    width=700,
+    height=600,
+    x_range=(0, 10),
+    y_range=(0, 10),
+    tools="pan,wheel_zoom,reset,hover,save"
+)
+
+# Create heatmap using rect glyphs
+p.rect(
+    x=x_flat,
+    y=y_flat,
+    width=10/N,
+    height=10/N,
+    fill_color={'field': 'z', 'transform': color_mapper},
+    line_color=None
+)
+
+# Add color bar
+color_bar = ColorBar(color_mapper=color_mapper, width=8, location=(0,0))
+p.add_layout(color_bar, 'right')
+
+# Configure hover tool
+p.hover.tooltips = [("(x,y)", "($x, $y)"), ("value", "@z{0.00}")]
+
+# Style
+p.xaxis.axis_label = "X"
+p.yaxis.axis_label = "Y"
+
+# Add to document
+curdoc().add_root(p)
+
+print(f"✅ Created {N}x{N} heatmap!")
+print("🎯 Hover to see values, zoom to explore details!")`
+        };
+
+        // Load example code
+        window.loadExample = function(exampleName) {
+            const codeEditor = document.getElementById('bokeh-code');
+            codeEditor.value = examples[exampleName] || examples.simple;
+
+            // Update active button
+            document.querySelectorAll('.example-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        };
+
+        // Initialize Nagini manager
+        async function initializeManager() {
+            if (manager || isInitializing) return;
+
+            isInitializing = true;
+            updateStatus('loading', 'Initializing Nagini with Pyodide and Bokeh...');
+
+            try {
+                // Create manager with Bokeh package
+                manager = await Nagini.createManager(
+                    'pyodide',
+                    ['numpy', 'bokeh'], // Load bokeh package
+                    [], // No micropip packages needed
+                    [], // No files to load
+                    '../src/pyodide/worker/worker-dist.js'
+                );
+
+                // Wait for initialization
+                await Nagini.waitForReady(manager);
+
+                updateStatus('success', '✅ Nagini initialized successfully! Ready to execute Bokeh code.');
+                document.getElementById('execute-btn').disabled = false;
+
+            } catch (error) {
+                console.error('Initialization error:', error);
+                updateStatus('error', `❌ Initialization failed: ${error.message}`);
+                isInitializing = false;
+            }
+        }
+
+        // Execute Bokeh code
+        window.executeBokehCode = async function() {
+            if (!manager) {
+                await initializeManager();
+                if (!manager) return;
+            }
+
+            const code = document.getElementById('bokeh-code').value;
+            const outputEl = document.getElementById('output');
+            const plotContainer = document.getElementById('bokeh-plot');
+
+            updateStatus('loading', 'Executing Python code...');
+            outputEl.textContent = 'Executing...\n';
+
+            try {
+                // Execute the code
+                const result = await manager.executeAsync('bokeh_demo.py', code);
+
+                // Display console output
+                let output = '';
+                if (result.stdout) {
+                    output += result.stdout;
+                }
+                if (result.stderr) {
+                    output += '\n[stderr]:\n' + result.stderr;
+                }
+                if (result.error) {
+                    output += '\n[ERROR]:\n' + result.error.message;
+                    updateStatus('error', '❌ Execution error - see console output');
+                } else {
+                    updateStatus('success', '✅ Code executed successfully!');
+                }
+
+                outputEl.textContent = output || 'No output';
+
+                // Clear previous plots
+                plotContainer.innerHTML = '';
+
+                // Render Bokeh figures if any
+                if (result.bokeh_figures && result.bokeh_figures.length > 0) {
+                    console.log('Bokeh figures captured:', result.bokeh_figures.length);
+
+                    for (let i = 0; i < result.bokeh_figures.length; i++) {
+                        try {
+                            // Parse the JSON string
+                            const figureJson = JSON.parse(result.bokeh_figures[i]);
+
+                            // Create a div for this plot
+                            const plotDiv = document.createElement('div');
+                            plotDiv.id = `bokeh-plot-${i}`;
+                            plotDiv.style.marginBottom = '20px';
+                            plotContainer.appendChild(plotDiv);
+
+                            // Render the Bokeh plot
+                            await Bokeh.embed.embed_item(figureJson, plotDiv.id);
+
+                            console.log(`Rendered Bokeh plot ${i + 1}`);
+                        } catch (e) {
+                            console.error('Error rendering Bokeh figure:', e);
+                            plotContainer.innerHTML += `<p style="color: red;">Error rendering plot ${i + 1}: ${e.message}</p>`;
+                        }
+                    }
+                } else {
+                    plotContainer.innerHTML = '<p style="color: #999; text-align: center;">No Bokeh plots were generated. Make sure to add plots to curdoc().</p>';
+                }
+
+            } catch (error) {
+                console.error('Execution error:', error);
+                outputEl.textContent = `Execution error: ${error.message}`;
+                updateStatus('error', `❌ Execution failed: ${error.message}`);
+            }
+        };
+
+        // Clear outputs
+        window.clearOutputs = function() {
+            document.getElementById('output').textContent = 'Ready to execute Bokeh code...';
+            document.getElementById('bokeh-plot').innerHTML = '<p style="color: #999; text-align: center;">Execute code to see interactive Bokeh plot here...</p>';
+            document.getElementById('status').style.display = 'none';
+        };
+
+        // Update status message
+        function updateStatus(type, message) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+            statusEl.style.display = 'block';
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            document.getElementById('execute-btn').disabled = true;
+            initializeManager();
+        });
+    </script>
+  </body>
+</html>

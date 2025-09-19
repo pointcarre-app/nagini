@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bokeh Integration Test</title>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        .plot-container {
+            border: 2px solid #007bff;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Bokeh Integration Test</h1>
+
+    <div class="test-section">
+      <h2>Test 1: Simple Bokeh Plot Capture</h2>
+      <button onclick="runTest()">Run Test</button>
+      <pre id="output">Click "Run Test" to start...</pre>
+      <div id="plot-container" class="plot-container"></div>
+    </div>
+
+    <script type="module">
+        import {
+            Nagini
+        } from '../src/nagini.js';
+
+        let manager = null;
+
+        window.runTest = async function() {
+            const output = document.getElementById('output');
+            const plotContainer = document.getElementById('plot-container');
+
+            output.textContent = 'Initializing Nagini...\n';
+
+            try {
+                // Initialize if needed
+                if (!manager) {
+                    output.textContent += 'Creating manager with Bokeh package...\n';
+                    manager = await Nagini.createManager(
+                        'pyodide',
+                        ['bokeh'],
+                        [],
+                        [],
+                        '../src/pyodide/worker/worker-dist.js'
+                    );
+
+                    output.textContent += 'Waiting for ready state...\n';
+                    await Nagini.waitForReady(manager);
+                    output.textContent += 'Manager ready!\n\n';
+                }
+
+                // Test code
+                const testCode = `
+from bokeh.plotting import figure, curdoc
+import json
+
+# Create a simple plot
+p = figure(title="Test Plot", width=400, height=300)
+p.line([1, 2, 3, 4, 5], [2, 5, 3, 6, 4], line_width=2, color="navy")
+p.circle([1, 2, 3, 4, 5], [2, 5, 3, 6, 4], size=10, color="red")
+
+# Add to document
+curdoc().add_root(p)
+
+print("Plot created successfully!")
+
+# Debug: Check what get_bokeh_figures returns
+try:
+    bokeh_figs = get_bokeh_figures()
+    print(f"Bokeh figures captured: {len(bokeh_figs)}")
+    if bokeh_figs:
+        print(f"First figure JSON length: {len(bokeh_figs[0])} chars")
+except Exception as e:
+    print(f"Error getting bokeh figures: {e}")
+`;
+
+                output.textContent += 'Executing test code...\n';
+                const result = await manager.executeAsync('test.py', testCode);
+
+                // Show execution results
+                output.textContent += '\n=== Execution Results ===\n';
+                output.textContent += 'stdout: ' + (result.stdout || '(empty)') + '\n';
+                output.textContent += 'stderr: ' + (result.stderr || '(empty)') + '\n';
+                output.textContent += 'error: ' + (result.error ? JSON.stringify(result.error) : 'none') + '\n';
+                output.textContent += 'figures (matplotlib): ' + (result.figures ? result.figures.length : 0) + '\n';
+                output.textContent += 'bokeh_figures: ' + (result.bokeh_figures ? result.bokeh_figures.length : 0) + '\n';
+
+                // Try to render Bokeh figures
+                if (result.bokeh_figures && result.bokeh_figures.length > 0) {
+                    output.textContent += '\n=== Rendering Bokeh Figures ===\n';
+                    plotContainer.innerHTML = '';
+
+                    for (let i = 0; i < result.bokeh_figures.length; i++) {
+                        try {
+                            const figJson = JSON.parse(result.bokeh_figures[i]);
+                            output.textContent += `Figure ${i+1}: JSON parsed successfully\n`;
+
+                            const plotDiv = document.createElement('div');
+                            plotDiv.id = `test-plot-${i}`;
+                            plotContainer.appendChild(plotDiv);
+
+                            await Bokeh.embed.embed_item(figJson, plotDiv.id);
+                            output.textContent += `Figure ${i+1}: Rendered successfully!\n`;
+                        } catch (e) {
+                            output.textContent += `Figure ${i+1}: Render error - ${e.message}\n`;
+                            console.error('Bokeh render error:', e);
+                        }
+                    }
+                } else {
+                    output.textContent += '\nNo Bokeh figures captured.\n';
+                    plotContainer.innerHTML = '<p>No plots to display</p>';
+                }
+
+            } catch (error) {
+                output.textContent += '\nERROR: ' + error.message + '\n';
+                console.error('Test error:', error);
+            }
+        };
+    </script>
+  </body>
+</html>
