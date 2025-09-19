@@ -1,11 +1,11 @@
 # Nagini
 
 **Live Documentation & Demos:**
-- **Main Documentation (MkDocs):** [https://pointcarre-app.github.io/nagini/mkdocs/](https://pointcarre-app.github.io/nagini/mkdocs/)
-- **Interactive Test Suite (`scenery`):** [https://pointcarre-app.github.io/nagini/scenery/](https://pointcarre-app.github.io/nagini/scenery/)
-- **API Reference:** [https://pointcarre-app.github.io/nagini/mkdocs/api-reference/](https://pointcarre-app.github.io/nagini/mkdocs/api-reference/)
-- **Repository Reference:** [https://pointcarre-app.github.io/nagini/mkdocs/repo_reference/](https://pointcarre-app.github.io/nagini/mkdocs/repo_reference/)
 - **Browse Full Source Tree:** [https://pointcarre-app.github.io/nagini/](https://pointcarre-app.github.io/nagini/)
+- **Interactive Test Suite (`scenery`):** [https://pointcarre-app.github.io/nagini/scenery/](https://pointcarre-app.github.io/nagini/scenery/)
+- **Main Documentation (MkDocs):** [https://pointcarre-app.github.io/nagini/](https://pointcarre-app.github.io/nagini/)
+- **API Reference:** [https://pointcarre-app.github.io/nagini/api-reference/](https://pointcarre-app.github.io/nagini/api-reference/)
+- **Repository Reference:** [https://pointcarre-app.github.io/nagini/repo_reference/](https://pointcarre-app.github.io/nagini/repo_reference/)
 
 **Python in the Browser via Pyodide WebAssembly**
 
