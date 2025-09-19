@@ -191,7 +191,7 @@
           <button class="example-btn" onclick="loadExample('simple')">Simple Line Plot</button>
           <button class="example-btn" onclick="loadExample('scatter')">Interactive Scatter</button>
           <button class="example-btn" onclick="loadExample('multi')">Multiple Subplots</button>
-          <button class="example-btn" onclick="loadExample('widgets')">With Widgets</button>
+          <button class="example-btn" onclick="loadExample('widgets')">Dashboard Layout</button>
           <button class="example-btn" onclick="loadExample('heatmap')">Heatmap</button>
         </div>
 
@@ -415,80 +415,126 @@ curdoc().add_root(layout)
 print("✅ Created multiple linked plots!")
 print("🎯 Pan or zoom in one plot - others follow!")`,
 
-            widgets: `# Interactive Plot with Widgets
+            widgets: `# Dashboard Layout with Multiple Visualizations
 from bokeh.plotting import figure, curdoc
-from bokeh.layouts import column, row
-from bokeh.models import Slider, Select, Button, Div
+from bokeh.layouts import column, row, gridplot
+from bokeh.models import Panel, Tabs, Div
 import numpy as np
 
-# Create plot
-p = figure(width=600, height=400, title="Interactive Function Plotter")
+# Create multiple plots for a dashboard
+x = np.linspace(0, 4*np.pi, 100)
 
-# Initial data
-x = np.linspace(0, 4*np.pi, 200)
-y = np.sin(x)
-line = p.line(x, y, line_width=2, color="navy")
+# Plot 1: Line plot
+p1 = figure(width=400, height=300, title="Sales Trend")
+p1.line(x, np.sin(x) * 100 + 100, line_width=2, color="navy", legend_label="Revenue")
+p1.line(x, np.cos(x) * 50 + 100, line_width=2, color="red", legend_label="Costs")
+p1.legend.location = "top_right"
 
-# Create widgets
-amplitude_slider = Slider(title="Amplitude", value=1.0, start=0.1, end=3.0, step=0.1)
-frequency_slider = Slider(title="Frequency", value=1.0, start=0.1, end=5.0, step=0.1)
-phase_slider = Slider(title="Phase", value=0.0, start=0.0, end=2*np.pi, step=0.1)
-function_select = Select(title="Function:", value="sin", options=["sin", "cos", "tan", "exp"])
+# Plot 2: Bar chart simulation
+p2 = figure(width=400, height=300, title="Monthly Performance")
+months = np.arange(12)
+values = np.random.randint(50, 150, 12)
+p2.vbar(x=months, top=values, width=0.8, color="green", alpha=0.7)
+p2.xaxis.axis_label = "Month"
+p2.yaxis.axis_label = "Value"
 
-# Info div
-info_div = Div(text="<b>Function:</b> sin(x)<br /><b>Parameters:</b> A=1.0, f=1.0, φ=0.0")
+# Plot 3: Scatter plot
+p3 = figure(width=400, height=300, title="Customer Segments")
+n = 100
+cx = np.random.normal(0, 1, n)
+cy = np.random.normal(0, 1, n)
+colors = np.random.choice(['red', 'green', 'blue'], n)
+p3.scatter(cx, cy, size=8, color=colors, alpha=0.6)
 
-# Note: In Pyodide/browser context, we can't use Bokeh server callbacks
-# This is a static example showing the widget layout
+# Plot 4: Area chart
+p4 = figure(width=400, height=300, title="Resource Usage")
+y1 = np.sin(x/2) * 30 + 50
+y2 = np.cos(x/2) * 20 + 30
+p4.varea(x=x, y1=0, y2=y1, color="lightblue", alpha=0.5, legend_label="CPU")
+p4.varea(x=x, y1=y1, y2=y1+y2, color="lightgreen", alpha=0.5, legend_label="Memory")
+p4.legend.location = "top_left"
 
-# Create layout
-controls = column(amplitude_slider, frequency_slider, phase_slider, function_select, info_div)
-layout = row(controls, p)
+# Create info panels
+info1 = Div(text="""
+<h3>Dashboard Overview</h3>
+<p>This demonstrates Bokeh's layout capabilities in Nagini.</p>
+<ul>
+    <li>Multiple plot types in a grid</li>
+    <li>Tab panels for organization</li>
+    <li>Responsive layouts</li>
+</ul>
+""", width=400, height=150)
+
+info2 = Div(text="""
+<h3>Key Metrics</h3>
+<table style="width:100%">
+    <tr><td>Total Revenue:</td><td style="text-align:right"><b>$1,234,567</b></td></tr>
+    <tr><td>Active Users:</td><td style="text-align:right"><b>45,678</b></td></tr>
+    <tr><td>Conversion Rate:</td><td style="text-align:right"><b>3.4%</b></td></tr>
+</table>
+""", width=400, height=150)
+
+# Create grid layout
+grid = gridplot([[p1, p2], [p3, p4]], width=400, height=300)
+
+# Create tabs
+tab1 = Panel(child=grid, title="Charts")
+tab2 = Panel(child=column(info1, info2), title="Info")
+tabs = Tabs(tabs=[tab1, tab2])
 
 # Add to document
-curdoc().add_root(layout)
+curdoc().add_root(tabs)
 
-print("✅ Created plot with widgets!")
-print("⚠️ Note: Widgets are displayed but not interactive without Bokeh server")
-print("This demonstrates the layout capabilities of Bokeh in Nagini")`,
+print("✅ Created dashboard layout with tabs!")
+print("🎯 Click the tabs to switch views")
+print("📊 All plots are interactive - pan, zoom, and explore!")`,
 
             heatmap: `# Heatmap with Color Bar
 from bokeh.plotting import figure, curdoc
-from bokeh.models import ColorBar, LinearColorMapper
+from bokeh.models import ColorBar, LinearColorMapper, ColumnDataSource
 from bokeh.palettes import RdYlBu11
 import numpy as np
 
 # Generate data
-N = 50
+N = 30
 x = np.linspace(0, 10, N)
 y = np.linspace(0, 10, N)
 xx, yy = np.meshgrid(x, y)
-z = np.sin(xx) * np.cos(yy) + np.random.normal(0, 0.1, (N, N))
+z = np.sin(xx) * np.cos(yy)
 
 # Flatten for plotting
 x_flat = xx.flatten()
 y_flat = yy.flatten()
 z_flat = z.flatten()
 
+# Create data source
+source = ColumnDataSource(data=dict(
+    x=x_flat,
+    y=y_flat,
+    z=z_flat
+))
+
 # Create color mapper
 color_mapper = LinearColorMapper(palette=RdYlBu11, low=z_flat.min(), high=z_flat.max())
 
 # Create figure
 p = figure(
-    title="Heatmap: sin(x) * cos(y) + noise",
+    title="Heatmap: sin(x) * cos(y)",
     width=700,
     height=600,
-    x_range=(0, 10),
-    y_range=(0, 10),
-    tools="pan,wheel_zoom,reset,hover,save"
+    x_range=(-0.5, 10.5),
+    y_range=(-0.5, 10.5),
+    tools="pan,wheel_zoom,reset,hover,save",
+    toolbar_location="above"
 )
 
-# Create heatmap using rect glyphs
+# Create heatmap using rect glyphs with data source
 p.rect(
-    x=x_flat,
-    y=y_flat,
+    x='x',
+    y='y',
     width=10/N,
     height=10/N,
+    source=source,
     fill_color={'field': 'z', 'transform': color_mapper},
     line_color=None
 )
@@ -498,16 +544,21 @@ color_bar = ColorBar(color_mapper=color_mapper, width=8, location=(0,0))
 p.add_layout(color_bar, 'right')
 
 # Configure hover tool
-p.hover.tooltips = [("(x,y)", "($x, $y)"), ("value", "@z{0.00}")]
+p.hover.tooltips = [
+    ("(x,y)", "(@x{0.00}, @y{0.00})"),
+    ("value", "@z{0.000}")
+]
 
 # Style
 p.xaxis.axis_label = "X"
 p.yaxis.axis_label = "Y"
+p.title.text_font_size = "16px"
 
 # Add to document
 curdoc().add_root(p)
 
 print(f"✅ Created {N}x{N} heatmap!")
+print("📊 Values range from {:.2f} to {:.2f}".format(z_flat.min(), z_flat.max()))
 print("🎯 Hover to see values, zoom to explore details!")`
         };
 
