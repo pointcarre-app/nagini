@@ -1,3 +1,15 @@
+# v0.0.22
+
+- **Bokeh Integration**: Added comprehensive support for Bokeh interactive visualizations
+  - **📈 Capture System**: Extended `capture_system.py` to capture Bokeh plots as JSON via `bokeh.embed.json_item()`
+  - **Worker Updates**: Modified `worker-execution.js` to capture and return `bokeh_figures` array alongside matplotlib figures
+  - **Dual Strategy**: Implemented separate approaches for `/examples` (full interactivity) and `/scenery` (programmatic testing)
+  - **Interactive Examples**: Created `bokeh-interactive.html` and `bokeh-interactive-widgets.html` demonstrating full Bokeh capabilities
+  - **Bidirectional Widgets**: Implemented JavaScript-to-Python parameter passing for dynamic plot updates
+  - **Test Coverage**: Added `testBokehCaptureWorkflow()` to verify backend capture without frontend dependencies
+- **Documentation**: Comprehensive Bokeh documentation added to README with setup instructions, troubleshooting, and architecture details
+- **Performance**: Bokeh capture works independently of BokehJS libraries, enabling lightweight backend testing
+
 # v0.0.21
 
 - **Logging Optimization**: Significantly minimized verbose logging across pyodide and utils directories while preserving essential execution results
