@@ -185,6 +185,25 @@ missive({"x_points": len(x), "datasets": 3, "figures": 2, "mean_y1": mean_y1, "s
         logTestStart("PyodideIntegration", testName);
 
         try {
+            // First, ensure bokeh is installed
+            console.log("Checking if bokeh is available...");
+            const checkBokeh = await manager.executeAsync(
+                "check_bokeh",
+                `try:
+    import bokeh
+    print(f"Bokeh version: {bokeh.__version__}")
+    print("Bokeh is available")
+except ImportError:
+    print("Bokeh not available, installing...")
+    import micropip
+    await micropip.install('bokeh')
+    import bokeh
+    print(f"Bokeh installed, version: {bokeh.__version__}")`
+            );
+            
+            console.log("Bokeh check result:", checkBokeh.stdout);
+            
+            // Now run the actual test
             const result = await manager.executeAsync(
                 "bokeh_capture_test",
                 `from bokeh.plotting import figure, curdoc
@@ -229,13 +248,27 @@ p3.line([1, 2, 3], [4, 5, 6])
 # Send structured data about what we created
 missive({
     "num_roots": num_roots,
-    "plot1_title": "Test Plot 1",
+    "plot1_title": "Test Plot 1", 
     "plot2_title": "Test Plot 2",
     "has_hover": True,
     "layout_type": "row"
-})`
+})
+
+# Debug: check if get_bokeh_figures exists and works
+try:
+    bokeh_figs = get_bokeh_figures()
+    print(f"get_bokeh_figures returned: {len(bokeh_figs)} figures")
+    for i, fig in enumerate(bokeh_figs):
+        print(f"Figure {i}: {len(fig)} chars of JSON")
+except Exception as e:
+    print(f"Error calling get_bokeh_figures: {e}")`
             );
 
+            // Debug: log the entire result object to see what we're getting
+            console.log("Bokeh test result object keys:", Object.keys(result));
+            console.log("Result contains bokeh_figures?", 'bokeh_figures' in result);
+            console.log("Result.bokeh_figures value:", result.bokeh_figures);
+            
             assert(!result.error, "Bokeh capture should not have errors");
             assertContains(result.stdout, "Created Bokeh document", "Should confirm document creation");
             assertContains(result.stdout, "Bokeh plots created successfully", "Should confirm plot creation");
