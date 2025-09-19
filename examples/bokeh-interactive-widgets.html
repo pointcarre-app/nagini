@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nagini - Interactive Bokeh Widgets Demo</title>
+    
+    <!-- Bokeh JS Libraries -->
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.2.min.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input[type="range"] {
+            width: 300px;
+            vertical-align: middle;
+        }
+        
+        select {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        
+        .value-display {
+            display: inline-block;
+            width: 60px;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .output {
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+            min-height: 50px;
+        }
+        
+        .bokeh-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            min-height: 400px;
+        }
+        
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎛️ Interactive Bokeh Widgets with Nagini</h1>
+      <p style="color: #666; font-size: 1.1em;">
+        Bidirectional interaction: JavaScript controls → Python execution → Bokeh visualization
+      </p>
+      
+      <div class="info-box">
+        <h3>ℹ️ How This Works</h3>
+        <p>
+          This demo shows how to create interactive visualizations with Nagini:
+          <ul>
+            <li>JavaScript/HTML controls capture user input</li>
+            <li>Parameters are passed to Python code</li>
+            <li>Python generates Bokeh plots with the parameters</li>
+            <li>Plots are rendered back in the browser</li>
+          </ul>
+        </p>
+      </div>
+      
+      <div class="control-panel">
+        <h2>📊 Interactive Function Plotter</h2>
+        
+        <div class="control-group">
+          <label for="function-select">Function:</label>
+          <select id="function-select">
+            <option value="sin">Sine</option>
+            <option value="cos">Cosine</option>
+            <option value="tan">Tangent</option>
+            <option value="exp">Exponential</option>
+            <option value="log">Logarithm</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label for="amplitude">Amplitude:</label>
+          <input type="range" id="amplitude" min="0.1" max="3" step="0.1" value="1">
+          <span class="value-display" id="amplitude-value">1.0</span>
+        </div>
+        
+        <div class="control-group">
+          <label for="frequency">Frequency:</label>
+          <input type="range" id="frequency" min="0.1" max="5" step="0.1" value="1">
+          <span class="value-display" id="frequency-value">1.0</span>
+        </div>
+        
+        <div class="control-group">
+          <label for="phase">Phase Shift:</label>
+          <input type="range" id="phase" min="0" max="6.28" step="0.1" value="0">
+          <span class="value-display" id="phase-value">0.0</span>
+        </div>
+        
+        <div class="control-group">
+          <label for="color-select">Line Color:</label>
+          <select id="color-select">
+            <option value="navy">Navy</option>
+            <option value="red">Red</option>
+            <option value="green">Green</option>
+            <option value="purple">Purple</option>
+            <option value="orange">Orange</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label for="show-derivative">Show Derivative:</label>
+          <input type="checkbox" id="show-derivative">
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <button onclick="updatePlot()">🔄 Update Plot</button>
+          <button onclick="resetControls()">↺ Reset</button>
+          <button onclick="randomize()">🎲 Randomize</button>
+        </div>
+      </div>
+      
+      <div id="status" class="status" style="display: none;"></div>
+      
+      <h3>Console Output:</h3>
+      <pre id="output" class="output">Ready...</pre>
+      
+      <h3>Interactive Visualization:</h3>
+      <div id="bokeh-plot" class="bokeh-container">
+        <p style="color: #999; text-align: center;">Click "Update Plot" to generate visualization...</p>
+      </div>
+    </div>
+    
+    <script type="module">
+        import { Nagini } from '../src/nagini.js';
+        
+        let manager = null;
+        let isInitializing = false;
+        
+        // Update value displays
+        document.getElementById('amplitude').addEventListener('input', (e) => {
+            document.getElementById('amplitude-value').textContent = parseFloat(e.target.value).toFixed(1);
+        });
+        
+        document.getElementById('frequency').addEventListener('input', (e) => {
+            document.getElementById('frequency-value').textContent = parseFloat(e.target.value).toFixed(1);
+        });
+        
+        document.getElementById('phase').addEventListener('input', (e) => {
+            document.getElementById('phase-value').textContent = parseFloat(e.target.value).toFixed(1);
+        });
+        
+        // Initialize Nagini manager
+        async function initializeManager() {
+            if (manager || isInitializing) return;
+            
+            isInitializing = true;
+            updateStatus('loading', 'Initializing Nagini with Pyodide and Bokeh...');
+            
+            try {
+                manager = await Nagini.createManager(
+                    'pyodide',
+                    ['numpy', 'bokeh'],
+                    [],
+                    [],
+                    '../src/pyodide/worker/worker-dist.js'
+                );
+                
+                await Nagini.waitForReady(manager);
+                updateStatus('success', '✅ Ready! Adjust controls and click "Update Plot"');
+                
+                // Generate initial plot
+                setTimeout(() => updatePlot(), 500);
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                updateStatus('error', `❌ Initialization failed: ${error.message}`);
+                isInitializing = false;
+            }
+        }
+        
+        // Update plot with current parameters
+        window.updatePlot = async function() {
+            if (!manager) {
+                await initializeManager();
+                if (!manager) return;
+            }
+            
+            // Get current parameter values
+            const params = {
+                func: document.getElementById('function-select').value,
+                amplitude: parseFloat(document.getElementById('amplitude').value),
+                frequency: parseFloat(document.getElementById('frequency').value),
+                phase: parseFloat(document.getElementById('phase').value),
+                color: document.getElementById('color-select').value,
+                show_derivative: document.getElementById('show-derivative').checked
+            };
+            
+            updateStatus('loading', 'Generating plot with new parameters...');
+            
+            // Python code that uses the parameters
+            const code = `
+from bokeh.plotting import figure, curdoc
+from bokeh.models import HoverTool, Legend
+import numpy as np
+
+# Parameters from JavaScript
+func_type = "${params.func}"
+amplitude = ${params.amplitude}
+frequency = ${params.frequency}
+phase = ${params.phase}
+color = "${params.color}"
+show_derivative = ${params.show_derivative ? 'True' : 'False'}
+
+# Generate data
+x = np.linspace(0, 4*np.pi, 200)
+
+# Calculate main function
+if func_type == "sin":
+    y = amplitude * np.sin(frequency * x + phase)
+    func_name = f"{amplitude:.1f} * sin({frequency:.1f}x + {phase:.1f})"
+elif func_type == "cos":
+    y = amplitude * np.cos(frequency * x + phase)
+    func_name = f"{amplitude:.1f} * cos({frequency:.1f}x + {phase:.1f})"
+elif func_type == "tan":
+    y = amplitude * np.tan(frequency * x + phase)
+    # Limit tan values for better visualization
+    y = np.clip(y, -10, 10)
+    func_name = f"{amplitude:.1f} * tan({frequency:.1f}x + {phase:.1f})"
+elif func_type == "exp":
+    y = amplitude * np.exp(-x/4) * np.cos(frequency * x + phase)
+    func_name = f"{amplitude:.1f} * exp(-x/4) * cos({frequency:.1f}x + {phase:.1f})"
+else:  # log
+    # Use x+1 to avoid log(0)
+    y = amplitude * np.log(x + 1) * np.cos(frequency * x + phase)
+    func_name = f"{amplitude:.1f} * log(x+1) * cos({frequency:.1f}x + {phase:.1f})"
+
+# Create plot
+p = figure(
+    title=f"Interactive Function: {func_name}",
+    width=800,
+    height=400,
+    tools="pan,wheel_zoom,box_zoom,reset,save"
+)
+
+# Plot main function
+main_line = p.line(x, y, line_width=3, color=color, alpha=0.8, legend_label=func_type)
+
+# Calculate and plot derivative if requested
+if show_derivative:
+    dy = np.gradient(y, x)
+    deriv_line = p.line(x, dy, line_width=2, color="gray", alpha=0.6, 
+                       line_dash="dashed", legend_label="derivative")
+
+# Add hover tool
+hover = HoverTool(tooltips=[
+    ("x", "$x{0.00}"),
+    ("y", "$y{0.00}")
+])
+p.add_tools(hover)
+
+# Customize plot
+p.xaxis.axis_label = "x"
+p.yaxis.axis_label = "f(x)"
+p.legend.location = "top_right"
+p.legend.click_policy = "hide"
+
+# Add grid
+p.grid.grid_line_alpha = 0.3
+
+# Add to document
+curdoc().add_root(p)
+
+# Output info
+print(f"✅ Generated plot: {func_name}")
+print(f"📊 Parameters: A={amplitude:.1f}, f={frequency:.1f}, φ={phase:.1f}")
+print(f"🎨 Color: {color}, Derivative: {'shown' if show_derivative else 'hidden'}")
+`;
+            
+            try {
+                const result = await manager.executeAsync('interactive_plot.py', code);
+                
+                const outputEl = document.getElementById('output');
+                outputEl.textContent = result.stdout || 'No output';
+                
+                if (result.error) {
+                    outputEl.textContent += '\nError: ' + result.error.message;
+                    updateStatus('error', '❌ Error generating plot');
+                    return;
+                }
+                
+                // Render Bokeh plot
+                const plotContainer = document.getElementById('bokeh-plot');
+                plotContainer.innerHTML = '';
+                
+                if (result.bokeh_figures && result.bokeh_figures.length > 0) {
+                    const figureJson = JSON.parse(result.bokeh_figures[0]);
+                    const plotDiv = document.createElement('div');
+                    plotDiv.id = 'interactive-plot';
+                    plotContainer.appendChild(plotDiv);
+                    await Bokeh.embed.embed_item(figureJson, 'interactive-plot');
+                    updateStatus('success', '✅ Plot updated successfully!');
+                } else {
+                    plotContainer.innerHTML = '<p style="color: red;">No plot generated</p>';
+                }
+                
+            } catch (error) {
+                console.error('Execution error:', error);
+                document.getElementById('output').textContent = 'Error: ' + error.message;
+                updateStatus('error', '❌ Execution failed');
+            }
+        };
+        
+        // Reset controls to default
+        window.resetControls = function() {
+            document.getElementById('function-select').value = 'sin';
+            document.getElementById('amplitude').value = 1;
+            document.getElementById('frequency').value = 1;
+            document.getElementById('phase').value = 0;
+            document.getElementById('color-select').value = 'navy';
+            document.getElementById('show-derivative').checked = false;
+            
+            document.getElementById('amplitude-value').textContent = '1.0';
+            document.getElementById('frequency-value').textContent = '1.0';
+            document.getElementById('phase-value').textContent = '0.0';
+            
+            updatePlot();
+        };
+        
+        // Randomize parameters
+        window.randomize = function() {
+            const functions = ['sin', 'cos', 'tan', 'exp', 'log'];
+            const colors = ['navy', 'red', 'green', 'purple', 'orange'];
+            
+            document.getElementById('function-select').value = functions[Math.floor(Math.random() * functions.length)];
+            document.getElementById('amplitude').value = (Math.random() * 2.9 + 0.1).toFixed(1);
+            document.getElementById('frequency').value = (Math.random() * 4.9 + 0.1).toFixed(1);
+            document.getElementById('phase').value = (Math.random() * 6.28).toFixed(1);
+            document.getElementById('color-select').value = colors[Math.floor(Math.random() * colors.length)];
+            document.getElementById('show-derivative').checked = Math.random() > 0.5;
+            
+            document.getElementById('amplitude-value').textContent = document.getElementById('amplitude').value;
+            document.getElementById('frequency-value').textContent = document.getElementById('frequency').value;
+            document.getElementById('phase-value').textContent = document.getElementById('phase').value;
+            
+            updatePlot();
+        };
+        
+        // Update status message
+        function updateStatus(type, message) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+            statusEl.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initializeManager();
+        });
+    </script>
+  </body>
+</html>

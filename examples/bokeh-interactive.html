@@ -191,8 +191,9 @@
           <button class="example-btn" onclick="loadExample('simple')">Simple Line Plot</button>
           <button class="example-btn" onclick="loadExample('scatter')">Interactive Scatter</button>
           <button class="example-btn" onclick="loadExample('multi')">Multiple Subplots</button>
-          <button class="example-btn" onclick="loadExample('widgets')">Dashboard Layout</button>
+          <button class="example-btn" onclick="loadExample('dashboard')">Dashboard Layout</button>
           <button class="example-btn" onclick="loadExample('heatmap')">Heatmap</button>
+          <button class="example-btn" style="background: #28a745;" onclick="window.open('bokeh-interactive-widgets.html', '_blank')">🎛️ Interactive Widgets Demo</button>
         </div>
 
         <textarea id="bokeh-code" class="code-editor">
@@ -415,7 +416,7 @@ curdoc().add_root(layout)
 print("✅ Created multiple linked plots!")
 print("🎯 Pan or zoom in one plot - others follow!")`,
 
-            widgets: `# Dashboard Layout with Multiple Visualizations
+            dashboard: `# Dashboard Layout with Multiple Visualizations
 from bokeh.plotting import figure, curdoc
 from bokeh.layouts import column, row, gridplot
 from bokeh.models import Div
