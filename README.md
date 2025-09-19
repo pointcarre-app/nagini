@@ -54,6 +54,7 @@ environments.
 - **📦 Micropip Support** - Install packages from PyPI using micropip (Pyodide only)
 - **🎮 Interactive Input** - Natural `input()` support with queue/callbacks (Pyodide only)
 - **📊 Matplotlib Integration** - Automatic figure capture as base64 images (Pyodide only)
+- **📈 Bokeh Integration** - Interactive plot capture as JSON with full pan/zoom/hover (Pyodide only)
 - **🔗 Remote Module Loading** - Load Python modules from URLs with retry logic (Pyodide only)
 - **🎯 Namespace Isolation** - Complete execution isolation between runs
 - **💬 Structured Data Exchange** - "Missive" system for Python ↔ JavaScript communication
@@ -317,6 +318,89 @@ result.figures.forEach((base64, i) => {
 });
 ```
 
+## Bokeh Visualization
+
+Nagini supports capturing Bokeh plots as JSON for interactive visualization in the browser.
+
+### Basic Setup
+
+```javascript
+// 1. Load Bokeh packages in Pyodide
+const manager = await Nagini.createManager(
+    'pyodide',
+    ['numpy', 'bokeh'],  // Include bokeh in packages
+    [],
+    [],
+    './src/pyodide/worker/worker-dist.js'
+);
+
+// 2. Execute Bokeh code
+const result = await manager.executeAsync("bokeh_plot.py", `
+from bokeh.plotting import figure, curdoc
+from bokeh.models import HoverTool
+
+# Create plot
+p = figure(title="Interactive Plot", width=600, height=400)
+p.line([1, 2, 3, 4, 5], [2, 5, 3, 6, 4], line_width=2)
+
+# Add to document for capture
+curdoc().add_root(p)
+print("Bokeh plot created!")
+`);
+
+// Access captured Bokeh figures (as JSON strings)
+console.log(result.bokeh_figures);  // Array of JSON strings
+```
+
+### Rendering Bokeh Plots (Frontend Requirements)
+
+**⚠️ Important**: To render Bokeh plots interactively, you need to load BokehJS libraries in your HTML:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required: BokehJS libraries for rendering -->
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.2.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.2.min.js"></script>
+</head>
+<body>
+    <div id="bokeh-plot"></div>
+    
+    <script type="module">
+        import { Nagini } from './src/nagini.js';
+        
+        // ... create manager and execute Bokeh code ...
+        
+        // Render the captured Bokeh plot
+        if (result.bokeh_figures && result.bokeh_figures.length > 0) {
+            const figureJson = JSON.parse(result.bokeh_figures[0]);
+            await Bokeh.embed.embed_item(figureJson, 'bokeh-plot');
+        }
+    </script>
+</body>
+</html>
+```
+
+### Key Differences: Matplotlib vs Bokeh
+
+| Feature | Matplotlib | Bokeh |
+|---------|------------|-------|
+| **Output Format** | Base64 PNG images | JSON objects |
+| **Interactivity** | Static images | Interactive plots (pan, zoom, hover) |
+| **Frontend Requirements** | None (uses `<img>` tags) | Requires BokehJS libraries |
+| **Capture Method** | `result.figures` (base64 strings) | `result.bokeh_figures` (JSON strings) |
+| **Display Method** | Set img.src to data URL | Use `Bokeh.embed.embed_item()` |
+
+### Complete Example with Bidirectional Interaction
+
+See `examples/bokeh-interactive-widgets.html` for a full example showing how to:
+- Create HTML controls that pass parameters to Python
+- Generate Bokeh plots based on those parameters
+- Render interactive visualizations
+- Update plots dynamically based on user input
+
 ## Remote Module Loading
 
 ```javascript
@@ -363,10 +447,28 @@ Main Thread                          Blob Web Worker (Cross-Origin Compatible)
 │  ├─ executeAsync    │ Blob Worker │  ├─ Python Env      │
 │  ├─ executeFile     │  Creation   │  ├─ Package Mgmt    │
 │  ├─ queueInput      │             │  ├─ Matplotlib      │
-│  ├─ fs()            │             │  ├─ File Loading    │
-│  └─ Input Callbacks │             │  └─ WebAssembly     │
+│  ├─ fs()            │             │  ├─ Bokeh Capture   │
+│  └─ Input Callbacks │             │  ├─ File Loading    │
+│                     │             │  └─ WebAssembly     │
 └─────────────────────┘             └─────────────────────┘
 ```
+
+### Visualization Capture System
+
+Nagini automatically captures visualization outputs from Python execution:
+
+#### Matplotlib Capture
+- **Method**: `get_figures()` in `capture_system.py`
+- **Process**: Saves plots to BytesIO → Base64 encoding → Returns as strings
+- **Output**: `result.figures` array containing base64 PNG images
+- **Display**: Direct embedding in `<img>` tags
+
+#### Bokeh Capture
+- **Method**: `get_bokeh_figures()` in `capture_system.py`
+- **Process**: Extracts from `curdoc()` → `json_item()` conversion → Returns as JSON strings
+- **Output**: `result.bokeh_figures` array containing JSON representations
+- **Display**: Requires BokehJS library and `Bokeh.embed.embed_item()`
+- **Note**: The worker bundle (`worker-dist.js`) must be rebuilt after modifying capture system
 
 ### Brython Backend (Main Thread Only)
 
@@ -579,6 +681,38 @@ The unified test suite covers all core features:
 - **No external dependencies** - Self-contained system
 
 **📄 For complete license information and compatibility details, see [3RD-PARTY.md](3RD-PARTY.md)**
+
+## Troubleshooting
+
+### Bokeh Plots Not Appearing
+
+1. **Check BokehJS Libraries**: Ensure you've loaded the required BokehJS scripts in your HTML:
+   ```html
+   <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
+   ```
+
+2. **Verify Package Loading**: Include 'bokeh' in the packages array when creating the manager:
+   ```javascript
+   const manager = await Nagini.createManager('pyodide', ['bokeh'], ...);
+   ```
+
+3. **Check Document Root**: Bokeh plots must be added to `curdoc()` to be captured:
+   ```python
+   from bokeh.plotting import curdoc
+   curdoc().add_root(plot)  # Required for capture
+   ```
+
+4. **Rebuild Worker Bundle**: After modifying capture system files, rebuild the worker:
+   ```bash
+   cd src/pyodide/worker
+   npm run build
+   ```
+
+### Empty bokeh_figures Array
+
+- Ensure plots are added to the document before execution ends
+- Check console for Python errors during plot creation
+- Verify Bokeh package version compatibility
 
 ## Performance
 
