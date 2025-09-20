@@ -7,6 +7,11 @@
 - **API Reference:** [https://pointcarre-app.github.io/nagini/api-reference/](https://pointcarre-app.github.io/nagini/api-reference/)
 - **Repository Reference:** [https://pointcarre-app.github.io/nagini/repo_reference/](https://pointcarre-app.github.io/nagini/repo_reference/)
 
+**Interactive Bokeh Examples:**
+- **📊 Bokeh Interactive Demo:** [https://pointcarre-app.github.io/nagini/examples/bokeh-interactive.html](https://pointcarre-app.github.io/nagini/examples/bokeh-interactive.html) - Multiple plot types with pan/zoom/hover
+- **🎛️ Bokeh Bidirectional Widgets:** [https://pointcarre-app.github.io/nagini/examples/bokeh-interactive-widgets.html](https://pointcarre-app.github.io/nagini/examples/bokeh-interactive-widgets.html) - JavaScript controls updating Python plots
+- **🧪 Bokeh Test Example:** [https://pointcarre-app.github.io/nagini/examples/bokeh-test.html](https://pointcarre-app.github.io/nagini/examples/bokeh-test.html) - Simple implementation test
+
 **Python in the Browser via Pyodide WebAssembly**
 
 > [!IMPORTANT]
