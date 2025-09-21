@@ -1,3 +1,9 @@
+# v0.0.24
+
+- **Error Handling** + Docs
+
+
+
 # v0.0.23
 
 - **Error Handling**: Added comprehensive support for error handling in the `PyodideManager`
