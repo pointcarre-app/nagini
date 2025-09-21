@@ -179,12 +179,9 @@ export class PyodideManagerStaticExecutor {
                   setHandleMessage(originalHandler); // Restore original handler
                   
                   const result = executionHistory[executionHistory.length - 1];
-                  // If the result contains an error from Python, reject the promise
-                  if (result && result.error) {
-                      reject(new Error(`Python execution error: ${result.error.message}`));
-                  } else {
-                      resolve(result);
-                  }
+                  // Always resolve with the result, even if it contains Python errors
+                  // This allows the caller to access stderr for full traceback information
+                  resolve(result);
               } else if (data.type === "error") {
                   clearTimeout(timeoutId);
                   setHandleMessage(originalHandler);

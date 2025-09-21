@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Python Error Handling Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+        }
+
+        .test {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .pass {
+            background: #d4edda;
+        }
+
+        .fail {
+            background: #f8d7da;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Python Error Handling Test</h1>
+    <div id="status">Loading Nagini...</div>
+    <div id="results"></div>
+
+    <script type="module">
+        import {
+            Nagini
+        } from './src/nagini.js';
+
+        const statusEl = document.getElementById('status');
+        const resultsEl = document.getElementById('results');
+
+        async function runTest() {
+            try {
+                statusEl.textContent = 'Creating Pyodide manager...';
+
+                const manager = await Nagini.createManager(
+                    'pyodide',
+                    [], // No special packages needed
+                    [], // No micropip packages
+                    [], // No files to load
+                    './src/pyodide/worker/worker-dist.js'
+                );
+
+                statusEl.textContent = 'Waiting for Pyodide to be ready...';
+                await Nagini.waitForReady(manager);
+
+                statusEl.textContent = 'Running tests...';
+
+                // Test 1: ZeroDivisionError
+                const test1 = document.createElement('div');
+                test1.className = 'test';
+                test1.innerHTML = '<h3>Test 1: ZeroDivisionError</h3>';
+                resultsEl.appendChild(test1);
+
+                try {
+                    const result = await manager.executeAsync("zero_div.py", `
+print("About to divide by zero...")
+x = 1 / 0
+print("This won't be printed")
+                    `);
+
+                    // The key test: we should get a result, not a rejection
+                    if (result) {
+                        test1.innerHTML += '<p>✅ Promise resolved (not rejected)</p>';
+
+                        if (result.error) {
+                            test1.innerHTML += `<p>✅ error object present: ${result.error.name}: ${result.error.message}</p>`;
+                        } else {
+                            test1.innerHTML += '<p>❌ No error object found</p>';
+                        }
+
+                        if (result.stderr) {
+                            test1.innerHTML += '<p>✅ stderr contains traceback:</p>';
+                            test1.innerHTML += `<pre>${result.stderr}</pre>`;
+
+                            // Check for specific error details
+                            if (result.stderr.includes('ZeroDivisionError')) {
+                                test1.innerHTML += '<p>✅ Contains "ZeroDivisionError"</p>';
+                            }
+                            if (result.stderr.includes('division by zero')) {
+                                test1.innerHTML += '<p>✅ Contains "division by zero"</p>';
+                            }
+                            if (result.stderr.includes('Traceback')) {
+                                test1.innerHTML += '<p>✅ Contains "Traceback"</p>';
+                            }
+                            if (result.stderr.includes('line')) {
+                                test1.innerHTML += '<p>✅ Contains line information</p>';
+                            }
+                        } else {
+                            test1.innerHTML += '<p>❌ No stderr found</p>';
+                        }
+
+                        if (result.stdout) {
+                            test1.innerHTML += '<p>stdout:</p>';
+                            test1.innerHTML += `<pre>${result.stdout}</pre>`;
+                        }
+
+                        test1.className += ' pass';
+                    } else {
+                        test1.innerHTML += '<p>❌ No result returned</p>';
+                        test1.className += ' fail';
+                    }
+                } catch (error) {
+                    test1.innerHTML += `<p>❌ Promise was rejected (this is the old behavior we fixed): ${error.message}</p>`;
+                    test1.className += ' fail';
+                }
+
+                // Test 2: NameError
+                const test2 = document.createElement('div');
+                test2.className = 'test';
+                test2.innerHTML = '<h3>Test 2: NameError</h3>';
+                resultsEl.appendChild(test2);
+
+                try {
+                    const result = await manager.executeAsync("name_error.py", `
+print("Testing undefined variable...")
+undefined_variable
+                    `);
+
+                    if (result && result.stderr) {
+                        test2.innerHTML += '<p>✅ Got result with stderr:</p>';
+                        test2.innerHTML += `<pre>${result.stderr}</pre>`;
+                        test2.className += ' pass';
+                    } else {
+                        test2.innerHTML += '<p>❌ No stderr in result</p>';
+                        test2.className += ' fail';
+                    }
+                } catch (error) {
+                    test2.innerHTML += `<p>❌ Promise rejected: ${error.message}</p>`;
+                    test2.className += ' fail';
+                }
+
+                // Test 3: Successful execution (no error)
+                const test3 = document.createElement('div');
+                test3.className = 'test';
+                test3.innerHTML = '<h3>Test 3: Successful Execution</h3>';
+                resultsEl.appendChild(test3);
+
+                try {
+                    const result = await manager.executeAsync("success.py", `
+print("This code runs successfully")
+x = 2 + 2
+print(f"Result: {x}")
+                    `);
+
+                    if (result && !result.error && result.stdout) {
+                        test3.innerHTML += '<p>✅ Successful execution:</p>';
+                        test3.innerHTML += `<pre>${result.stdout}</pre>`;
+                        test3.className += ' pass';
+                    } else {
+                        test3.innerHTML += '<p>❌ Unexpected result for successful code</p>';
+                        test3.className += ' fail';
+                    }
+                } catch (error) {
+                    test3.innerHTML += `<p>❌ Promise rejected: ${error.message}</p>`;
+                    test3.className += ' fail';
+                }
+
+                statusEl.textContent = 'Tests complete!';
+
+            } catch (error) {
+                statusEl.textContent = `Error: ${error.message}`;
+                console.error(error);
+            }
+        }
+
+        runTest();
+    </script>
+  </body>
+</html>

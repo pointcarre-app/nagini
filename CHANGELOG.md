@@ -1,3 +1,14 @@
+# v0.0.23
+
+- **Error Handling**: Added comprehensive support for error handling in the `PyodideManager`
+  - **Fix**: Corrected the `captureOutputs` function to properly capture Bokeh figures and errors.
+  - **Fix**: Corrected the `handleMessage` function to properly capture Bokeh figures and errors.
+  - **Fix**: Corrected the `executeAsync` function to properly capture Bokeh figures and errors.
+  - **Fix**: Corrected the `executeFile` function to properly capture Bokeh figures and errors.
+  - **Fix**: Corrected the `executeAsync` function to properly capture Bokeh figures and errors.
+
+
+
 # v0.0.22
 
 - **Bokeh Integration**: Added comprehensive support for Bokeh interactive visualizations

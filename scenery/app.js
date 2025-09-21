@@ -4,6 +4,7 @@ import { NaginiTests } from './tests/nagini-tests.js';
 import { PyodideManagerTests } from './tests/pyodide-manager-tests.js';
 import { FileLoaderTests } from './tests/file-loader-tests.js';
 import { PyodideIntegrationTests } from './tests/pyodide-integration-tests.js';
+import { runPythonErrorHandlingTests } from './tests/python-error-handling-tests.js';
 import { ValidationUtilsTests } from './tests/validation-utils-tests.js';
 import { UtilitiesTests } from './tests/utilities-tests.js';
 import { BrythonManagerTests } from './tests/brython-manager-tests.js';
@@ -215,6 +216,18 @@ async function runAllTests() {
         { id: 'status-integration-5', desc: "5️⃣ advanced matplotlib workflow", func: () => PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager).then(() => window.updateTestStatus('status-integration-5', 'pass')) },
         { id: 'status-integration-6', desc: "6️⃣ micropip package installation", func: () => PyodideIntegrationTests.testMicropipPackageInstallation(manager).then(() => window.updateTestStatus('status-integration-6', 'pass')) },
         { id: 'status-integration-7', desc: "7️⃣ antlr4 and sympy interaction", func: () => PyodideIntegrationTests.testAntlr4AndSympyInteraction(manager).then(() => window.updateTestStatus('status-integration-7', 'pass')) },
+        
+        // Python Error Handling Tests
+        { id: 'status-error-handling-1', desc: "🔴 Python Error Handling - Full traceback capture", func: async () => {
+            const results = await runPythonErrorHandlingTests(manager);
+            // All tests in the suite must pass
+            const allPassed = results.every(r => r.passed !== false);
+            if (allPassed) {
+                window.updateTestStatus('status-error-handling-1', 'pass');
+            } else {
+                throw new Error("Some Python error handling tests failed");
+            }
+        }},
         
         // Validation and Utilities Tests
         { id: 'status-validation-1', desc: "1️⃣ validateArray", func: () => ValidationUtilsTests.test1ValidateArray().then(() => window.updateTestStatus('status-validation-1', 'pass')) },
