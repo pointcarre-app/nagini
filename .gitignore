@@ -1,4 +1,5 @@
 /pyodide-local
+/pyodide-local-needed-for-app
 
 *__pycache__
 *.ipynb_checkpoints
