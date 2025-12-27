@@ -688,6 +688,49 @@
           <td id="status-utilities-3" class="test-status-pending">⏳</td>
         </tr>
 
+        <!-- Pyodide CDN Config Tests -->
+        <tr class="test-group-header">
+          <td colspan="4">
+            <strong>Pyodide CDN Config Tests (Local/Offline Support)</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>1️⃣</td>
+          <td>
+            <code>PyodideCdnConfig</code>
+          </td>
+          <td>
+            <code>test1DefaultCdnUrl()</code>
+            <br />
+            Default CDN URL - No pyodideCdnUrl provided, uses default (backward compatibility)
+          </td>
+          <td id="status-cdn-config-1" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td>2️⃣</td>
+          <td>
+            <code>PyodideCdnConfig</code>
+          </td>
+          <td>
+            <code>test2ExplicitDefaultCdnUrl()</code>
+            <br />
+            Explicit default URL - pyodideCdnUrl set to default value, verifies config storage
+          </td>
+          <td id="status-cdn-config-2" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td>3️⃣</td>
+          <td>
+            <code>PyodideCdnConfig</code>
+          </td>
+          <td>
+            <code>test3LocalPyodidePath()</code>
+            <br />
+            Local Pyodide path - Custom URL for local/offline use (Capacitor/iOS apps)
+          </td>
+          <td id="status-cdn-config-3" class="test-status-pending">⏳</td>
+        </tr>
+
         <!-- CDN Tests -->
         <tr class="test-group-header">
           <td colspan="4">

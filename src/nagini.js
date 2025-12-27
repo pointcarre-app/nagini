@@ -19,7 +19,10 @@ export const Nagini = {
      *                              Array of objects with {url, path} properties
      *                              Supports both local paths and remote URLs (S3, etc.)
      * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
-     * @param {Object} [options={}] - Backend-specific options (e.g. brythonJsPath for Brython)
+     * @param {Object} [options={}] - Backend-specific options
+     * @param {string} [options.pyodideCdnUrl] - Custom Pyodide CDN URL (for local/offline use, e.g., Capacitor apps)
+     * @param {string} [options.brythonJsPath] - Path to Brython JS file (Brython backend only)
+     * @param {string} [options.brythonStdlibPath] - Path to Brython stdlib (Brython backend only)
      * @returns {Manager} New manager instance
      */
     createManager: async (backend = 'pyodide', packages, micropipPackages, filesToLoad, workerPath, options = {}) => {
@@ -42,7 +45,11 @@ export const Nagini = {
         }
         
         const { PyodideManager } = await import('./pyodide/manager/manager.js');
-        return new PyodideManager(packages, micropipPackages, filesToLoad, finalWorkerPath);
+        // Extract Pyodide-specific config options
+        const pyodideConfig = {
+          pyodideCdnUrl: options.pyodideCdnUrl
+        };
+        return new PyodideManager(packages, micropipPackages, filesToLoad, finalWorkerPath, pyodideConfig);
       } else if (backend.toLowerCase() === 'brython') {
         // Brython doesn't require bundled workers - use as-is
         const { BrythonManager } = await import('./brython/manager/manager.js');

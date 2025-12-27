@@ -13,6 +13,7 @@ import { CDNExecutionTests } from './tests/cdn-execution-tests.js';
 import { UMDTests } from './tests/umd-tests.js';
 import { EsmShTests } from './tests/esm-sh-tests.js';
 import { EsmShExecutionTests } from './tests/esm-sh-execution-tests.js';
+import { PyodideCdnConfigTests } from './tests/pyodide-cdn-config-tests.js';
 import './interactive-functions.js';
 
 // Define the files to load explicitly
@@ -169,6 +170,10 @@ async function runAllTests() {
     const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy", "bokeh"];
     const micropipPackages = ["antlr4-python3-runtime"];
     const pyodideWorkerPath = "../src/pyodide/worker/worker-dist.js"; // Use relative path
+    // Local Pyodide path for CDN Config test 3 (requires Pyodide to be downloaded to this location)
+    // To test locally: download Pyodide v0.28.0 to /pyodide-local/ folder
+    // For Capacitor apps, this would be: capacitor://localhost/pyodide/
+    const localPyodidePath = `${window.location.origin}/pyodide-local/`;
     const brythonOptions = {
         brythonJsPath: "../src/brython/lib/brython.js", // Use relative path
         brythonStdlibPath: "../src/brython/lib/brython_stdlib.js" // Use relative path
@@ -237,6 +242,11 @@ async function runAllTests() {
         { id: 'status-utilities-1', desc: "1️⃣ test-utils assert function", func: () => UtilitiesTests.test1TestUtilsAssertFunction().then(() => window.updateTestStatus('status-utilities-1', 'pass')) },
         { id: 'status-utilities-2', desc: "2️⃣ test-utils assertEquals function", func: () => UtilitiesTests.test2TestUtilsEqualsFunction().then(() => window.updateTestStatus('status-utilities-2', 'pass')) },
         { id: 'status-utilities-3', desc: "3️⃣ string manipulation utilities", func: () => UtilitiesTests.test3StringManipulationUtilities().then(() => window.updateTestStatus('status-utilities-3', 'pass')) },
+        
+        // Pyodide CDN Config Tests (Local/Offline Support)
+        { id: 'status-cdn-config-1', desc: "1️⃣ CDN Config - Default URL (no value)", func: () => PyodideCdnConfigTests.test1DefaultCdnUrl(pyodideWorkerPath).then(() => window.updateTestStatus('status-cdn-config-1', 'pass')) },
+        { id: 'status-cdn-config-2', desc: "2️⃣ CDN Config - Explicit default URL", func: () => PyodideCdnConfigTests.test2ExplicitDefaultCdnUrl(pyodideWorkerPath).then(() => window.updateTestStatus('status-cdn-config-2', 'pass')) },
+        { id: 'status-cdn-config-3', desc: "3️⃣ CDN Config - Local Pyodide path", func: () => PyodideCdnConfigTests.test3LocalPyodidePath(pyodideWorkerPath, localPyodidePath).then(() => window.updateTestStatus('status-cdn-config-3', 'pass')) },
         
         // CDN Version Tests
         { id: 'status-cdn-1', desc: "1️⃣ CDN Version - Load from jsDelivr (v0.0.17)", func: () => CDNVersionTests.test1LoadFromCDN('v0.0.17').then(() => window.updateTestStatus('status-cdn-1', 'pass')) },

@@ -120,14 +120,17 @@ async function handleInit(data, workerState) {
     return;
   }
 
-  const { packages, micropipPackages, filesToLoad } = data;
+  const { packages, micropipPackages, filesToLoad, pyodideCdnUrl } = data;
+  
+  // Use provided CDN URL or fall back to default
+  const cdnUrl = pyodideCdnUrl || PYODIDE_WORKER_CONFIG.PYODIDE_CDN;
 
   // Minimal init logging
 
   try {
     // Load Pyodide runtime
-    importScripts(`${PYODIDE_WORKER_CONFIG.PYODIDE_CDN}pyodide.js`);
-    workerState.pyodide = await loadPyodide({ indexURL: PYODIDE_WORKER_CONFIG.PYODIDE_CDN });
+    importScripts(`${cdnUrl}pyodide.js`);
+    workerState.pyodide = await loadPyodide({ indexURL: cdnUrl });
 
     // Using bundled Python modules
 
@@ -222,6 +225,7 @@ export { handleMessage, handleInit, handleExecute, handleFSOperation, handleInpu
  * @property {string[]} packages - Array of package names to install
  * @property {string[]} [micropipPackages] - Optional array of package names to install with micropip
  * @property {Array<FileToLoad>} filesToLoad - Files to load into filesystem
+ * @property {string} [pyodideCdnUrl] - Optional custom Pyodide CDN URL (for local/offline use)
  */
 
 /**

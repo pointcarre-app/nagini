@@ -41,9 +41,11 @@ class PyodideManager {
    * @param {string[]} micropipPackages - Array of Python package names to install with micropip
    * @param {Array<FileToLoad>} filesToLoad - Array of file objects to load into filesystem
    * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
+   * @param {Object} [config={}] - Optional configuration object
+   * @param {string} [config.pyodideCdnUrl] - Custom Pyodide CDN URL (for local/offline use, e.g., Capacitor apps)
    * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
-  constructor(packages, micropipPackages, filesToLoad, workerPath) {
+  constructor(packages, micropipPackages, filesToLoad, workerPath, config = {}) {
     // Minimal logging - constructor called
 
     // Strict type validation using ValidationUtils
@@ -77,6 +79,9 @@ class PyodideManager {
 
     /** @type {string} Path to the bundled web worker file */
     this.workerPath = workerPath;
+
+    /** @type {string|undefined} Custom Pyodide CDN URL (for local/offline use) */
+    this.pyodideCdnUrl = config.pyodideCdnUrl;
 
     /** @type {string|null} Blob URL for cleanup */
     this.blobUrl = null;
@@ -131,6 +136,7 @@ class PyodideManager {
         packages: this.packages,
         micropipPackages: this.micropipPackages,
         filesToLoad: this.filesToLoad,
+        pyodideCdnUrl: this.pyodideCdnUrl,
       });
       
     } catch (error) {

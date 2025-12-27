@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nagini - Local Pyodide Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+        h1 { color: #e94560; margin-bottom: 5px; }
+        .subtitle { color: #6b7280; margin-bottom: 30px; }
+        .config { 
+            background: rgba(255,255,255,0.05); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        .config strong { color: #e94560; }
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #ff6b6b; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .status.loading { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .status.success { background: rgba(16,185,129,0.2); color: #34d399; }
+        .status.error { background: rgba(239,68,68,0.2); color: #f87171; }
+        .output {
+            background: #0a0a15;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+        .figures img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .tests { margin-top: 20px; }
+        .tests button { background: #4158d0; }
+        .tests button:hover { background: #5a6fd6; }
+    </style>
+  </head>
+  <body>
+    <h1>🐍 Local Pyodide Test</h1>
+    <p class="subtitle">Testing Python execution with local Pyodide files (Capacitor/iOS ready)</p>
+
+    <div class="config">
+      <strong>Local Pyodide URL:</strong> <span id="local-url"></span><br>
+      <strong>Worker Path:</strong> ../src/pyodide/worker/worker-dist.js
+    </div>
+
+    <button id="btn-init" onclick="init()">🚀 Initialize Local Pyodide</button>
+
+    <div id="status" class="status" style="display:none;"></div>
+
+    <div class="tests">
+      <button disabled id="btn-basic" onclick="runBasic()">📋 Basic Test</button>
+      <button disabled id="btn-numpy" onclick="runNumpy()">🔢 NumPy Test</button>
+      <button disabled id="btn-plot" onclick="runPlot()">📊 Matplotlib Test</button>
+    </div>
+
+    <div class="output" id="output">Click "Initialize Local Pyodide" to start...</div>
+    <div class="figures" id="figures"></div>
+
+    <script type="module">
+        import { Nagini } from '../src/nagini.js';
+
+        // LOCAL PYODIDE PATH - The whole point of this test
+        const LOCAL_PYODIDE_URL = `${window.location.origin}/pyodide-local/`;
+        const WORKER_PATH = '../src/pyodide/worker/worker-dist.js';
+
+        document.getElementById('local-url').textContent = LOCAL_PYODIDE_URL;
+
+        let manager = null;
+
+        function log(msg) {
+            const o = document.getElementById('output');
+            o.textContent += msg + '\n';
+            o.scrollTop = o.scrollHeight;
+        }
+
+        function status(type, msg) {
+            const s = document.getElementById('status');
+            s.style.display = 'block';
+            s.className = 'status ' + type;
+            s.textContent = msg;
+        }
+
+        function enableTests(on) {
+            document.getElementById('btn-basic').disabled = !on;
+            document.getElementById('btn-numpy').disabled = !on;
+            document.getElementById('btn-plot').disabled = !on;
+        }
+
+        window.init = async function() {
+            document.getElementById('output').textContent = '';
+            document.getElementById('figures').innerHTML = '';
+            document.getElementById('btn-init').disabled = true;
+            
+            status('loading', '⏳ Loading Pyodide from LOCAL path...');
+            log('🔧 Using LOCAL Pyodide: ' + LOCAL_PYODIDE_URL);
+            log('');
+
+            try {
+                const t0 = performance.now();
+                
+                manager = await Nagini.createManager(
+                    'pyodide',
+                    ['numpy', 'matplotlib'],
+                    [],
+                    [],
+                    WORKER_PATH,
+                    { pyodideCdnUrl: LOCAL_PYODIDE_URL }  // 🔑 LOCAL PATH
+                );
+
+                log('⏳ Waiting for Pyodide...');
+                await Nagini.waitForReady(manager, 120000);
+
+                const secs = ((performance.now() - t0) / 1000).toFixed(2);
+                status('success', `✅ Local Pyodide ready in ${secs}s`);
+                log(`✅ Loaded in ${secs}s`);
+                log(`📦 Packages: numpy, matplotlib`);
+                log(`🔑 pyodideCdnUrl: ${manager.pyodideCdnUrl}`);
+                log('');
+                log('🧪 Run tests below!');
+                enableTests(true);
+
+            } catch (e) {
+                status('error', '❌ ' + e.message);
+                log('❌ ERROR: ' + e.message);
+                log('');
+                log('💡 Make sure /pyodide-local/ folder exists with:');
+                log('   - pyodide.js');
+                log('   - pyodide.asm.wasm');
+                log('   - pyodide_py.tar');
+                log('   - packages.json');
+                log('   - numpy/, matplotlib/ packages');
+            }
+            
+            document.getElementById('btn-init').disabled = false;
+        };
+
+        window.runBasic = async function() {
+            document.getElementById('output').textContent = '';
+            log('📋 Basic Test\n');
+            
+            const r = await manager.executeAsync('basic.py', `
+print("Hello from LOCAL Pyodide!")
+print(f"2 + 2 = {2 + 2}")
+print(f"List: {[1,2,3,4,5]}")
+missive({"test": "basic", "ok": True})
+print("✅ Done!")
+            `);
+            
+            log(r.stdout);
+            if (r.missive) log('\n📦 ' + r.missive);
+        };
+
+        window.runNumpy = async function() {
+            document.getElementById('output').textContent = '';
+            log('🔢 NumPy Test\n');
+            
+            const r = await manager.executeAsync('numpy.py', `
+import numpy as np
+print(f"NumPy {np.__version__}")
+a = np.array([1,2,3,4,5])
+print(f"Array: {a}")
+print(f"Mean: {np.mean(a)}")
+print(f"Sum: {np.sum(a)}")
+missive({"numpy": np.__version__, "mean": float(np.mean(a))})
+print("✅ Done!")
+            `);
+            
+            log(r.stdout);
+            if (r.missive) log('\n📦 ' + r.missive);
+        };
+
+        window.runPlot = async function() {
+            document.getElementById('output').textContent = '';
+            document.getElementById('figures').innerHTML = '';
+            log('📊 Matplotlib Test\n');
+            
+            const r = await manager.executeAsync('plot.py', `
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 10, 50)
+plt.figure(figsize=(8,4))
+plt.plot(x, np.sin(x), 'b-', label='sin')
+plt.plot(x, np.cos(x), 'r--', label='cos')
+plt.title('Local Pyodide Plot')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+print("✅ Plot created!")
+missive({"plot": True})
+            `);
+            
+            log(r.stdout);
+            
+            if (r.figures && r.figures.length > 0) {
+                const img = document.createElement('img');
+                img.src = 'data:image/png;base64,' + r.figures[0];
+                document.getElementById('figures').appendChild(img);
+                log('📊 Figure displayed below');
+            }
+        };
+    </script>
+  </body>
+</html>

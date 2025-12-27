@@ -1141,7 +1141,7 @@ function handleInit(_x3, _x4) {
 }
 function _handleInit() {
   _handleInit = worker_handlers_asyncToGenerator(/*#__PURE__*/worker_handlers_regenerator().m(function _callee2(data, workerState) {
-    var packages, micropipPackages, filesToLoad, pythonModules, _i, _pythonModules, module, loader, toLoad, loaded, micropip, _t, _t2;
+    var packages, micropipPackages, filesToLoad, pyodideCdnUrl, cdnUrl, pythonModules, _i, _pythonModules, module, loader, toLoad, loaded, micropip, _t, _t2;
     return worker_handlers_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -1152,13 +1152,14 @@ function _handleInit() {
           worker_handlers_postError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.ALREADY_INITIALIZED);
           return _context2.a(2);
         case 1:
-          packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad; // Minimal init logging
+          packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad, pyodideCdnUrl = data.pyodideCdnUrl; // Use provided CDN URL or fall back to default
+          cdnUrl = pyodideCdnUrl || worker_config_PYODIDE_WORKER_CONFIG.PYODIDE_CDN; // Minimal init logging
           _context2.p = 2;
           // Load Pyodide runtime
-          importScripts("".concat(worker_config_PYODIDE_WORKER_CONFIG.PYODIDE_CDN, "pyodide.js"));
+          importScripts("".concat(cdnUrl, "pyodide.js"));
           _context2.n = 3;
           return loadPyodide({
-            indexURL: worker_config_PYODIDE_WORKER_CONFIG.PYODIDE_CDN
+            indexURL: cdnUrl
           });
         case 3:
           workerState.pyodide = _context2.v;
@@ -1289,6 +1290,7 @@ function _handleInit() {
  * @property {string[]} packages - Array of package names to install
  * @property {string[]} [micropipPackages] - Optional array of package names to install with micropip
  * @property {Array<FileToLoad>} filesToLoad - Files to load into filesystem
+ * @property {string} [pyodideCdnUrl] - Optional custom Pyodide CDN URL (for local/offline use)
  */
 
 /**
