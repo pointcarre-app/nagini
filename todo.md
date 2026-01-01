@@ -1,4 +1,61 @@
 
+# Critical
+
+- input() to aggressively replaced : 
+
+
+
+
+```
+fs.js:353 [FS] Python stderr: Traceback (most recent call last):
+  File "/lib/python313.zip/_pyodide/_base.py", line 597, in eval_code_async
+    await CodeRunner(
+          ~~~~~~~~~~^
+        source,
+        ^^^^^^^
+    ...<5 lines>...
+        optimize=optimize,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/lib/python313.zip/_pyodide/_base.py", line 285, in __init__
+    self.ast = next(self._gen)
+               ~~~~^^^^^^^^^^^
+  File "/lib/python313.zip/_pyodide/_base.py", line 149, in _parse_and_compile_gen
+    mod = compile(source, filename, mode, flags | ast.PyCF_ONLY_AST)
+  File "<exec>", line 40
+    def clean_await input(latex: str) -> str:
+                    ^^^^^
+SyntaxError: expected '('
+
+executeValidation @ fs.js:353
+await in executeValidation
+(anonymous) @ fs.js:499Understand this error
+fs.js:357 [FS] Execution error: {name: 'PythonError', message: 'Unknown execution error'}
+```
+
+```txt
+Perfect! Now we can see the actual error! 🎯
+The Problem
+File "<exec>", line 40    def clean_await input(latex: str) -> str:                    ^^^^^SyntaxError: expected '('
+There's a syntax error in smart_validator.py at line 40. It looks like there's an extra word await in the function definition:
+def clean_await input(latex: str) -> str:  # ❌ WRONG
+Should be:
+def clean_input(latex: str) -> str:  # ✅ CORRECT
+Let me check the file to confirm:
+Wait, the file looks correct! Line 33 is def clean_input(latex: str) -> str: which is fine. But the error says line 40 has def clean_await input(latex: str) -> str:.
+Ah! The issue is with the CACHE!
+The cached script has the old buggy version. When we prefetch scripts during init, we cache them. But if the script file was updated on the server, the cache still has the old broken version.
+The cache needs to be invalidated! Let me check - when the page reloads, does the cache clear? Looking at the code, teachersScriptCache is in the singleton instance which persists across SPA navigations...
+The fix: We need to either:
+Clear the cache on page reload
+Add cache busting (version parameter in URL)
+Or just do a hard refresh to clear the singleton
+For now, the quickest solution is to hard refresh the browser (Cmd+Shift+R or Ctrl+Shift+R) to clear the singleton instance and reload the corrected script.
+```
+
+
+
 # High
 vestigation of the Nagini codebase, here's how you can get precise Python error messages when running code through Nagini:
 
