@@ -174,6 +174,9 @@ async function runAllTests() {
     // To test locally: download Pyodide v0.28.0 to /pyodide-local/ folder
     // For Capacitor apps, this would be: capacitor://localhost/pyodide/
     const localPyodidePath = `${window.location.origin}/pyodide-local/`;
+    // Minimal Pyodide path for CDN Config test 4 (created by scripts/create_minimal_pyodide.py)
+    // Contains only: sympy, pydantic, micropip (~18MB vs ~300MB full)
+    const minimalPyodidePath = `${window.location.origin}/pyodide-local-needed-for-app/`;
     const brythonOptions = {
         brythonJsPath: "../src/brython/lib/brython.js", // Use relative path
         brythonStdlibPath: "../src/brython/lib/brython_stdlib.js" // Use relative path
@@ -247,6 +250,7 @@ async function runAllTests() {
         { id: 'status-cdn-config-1', desc: "1️⃣ CDN Config - Default URL (no value)", func: () => PyodideCdnConfigTests.test1DefaultCdnUrl(pyodideWorkerPath).then(() => window.updateTestStatus('status-cdn-config-1', 'pass')) },
         { id: 'status-cdn-config-2', desc: "2️⃣ CDN Config - Explicit default URL", func: () => PyodideCdnConfigTests.test2ExplicitDefaultCdnUrl(pyodideWorkerPath).then(() => window.updateTestStatus('status-cdn-config-2', 'pass')) },
         { id: 'status-cdn-config-3', desc: "3️⃣ CDN Config - Local Pyodide path", func: () => PyodideCdnConfigTests.test3LocalPyodidePath(pyodideWorkerPath, localPyodidePath).then(() => window.updateTestStatus('status-cdn-config-3', 'pass')) },
+        { id: 'status-cdn-config-4', desc: "4️⃣ CDN Config - Minimal bundle (sympy+pydantic)", func: () => PyodideCdnConfigTests.test4MinimalLocalBundle(pyodideWorkerPath, minimalPyodidePath).then(() => window.updateTestStatus('status-cdn-config-4', 'pass')) },
         
         // CDN Version Tests
         { id: 'status-cdn-1', desc: "1️⃣ CDN Version - Load from jsDelivr (v0.0.17)", func: () => CDNVersionTests.test1LoadFromCDN('v0.0.17').then(() => window.updateTestStatus('status-cdn-1', 'pass')) },

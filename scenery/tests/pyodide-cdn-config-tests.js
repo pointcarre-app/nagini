@@ -195,5 +195,88 @@ export class PyodideCdnConfigTests {
             throw error;
         }
     }
+    
+    /**
+     * Test 4: Minimal local Pyodide bundle (app-ready)
+     * 
+     * Tests the minimal Pyodide bundle created by create_minimal_pyodide.py
+     * Contains only: sympy, pydantic, micropip (for runtime installs)
+     * 
+     * This is the production-ready test for Capacitor/iOS apps.
+     */
+    static async test4MinimalLocalBundle(workerPath, minimalPyodidePath) {
+        const testName = "Minimal local bundle (sympy + pydantic)";
+        logTestStart("PyodideCdnConfig", testName);
+        
+        try {
+            // Create manager with minimal local bundle
+            const manager = await Nagini.createManager(
+                'pyodide',
+                ['sympy', 'pydantic'],  // Packages included in minimal bundle
+                [],
+                [],
+                workerPath,
+                { pyodideCdnUrl: minimalPyodidePath }
+            );
+            
+            // Verify manager was created
+            assert(manager, "Manager should be created");
+            
+            // Verify pyodideCdnUrl is stored correctly
+            assertEquals(
+                manager.pyodideCdnUrl,
+                minimalPyodidePath,
+                "pyodideCdnUrl should match minimal local path"
+            );
+            
+            // Wait for initialization (longer timeout for loading packages)
+            await Nagini.waitForReady(manager, 120000);
+            
+            // Verify manager is ready
+            assert(manager.isReady, "Manager should be ready with minimal bundle");
+            
+            // Test SymPy
+            const sympyResult = await manager.executeAsync(
+                "test_minimal_sympy.py",
+                `import sympy as sp
+x = sp.Symbol('x')
+expr = x**2 + 2*x + 1
+factored = sp.factor(expr)
+print(f"SymPy: {expr} = {factored}")
+missive({"sympy_version": sp.__version__, "factored": str(factored)})`
+            );
+            
+            assert(!sympyResult.error, "SymPy execution should not have errors");
+            assertContains(sympyResult.stdout, "SymPy:", "Should print SymPy result");
+            assertContains(sympyResult.stdout, "(x + 1)**2", "Should factor correctly");
+            
+            // Test Pydantic
+            const pydanticResult = await manager.executeAsync(
+                "test_minimal_pydantic.py",
+                `from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+
+user = User(name="Alice", age=30)
+print(f"Pydantic: {user.model_dump()}")
+missive({"pydantic_ok": True, "user": user.model_dump()})`
+            );
+            
+            assert(!pydanticResult.error, "Pydantic execution should not have errors");
+            assertContains(pydanticResult.stdout, "Pydantic:", "Should print Pydantic result");
+            assertContains(pydanticResult.stdout, "Alice", "Should contain user name");
+            
+            // Cleanup
+            manager.destroy();
+            
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
 }
 
