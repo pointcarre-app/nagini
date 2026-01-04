@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Test page for Nagini v0.0.26 loaded from esm.sh CDN" />
+    <meta name="keywords" content="nagini, pyodide, python, esm.sh, cdn, webassembly" />
+    <title>Nagini v0.0.26 - esm.sh CDN Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .config {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .config strong {
+            color: #e94560;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .status.loading {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .output {
+            background: #0a0a15;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>🐍 Nagini v0.0.26</h1>
+    <p class="subtitle">Testing esm.sh CDN import with ?bundle flag</p>
+
+    <div class="config">
+      <strong>Import URL:</strong>
+      <br />
+      https://esm.sh/gh/pointcarre-app/nagini@v0.0.26/src/nagini.js?bundle
+    </div>
+
+    <div id="status" class="status loading">⏳ Loading Nagini from esm.sh...</div>
+
+    <div class="output" id="output">Loading...</div>
+
+    <script type="module">
+        import * as nagini from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.26/src/nagini.js?bundle';
+
+        const output = document.getElementById('output');
+        const status = document.getElementById('status');
+
+        function log(msg) {
+            output.textContent += msg + '\n';
+            console.log(msg);
+        }
+
+        output.textContent = '';
+
+        try {
+            log('✅ Import successful!');
+            log('');
+            log('📦 nagini module:');
+            log(JSON.stringify(nagini, null, 2));
+            log('');
+            log('🔑 Available exports:');
+            for (const key of Object.keys(nagini)) {
+                log(`  - ${key}: ${typeof nagini[key]}`);
+            }
+
+            if (nagini.Nagini) {
+                log('');
+                log('🐍 Nagini class found!');
+                log('  Methods: ' + Object.getOwnPropertyNames(nagini.Nagini).join(', '));
+            }
+
+            status.className = 'status success';
+            status.textContent = '✅ Nagini loaded successfully from esm.sh!';
+
+        } catch (e) {
+            log('❌ Error: ' + e.message);
+            log(e.stack);
+            status.className = 'status error';
+            status.textContent = '❌ Failed to load: ' + e.message;
+        }
+    </script>
+  </body>
+</html>

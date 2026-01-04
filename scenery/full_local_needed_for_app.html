@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Nagini minimal local Pyodide test with SymPy and Pydantic" />
+    <meta name="keywords" content="nagini, pyodide, sympy, pydantic, local, offline, capacitor" />
+    <title>Nagini - Minimal Local Bundle (SymPy + Pydantic)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .config {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        .config strong {
+            color: #e94560;
+        }
+
+        .bundle-info {
+            background: rgba(233, 69, 96, 0.1);
+            border-left: 3px solid #e94560;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .bundle-info strong {
+            color: #e94560;
+        }
+
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #ff6b6b;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .status.loading {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .output {
+            background: #0a0a15;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+
+        .tests {
+            margin-top: 20px;
+        }
+
+        .tests button {
+            background: #4158d0;
+        }
+
+        .tests button:hover {
+            background: #5a6fd6;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>🐍 Minimal Local Bundle</h1>
+    <p class="subtitle">SymPy + Pydantic only (~18MB) — App-ready for Capacitor/iOS</p>
+
+    <div class="bundle-info">
+      <strong>📦 Included packages:</strong> sympy, pydantic, pydantic_core, micropip, mpmath, pyparsing, typing_extensions, annotated_types, packaging
+    </div>
+
+    <div class="config">
+      <strong>Local Pyodide URL:</strong> <span id="local-url"></span>
+      <br />
+      <strong>Worker Path:</strong> ../src/pyodide/worker/worker-dist.js
+    </div>
+
+    <button id="btn-init" onclick="init()">🚀 Initialize Minimal Pyodide</button>
+
+    <div id="status" class="status" style="display:none;"></div>
+
+    <div class="tests">
+      <button disabled id="btn-basic" onclick="runBasic()">📋 Basic Test</button>
+      <button disabled id="btn-sympy" onclick="runSympy()">🔢 SymPy Test</button>
+      <button disabled id="btn-pydantic" onclick="runPydantic()">✅ Pydantic Test</button>
+    </div>
+
+    <div class="output" id="output">Click "Initialize Minimal Pyodide" to start...</div>
+
+    <script type="module">
+        import {
+            Nagini
+        } from '../src/nagini.js';
+
+        // MINIMAL LOCAL PYODIDE PATH - SymPy + Pydantic only
+        const LOCAL_PYODIDE_URL = `${window.location.origin}/pyodide-local-needed-for-app/`;
+        const WORKER_PATH = '../src/pyodide/worker/worker-dist.js';
+
+        document.getElementById('local-url').textContent = LOCAL_PYODIDE_URL;
+
+        let manager = null;
+
+        function log(msg) {
+            const o = document.getElementById('output');
+            o.textContent += msg + '\n';
+            o.scrollTop = o.scrollHeight;
+        }
+
+        function status(type, msg) {
+            const s = document.getElementById('status');
+            s.style.display = 'block';
+            s.className = 'status ' + type;
+            s.textContent = msg;
+        }
+
+        function enableTests(on) {
+            document.getElementById('btn-basic').disabled = !on;
+            document.getElementById('btn-sympy').disabled = !on;
+            document.getElementById('btn-pydantic').disabled = !on;
+        }
+
+        window.init = async function() {
+            document.getElementById('output').textContent = '';
+            document.getElementById('btn-init').disabled = true;
+
+            status('loading', '⏳ Loading Minimal Pyodide bundle...');
+            log('🔧 Using MINIMAL LOCAL Pyodide: ' + LOCAL_PYODIDE_URL);
+            log('📦 Bundle: SymPy + Pydantic (~18MB)');
+            log('');
+
+            try {
+                const t0 = performance.now();
+
+                manager = await Nagini.createManager(
+                    'pyodide',
+                    ['sympy', 'pydantic'],
+                    [],
+                    [],
+                    WORKER_PATH, {
+                        pyodideCdnUrl: LOCAL_PYODIDE_URL
+                    } // 🔑 MINIMAL LOCAL PATH
+                );
+
+                log('⏳ Waiting for Pyodide...');
+                await Nagini.waitForReady(manager, 120000);
+
+                const secs = ((performance.now() - t0) / 1000).toFixed(2);
+                status('success', `✅ Minimal Pyodide ready in ${secs}s`);
+                log(`✅ Loaded in ${secs}s`);
+                log(`📦 Packages: sympy, pydantic`);
+                log(`🔑 pyodideCdnUrl: ${manager.pyodideCdnUrl}`);
+                log('');
+                log('🧪 Run tests below!');
+                enableTests(true);
+
+            } catch (e) {
+                status('error', '❌ ' + e.message);
+                log('❌ ERROR: ' + e.message);
+                log('');
+                log('💡 Make sure /pyodide-local-needed-for-app/ folder exists with:');
+                log('   - pyodide.js, pyodide.asm.wasm');
+                log('   - pyodide_py.tar, python_stdlib.zip');
+                log('   - sympy-*.whl, pydantic-*.whl');
+                log('   - pyodide-lock.json');
+            }
+
+            document.getElementById('btn-init').disabled = false;
+        };
+
+        window.runBasic = async function() {
+            document.getElementById('output').textContent = '';
+            log('📋 Basic Test\n');
+
+            const r = await manager.executeAsync('basic.py', `
+print("Hello from MINIMAL Pyodide bundle!")
+print(f"2 + 2 = {2 + 2}")
+print(f"List comprehension: {[x**2 for x in range(1, 6)]}")
+missive({"test": "basic", "ok": True})
+print("✅ Done!")
+            `);
+
+            log(r.stdout);
+            if (r.stderr) log('⚠️ ' + r.stderr);
+            if (r.missive) log('\n📦 ' + r.missive);
+        };
+
+        window.runSympy = async function() {
+            document.getElementById('output').textContent = '';
+            log('🔢 SymPy Test\n');
+
+            const r = await manager.executeAsync('sympy_test.py', `
+import sympy as sp
+from sympy import symbols, expand, factor, diff, integrate, solve, simplify
+
+print(f"SymPy version: {sp.__version__}")
+print()
+
+# Define symbols
+x, y = symbols('x y')
+
+# Expand and factor
+expr = (x + y)**3
+print(f"Expression: (x + y)³")
+print(f"Expanded: {expand(expr)}")
+print(f"Factored back: {factor(expand(expr))}")
+print()
+
+# Derivatives
+f = x**3 + 2*x**2 - x + 1
+print(f"f(x) = {f}")
+print(f"f'(x) = {diff(f, x)}")
+print(f"f''(x) = {diff(f, x, 2)}")
+print()
+
+# Integration
+integral = integrate(x**2 + 2*x, x)
+print(f"∫(x² + 2x)dx = {integral}")
+print()
+
+# Solve equation
+solutions = solve(x**2 - 4, x)
+print(f"x² - 4 = 0  →  x = {solutions}")
+
+missive({"sympy": sp.__version__, "solutions": str(solutions)})
+print()
+print("✅ SymPy working!")
+            `);
+
+            log(r.stdout);
+            if (r.stderr) log('⚠️ ' + r.stderr);
+            if (r.missive) log('\n📦 ' + r.missive);
+        };
+
+        window.runPydantic = async function() {
+            document.getElementById('output').textContent = '';
+            log('✅ Pydantic Test\n');
+
+            const r = await manager.executeAsync('pydantic_test.py', `
+from pydantic import BaseModel, Field, ValidationError
+from typing import List, Optional
+import pydantic
+
+print(f"Pydantic version: {pydantic.__version__}")
+print()
+
+# Define a model
+class User(BaseModel):
+    name: str
+    age: int = Field(ge=0, le=150)
+    email: Optional[str] = None
+    scores: List[int] = []
+
+# Create valid instance
+user = User(name="Alice", age=30, email="alice@example.com", scores=[95, 87, 92])
+print(f"Valid user: {user}")
+print(f"  name: {user.name}")
+print(f"  age: {user.age}")
+print(f"  email: {user.email}")
+print(f"  scores: {user.scores}")
+print()
+
+# Test validation
+print("Testing validation...")
+try:
+    bad_user = User(name="Bob", age=-5)  # Invalid age
+except ValidationError as e:
+    print(f"✓ Caught validation error for negative age")
+    print(f"  Error count: {e.error_count()}")
+print()
+
+# JSON serialization
+json_data = user.model_dump_json()
+print(f"JSON export: {json_data}")
+
+# Rebuild from JSON
+user2 = User.model_validate_json(json_data)
+print(f"Rebuilt from JSON: {user2.name}, age {user2.age}")
+
+missive({"pydantic": pydantic.__version__, "user": user.model_dump()})
+print()
+print("✅ Pydantic working!")
+            `);
+
+            log(r.stdout);
+            if (r.stderr) log('⚠️ ' + r.stderr);
+            if (r.missive) log('\n📦 ' + r.missive);
+        };
+    </script>
+  </body>
+</html>
