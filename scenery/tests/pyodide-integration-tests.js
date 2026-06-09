@@ -495,4 +495,85 @@ missive({
             throw error;
         }
     }
+
+    static async testInputNameCollision(manager) {
+        const testName = "input() name collision and globals persistence";
+        logTestStart("PyodideIntegration", testName);
+
+        try {
+            // Cas 1: une fonction dont le nom finit par input, sans aucun vrai
+            // appel input(). Avant le fix, le substring "input(" déclenchait la
+            // réécriture et produisait "some_func__await input()" -> SyntaxError.
+            const result1 = await manager.executeAsync(
+                "input_collision_1",
+                `def some_func__input():
+    return 42
+
+result = some_func__input()
+missive({"result": result})`
+            );
+            assert(!result1.error, "Function named *__input() should run without error");
+            assertEquals(JSON.parse(result1.missive).result, 42, "some_func__input() should return 42");
+
+            // Cas 2: une fonction dont le nom finit par input ET un vrai appel
+            // input() dans le même code. Seul le vrai input() doit être awaité.
+            manager.queueInput("hello");
+            const result2 = await manager.executeAsync(
+                "input_collision_2",
+                `def read_input():
+    return 7
+
+name = input("name? ")
+val = read_input()
+missive({"name": name, "val": val})`
+            );
+            assert(!result2.error, "Mixed real input() + *_input() helper should not error");
+            const missive2 = JSON.parse(result2.missive);
+            assertEquals(missive2.name, "hello", "Real input() should receive the queued value");
+            assertEquals(missive2.val, 7, "read_input() helper should not be corrupted");
+
+            // Cas 3: un appel de méthode obj.input() ne doit pas être awaité.
+            const result3 = await manager.executeAsync(
+                "input_collision_3",
+                `class Widget:
+    def input(self):
+        return 99
+
+w = Widget()
+x = w.input()
+missive({"x": x})`
+            );
+            assert(!result3.error, "Method call obj.input() should not be transformed");
+            assertEquals(JSON.parse(result3.missive).x, 99, "w.input() should return 99");
+
+            // Cas 4: persistance des globals après un run contenant input().
+            // Avant le fix, le code était enveloppé dans async def __run_code()
+            // et les variables top-level restaient locales, donc absentes des
+            // runs suivants. On vérifie ici qu'elles persistent.
+            manager.queueInput("persisted_value");
+            const result4a = await manager.executeAsync(
+                "input_collision_4a",
+                `saved_after_input = input("value? ")
+print(f"got {saved_after_input}")`
+            );
+            assert(!result4a.error, "Run with input() should not error");
+
+            const result4b = await manager.executeAsync(
+                "input_collision_4b",
+                `missive({"saved": saved_after_input})`
+            );
+            assert(!result4b.error, "Following run should see the persisted global");
+            assertEquals(
+                JSON.parse(result4b.missive).saved,
+                "persisted_value",
+                "Top-level variable from an input() run should persist into globals"
+            );
+
+            logTestPass(testName);
+            return { result1, result2, result3, result4a, result4b, testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
 }

@@ -224,7 +224,8 @@ async function runAllTests() {
         { id: 'status-integration-5', desc: "5️⃣ advanced matplotlib workflow", func: () => PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager).then(() => window.updateTestStatus('status-integration-5', 'pass')) },
         { id: 'status-integration-6', desc: "6️⃣ micropip package installation", func: () => PyodideIntegrationTests.testMicropipPackageInstallation(manager).then(() => window.updateTestStatus('status-integration-6', 'pass')) },
         { id: 'status-integration-7', desc: "7️⃣ antlr4 and sympy interaction", func: () => PyodideIntegrationTests.testAntlr4AndSympyInteraction(manager).then(() => window.updateTestStatus('status-integration-7', 'pass')) },
-        
+        { id: 'status-integration-8', desc: "8️⃣ input() name collision and globals persistence", func: () => PyodideIntegrationTests.testInputNameCollision(manager).then(() => window.updateTestStatus('status-integration-8', 'pass')) },
+
         // Python Error Handling Tests
         { id: 'status-error-handling-1', desc: "🔴 Python Error Handling - Full traceback capture", func: async () => {
             const results = await runPythonErrorHandlingTests(manager);

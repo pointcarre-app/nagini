@@ -1,73 +1,90 @@
 # =============================================================================
-# Code Transformation for Async Input Support
+# Code transformation for async input support
 # =============================================================================
-# This module handles transforming Python code to support async input() calls
-# when input handling is detected in user code
+# Le builtin input() est remplacé côté worker par une coroutine asynchrone
+# (voir worker-input.js). Il faut donc préfixer d'un await les vrais appels
+# input(). La détection et la réécriture se font sur l'AST : seuls les appels
+# au builtin input sont touchés, jamais un identifiant comme some_func__input
+# ni une méthode obj.input(). Le code est exécuté par runPythonAsync, qui
+# autorise le await de premier niveau, donc on n'enveloppe pas le code dans une
+# fonction : les variables de niveau module restent dans les globals.
+
+import ast
+
+
+class _AwaitInputTransformer(ast.NodeTransformer):
+    """Préfixe d'un await chaque appel au builtin input() exécutable au niveau
+    module ou dans une fonction async. Les appels situés dans une fonction
+    synchrone ou un lambda sont laissés tels quels : un await y serait invalide
+    et casserait tout le programme."""
+
+    def __init__(self):
+        self.inserted = False
+        self._sync_scope_depth = 0
+
+    def visit_FunctionDef(self, node):
+        self._sync_scope_depth += 1
+        self.generic_visit(node)
+        self._sync_scope_depth -= 1
+        return node
+
+    def visit_Lambda(self, node):
+        self._sync_scope_depth += 1
+        self.generic_visit(node)
+        self._sync_scope_depth -= 1
+        return node
+
+    def visit_ClassDef(self, node):
+        # un corps de classe est un scope propre où await est toujours
+        # invalide, même au niveau module
+        self._sync_scope_depth += 1
+        self.generic_visit(node)
+        self._sync_scope_depth -= 1
+        return node
+
+    def visit_AsyncFunctionDef(self, node):
+        # await redevient valide ici, même quand la fonction async est définie
+        # à l'intérieur d'une fonction synchrone : on repart de zéro
+        saved = self._sync_scope_depth
+        self._sync_scope_depth = 0
+        self.generic_visit(node)
+        self._sync_scope_depth = saved
+        return node
+
+    def visit_Call(self, node):
+        self.generic_visit(node)
+        is_input_builtin = isinstance(node.func, ast.Name) and node.func.id == "input"
+        if is_input_builtin and self._sync_scope_depth == 0:
+            self.inserted = True
+            return ast.Await(value=node)
+        return node
+
+
+def _rewrite_input_calls(code):
+    """Renvoie le code réécrit (await input) si au moins un appel a été
+    transformé, sinon None. Laisse remonter SyntaxError si le code ne parse
+    pas, pour que l'erreur soit reportée telle quelle à l'exécution."""
+    tree = ast.parse(code)
+    transformer = _AwaitInputTransformer()
+    new_tree = transformer.visit(tree)
+    if not transformer.inserted:
+        return None
+    ast.fix_missing_locations(new_tree)
+    return ast.unparse(new_tree)
 
 
 def prepare_code_for_async_input(code):
-    """
-    Transform code to support async input handling.
-    This replaces input() calls with await input() calls since we'll replace
-    the built-in input function with an async version.
-    """
-    lines = []
-    for line in code.split("\n"):
-        # Make sure input() uses await, but don't modify comments
-        has_input = "input(" in line
-        no_await = "await input(" not in line
-        not_comment = not line.strip().startswith("#")
-        if has_input and no_await and not_comment:
-            # Replace the input call with await input
-            line = line.replace("input(", "await input(")
-        lines.append(line)
-    return "\n".join(lines)
+    """Réécrit les appels input() en await input(). Renvoie le code inchangé si
+    aucun vrai appel input() n'est présent ou si le code ne parse pas."""
+    try:
+        rewritten = _rewrite_input_calls(code)
+    except SyntaxError:
+        return code
+    return code if rewritten is None else rewritten
 
 
 def transform_code_for_execution(code):
-    """
-    Transform user code to support input handling only when needed.
-    If code doesn't contain input() calls, execute it directly without transformation.
-    """
-    try:
-        print("🔧 [Python] Transforming code with input() calls")
-        # Check if code contains input() calls
-        if "input(" in code:
-            # Only transform if input() is present
-            prepared = prepare_code_for_async_input(code)
+    """Transforme le code utilisateur pour le support de input() asynchrone.
 
-            # Properly indent the user code for the async function (8 spaces for try block)
-            indented_code = ""
-            for line in prepared.split("\n"):
-                if line.strip():  # Skip empty lines for indentation
-                    indented_code += "        " + line + "\n"  # 8 spaces for try block
-                else:
-                    indented_code += "\n"  # Keep empty lines
-
-            transformed = f"""import asyncio
-
-async def __run_code():
-    try:
-{indented_code}
-    except Exception as e:
-        import traceback
-        error_type = type(e).__name__
-        error_msg = str(e)
-        print(f"Error occurred: " + error_type + ": " + error_msg)
-        traceback.print_exc()
-
-# Execute the async code
-await __run_code()
-"""
-            print(f"🔧 [Python] Transformation complete, code length: {len(transformed)}")
-            return transformed
-        else:
-            # No input() calls, execute code directly without transformation
-            print("🔧 [Python] No input() calls found, returning original code")
-            return code
-    except Exception as e:
-        print(f"🔧 [Python] Error during transformation: {e}")
-        import traceback
-
-        traceback.print_exc()
-        return code  # Return original code if transformation fails
+    Idempotent vis-à-vis du code sans input() : il est renvoyé inchangé."""
+    return prepare_code_for_async_input(code)

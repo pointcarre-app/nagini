@@ -81,7 +81,10 @@ export async function handleExecute(data, workerState) {
  * @returns {Object} - {code: transformedCode, needsAsync: boolean}
  */
 export function transformCodeForExecution(code, workerState) {
-  const needsAsync = code.includes('input(');
+  // Ne match que les vrais appels input(, pas some_func__input( ni obj.input(.
+  // La réécriture réelle est faite côté Python sur l'AST ; ce gate ne décide
+  // que du passage en exécution asynchrone (runPythonAsync).
+  const needsAsync = /(?<![\w.])input\s*\(/.test(code);
 
   if (needsAsync) {
     // Transform the code using Python transformation
