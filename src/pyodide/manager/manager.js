@@ -272,10 +272,11 @@ class PyodideManager {
    * @param {string} filename - Name for this execution (for tracking and debugging)
    * @param {string} code - Python code to execute
    * @param {Object|undefined} [namespace] - Optional namespace object for Python execution
+   * @param {number} [timeoutMs=30000] - Execution timeout in milliseconds (raise it for interactive input() code)
    * @returns {Promise<ExecutionResult>} Promise that resolves with execution result
    * @throws {Error} If manager is not ready or execution times out
    */
-  async executeAsync(filename, code, namespace = undefined) {
+  async executeAsync(filename, code, namespace = undefined, timeoutMs = 30000) {
     // Executions are serialized: the worker and the message interceptor in
     // PyodideManagerStaticExecutor only support one execution at a time, so
     // concurrent calls are queued instead of corrupting each other
@@ -287,7 +288,8 @@ class PyodideManager {
       () => this.getHandleMessage(),
       filename,
       code,
-      namespace
+      namespace,
+      timeoutMs
     );
     const result = this.executionChain.then(run, run);
     this.executionChain = result.catch(() => {});

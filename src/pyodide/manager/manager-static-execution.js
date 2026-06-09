@@ -130,7 +130,8 @@ export class PyodideManagerStaticExecutor {
     getHandleMessage,
     filename,
     code,
-    namespace = undefined
+    namespace = undefined,
+    timeoutMs = 30000
   ) {
     // Comprehensive parameter validation
     ValidationUtils.validateWorker(worker, 'PyodideManagerStaticExecutor');
@@ -155,9 +156,9 @@ export class PyodideManagerStaticExecutor {
           console.warn("Failed to restore handler on timeout:", error.message);
         }
         reject(
-          new Error("⚡ [PyodideManagerStaticExecutor] Execution timeout after 30 seconds")
+          new Error(`⚡ [PyodideManagerStaticExecutor] Execution timeout after ${timeoutMs / 1000} seconds`)
         );
-      }, 30000);
+      }, timeoutMs);
 
       // Save original handler and replace with interceptor
       const originalHandler = getHandleMessage();

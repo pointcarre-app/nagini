@@ -13,9 +13,10 @@ def setup_matplotlib():
         # Use the non-interactive 'agg' backend, which is required for rendering in a worker.
         plt.switch_backend("agg")
 
-        # Disable font caching to prevent issues in the test environment.
+        # Pyodide n'embarque que les polices DejaVu : pointer sans-serif
+        # vers Arial déclenchait un warning findfont sur chaque rendu
         matplotlib.rcParams["font.family"] = "sans-serif"
-        matplotlib.rcParams["font.sans-serif"] = ["Arial"]
+        matplotlib.rcParams["font.sans-serif"] = ["DejaVu Sans"]
         matplotlib.rcParams["text.usetex"] = False
 
         # Override plt.show() to prevent display attempts

@@ -1,3 +1,9 @@
+# v0.0.30
+
+- **Showcase Page**: New `scenery/examples/` page (daisyUI + CodeMirror, dark squared theme) with 12 runnable examples in tabs: matplotlib neon plots, Mandelbrot, Lissajous, random walks, polar roses, traffic heatmap, game of life, interactive Bokeh phyllotaxis, sympy analysis, FFT spectrum, missive() report and interactive stdin
+- **API**: `executeAsync(filename, code, namespace, timeoutMs)` accepts an optional timeout (default 30000 ms) so interactive `input()` code can wait longer than 30 seconds
+- **Fix**: matplotlib in the worker now points `font.sans-serif` to `DejaVu Sans` (bundled in Pyodide) instead of Arial, removing the `findfont` warnings that polluted stderr on every figure
+
 # v0.0.29
 
 - **Audit Fixes**: Corrections following a full codebase audit
