@@ -81,7 +81,7 @@ export async function handleInputResponse(data, workerState) {
 }
 
 // Helper functions
-const postError = (message) => self.postMessage({ type: "error", message: `�� [Worker] ${message}` });
+const postError = (message) => self.postMessage({ type: "error", message: `🐍 [Worker] ${message}` });
 
 /**
  * Validate that worker is properly initialized

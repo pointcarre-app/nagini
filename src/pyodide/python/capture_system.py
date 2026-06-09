@@ -48,8 +48,6 @@ _stderr_capturer = CaptureStream(_stderr_buffer)
 
 def reset_captures() -> None:
     """Reset capture buffers and activate capturing by replacing sys.stdout/stderr"""
-    print("[DEBUG] reset_captures() called. Clearing missive state.")
-
     # Clear buffers
     _stdout_buffer.truncate(0)
     _stdout_buffer.seek(0)
@@ -117,9 +115,6 @@ def get_missive() -> str | None:
         If user code did: missive({"result": 42, "status": "success"})
         This would return: '{"result": 42, "status": "success"}'
     """
-    print(
-        f"[DEBUG] get_missive() called. _nagini_current_missive is: {builtins._nagini_current_missive}"
-    )
     if builtins._nagini_current_missive is None:
         return None  # No missive was stored
     return json.dumps(builtins._nagini_current_missive)  # Convert Python dict to JSON string
@@ -210,10 +205,12 @@ def get_bokeh_figures() -> list:
 
 
 def missive(data):
-    """Send structured data back to JavaScript (once per execution)"""
-    print(f"[DEBUG] missive() called with data: {data}")
+    """Send structured data back to JavaScript (once per execution)
+
+    Runs while user output is being captured, so it must not print:
+    anything written here would end up in the user's stdout.
+    """
     if builtins._nagini_missive_already_called:
-        print("[DEBUG] missive() called more than once. Raising ValueError.")
         raise ValueError(
             "missive() can only be called once per execution. "
             "If you need to send multiple pieces of data, "
@@ -221,7 +218,6 @@ def missive(data):
         )
     builtins._nagini_current_missive = data
     builtins._nagini_missive_already_called = True
-    print(f"[DEBUG] _nagini_current_missive is now set to: {builtins._nagini_current_missive}")
 
 
 # Make the missive function available globally

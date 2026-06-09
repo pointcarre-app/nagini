@@ -12,9 +12,9 @@ class BrythonManager {
   constructor(packages = [], filesToLoad = [], initPath = '', workerPath = '', brythonOptions = {}) {
     console.log('🐍 [BrythonManager] constructor');
 
-    // Lightweight validation (we ignore values but want parity)
-    try { ValidationUtils.validateArray(packages, 'packages', 'BrythonManager'); } catch (_) {}
-    try { ValidationUtils.validateArray(filesToLoad, 'filesToLoad', 'BrythonManager'); } catch (_) {}
+    // Same validation contract as PyodideManager: invalid input throws
+    ValidationUtils.validateArray(packages, 'packages', 'BrythonManager');
+    ValidationUtils.validateArray(filesToLoad, 'filesToLoad', 'BrythonManager');
     
     this.packages = packages;
     this.filesToLoad = filesToLoad;  // Store filesToLoad for API parity

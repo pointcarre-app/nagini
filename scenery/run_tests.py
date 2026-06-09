@@ -51,7 +51,9 @@ def run_scenery_tests():
 
         # Programmatic tests (check JSON output)
         print("Running programmatic tests...")
-        WebDriverWait(driver, 30).until(
+        # La suite complète (chargement Pyodide + tests CDN distants) peut
+        # prendre plusieurs minutes : le JSON n'apparaît qu'à la toute fin
+        WebDriverWait(driver, 300).until(
             lambda d: d.find_element(By.ID, "test-results-json")
             .get_attribute("textContent")
             .strip()

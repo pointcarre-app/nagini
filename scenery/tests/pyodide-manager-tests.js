@@ -203,19 +203,23 @@ missive({"isolation_var": isolation_var, "shared_name": shared_name, "namespace_
         const testName = "input handling";
         logTestStart("PyodideManager", testName);
         try {
-            // Simple test without actual input() calls for now
+            // Real input() roundtrip through the queue
+            manager.queueInput("Nagini");
             const result = await manager.executeAsync(
                 "test_input_handling.py",
-                `print("Input handling system ready")
-missive({"input_system": "ready"})`
+                `name = input("Who? ")
+print(f"hello {name}")
+missive({"input_system": "ready", "name": name})`
             );
             assert(!result.error, "Input handling should not have errors");
-            assertContains(result.stdout, "Input handling system ready", "Should show ready message");
-            
+            assertContains(result.stdout, "hello Nagini", "input() should receive the queued value");
+            assert(!result.stdout.includes("[DEBUG]"), "stdout must not contain [DEBUG] lines");
+
             // Parse missive JSON string to object
             const missiveData = JSON.parse(result.missive);
             assert(missiveData.input_system === "ready", "Should have missive confirmation");
-            
+            assert(missiveData.name === "Nagini", "Missive should carry the input value");
+
             logTestPass(testName);
             return { result, testName };
         } catch (error) {

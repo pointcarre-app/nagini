@@ -1,7 +1,7 @@
 
 # Critical
 
-- input() to aggressively replaced : 
+- [x] input() to aggressively replaced : **RÉSOLU en v0.0.28**. La transformation est maintenant une réécriture AST (`ast.NodeTransformer` dans `code_transformation.py`) : seuls les vrais appels au builtin `input()` reçoivent `await` (plus de corruption de `clean_input`, `some_func__input`, `obj.input()`), les scopes sync/lambda/classe ne sont pas transformés, et le wrapper `async def __run_code()` a disparu (exécution directe via `runPythonAsync`, les globals persistent). Notes d'investigation d'origine conservées ci-dessous.
 
 
 

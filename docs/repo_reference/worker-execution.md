@@ -13,7 +13,7 @@ This file contains the core logic for executing Python code within the Pyodide w
     -   `workerState` (Object): The current state of the worker.
 
 ### `transformCodeForExecution(code, workerState)`
--   **Description:** This function checks if the user's code contains `input()`. If it does, it calls a Python-based transformation function (`transform_code_for_execution` in `code_transformation.py`) to wrap the code in an `async` function. This is a key part of the non-blocking input system.
+-   **Description:** This function checks if the user's code contains a call to the builtin `input()` using the regex gate `/(?<![\w.])input\s*\(/` (which ignores names like `my_input(` or `obj.input(`). If it matches, it calls a Python-based transformation function (`transform_code_for_execution` in `code_transformation.py`) that rewrites the AST so that builtin `input()` calls become `await input()`. The code is not wrapped in a function: it is executed directly via `runPythonAsync` (top-level `await`), so top-level variables persist in the globals. This is a key part of the non-blocking input system.
 -   **Parameters:**
     -   `code` (string): The Python code to transform.
     -   `workerState` (Object): The current state of the worker.

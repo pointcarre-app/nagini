@@ -108,8 +108,8 @@ export class PyodideManagerStaticExecutor {
    * 5. Original handler is restored for future calls
    *
    * WHY THIS IS SAFE:
-   * JavaScript is single-threaded, so only one execution can happen at a time.
-   * No race conditions possible - each call completes before the next starts.
+   * Only one execution may be in flight at a time: PyodideManager.executeAsync
+   * serializes calls through its executionChain before delegating here.
    *
    * @param {Worker} worker - Web worker instance for executing Python code
    * @param {boolean} isReady - Whether Pyodide is ready for execution

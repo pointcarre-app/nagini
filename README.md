@@ -47,6 +47,7 @@ environments.
 - [File Structure](#file-structure)
 - [Testing](#testing)
 - [Dependencies](#dependencies)
+- [Security](#security)
 - [Performance](#performance)
 - [Licensing](#licensing---gnu-affero-general-public-license-v30-agpl-30)
 
@@ -77,12 +78,12 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 ```html
 <script type="module">
     // esm.sh automatically resolves ALL ES6 imports - no configuration needed!
-    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.19/src/nagini.js');
+    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
     const Nagini = naginiModule.Nagini;
     
     // Create manager and start using Python immediately
     const manager = await Nagini.createManager('pyodide', ['numpy'], [], [], 
-        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/pyodide/worker/worker-dist.js');
+        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/worker/worker-dist.js');
     
     await Nagini.waitForReady(manager);
     
@@ -112,7 +113,7 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 **UMD Bundle (Maximum Compatibility):**
 ```html
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/nagini.umd.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.umd.js');
     const Nagini = naginiModule.default || naginiModule;
 </script>
 ```
@@ -122,13 +123,13 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 <script type="importmap">
 {
   "imports": {
-    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/utils/validation.js",
-    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/pyodide/manager/manager.js"
+    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/utils/validation.js",
+    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/manager/manager.js"
   }
 }
 </script>
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.19/src/nagini.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
     const Nagini = naginiModule.Nagini;
 </script>
 ```
@@ -272,7 +273,7 @@ npm run build-dev
 Nagini provides robust, asynchronous support for Python's built-in `input()` function, allowing for both programmatic and user-driven interaction without blocking the main browser thread.
 
 ### How It Works
-1.  **Code Transformation**: Code containing `input()` is automatically converted to an `async` function.
+1.  **Code Transformation**: Code containing `input()` is rewritten at the AST level: only genuine calls to the builtin `input()` are prefixed with `await` (names like `my_input()` or `obj.input()` are untouched, and calls inside sync `def`, `lambda` or class bodies are left as-is). The code is not wrapped in a function: it runs directly via `runPythonAsync` with top-level `await`, so top-level variables persist in the globals between runs.
 2.  **Pause and Wait**: The Python worker pauses execution and sends an `input_required` message to the main thread.
 3.  **Data Provision**: The main thread provides the input from a queue or a user-facing callback.
 4.  **Resume**: The worker receives the input and resumes Python execution.
@@ -718,6 +719,12 @@ The unified test suite covers all core features:
 - Ensure plots are added to the document before execution ends
 - Check console for Python errors during plot creation
 - Verify Bokeh package version compatibility
+
+## Security
+
+Nagini does not apply any sandboxing beyond what the browser and WebAssembly already provide. Python code runs with full access to the Pyodide environment (virtual filesystem, network requests via the browser, `js` module bridge to the page or worker scope). Do not treat Nagini as a security boundary for untrusted code.
+
+`ValidationUtils.checkDangerousPatterns` (in `src/utils/validation.js`) is an opt-in helper that scans code for known risky patterns. It is **not** applied automatically before execution: if you want it, call it yourself before passing code to `executeAsync`. It is a heuristic filter, not a sandbox, and can be bypassed.
 
 ## Performance
 

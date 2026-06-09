@@ -1,3 +1,39 @@
+# v0.0.29
+
+- **Audit Fixes**: Corrections following a full codebase audit
+  - **Fix**: Removed `[DEBUG]` print statements that polluted captured stdout when `missive()` was used
+  - **Fix**: Added `worker.onerror` handler so worker crashes are detected and reported instead of hanging silently
+  - **Fix**: Concurrent `executeAsync` calls are now serialized to prevent interleaved results
+  - **Fix**: Brython parameter validation aligned with the Pyodide backend
+- **Documentation**: Added an honest Security section to the README (no sandboxing beyond the browser/WebAssembly; `ValidationUtils.checkDangerousPatterns` is opt-in, not applied automatically)
+- **Documentation**: Updated pinned CDN URLs in README and docs to the current tag; corrected obsolete descriptions of the `input()` transformation
+
+# v0.0.28
+
+- **input() Rewrite**: Replaced the line-by-line text substitution of `input(` with a proper AST transformation (`ast.NodeTransformer` in `code_transformation.py`)
+  - **Fix**: Only genuine calls to the builtin `input()` are prefixed with `await`; names like `some_func__input()` or `obj.input()` are no longer corrupted
+  - **Scoping**: Calls inside a sync `def`, a `lambda` or a class body are left untouched; calls inside `async def` are transformed
+  - **No Wrapper**: Removed the `async def __run_code()` wrapper; code runs directly via `runPythonAsync` (top-level `await`), so top-level variables now persist in the globals
+  - **Worker**: Detection gate switched from `includes('input(')` to the regex `/(?<![\w.])input\s*\(/` in `worker-execution.js`
+- **Testing**: Added integration test #8 covering name collisions and globals persistence; full scenery suite green (57/57)
+
+# v0.0.27
+
+- **Local Pyodide**: Ensured the minimal 18MB Pyodide folder works for full Nagini usage
+- **Testing**: Added `scenery/full_local_needed_for_app.html` and new scenery entries to validate the minimal local distribution
+
+# v0.0.26
+
+- **Local Pyodide**: Local configuration now covers the full feature set ("local also full")
+- **Documentation**: Added `docs/LOCAL_PYODIDE_CONFIGURATION.md`
+- **Testing**: Extended `pyodide-cdn-config-tests.js` and scenery with local configuration tests
+
+# v0.0.25
+
+- **Local Pyodide**: Full local implementation with a locally served Pyodide distribution (no CDN required)
+- **Tooling**: Added `create_minimal_pyodide.py` to shrink the Pyodide distribution from ~300MB to ~40MB
+- **Testing**: Added `scenery/full_local.html` and CDN/local configuration tests
+
 # v0.0.24
 
 - **Error Handling** + Docs

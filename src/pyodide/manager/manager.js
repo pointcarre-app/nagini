@@ -89,6 +89,9 @@ class PyodideManager {
     // Initialize input state using the input module
     PyodideManagerInput.initializeInputState(this);
 
+    /** @type {Promise<any>} Serialization chain for executeAsync calls */
+    this.executionChain = Promise.resolve();
+
     // Initialize worker asynchronously
     this.initWorker().catch((error) => {
       console.error("🚨 [PyodideManager] Worker initialization failed:", error);
@@ -129,7 +132,22 @@ class PyodideManager {
       
       // Set up message handling
       this.worker.onmessage = (e) => this.handleMessage(e.data);
-      
+
+      // Surface worker crashes (wasm trap, failed import, ...) as error
+      // messages so pending executions reject instead of hanging forever
+      this.worker.onerror = (e) => {
+        this.handleMessage({
+          type: "error",
+          message: `Worker crashed: ${e.message || "unknown error"}`,
+        });
+      };
+      this.worker.onmessageerror = () => {
+        this.handleMessage({
+          type: "error",
+          message: "Worker message could not be deserialized",
+        });
+      };
+
       // Start initialization
       this.worker.postMessage({
         type: "init",
@@ -258,7 +276,10 @@ class PyodideManager {
    * @throws {Error} If manager is not ready or execution times out
    */
   async executeAsync(filename, code, namespace = undefined) {
-    return PyodideManagerStaticExecutor.executeAsync(
+    // Executions are serialized: the worker and the message interceptor in
+    // PyodideManagerStaticExecutor only support one execution at a time, so
+    // concurrent calls are queued instead of corrupting each other
+    const run = () => PyodideManagerStaticExecutor.executeAsync(
       this.worker,
       this.isReady,
       this.executionHistory,
@@ -268,6 +289,9 @@ class PyodideManager {
       code,
       namespace
     );
+    const result = this.executionChain.then(run, run);
+    this.executionChain = result.catch(() => {});
+    return result;
   }
 
   /**

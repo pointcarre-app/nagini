@@ -192,7 +192,7 @@ npm run build-dev
 Nagini provides robust, asynchronous support for Python's built-in `input()` function, allowing for both programmatic and user-driven interaction without blocking the main browser thread.
 
 ### How It Works
-1.  **Code Transformation**: Code containing `input()` is automatically converted to an `async` function.
+1.  **Code Transformation**: Code containing `input()` is rewritten at the AST level: only genuine calls to the builtin `input()` are prefixed with `await` (names like `my_input()` or `obj.input()` are untouched, and calls inside sync `def`, `lambda` or class bodies are left as-is). The code is not wrapped in a function: it runs directly via `runPythonAsync` with top-level `await`, so top-level variables persist in the globals between runs.
 2.  **Pause and Wait**: The Python worker pauses execution and sends an `input_required` message to the main thread.
 3.  **Data Provision**: The main thread provides the input from a queue or a user-facing callback.
 4.  **Resume**: The worker receives the input and resumes Python execution.
