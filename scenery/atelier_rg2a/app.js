@@ -73,6 +73,7 @@ const STORAGE_KEY = 'atelier-rg2a-theme';
 const $ = (id) => document.getElementById(id);
 
 let editor = null;
+let editorAction = null;
 let mapping = structuredClone(ROLES_DEFAUT);
 
 // ------------------------------------------------------------- correspondances
@@ -131,14 +132,9 @@ const canvas = document.createElement('canvas');
 canvas.width = canvas.height = 1;
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-function resolveColor(expr, themeName = null) {
-  if (themeName) probeHost.setAttribute('data-theme', themeName);
-  else probeHost.removeAttribute('data-theme');
-  probe.style.color = 'rgb(0, 0, 0)';
-  probe.style.color = expr;
-  const computed = getComputedStyle(probe).color;
-
-  // double composition (sur blanc puis sur noir) pour retrouver l'alpha
+// Résout une chaîne couleur déjà calculée (rgb, oklch, color-mix…) en sRGB
+// prémultiplié + alpha, par double composition sur blanc puis sur noir.
+function paintResolve(computed) {
   const paint = (bg) => {
     ctx.globalCompositeOperation = 'copy';
     ctx.fillStyle = bg;
@@ -152,6 +148,14 @@ function resolveColor(expr, themeName = null) {
   const b = paint('#000000');
   const alpha = 1 - (w[0] - b[0] + w[1] - b[1] + w[2] - b[2]) / 765;
   return { pre: [b[0], b[1], b[2]], alpha: Math.min(1, Math.max(0, alpha)) };
+}
+
+function resolveColor(expr, themeName = null) {
+  if (themeName) probeHost.setAttribute('data-theme', themeName);
+  else probeHost.removeAttribute('data-theme');
+  probe.style.color = 'rgb(0, 0, 0)';
+  probe.style.color = expr;
+  return paintResolve(getComputedStyle(probe).color);
 }
 
 // Compose une couleur (prémultipliée) sur un fond opaque [r, g, b].
@@ -283,6 +287,100 @@ function renderMatrices() {
   renderScore('editor-score', eRows);
 }
 
+// ------------------------------------------------------------- mise en action
+
+// Couleurs effectives d'un élément rendu : texte (alpha et opacités héritées
+// composés) et fond (remontée du DOM jusqu'à un fond opaque).
+function effectiveColors(el) {
+  const cs = getComputedStyle(el);
+  const fg = paintResolve(cs.color);
+
+  let opacityMul = 1;
+  const layers = [];
+  let node = el;
+  while (node && node.nodeType === 1) {
+    const ns = getComputedStyle(node);
+    opacityMul *= parseFloat(ns.opacity) || 1;
+    const bgc = paintResolve(ns.backgroundColor);
+    if (bgc.alpha > 0) {
+      layers.push(bgc);
+      if (bgc.alpha >= 0.999) break;
+    }
+    node = node.parentElement;
+  }
+  let bg = [255, 255, 255];
+  for (const layer of layers.reverse()) bg = over(layer, bg);
+
+  return {
+    fg: { pre: fg.pre.map((c) => c * opacityMul), alpha: fg.alpha * opacityMul },
+    bg,
+    fontSize: parseFloat(cs.fontSize),
+    weight: parseInt(cs.fontWeight, 10) || 400,
+  };
+}
+
+function annotate(el) {
+  const { fg, bg, fontSize, weight } = effectiveColors(el);
+  const ratio = contrast(over(fg, bg), bg);
+  // texte agrandi au sens WCAG : 24px, ou 18,66px (14pt) en gras
+  const large = fontSize >= 24 || (fontSize >= 18.66 && weight >= 700);
+  const min = el.dataset.min ? parseFloat(el.dataset.min) : large ? 3 : 4.5;
+  const ok = ratio >= min;
+
+  const detail = `${el.dataset.check} · ${Math.round(fontSize)}px/${weight}`
+    + `${large ? ' · grand' : ''} · ${formatRatio(ratio)} · min ${String(min).replace('.', ',')}:1`
+    + ` · ${ok ? levelOf(ratio) : 'sous le seuil'}`;
+
+  const display = getComputedStyle(el).display;
+  const inline = display.startsWith('inline') || el.tagName === 'TH' || el.tagName === 'TD';
+  const chip = document.createElement(inline ? 'span' : 'div');
+  chip.className = (inline ? 'ctr-chip ' : 'ctr-note ') + (ok ? 'ok' : 'ko');
+  chip.textContent = inline ? `${formatRatio(ratio)} ${ok ? levelOf(ratio) : 'KO'}` : detail;
+  chip.title = detail;
+
+  if (el.tagName === 'TH' || el.tagName === 'TD') el.appendChild(chip);
+  else el.insertAdjacentElement('afterend', chip);
+  return ok;
+}
+
+function renderAction() {
+  const specimen = $('specimen');
+  for (const old of specimen.querySelectorAll('.ctr-note, .ctr-chip')) old.remove();
+
+  let ok = 0;
+  const checks = specimen.querySelectorAll('[data-check]');
+  for (const el of checks) {
+    if (annotate(el)) ok += 1;
+  }
+  const badge = $('action-score');
+  badge.textContent = `${ok}/${checks.length} conformes`;
+  badge.className = 'badge badge-sm ' + (ok === checks.length ? 'badge-success' : 'badge-error');
+
+  renderActionParams();
+}
+
+// Les autres paramètres qui comptent pour la lisibilité, lus sur le rendu réel.
+function renderActionParams() {
+  const host = $('action-params');
+  const root = getComputedStyle(document.documentElement);
+  const p = $('specimen').querySelector('p[data-check]');
+  const ps = getComputedStyle(p);
+  const interligne = (parseFloat(ps.lineHeight) / parseFloat(ps.fontSize)).toFixed(2).replace('.', ',');
+  const cm = document.querySelector('#editor-action .CodeMirror');
+  const entries = [
+    ['police texte', ps.fontFamily.split(',')[0].replace(/["']/g, '')],
+    ['police code', cm ? getComputedStyle(cm).fontFamily.split(',')[0].replace(/["']/g, '') : '?'],
+    ['corps', Math.round(parseFloat(ps.fontSize)) + 'px'],
+    ['interligne', '×' + interligne],
+    ['--radius-box', root.getPropertyValue('--radius-box').trim() || '?'],
+    ['--radius-selector', root.getPropertyValue('--radius-selector').trim() || '?'],
+    ['--border', root.getPropertyValue('--border').trim() || '?'],
+  ];
+  host.innerHTML = entries
+    .map(([k, v]) => `<span><span style="opacity:0.55;">${k}</span> ${v}</span>`)
+    .join('');
+}
+
 // ------------------------------------------------------------- thèmes candidats
 
 const STRIP_TOKENS = ['base-100', 'base-200', 'base-300', 'primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
@@ -360,8 +458,10 @@ function applyTheme(name) {
     if (a) a.classList.toggle('menu-active', li.dataset.theme === name);
   }
   if (editor) editor.refresh();
+  if (editorAction) editorAction.refresh();
   renderMatrices();
   renderPair();
+  renderAction();
 }
 
 function buildThemeMenu() {
@@ -398,6 +498,7 @@ function refreshAll() {
   renderMatrices();
   renderCandidates();
   renderPair();
+  renderAction();
 }
 
 function boot() {
@@ -413,6 +514,21 @@ function boot() {
     lineNumbers: true,
     indentUnit: 4,
     scrollbarStyle: 'native',
+  });
+
+  editorAction = window.CodeMirror($('editor-action'), {
+    value: SAMPLE,
+    mode: 'python',
+    theme: 'atelier',
+    lineNumbers: true,
+    indentUnit: 4,
+    viewportMargin: Infinity,
+    scrollbarStyle: 'native',
+  });
+  editorAction.getWrapperElement().dataset.check = 'bloc de code';
+
+  $('action-toggle').addEventListener('change', (e) => {
+    $('specimen').classList.toggle('hide-notes', !e.target.checked);
   });
 
   let saved = 'papier';
