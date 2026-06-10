@@ -1,3 +1,9 @@
+# v0.0.35
+
+- **Arcade Game**: New `scenery/arcade/` page with two game modes for students
+  - **Défis**: 13 data engineering algorithm challenges with holes to fill (exact and logical deduplication, counting, batching, manual GROUP BY, hash join, moving average, top-k with heapq, z-score outliers, Levenshtein distance, Jaccard trigram similarity, haversine GPS distance matrix), validated by hidden tests running in Pyodide, with a timer and personal records in localStorage
+  - **Sprint**: 10 random fill-in-the-blank code snippets against the clock (pure JS, playable while Python boots), with a learning recap at the end
+
 # v0.0.34
 
 - **Pyodide 0.29.4**: Default CDN upgraded from 0.28.0 (Python 3.13.2, fastapi/starlette/httpx/pyarrow/geopandas now available in the distribution); full scenery suite green, local 0.28 bundles still supported

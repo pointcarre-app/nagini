@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="night">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L'arcade du data engineer : défis et sprint</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/daisyui.css" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" crossorigin="anonymous" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    html, body { font-family: 'Source Sans 3', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    .CodeMirror {
+      height: 420px;
+      border-radius: var(--radius-box, 0.5rem);
+      background: var(--color-base-100);
+      color: var(--color-base-content);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+    .cm-s-lycee .CodeMirror-gutters { background: var(--color-base-100); border-right: 1px solid var(--color-base-300); }
+    .cm-s-lycee .CodeMirror-linenumber { color: color-mix(in oklab, var(--color-base-content) 35%, transparent); }
+    .cm-s-lycee .CodeMirror-cursor { border-left: 2px solid var(--color-primary); }
+    .cm-s-lycee .CodeMirror-selected { background: color-mix(in oklab, var(--color-primary) 18%, transparent); }
+    .cm-s-lycee span.cm-comment { color: color-mix(in oklab, var(--color-base-content) 50%, transparent); font-style: italic; }
+    .cm-s-lycee span.cm-keyword { color: var(--color-primary); font-weight: 600; }
+    .cm-s-lycee span.cm-builtin { color: var(--color-secondary); }
+    .cm-s-lycee span.cm-def { color: var(--color-secondary); }
+    .cm-s-lycee span.cm-number { color: var(--color-accent); }
+    .cm-s-lycee span.cm-string { color: var(--color-success); }
+    .cm-s-lycee span.cm-operator { color: var(--color-base-content); }
+    .cm-s-lycee span.cm-variable { color: var(--color-base-content); }
+    .cm-s-lycee span.cm-property { color: var(--color-info); }
+
+    .status-led { width: 9px; height: 9px; display: inline-block; margin-right: 0.5rem; border-radius: 9999px; }
+    .status-led.boot  { background: var(--color-info); animation: pulse 1.2s infinite; }
+    .status-led.busy  { background: var(--color-warning); animation: pulse 0.7s infinite; }
+    .status-led.ready { background: var(--color-success); }
+    .status-led.error { background: var(--color-error); }
+    @keyframes pulse { 50% { opacity: 0.25; } }
+
+    #sprint-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body class="bg-base-200 text-base-content min-h-screen">
+
+  <div class="drawer lg:drawer-open">
+    <input id="page-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col min-h-screen">
+
+      <header class="navbar bg-base-100 border-b border-base-300 sticky top-0 z-20 px-4">
+        <div class="flex-none lg:hidden">
+          <label for="page-drawer" class="btn btn-ghost btn-square" aria-label="ouvrir le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </label>
+        </div>
+        <div class="flex-1 flex items-center gap-4 min-w-0">
+          <span class="font-bold text-lg whitespace-nowrap">L'arcade du data engineer</span>
+          <div class="tabs tabs-box tabs-sm">
+            <button id="tab-defis" class="tab tab-active">défis</button>
+            <button id="tab-sprint" class="tab">sprint ⚡</button>
+          </div>
+        </div>
+        <div class="flex-none flex items-center gap-3">
+          <span class="text-xs flex items-center whitespace-nowrap">
+            <span id="status-led" class="status-led boot"></span>
+            <span id="status-text" class="opacity-70">chargement</span>
+          </span>
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-sm btn-outline gap-2">
+              thème : <span id="theme-label" class="font-semibold">night</span>
+            </div>
+            <ul id="theme-list" tabindex="0" class="dropdown-content menu bg-base-100 border border-base-300 rounded-box z-30 w-44 p-1 shadow-lg max-h-96 overflow-y-auto flex-nowrap"></ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============================ mode défis ============================ -->
+      <main id="mode-defis" class="flex-1 p-4 lg:p-6 max-w-screen-2xl w-full mx-auto">
+
+        <div class="mb-4 flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span id="defi-niveau" class="badge badge-primary badge-sm"></span>
+            </div>
+            <h1 id="defi-titre" class="text-2xl font-bold"></h1>
+            <p id="defi-brief" class="text-sm opacity-75 mt-1 max-w-3xl leading-relaxed"></p>
+          </div>
+          <div class="stats border border-base-300 bg-base-100">
+            <div class="stat py-2 px-6">
+              <div class="stat-title text-xs">chrono</div>
+              <div id="chrono" class="stat-value text-xl mono">0.0 s</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+          <section class="flex flex-col gap-3 min-w-0">
+            <div class="card bg-base-100 border border-base-300 overflow-visible">
+              <div id="editor"></div>
+              <div class="flex items-center gap-2 p-3 border-t border-base-300 flex-wrap">
+                <button id="tester-btn" class="btn btn-primary btn-sm px-6" disabled>Tester</button>
+                <button id="reset-btn" class="btn btn-ghost btn-sm">Réinitialiser</button>
+                <span class="flex-1"></span>
+                <button id="indice-btn" class="btn btn-ghost btn-sm">Indice</button>
+                <button id="solution-btn" class="btn btn-ghost btn-sm opacity-60">Solution</button>
+              </div>
+            </div>
+            <div id="indice-bloc" class="alert alert-info text-sm hidden">
+              <span id="indice-texte"></span>
+            </div>
+          </section>
+
+          <section class="flex flex-col gap-3 min-w-0">
+            <div id="victoire" class="alert alert-success hidden">
+              <span class="text-lg">🏆</span>
+              <span id="victoire-texte" class="font-semibold"></span>
+            </div>
+            <div class="card bg-base-100 border border-base-300">
+              <div class="card-body p-4">
+                <h2 class="text-xs uppercase tracking-widest opacity-60 mono mb-1">tests</h2>
+                <div id="resultats" class="flex flex-col">
+                  <p class="text-sm opacity-60">Complète les <span class="mono">...</span> du code, puis Tester (ou Ctrl+Entrée). Le chrono tourne.</p>
+                </div>
+              </div>
+            </div>
+            <div id="erreur-bloc" class="card bg-base-100 border border-error hidden">
+              <div class="card-body p-4">
+                <h2 class="text-xs uppercase tracking-widest text-error mono mb-1">ton code a levé une erreur</h2>
+                <pre id="erreur-texte" class="mono text-xs whitespace-pre-wrap text-error m-0"></pre>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- ============================ mode sprint ============================ -->
+      <main id="mode-sprint" class="flex-1 p-4 lg:p-6 max-w-3xl w-full mx-auto hidden">
+
+        <div id="sprint-accueil" class="card bg-base-100 border border-base-300">
+          <div class="card-body items-center text-center gap-4 py-12">
+            <h1 class="text-3xl font-bold">Sprint ⚡</h1>
+            <p class="max-w-md opacity-75">10 trous de code, le plus vite possible. Tape ce qui manque à la place du
+              <span class="mono">____</span>, Entrée pour valider. Chaque seconde compte.</p>
+            <p id="sprint-meilleur" class="text-sm opacity-60"></p>
+            <button id="sprint-start" class="btn btn-primary btn-wide">démarrer</button>
+            <p class="text-xs opacity-50">(le sprint marche même pendant que Python charge : c'est du réflexe pur)</p>
+          </div>
+        </div>
+
+        <div id="sprint-jeu" class="hidden flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <span id="sprint-progress" class="badge badge-primary"></span>
+            <span id="sprint-chrono" class="mono text-xl font-bold">0.0 s</span>
+          </div>
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body p-5">
+              <pre id="sprint-code" class="m-0"></pre>
+            </div>
+          </div>
+          <div class="join w-full">
+            <input id="sprint-reponse" type="text" autocomplete="off" spellcheck="false"
+                   placeholder="ce qui va à la place de ____"
+                   class="input input-bordered join-item flex-1 mono text-lg" />
+            <button id="sprint-valider" class="btn btn-primary join-item px-6">Valider</button>
+            <button id="sprint-passer" class="btn btn-ghost join-item">passer</button>
+          </div>
+          <p id="sprint-feedback" class="text-sm h-5"></p>
+        </div>
+
+        <div id="sprint-fin" class="hidden flex flex-col gap-4">
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body items-center text-center gap-2 py-8">
+              <h2 class="text-2xl font-bold">Terminé !</h2>
+              <p id="sprint-score" class="text-3xl font-bold text-primary mono"></p>
+              <p id="sprint-record" class="text-sm opacity-70"></p>
+              <button id="sprint-rejouer" class="btn btn-primary mt-2">rejouer</button>
+            </div>
+          </div>
+          <h3 class="font-bold mt-2">le récap, pour apprendre</h3>
+          <div id="sprint-recap" class="flex flex-col gap-2"></div>
+        </div>
+      </main>
+
+      <footer class="px-6 py-4 text-xs opacity-50 max-w-screen-2xl w-full mx-auto">
+        Nagini, AGPL-3.0. Les tests des défis s'exécutent dans votre navigateur via Pyodide ;
+        les records restent dans votre localStorage, rien ne quitte cette page.
+      </footer>
+    </div>
+
+    <!-- ============================ tiroir latéral ============================ -->
+    <div class="drawer-side z-30">
+      <label for="page-drawer" aria-label="fermer le menu" class="drawer-overlay"></label>
+      <aside class="w-72 min-h-full bg-base-100 border-r border-base-300">
+        <div class="px-4 py-4 border-b border-base-300">
+          <div class="font-bold">Les défis</div>
+          <div class="text-xs opacity-60">du dédoublonnage à la matrice de distances</div>
+        </div>
+        <ul id="sidebar-menu" class="menu menu-sm w-full px-2 py-3"></ul>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
