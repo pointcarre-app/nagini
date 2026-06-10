@@ -1,0 +1,99 @@
+/* Trois thèmes candidats déclarés avec la syntaxe data-theme de daisyUI v5.
+   Objectif RGAA : texte courant >= 7:1 (AAA), toutes les autres paires >= 4,5:1.
+   Chaque valeur a été vérifiée numériquement (WCAG 2.1) avant d'être figée. */
+
+[data-theme="papier"] {
+  color-scheme: light;
+  --color-base-100: #faf7f0;
+  --color-base-200: #f0ece1;
+  --color-base-300: #e3dccb;
+  --color-base-content: #1c1a16;
+  --color-primary: #1e40af;
+  --color-primary-content: #ffffff;
+  --color-secondary: #86198f;
+  --color-secondary-content: #ffffff;
+  --color-accent: #0f766e;
+  --color-accent-content: #ffffff;
+  --color-neutral: #44403c;
+  --color-neutral-content: #fafaf9;
+  --color-info: #075985;
+  --color-info-content: #ffffff;
+  --color-success: #166534;
+  --color-success-content: #ffffff;
+  --color-warning: #854d0e;
+  --color-warning-content: #ffffff;
+  --color-error: #b91c1c;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+[data-theme="encre"] {
+  color-scheme: dark;
+  --color-base-100: #0f1115;
+  --color-base-200: #161a21;
+  --color-base-300: #262d3a;
+  --color-base-content: #e8eaf0;
+  --color-primary: #8ab4ff;
+  --color-primary-content: #0a1020;
+  --color-secondary: #d8b4fe;
+  --color-secondary-content: #1e1030;
+  --color-accent: #5eead4;
+  --color-accent-content: #042f2a;
+  --color-neutral: #9aa4b8;
+  --color-neutral-content: #11151c;
+  --color-info: #7dd3fc;
+  --color-info-content: #082f49;
+  --color-success: #86efac;
+  --color-success-content: #052e16;
+  --color-warning: #fde047;
+  --color-warning-content: #422006;
+  --color-error: #fca5a5;
+  --color-error-content: #450a0a;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+[data-theme="sauge"] {
+  color-scheme: light;
+  --color-base-100: #f3f7f2;
+  --color-base-200: #e6eee4;
+  --color-base-300: #d2e0cf;
+  --color-base-content: #1a221c;
+  --color-primary: #166534;
+  --color-primary-content: #ffffff;
+  --color-secondary: #7c2d12;
+  --color-secondary-content: #ffffff;
+  --color-accent: #1e40af;
+  --color-accent-content: #ffffff;
+  --color-neutral: #374151;
+  --color-neutral-content: #f9fafb;
+  --color-info: #075985;
+  --color-info-content: #ffffff;
+  --color-success: #14532d;
+  --color-success-content: #ffffff;
+  --color-warning: #713f12;
+  --color-warning-content: #ffffff;
+  --color-error: #9f1239;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}

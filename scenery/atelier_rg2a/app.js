@@ -1,0 +1,429 @@
+/**
+ * Atelier RGAA :: logique de la page
+ * Résout les variables sémantiques daisyUI du thème actif (transparences
+ * comprises), calcule les ratios de contraste WCAG et les confronte aux
+ * seuils du RGAA. Les correspondances CodeMirror sont lues depuis l'atelier.
+ */
+
+const CUSTOM_THEMES = ['papier', 'encre', 'sauge'];
+
+const DAISY_THEMES = [
+  'light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate',
+  'synthwave', 'retro', 'cyberpunk', 'valentine', 'halloween', 'garden',
+  'forest', 'aqua', 'lofi', 'pastel', 'fantasy', 'wireframe', 'black',
+  'luxury', 'dracula', 'cmyk', 'autumn', 'business', 'acid', 'lemonade',
+  'night', 'coffee', 'winter', 'dim', 'nord', 'sunset', 'caramellatte',
+  'abyss', 'silk',
+];
+
+const ALL_THEMES = [...CUSTOM_THEMES, ...DAISY_THEMES];
+
+const COLOR_FAMILIES = ['primary', 'secondary', 'accent', 'neutral', 'info', 'success', 'warning', 'error'];
+const ALL_TOKENS = [
+  'base-100', 'base-200', 'base-300', 'base-content',
+  ...COLOR_FAMILIES.flatMap((c) => [c, `${c}-content`]),
+];
+
+// Mêmes rôles et mêmes défauts que l'atelier : la clé localStorage est partagée.
+const ATELIER_KEY = 'atelier-theme-builder-v1';
+const ROLES_DEFAUT = {
+  editorBg:     { token: 'base-100',     mix: 100 },
+  editorFg:     { token: 'base-content', mix: 100 },
+  gutterBg:     { token: 'base-100',     mix: 100 },
+  gutterBorder: { token: 'base-300',     mix: 100 },
+  lineNumbers:  { token: 'base-content', mix: 35 },
+  cursor:       { token: 'primary',      mix: 100 },
+  selection:    { token: 'primary',      mix: 18 },
+  comment:      { token: 'base-content', mix: 50 },
+  keyword:      { token: 'primary',      mix: 100 },
+  builtin:      { token: 'secondary',    mix: 100 },
+  def:          { token: 'secondary',    mix: 100 },
+  number:       { token: 'accent',       mix: 100 },
+  string:       { token: 'success',      mix: 100 },
+  operator:     { token: 'base-content', mix: 100 },
+  variable:     { token: 'base-content', mix: 100 },
+  property:     { token: 'info',         mix: 100 },
+  meta:         { token: 'warning',      mix: 100 },
+};
+const SYNTAX_ROLES = [
+  ['comment', 'commentaire'], ['keyword', 'mot-clé'], ['builtin', 'fonction native'],
+  ['def', 'définition'], ['number', 'nombre'], ['string', 'chaîne'],
+  ['operator', 'opérateur'], ['variable', 'variable'], ['property', 'attribut'],
+  ['meta', 'décorateur'],
+];
+
+const SAMPLE = `# dichotomie sur une liste triée
+def cherche(valeurs, cible):
+    """Renvoie un indice ou None."""
+    gauche, droite = 0, len(valeurs) - 1
+    while gauche <= droite:
+        milieu = (gauche + droite) // 2
+        if valeurs[milieu] == cible:
+            return milieu
+        if valeurs[milieu] < cible:
+            gauche = milieu + 1
+        else:
+            droite = milieu - 1
+    return None
+
+print(cherche([1, 3, 5, 8, 13], 8))
+`;
+
+const STORAGE_KEY = 'atelier-rg2a-theme';
+const $ = (id) => document.getElementById(id);
+
+let editor = null;
+let mapping = structuredClone(ROLES_DEFAUT);
+
+// ------------------------------------------------------------- correspondances
+
+function loadMapping() {
+  mapping = structuredClone(ROLES_DEFAUT);
+  try {
+    const raw = localStorage.getItem(ATELIER_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    for (const key of Object.keys(ROLES_DEFAUT)) {
+      const m = saved.mapping && saved.mapping[key];
+      if (m && ALL_TOKENS.includes(m.token) && m.mix >= 5 && m.mix <= 100) {
+        mapping[key] = { token: m.token, mix: Math.round(m.mix) };
+      }
+    }
+  } catch (_) { /* défauts */ }
+}
+
+function cssValue({ token, mix }) {
+  const v = `var(--color-${token})`;
+  return mix >= 100 ? v : `color-mix(in oklab, ${v} ${mix}%, transparent)`;
+}
+
+function buildEditorCss() {
+  const m = (key) => cssValue(mapping[key]);
+  return `.cm-s-atelier.CodeMirror { background: ${m('editorBg')}; color: ${m('editorFg')}; }
+.cm-s-atelier .CodeMirror-gutters { background: ${m('gutterBg')}; border-right: 1px solid ${m('gutterBorder')}; }
+.cm-s-atelier .CodeMirror-linenumber { color: ${m('lineNumbers')}; }
+.cm-s-atelier .CodeMirror-cursor { border-left: 2px solid ${m('cursor')}; }
+.cm-s-atelier .CodeMirror-selected,
+.cm-s-atelier.CodeMirror-focused .CodeMirror-selected { background: ${m('selection')}; }
+.cm-s-atelier span.cm-comment { color: ${m('comment')}; font-style: italic; }
+.cm-s-atelier span.cm-keyword { color: ${m('keyword')}; font-weight: 600; }
+.cm-s-atelier span.cm-builtin { color: ${m('builtin')}; }
+.cm-s-atelier span.cm-def { color: ${m('def')}; }
+.cm-s-atelier span.cm-number { color: ${m('number')}; }
+.cm-s-atelier span.cm-string { color: ${m('string')}; }
+.cm-s-atelier span.cm-operator { color: ${m('operator')}; }
+.cm-s-atelier span.cm-variable { color: ${m('variable')}; }
+.cm-s-atelier span.cm-property { color: ${m('property')}; }
+.cm-s-atelier span.cm-meta { color: ${m('meta')}; }`;
+}
+
+// ------------------------------------------------------------- moteur couleur
+
+// Sonde DOM : un conteneur dont on peut forcer le data-theme, un canvas 1px
+// pour résoudre n'importe quelle expression CSS en sRGB (alpha compris).
+const probeHost = document.createElement('div');
+probeHost.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;';
+const probe = document.createElement('div');
+probeHost.appendChild(probe);
+document.body.appendChild(probeHost);
+
+const canvas = document.createElement('canvas');
+canvas.width = canvas.height = 1;
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+function resolveColor(expr, themeName = null) {
+  if (themeName) probeHost.setAttribute('data-theme', themeName);
+  else probeHost.removeAttribute('data-theme');
+  probe.style.color = 'rgb(0, 0, 0)';
+  probe.style.color = expr;
+  const computed = getComputedStyle(probe).color;
+
+  // double composition (sur blanc puis sur noir) pour retrouver l'alpha
+  const paint = (bg) => {
+    ctx.globalCompositeOperation = 'copy';
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 1, 1);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = computed;
+    ctx.fillRect(0, 0, 1, 1);
+    return ctx.getImageData(0, 0, 1, 1).data;
+  };
+  const w = paint('#ffffff');
+  const b = paint('#000000');
+  const alpha = 1 - (w[0] - b[0] + w[1] - b[1] + w[2] - b[2]) / 765;
+  return { pre: [b[0], b[1], b[2]], alpha: Math.min(1, Math.max(0, alpha)) };
+}
+
+// Compose une couleur (prémultipliée) sur un fond opaque [r, g, b].
+function over(fg, bgRgb) {
+  return [0, 1, 2].map((i) => fg.pre[i] + (1 - fg.alpha) * bgRgb[i]);
+}
+
+function luminance([r, g, b]) {
+  const lin = (c) => {
+    const s = c / 255;
+    return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+function contrast(rgbA, rgbB) {
+  const [hi, lo] = [luminance(rgbA), luminance(rgbB)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+function levelOf(ratio) {
+  if (ratio >= 7) return 'AAA';
+  if (ratio >= 4.5) return 'AA';
+  if (ratio >= 3) return 'AA grand';
+  return 'échec';
+}
+
+function formatRatio(r) {
+  return r.toFixed(2).replace('.', ',') + ':1';
+}
+
+// ------------------------------------------------------------- les deux matrices
+
+const tokenVar = (t) => `var(--color-${t})`;
+
+function interfacePairs(themeName = null) {
+  const white = [255, 255, 255];
+  const tok = (t) => resolveColor(tokenVar(t), themeName);
+  const bg100 = over(tok('base-100'), white);
+  const rows = [];
+  const push = (label, fgRes, bgRgb, min, fgExpr, bgExpr) => {
+    rows.push({ label, min, ratio: contrast(over(fgRes, bgRgb), bgRgb), fgExpr, bgExpr });
+  };
+  for (const [b, min] of [['base-100', 7], ['base-200', 7], ['base-300', 4.5]]) {
+    push(`base-content / ${b}`, tok('base-content'), over(tok(b), white), min,
+      tokenVar('base-content'), tokenVar(b));
+  }
+  for (const c of COLOR_FAMILIES) {
+    push(`${c}-content / ${c}`, tok(`${c}-content`), over(tok(c), white), 4.5,
+      tokenVar(`${c}-content`), tokenVar(c));
+    push(`${c} / base-100`, tok(c), bg100, 4.5, tokenVar(c), tokenVar('base-100'));
+  }
+  return rows;
+}
+
+function editorPairs(themeName = null) {
+  const white = [255, 255, 255];
+  const res = (key) => resolveColor(cssValue(mapping[key]), themeName);
+  const pageBg = over(resolveColor(tokenVar('base-100'), themeName), white);
+  const editorBg = over(res('editorBg'), pageBg);
+  const gutterBg = over(res('gutterBg'), editorBg);
+  const selectionBg = over(res('selection'), editorBg);
+
+  const rows = [];
+  const push = (label, fgRes, bgRgb, min, fgExpr, bgExpr) => {
+    rows.push({ label, min, ratio: contrast(over(fgRes, bgRgb), bgRgb), fgExpr, bgExpr });
+  };
+  push('texte / fond', res('editorFg'), editorBg, 4.5, cssValue(mapping.editorFg), cssValue(mapping.editorBg));
+  push('numéros de ligne / gouttière', res('lineNumbers'), gutterBg, 4.5, cssValue(mapping.lineNumbers), cssValue(mapping.gutterBg));
+  push('curseur / fond (composant)', res('cursor'), editorBg, 3, cssValue(mapping.cursor), cssValue(mapping.editorBg));
+  push('bord gouttière / fond (composant)', res('gutterBorder'), gutterBg, 3, cssValue(mapping.gutterBorder), cssValue(mapping.gutterBg));
+  push('texte / sélection', res('editorFg'), selectionBg, 4.5, cssValue(mapping.editorFg), cssValue(mapping.selection));
+  for (const [key, label] of SYNTAX_ROLES) {
+    push(`${label} / fond`, res(key), editorBg, 4.5, cssValue(mapping[key]), cssValue(mapping.editorBg));
+  }
+  return rows;
+}
+
+function countFails(themeName) {
+  const fails = (rows) => rows.filter((r) => r.ratio < r.min).length;
+  return {
+    interface: fails(interfacePairs(themeName)),
+    editor: fails(editorPairs(themeName)),
+  };
+}
+
+// ------------------------------------------------------------- rendu
+
+function badgeFor(row) {
+  const level = levelOf(row.ratio);
+  const conforme = row.ratio >= row.min;
+  const cls = !conforme ? 'badge-error'
+    : row.ratio >= 7 ? 'badge-success'
+    : 'badge-success badge-soft';
+  return `<span class="badge badge-sm ${cls}">${conforme ? level : 'sous le seuil'}</span>`;
+}
+
+function renderTable(hostId, rows) {
+  const host = $(hostId);
+  host.innerHTML = '';
+  for (const row of rows) {
+    const div = document.createElement('div');
+    div.className = 'contrast-row';
+    div.innerHTML = `
+      <span class="contrast-sample" style="color: ${row.fgExpr}; background: ${row.bgExpr};">Aa</span>
+      <span class="contrast-label">
+        <span class="pair mono">${row.label}</span>
+        <span class="min"> · min ${String(row.min).replace('.', ',')}:1</span>
+      </span>
+      <span class="contrast-ratio">${formatRatio(row.ratio)}</span>
+      <span class="contrast-badge">${badgeFor(row)}</span>`;
+    host.appendChild(div);
+  }
+}
+
+function renderScore(id, rows) {
+  const ok = rows.filter((r) => r.ratio >= r.min).length;
+  const badge = $(id);
+  badge.textContent = `${ok}/${rows.length} conformes`;
+  badge.className = 'badge badge-sm ' + (ok === rows.length ? 'badge-success' : 'badge-error');
+}
+
+function renderMatrices() {
+  const iRows = interfacePairs();
+  const eRows = editorPairs();
+  renderTable('interface-table', iRows);
+  renderTable('editor-table', eRows);
+  renderScore('interface-score', iRows);
+  renderScore('editor-score', eRows);
+}
+
+// ------------------------------------------------------------- thèmes candidats
+
+const STRIP_TOKENS = ['base-100', 'base-200', 'base-300', 'primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
+
+function renderCandidates() {
+  const host = $('candidates');
+  host.innerHTML = '';
+  for (const name of CUSTOM_THEMES) {
+    const fails = countFails(name);
+    const card = document.createElement('div');
+    card.className = 'candidate';
+    card.setAttribute('data-theme', name); // les variables du candidat s'appliquent ici
+    card.style.background = 'var(--color-base-100)';
+    card.style.color = 'var(--color-base-content)';
+    card.innerHTML = `
+      <div class="strip">${STRIP_TOKENS.map((t) => `<span style="background: var(--color-${t});"></span>`).join('')}</div>
+      <div class="candidate-head">
+        <span class="font-semibold">${name}</span>
+        <span class="flex items-center gap-2">
+          <span class="badge badge-sm ${fails.interface === 0 ? 'badge-success' : 'badge-error'}">
+            interface ${fails.interface === 0 ? 'conforme' : fails.interface + ' KO'}
+          </span>
+          <span class="badge badge-sm badge-soft ${fails.editor === 0 ? 'badge-success' : 'badge-warning'}">
+            éditeur ${fails.editor === 0 ? 'conforme' : fails.editor + ' KO'}
+          </span>
+          <button class="btn btn-xs btn-primary" data-activate="${name}">activer</button>
+        </span>
+      </div>`;
+    host.appendChild(card);
+  }
+  for (const btn of host.querySelectorAll('[data-activate]')) {
+    btn.addEventListener('click', () => applyTheme(btn.dataset.activate));
+  }
+}
+
+// ------------------------------------------------------------- paire libre
+
+function buildPairSelects() {
+  for (const [id, initial] of [['pair-fg', 'base-content'], ['pair-bg', 'base-100']]) {
+    const select = $(id);
+    for (const token of ALL_TOKENS) {
+      const opt = document.createElement('option');
+      opt.value = token;
+      opt.textContent = token;
+      opt.selected = token === initial;
+      select.appendChild(opt);
+    }
+    select.addEventListener('change', renderPair);
+  }
+}
+
+function renderPair() {
+  const fg = $('pair-fg').value;
+  const bg = $('pair-bg').value;
+  const white = [255, 255, 255];
+  const bgRgb = over(resolveColor(tokenVar(bg)), white);
+  const ratio = contrast(over(resolveColor(tokenVar(fg)), bgRgb), bgRgb);
+  const sample = $('pair-sample');
+  sample.style.color = tokenVar(fg);
+  sample.style.background = tokenVar(bg);
+  $('pair-ratio').textContent = formatRatio(ratio);
+  const level = levelOf(ratio);
+  $('pair-badge').textContent = level;
+  $('pair-badge').className = 'badge ' + (ratio >= 7 ? 'badge-success' : ratio >= 4.5 ? 'badge-success badge-soft' : ratio >= 3 ? 'badge-warning' : 'badge-error');
+}
+
+// ------------------------------------------------------------- thème actif
+
+function applyTheme(name) {
+  document.documentElement.setAttribute('data-theme', name);
+  try { localStorage.setItem(STORAGE_KEY, name); } catch (_) { /* privé */ }
+  $('theme-label').textContent = name;
+  for (const li of $('theme-list').children) {
+    const a = li.querySelector('a');
+    if (a) a.classList.toggle('menu-active', li.dataset.theme === name);
+  }
+  if (editor) editor.refresh();
+  renderMatrices();
+  renderPair();
+}
+
+function buildThemeMenu() {
+  const list = $('theme-list');
+  const addTitle = (text) => {
+    const li = document.createElement('li');
+    li.className = 'menu-title';
+    li.textContent = text;
+    list.appendChild(li);
+  };
+  const addTheme = (t) => {
+    const li = document.createElement('li');
+    li.dataset.theme = t;
+    const a = document.createElement('a');
+    a.textContent = t;
+    a.addEventListener('click', () => {
+      applyTheme(t);
+      document.activeElement.blur(); // referme le dropdown
+    });
+    li.appendChild(a);
+    list.appendChild(li);
+  };
+  addTitle('candidats');
+  CUSTOM_THEMES.forEach(addTheme);
+  addTitle('daisyui');
+  DAISY_THEMES.forEach(addTheme);
+}
+
+// ------------------------------------------------------------- démarrage
+
+function refreshAll() {
+  loadMapping();
+  $('live-theme').textContent = buildEditorCss();
+  renderMatrices();
+  renderCandidates();
+  renderPair();
+}
+
+function boot() {
+  loadMapping();
+  buildThemeMenu();
+  buildPairSelects();
+  $('live-theme').textContent = buildEditorCss();
+
+  editor = window.CodeMirror($('editor'), {
+    value: SAMPLE,
+    mode: 'python',
+    theme: 'atelier',
+    lineNumbers: true,
+    indentUnit: 4,
+    scrollbarStyle: 'native',
+  });
+
+  let saved = 'papier';
+  try { saved = localStorage.getItem(STORAGE_KEY) || 'papier'; } catch (_) { /* privé */ }
+  applyTheme(ALL_THEMES.includes(saved) ? saved : 'papier');
+  renderCandidates();
+
+  // les réglages changés dans l'atelier (autre onglet) se répercutent ici
+  window.addEventListener('storage', (e) => {
+    if (e.key === ATELIER_KEY) refreshAll();
+  });
+}
+
+boot();
