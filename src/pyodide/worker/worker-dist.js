@@ -18,7 +18,7 @@ var worker_config_PYODIDE_WORKER_CONFIG = {
    * Pyodide CDN URL for loading runtime
    * @type {string}
    */
-  PYODIDE_CDN: "https://cdn.jsdelivr.net/pyodide/v0.28.0/full/",
+  PYODIDE_CDN: "https://cdn.jsdelivr.net/pyodide/v0.29.4/full/",
   /**
    * Centralized messages for consistent error reporting and logging
    * @type {WorkerMessages}
@@ -166,58 +166,40 @@ function _handleExecute() {
           result = transformCodeForExecution(code, workerState);
           workerState.pyodide.runPython("reset_captures()");
 
-          // Execute with or without namespace
+          // Always execute through runPythonAsync: it handles synchronous code
+          // identically and enables top-level await in any user code (asyncio,
+          // httpx/ASGI, transformed input() calls, ...)
           if (!(namespace !== undefined)) {
-            _context.n = 8;
+            _context.n = 6;
             break;
           }
           pyodideNamespace = workerState.pyodide.toPy(namespace);
           _context.p = 3;
-          if (!result.needsAsync) {
-            _context.n = 5;
-            break;
-          }
           _context.n = 4;
           return workerState.pyodide.runPythonAsync(result.code, {
             globals: pyodideNamespace
           });
         case 4:
-          _context.n = 6;
-          break;
-        case 5:
-          workerState.pyodide.runPython(result.code, {
-            globals: pyodideNamespace
-          });
-        case 6:
-          _context.p = 6;
+          _context.p = 4;
           pyodideNamespace.destroy();
-          return _context.f(6);
-        case 7:
-          _context.n = 11;
+          return _context.f(4);
+        case 5:
+          _context.n = 7;
           break;
-        case 8:
-          if (!result.needsAsync) {
-            _context.n = 10;
-            break;
-          }
-          _context.n = 9;
+        case 6:
+          _context.n = 7;
           return workerState.pyodide.runPythonAsync(result.code);
-        case 9:
-          _context.n = 11;
-          break;
-        case 10:
-          workerState.pyodide.runPython(result.code);
-        case 11:
+        case 7:
           _captureOutputs = captureOutputs(workerState.pyodide);
           stdout = _captureOutputs.stdout;
           stderr = _captureOutputs.stderr;
           missive = _captureOutputs.missive;
           figures = _captureOutputs.figures;
           bokeh_figures = _captureOutputs.bokeh_figures;
-          _context.n = 13;
+          _context.n = 9;
           break;
-        case 12:
-          _context.p = 12;
+        case 8:
+          _context.p = 8;
           _t = _context.v;
           error = {
             name: _t.name || "PythonError",
@@ -228,7 +210,7 @@ function _handleExecute() {
           stderr = _captureOutputs2.stderr;
           figures = _captureOutputs2.figures;
           bokeh_figures = _captureOutputs2.bokeh_figures;
-        case 13:
+        case 9:
           // 🐍 POST EXECUTION RESULTS (always logged with snake emoji)
           console.log("🐍 Worker execution result:", {
             filename: filename,
@@ -251,10 +233,10 @@ function _handleExecute() {
             time: Date.now() - start,
             executedWithNamespace: namespace !== undefined
           });
-        case 14:
+        case 10:
           return _context.a(2);
       }
-    }, _callee, null, [[3,, 6, 7], [2, 12]]);
+    }, _callee, null, [[3,, 4, 5], [2, 8]]);
   }));
   return _handleExecute.apply(this, arguments);
 }

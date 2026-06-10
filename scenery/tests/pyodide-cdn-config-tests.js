@@ -20,7 +20,7 @@ import { Nagini } from '../../src/nagini.js';
 export class PyodideCdnConfigTests {
     
     // Default CDN URL (must match worker-config.js)
-    static DEFAULT_CDN_URL = "https://cdn.jsdelivr.net/pyodide/v0.28.0/full/";
+    static DEFAULT_CDN_URL = "https://cdn.jsdelivr.net/pyodide/v0.29.4/full/";
     
     /**
      * Test 1: No pyodideCdnUrl provided - uses default (backward compatibility)

@@ -542,6 +542,108 @@ def lister_ventes(
   },
 
   {
+    id: 'fastapi-asgi',
+    section: 'Gouvernance et partage',
+    titre: 'FastAPI en vrai : l\'API testée in-process',
+    competences: 'C12',
+    contexte: 'Développement des points de terminaison de l\'API REST. Ici l\'app FastAPI s\'exécute réellement : routes, validation, codes HTTP, OpenAPI.',
+    objectif: 'Définir une vraie app FastAPI et l\'appeler immédiatement, sans serveur : le transport ASGI de httpx branche le client directement sur l\'app, en mémoire. C\'est aussi exactement comme ça qu\'on teste une API en CI.',
+    idee: 'Une app ASGI est une fonction Python : pas besoin de réseau pour l\'appeler. ASGITransport donne à httpx un faux réseau qui livre les requêtes à l\'app in-process. On voit alors tout FastAPI travailler : le routage, la validation pydantic qui renvoie 422 toute seule, le 404 propre, et la documentation OpenAPI générée.',
+    retenir: 'Deux règles dans Pyodide : tout en async def (les endpoints def synchrones passent par un threadpool, et le navigateur n\'a pas de threads), et jamais TestClient (même raison : il démarre un thread). En production, la seule différence est le transport : uvicorn écoute sur un port au lieu du transport mémoire. L\'app, elle, ne change pas d\'une ligne.',
+    variantes: [
+      {
+        label: 'SNIPPET',
+        code: `# Une vraie FastAPI, testée sans serveur (premier run : chargement ~5 s)
+import pyodide_js
+await pyodide_js.loadPackage(["fastapi", "httpx"])
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from httpx import AsyncClient, ASGITransport
+
+app = FastAPI(title="API produits", version="1.0")
+
+PRODUITS = {1: {"nom": "clavier", "prix": 49.9},
+            2: {"nom": "souris", "prix": 19.9}}
+
+class Produit(BaseModel):          # le contrat d'interface, typé
+    nom: str
+    prix: float
+
+@app.get("/produits/{produit_id}")
+async def lire_produit(produit_id: int):       # async def : obligatoire ici
+    if produit_id not in PRODUITS:
+        raise HTTPException(status_code=404, detail="produit inconnu")
+    return PRODUITS[produit_id]
+
+@app.post("/produits", status_code=201)
+async def creer_produit(p: Produit):
+    nouvel_id = max(PRODUITS) + 1
+    PRODUITS[nouvel_id] = p.model_dump()
+    return {"id": nouvel_id, **p.model_dump()}
+
+# le client branché DIRECTEMENT sur l'app : aucun port, aucun serveur
+transport = ASGITransport(app=app)
+async with AsyncClient(transport=transport, base_url="http://test") as client:
+    r = await client.get("/produits/1")
+    print("GET  /produits/1           ->", r.status_code, r.json())
+
+    r = await client.get("/produits/999")
+    print("GET  /produits/999         ->", r.status_code, r.json())
+
+    r = await client.post("/produits", json={"nom": "ecran", "prix": 179.0})
+    print("POST /produits             ->", r.status_code, r.json())
+
+    # la validation pydantic travaille toute seule : 422 automatique
+    r = await client.post("/produits", json={"nom": "cable"})   # prix manquant
+    print("POST /produits (invalide)  ->", r.status_code,
+          r.json()["detail"][0]["msg"])
+
+    r = await client.get("/openapi.json")
+    print("GET  /openapi.json         ->", r.status_code,
+          len(r.text), "octets de spec générée")
+
+print()
+print("Même app, même code en production : seul le transport change")
+print("(uvicorn écoute un port au lieu du transport mémoire).")`,
+      },
+      {
+        label: 'EN PRODUCTION',
+        runnable: false,
+        code: `# La même app, déployée et testée sur une vraie machine
+
+# --- tests/test_api.py : le même pattern, c'est un test pytest -------
+import pytest
+from httpx import AsyncClient, ASGITransport
+from api import app
+
+@pytest.mark.asyncio
+async def test_lire_produit():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as c:
+        r = await c.get("/produits/1")
+        assert r.status_code == 200
+        assert r.json()["nom"] == "clavier"
+
+# (hors Pyodide, TestClient marche aussi : il fait la même chose
+#  avec des threads ; dans le navigateur il planterait)
+
+# --- lancement du vrai serveur ---------------------------------------
+# uvicorn api:app --host 0.0.0.0 --port 8000 --workers 2
+#
+# documentation interactive générée : http://localhost:8000/docs
+# spec OpenAPI :                       http://localhost:8000/openapi.json
+
+# --- et pour voir l'app répondre à de vraies requêtes fetch() --------
+# dans CE navigateur, sans serveur : ouvrez la démo « API vivante »
+#   ./api-live/index.html
+# (un service worker route les fetch() de la page vers l'app FastAPI
+#  qui tourne dans Pyodide : l'onglet réseau des DevTools y croit)`,
+      },
+    ],
+  },
+
+  {
     id: 'sobriete',
     section: 'Gouvernance et partage',
     titre: 'Sobriété numérique : cacher, filtrer, mesurer',

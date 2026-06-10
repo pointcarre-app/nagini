@@ -28,24 +28,18 @@ export async function handleExecute(data, workerState) {
 
     workerState.pyodide.runPython("reset_captures()");
 
-    // Execute with or without namespace
+    // Always execute through runPythonAsync: it handles synchronous code
+    // identically and enables top-level await in any user code (asyncio,
+    // httpx/ASGI, transformed input() calls, ...)
     if (namespace !== undefined) {
       const pyodideNamespace = workerState.pyodide.toPy(namespace);
       try {
-        if (result.needsAsync) {
-          await workerState.pyodide.runPythonAsync(result.code, { globals: pyodideNamespace });
-        } else {
-          workerState.pyodide.runPython(result.code, { globals: pyodideNamespace });
-        }
+        await workerState.pyodide.runPythonAsync(result.code, { globals: pyodideNamespace });
       } finally {
         pyodideNamespace.destroy();
       }
     } else {
-      if (result.needsAsync) {
-        await workerState.pyodide.runPythonAsync(result.code);
-      } else {
-        workerState.pyodide.runPython(result.code);
-      }
+      await workerState.pyodide.runPythonAsync(result.code);
     }
 
     ({ stdout, stderr, missive, figures, bokeh_figures } = captureOutputs(workerState.pyodide));

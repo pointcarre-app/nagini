@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="business">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API vivante : FastAPI dans votre navigateur</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/daisyui.css" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" crossorigin="anonymous" />
+
+  <style>
+    html, body { font-family: 'Source Sans 3', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-base-200 text-base-content min-h-screen">
+
+  <header class="navbar bg-base-100 border-b border-base-300 px-4">
+    <div class="flex-1 flex items-baseline gap-3 min-w-0">
+      <span class="font-bold text-lg whitespace-nowrap">API vivante</span>
+      <span class="text-xs opacity-60 truncate hidden sm:inline">une vraie FastAPI répond à de vrais fetch(), sans aucun serveur : tout est dans cet onglet</span>
+    </div>
+    <div class="flex-none flex items-center gap-2">
+      <span id="sw-badge" class="badge badge-sm badge-warning">service worker...</span>
+      <span id="py-badge" class="badge badge-sm badge-warning">python...</span>
+      <a href="../index.html" class="btn btn-ghost btn-sm">← snippets</a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto p-4 lg:p-6 flex flex-col gap-4">
+
+    <div id="fallback-alert" class="alert alert-error hidden">
+      <span>Service worker indisponible : servez cette page via <span class="mono">http://localhost:8010</span>
+      (contexte sécurisé requis), puis rechargez.</span>
+    </div>
+
+    <div class="card bg-base-100 border border-base-300">
+      <div class="card-body p-4 text-sm leading-relaxed gap-2">
+        <p><span class="font-semibold">Comment ça marche.</span>
+          Une app FastAPI complète (routes, validation pydantic, OpenAPI) tourne dans Pyodide, dans cet onglet.
+          Un service worker intercepte les <span class="mono">fetch()</span> de la page vers <span class="mono">./api/*</span>
+          et les livre à l'app Python, qui répond. Ouvrez l'onglet réseau des DevTools : les requêtes sont réelles,
+          servies par « ServiceWorker », avec leurs statuts 200, 404, 422.</p>
+        <p class="opacity-70">Limite assumée : rien n'écoute sur un port. Un autre onglet, un curl ou une autre machine
+          ne peuvent pas appeler cette API ; c'est l'illusion parfaite, mais locale. Pour exposer pour de vrai : uvicorn et un déploiement.</p>
+      </div>
+    </div>
+
+    <div id="client-rest" class="card bg-base-100 border border-base-300 opacity-40 transition-opacity">
+      <div class="card-body p-4 gap-3">
+        <h2 class="font-bold">Client REST</h2>
+        <div class="flex flex-wrap gap-2">
+          <button class="btn btn-sm btn-outline" data-fetch="./api/health" disabled>GET /health</button>
+          <button class="btn btn-sm btn-outline" data-fetch="./api/produits" disabled>GET /produits</button>
+          <button class="btn btn-sm btn-outline" data-fetch="./api/produits?limit=1" disabled>GET /produits?limit=1</button>
+          <button class="btn btn-sm btn-outline" data-fetch="./api/produits/2" disabled>GET /produits/2</button>
+          <button class="btn btn-sm btn-outline" data-fetch="./api/produits/999" disabled>GET /produits/999 (404)</button>
+          <button class="btn btn-sm btn-outline" data-fetch="./api/produits/abc" disabled>GET /produits/abc (422)</button>
+          <button class="btn btn-sm btn-primary" data-fetch="./api/produits" data-method="POST"
+                  data-body='{"nom": "webcam", "prix": 59.0}' disabled>POST /produits</button>
+          <button class="btn btn-sm btn-outline" data-fetch="./api/openapi.json" disabled>GET /openapi.json</button>
+        </div>
+        <div class="join w-full">
+          <input id="url-field" type="text" value="./api/produits"
+                 class="input input-sm input-bordered join-item flex-1 mono" />
+          <button id="go-btn" class="btn btn-sm btn-primary join-item" disabled>GET</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="journal" class="flex flex-col gap-2"></div>
+
+    <div class="flex justify-end">
+      <button id="unregister-btn" class="btn btn-ghost btn-xs opacity-60">désinscrire le service worker</button>
+    </div>
+  </main>
+
+  <footer class="max-w-5xl mx-auto px-6 py-4 text-xs opacity-50">
+    Nagini, AGPL-3.0. L'app FastAPI est appelée in-process par un mini-driver ASGI (asyncio pur,
+    pas de threads : le TestClient classique ne fonctionne pas dans Pyodide).
+    Premier chargement : Pyodide + fastapi, comptez une trentaine de secondes.
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

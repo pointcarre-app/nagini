@@ -1,3 +1,10 @@
+# v0.0.34
+
+- **Pyodide 0.29.4**: Default CDN upgraded from 0.28.0 (Python 3.13.2, fastapi/starlette/httpx/pyarrow/geopandas now available in the distribution); full scenery suite green, local 0.28 bundles still supported
+- **Execution**: User code now always runs through `runPythonAsync`: top-level `await` is available in any snippet (asyncio, httpx/ASGI, ...)
+- **Live API Demo**: New `scenery/dataeng/api-live/` page: a real FastAPI app runs in Pyodide and a service worker routes the page's `fetch('./api/*')` calls to it (real requests in DevTools, 200/404/422/201 + OpenAPI), with an in-page REST client
+- **Snippets**: Two new dataeng entries: `pyxhr` (real CORS network call to geo.api.gouv.fr with a requests-like API) and FastAPI tested in-process via `httpx.ASGITransport` (TestClient does not work in Pyodide: no threads)
+
 # v0.0.30
 
 - **Showcase Page**: New `scenery/examples/` page (daisyUI + CodeMirror, dark squared theme) with 12 runnable examples in tabs: matplotlib neon plots, Mandelbrot, Lissajous, random walks, polar roses, traffic heatmap, game of life, interactive Bokeh phyllotaxis, sympy analysis, FFT spectrum, missive() report and interactive stdin

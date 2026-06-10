@@ -292,6 +292,74 @@ time.sleep(1.5)
   },
 
   {
+    id: 'pyxhr-direct',
+    section: 'Collecte',
+    titre: 'Appeler une vraie API depuis le navigateur (pyxhr)',
+    competences: 'C8',
+    contexte: 'Requêtes HTTP pour la récupération des données depuis un service web (REST). Ici en conditions réelles : l\'appel part vraiment sur le réseau.',
+    objectif: 'Consommer une API publique réelle (geo.api.gouv.fr) avec pyxhr, le client HTTP synchrone de Pyodide dont l\'API copie requests : même syntaxe qu\'en cours, mais dans le navigateur.',
+    idee: 'pyxhr.get(url, params=...) ressemble trait pour trait à requests.get : .status_code, .json(), .raise_for_status(). La différence est invisible mais réelle : la requête passe par le navigateur, donc elle est soumise au CORS. Une API qui n\'envoie pas Access-Control-Allow-Origin sera bloquée, avec une XHRNetworkError.',
+    retenir: 'Ce snippet dépend du réseau et de l\'API : c\'est volontaire, l\'échec se gère (try/except, message clair) comme en production. Le CORS est une politique du navigateur, pas de Python : la même URL marcherait en requests côté serveur et peut échouer ici. Les APIs publiques françaises (geo.api.gouv.fr, opendatasoft) jouent le jeu.',
+    variantes: [
+      {
+        label: 'SNIPPET',
+        code: `# Un vrai appel réseau : les communes du Rhône via geo.api.gouv.fr
+# pyxhr (Pyodide 0.29+) copie l'API de requests, en synchrone.
+from pyodide.http import pyxhr
+
+try:
+    r = pyxhr.get(
+        "https://geo.api.gouv.fr/departements/69/communes",
+        params={"fields": "nom,population", "format": "json"},
+    )
+    r.raise_for_status()
+except Exception as e:
+    print("appel impossible (réseau coupé ou CORS refusé) :", e)
+    print("rien d'anormal hors ligne ; relancez connecté.")
+else:
+    communes = r.json()
+    print("status :", r.status_code,
+          "| content-type :", r.headers.get("content-type"))
+    print(len(communes), "communes dans le Rhône")
+    print()
+
+    # le réflexe data : trier, regarder la tête et la queue
+    tri = sorted(communes, key=lambda c: c.get("population", 0), reverse=True)
+    print("les 5 plus peuplées :")
+    for c in tri[:5]:
+        print(f"  {c['nom']:<22} {c['population']:>8,} hab.".replace(",", " "))
+    print()
+    total = sum(c.get("population", 0) for c in communes)
+    print(f"population du département : {total:,} habitants".replace(",", " "))`,
+      },
+      {
+        label: 'REQUESTS (SERVEUR)',
+        runnable: false,
+        code: `# Le même appel côté serveur, avec requests : aucune contrainte CORS
+import requests
+
+r = requests.get(
+    "https://geo.api.gouv.fr/departements/69/communes",
+    params={"fields": "nom,population", "format": "json"},
+    timeout=10,
+)
+r.raise_for_status()
+communes = r.json()
+print(len(communes), "communes")
+
+# Les différences avec pyxhr, à connaître :
+# - requests tourne partout (script, cron, Airflow) ; pyxhr seulement
+#   dans Pyodide (navigateur), où requests classique ne marche pas
+# - le CORS n'existe que côté navigateur : une API sans
+#   Access-Control-Allow-Origin marche en requests, pas en pyxhr
+# - pyxhr est synchrone via XMLHttpRequest ; pour du binaire
+#   (fichiers, images), préférer pyodide.http.pyfetch (asynchrone)
+# - les sessions, retries et streaming restent le territoire de requests`,
+      },
+    ],
+  },
+
+  {
     id: 'nettoyage',
     section: 'Nettoyage et agrégation',
     titre: 'Nettoyer un jeu de données',
