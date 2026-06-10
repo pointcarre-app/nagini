@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="nord">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithmes du lycée : mathématiques, programmes officiels</title>
+
+  <!-- daisyUI + Tailwind (builds navigateur, sans bundler) -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/daisyui.css" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" crossorigin="anonymous"></script>
+
+  <!-- polices : une sérieuse pour le texte, une mono pour le code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" crossorigin="anonymous" />
+
+  <!-- CodeMirror 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    html, body {
+      font-family: 'Source Sans 3', sans-serif;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* éditeur CodeMirror branché sur les couleurs du thème daisyUI */
+    .CodeMirror {
+      height: 480px;
+      border-radius: var(--radius-box, 0.5rem);
+      background: var(--color-base-200);
+      color: var(--color-base-content);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .cm-s-lycee .CodeMirror-gutters {
+      background: var(--color-base-200);
+      border-right: 1px solid var(--color-base-300);
+    }
+    .cm-s-lycee .CodeMirror-linenumber { color: color-mix(in oklab, var(--color-base-content) 35%, transparent); }
+    .cm-s-lycee .CodeMirror-cursor { border-left: 2px solid var(--color-primary); }
+    .cm-s-lycee .CodeMirror-selected { background: color-mix(in oklab, var(--color-primary) 18%, transparent); }
+    .cm-s-lycee span.cm-comment { color: color-mix(in oklab, var(--color-base-content) 50%, transparent); font-style: italic; }
+    .cm-s-lycee span.cm-keyword { color: var(--color-primary); font-weight: 600; }
+    .cm-s-lycee span.cm-builtin { color: var(--color-secondary); }
+    .cm-s-lycee span.cm-def { color: var(--color-secondary); }
+    .cm-s-lycee span.cm-number { color: var(--color-accent); }
+    .cm-s-lycee span.cm-string { color: var(--color-success); }
+    .cm-s-lycee span.cm-operator { color: var(--color-base-content); }
+    .cm-s-lycee span.cm-variable { color: var(--color-base-content); }
+    .cm-s-lycee span.cm-property { color: var(--color-info); }
+
+    /* led de statut */
+    .status-led { width: 9px; height: 9px; display: inline-block; margin-right: 0.5rem; border-radius: 9999px; }
+    .status-led.boot  { background: var(--color-info); animation: pulse 1.2s infinite; }
+    .status-led.busy  { background: var(--color-warning); animation: pulse 0.7s infinite; }
+    .status-led.ready { background: var(--color-success); }
+    .status-led.error { background: var(--color-error); }
+    @keyframes pulse { 50% { opacity: 0.25; } }
+
+    .term {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding: 0.75rem 1rem;
+      max-height: 340px;
+      overflow: auto;
+      margin: 0;
+    }
+
+    /* les figures matplotlib sont blanches : on les pose sur un fond blanc net */
+    .figure-img { width: 100%; height: auto; display: block; background: white; }
+    #figures { background: white; border-radius: 0 0 var(--radius-box, 0.5rem) var(--radius-box, 0.5rem); overflow: hidden; }
+
+    .panel-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.65;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--color-base-300);
+    }
+  </style>
+</head>
+<body class="bg-base-200 text-base-content min-h-screen">
+
+  <div class="drawer lg:drawer-open">
+    <input id="page-drawer" type="checkbox" class="drawer-toggle" />
+
+    <!-- ============================ contenu ============================ -->
+    <div class="drawer-content flex flex-col min-h-screen">
+
+      <!-- barre du haut -->
+      <header class="navbar bg-base-100 border-b border-base-300 sticky top-0 z-20 px-4">
+        <div class="flex-none lg:hidden">
+          <label for="page-drawer" class="btn btn-ghost btn-square" aria-label="ouvrir le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </label>
+        </div>
+        <div class="flex-1 flex items-baseline gap-3 min-w-0">
+          <span class="font-bold text-lg whitespace-nowrap">Algorithmes du lycée</span>
+          <span class="text-xs opacity-60 truncate hidden sm:inline">mathématiques, programmes officiels 2019, exécutés dans votre navigateur</span>
+        </div>
+        <div class="flex-none flex items-center gap-3">
+          <span class="text-xs flex items-center whitespace-nowrap">
+            <span id="status-led" class="status-led boot"></span>
+            <span id="status-text" class="opacity-70">chargement</span>
+          </span>
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-sm btn-outline gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4.42-4.03-8-9-8z"/></svg>
+              thème : <span id="theme-label" class="font-semibold">nord</span>
+            </div>
+            <ul id="theme-list" tabindex="0" class="dropdown-content menu bg-base-100 border border-base-300 rounded-box z-30 w-44 p-1 shadow-lg max-h-96 overflow-y-auto flex-nowrap"></ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- corps -->
+      <main class="flex-1 p-4 lg:p-6 max-w-screen-2xl w-full mx-auto">
+
+        <!-- en-tête de l'algorithme -->
+        <div class="mb-4">
+          <div class="flex items-center gap-2 mb-1">
+            <span id="algo-niveau" class="badge badge-primary badge-sm"></span>
+            <span id="algo-theme" class="badge badge-ghost badge-sm"></span>
+          </div>
+          <h1 id="algo-titre" class="text-2xl font-bold"></h1>
+          <p class="text-sm opacity-70 italic mt-1">
+            Programme officiel : <span id="algo-bo"></span>
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+
+          <!-- colonne gauche : explications + éditeur -->
+          <section class="flex flex-col gap-4 min-w-0">
+
+            <div class="card bg-base-100 border border-base-300">
+              <div class="card-body p-4 gap-2 text-sm leading-relaxed">
+                <p><span class="font-semibold">Objectif.</span> <span id="algo-objectif"></span></p>
+                <p><span class="font-semibold">L'idée.</span> <span id="algo-idee"></span></p>
+                <p><span class="font-semibold">À retenir.</span> <span id="algo-retenir"></span></p>
+              </div>
+            </div>
+
+            <div class="card bg-base-100 border border-base-300 overflow-visible">
+              <div class="flex items-center justify-between border-b border-base-300 px-2 pt-1">
+                <div id="variant-tabs" class="tabs tabs-sm tabs-border"></div>
+                <span class="text-xs opacity-50 mono pr-2 hidden md:inline">ctrl + entrée</span>
+              </div>
+              <div id="editor"></div>
+              <div class="flex items-center gap-2 p-3 border-t border-base-300">
+                <button id="run-btn" class="btn btn-primary btn-sm px-6" disabled>Exécuter</button>
+                <button id="reset-btn" class="btn btn-ghost btn-sm">Réinitialiser</button>
+                <span id="exec-time" class="mono text-xs opacity-60 ml-auto"></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- colonne droite : résultats -->
+          <section class="flex flex-col gap-4 min-w-0">
+
+            <p id="out-placeholder" class="text-sm opacity-60 pt-1">
+              Lisez le code, modifiez-le si vous voulez, puis exécutez : les résultats s'affichent ici.
+            </p>
+
+            <div id="panel-figures" class="card bg-base-100 border border-base-300 hidden overflow-hidden">
+              <div class="panel-title">figures</div>
+              <div id="figures"></div>
+            </div>
+
+            <div id="panel-stdout" class="card bg-base-100 border border-base-300 hidden overflow-hidden">
+              <div class="panel-title">console</div>
+              <pre id="out-stdout" class="term"></pre>
+            </div>
+
+            <div id="panel-missive" class="card bg-base-100 border border-base-300 hidden overflow-hidden">
+              <div class="panel-title">données structurées (missive)</div>
+              <pre id="out-missive" class="term text-info"></pre>
+            </div>
+
+            <div id="panel-stderr" class="card bg-base-100 border border-base-300 hidden overflow-hidden">
+              <div class="panel-title text-error">erreurs</div>
+              <pre id="out-stderr" class="term text-error"></pre>
+            </div>
+
+          </section>
+        </div>
+      </main>
+
+      <footer class="px-6 py-4 text-xs opacity-50 max-w-screen-2xl w-full mx-auto">
+        Nagini, AGPL-3.0. Tout s'exécute localement dans votre navigateur via Pyodide : aucun code n'est envoyé sur un serveur.
+        Les énoncés en italique citent les programmes officiels (BO 2019).
+      </footer>
+    </div>
+
+    <!-- ============================ tiroir latéral ============================ -->
+    <div class="drawer-side z-30">
+      <label for="page-drawer" aria-label="fermer le menu" class="drawer-overlay"></label>
+      <aside class="w-72 min-h-full bg-base-100 border-r border-base-300">
+        <div class="px-4 py-4 border-b border-base-300">
+          <div class="font-bold">Sommaire</div>
+          <div class="text-xs opacity-60">tous les algorithmes des programmes</div>
+        </div>
+        <ul id="sidebar-menu" class="menu menu-sm w-full px-2 py-3"></ul>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
