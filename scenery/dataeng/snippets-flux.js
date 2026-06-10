@@ -542,6 +542,69 @@ def lister_ventes(
   },
 
   {
+    id: 'sobriete',
+    section: 'Gouvernance et partage',
+    titre: 'Sobriété numérique : cacher, filtrer, mesurer',
+    competences: 'C3, C4',
+    contexte: 'Numérique responsable : filtrer à la source, mettre en cache, supprimer la fausse précision, et mesurer au lieu de déclarer.',
+    objectif: 'Trois gestes de sobriété qui se programment : un cache de collecte qui évite les re-téléchargements, un filtre à la source, et la note de sobriété chiffrée constat-mesure-décision.',
+    idee: 'La sobriété sans mesure est une déclaration d\'intention. Ici le cache compte les appels évités, la troncature des coordonnées GPS chiffre les octets gagnés, et le rapport final suit le format attendu : constat, mesure, décision.',
+    retenir: 'Filtrer à la source (paramètres d\'API) bat toujours filtrer à l\'arrivée : les octets non transférés sont les moins chers. Et 15 décimales de GPS, c\'est une précision atomique pour localiser une boulangerie : 5 décimales suffisent (le mètre), le reste est de la fausse précision stockée pour rien.',
+    variantes: [
+      {
+        label: 'SNIPPET',
+        code: `# Un cache de collecte qui rend des comptes
+import json
+from pathlib import Path
+
+CACHE = Path("cache")
+CACHE.mkdir(exist_ok=True)
+compteur = {"appels_reels": 0, "appels_evites": 0}
+
+def collecter(departement):
+    """Simule un appel d'API coûteux, avec cache fichier."""
+    fichier = CACHE / f"etablissements_{departement}.json"
+    if fichier.exists():
+        compteur["appels_evites"] += 1
+        return json.loads(fichier.read_text())
+    compteur["appels_reels"] += 1
+    # ici, le vrai appel réseau ; on le simule :
+    donnees = [{"nom": f"site-{i}", "dep": departement,
+                "lat": 45.7640123456789, "lon": 4.8356987654321}
+               for i in range(3)]
+    fichier.write_text(json.dumps(donnees))
+    return donnees
+
+# un développeur qui itère relance son script 5 fois...
+for _ in range(5):
+    donnees = collecter("69")
+print(f"5 exécutions : {compteur['appels_reels']} appel réel,"
+      f" {compteur['appels_evites']} évités par le cache")
+
+# fausse précision : 13 décimales de GPS, c'est du stockage pour rien
+avant = json.dumps(donnees)
+for d in donnees:
+    d["lat"], d["lon"] = round(d["lat"], 5), round(d["lon"], 5)
+apres = json.dumps(donnees)
+print(f"troncature GPS à 5 décimales (le mètre) :"
+      f" {len(avant)} -> {len(apres)} octets ({len(avant) - len(apres)} gagnés)")
+
+# la note de sobriété : constat -> mesure -> décision
+print()
+print("note de sobriété")
+print("-" * 52)
+print("constat  : le script de dev re-télécharge à chaque essai")
+print(f"mesure   : {compteur['appels_evites']} appels évités sur 5 runs"
+      " (compteur dans le script)")
+print("décision : cache conservé, re-collecte trimestrielle")
+print("-" * 52)
+print("Sans le compteur, cette note serait une promesse ;")
+print("avec, c'est un fait vérifiable.")`,
+      },
+    ],
+  },
+
+  {
     id: 'rgpd',
     section: 'Gouvernance et partage',
     titre: 'RGPD : pseudonymiser, anonymiser, purger',

@@ -6,8 +6,10 @@
  */
 
 import { Nagini } from '../../src/nagini.js';
+import { PYTHON } from './snippets-python.js';
 import { COLLECTE } from './snippets-collecte.js';
 import { SQL } from './snippets-sql.js';
+import { SQL_AVANCE } from './snippets-sql-avance.js';
 import { FLUX } from './snippets-flux.js';
 
 const WORKER_PATH = '../../src/pyodide/worker/worker-dist.js';
@@ -15,8 +17,9 @@ const WORKER_PATH = '../../src/pyodide/worker/worker-dist.js';
 const PACKAGES = ['numpy', 'pandas', 'matplotlib', 'sqlite3'];
 const TIMEOUT_MS = 90000;
 
-const CATALOG = [...COLLECTE, ...SQL, ...FLUX];
+const CATALOG = [...PYTHON, ...COLLECTE, ...SQL, ...SQL_AVANCE, ...FLUX];
 const SECTIONS = [
+  'Python pour la data',
   'Collecte',
   'SQL et bases de données',
   'Nettoyage et agrégation',

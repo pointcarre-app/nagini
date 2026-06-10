@@ -461,6 +461,63 @@ print(pivot.round(2).to_string())`,
   },
 
   {
+    id: 'referentiels',
+    section: 'Nettoyage et agrégation',
+    titre: 'Croiser sur un référentiel : merge et orphelins',
+    competences: 'C10',
+    contexte: 'Croisement sur référentiels officiels (code INSEE, UAI, SIRET) : on ne joint jamais sur un nom, on joint sur un code.',
+    objectif: 'Enrichir un jeu de données avec un référentiel officiel, vérifier la cardinalité de la jointure avec validate, et isoler les orphelins au lieu de les perdre.',
+    idee: 'Les noms divergent (Lyon, LYON, Lyon 3e) ; les codes officiels, eux, sont stables : c\'est leur raison d\'être. Le merge se fait donc sur le code, avec validate="many_to_one" qui fait vérifier par pandas que le référentiel n\'a pas de doublon. Le how="left" garde tout, et les lignes sans correspondance se repèrent au NaN.',
+    retenir: 'validate= est une assertion gratuite : si la cardinalité attendue est violée (un code en double dans le référentiel), pandas lève une erreur au lieu de dupliquer silencieusement vos lignes. Les orphelins partent dans un fichier d\'écarts : un croisement qui perd des lignes sans le dire est un bug.',
+    variantes: [
+      {
+        label: 'SNIPPET',
+        code: `# Enrichir des ventes avec le référentiel des communes (code INSEE)
+import io
+import pandas as pd
+
+ventes = pd.read_csv(io.StringIO("""code_insee,ca
+69383,149.7
+75056,99.5
+69266,358.0
+99999,42.0
+"""), dtype={"code_insee": str})           # un code est un TEXTE, pas un nombre !
+
+referentiel = pd.read_csv(io.StringIO("""code_insee,commune,departement
+69383,Lyon 3e,Rhône
+69266,Villeurbanne,Rhône
+75056,Paris,Paris
+"""), dtype={"code_insee": str})
+
+# le merge : sur le CODE, jamais sur le nom, avec contrôle de cardinalité
+enrichi = ventes.merge(
+    referentiel,
+    on="code_insee",
+    how="left",                 # on garde TOUTES les ventes
+    validate="many_to_one",     # le référentiel doit être unique par code
+)
+print(enrichi.to_string(index=False))
+
+# les orphelins : visibles, isolés, jamais perdus en silence
+orphelins = enrichi[enrichi["commune"].isna()]
+print()
+print(f"{len(orphelins)} orphelin(s) à examiner (code inconnu du référentiel) :")
+print(orphelins[["code_insee", "ca"]].to_string(index=False))
+
+# ce que validate attrape : un doublon dans le référentiel
+referentiel_casse = pd.concat([referentiel, referentiel.iloc[[0]]])
+try:
+    ventes.merge(referentiel_casse, on="code_insee",
+                 how="left", validate="many_to_one")
+except pd.errors.MergeError as e:
+    print()
+    print("validate a bloqué un référentiel corrompu :", str(e)[:60], "...")
+    print("Sans lui, la vente de Lyon 3e aurait été DUPLIQUÉE en silence.")`,
+      },
+    ],
+  },
+
+  {
     id: 'qualite',
     section: 'Nettoyage et agrégation',
     titre: 'Contrôles qualité automatisés',
