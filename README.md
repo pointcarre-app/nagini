@@ -3,6 +3,8 @@
 **Live Documentation & Demos:**
 - **Browse Full Source Tree:** [https://pointcarre-app.github.io/nagini/](https://pointcarre-app.github.io/nagini/)
 - **Interactive Test Suite (`scenery`):** [https://pointcarre-app.github.io/nagini/scenery/](https://pointcarre-app.github.io/nagini/scenery/)
+- **Visual Showcase (`scenery/examples`):** [https://pointcarre-app.github.io/nagini/scenery/examples/](https://pointcarre-app.github.io/nagini/scenery/examples/) - 12 visual examples (daisyUI + CodeMirror)
+- **High-School Maths Algorithms (`scenery/lycee`):** [https://pointcarre-app.github.io/nagini/scenery/lycee/](https://pointcarre-app.github.io/nagini/scenery/lycee/) - official French curriculum algorithms (seconde, première, terminale)
 - **Main Documentation (MkDocs):** [https://pointcarre-app.github.io/nagini/](https://pointcarre-app.github.io/nagini/)
 - **API Reference:** [https://pointcarre-app.github.io/nagini/api-reference/](https://pointcarre-app.github.io/nagini/api-reference/)
 - **Repository Reference:** [https://pointcarre-app.github.io/nagini/repo_reference/](https://pointcarre-app.github.io/nagini/repo_reference/)
