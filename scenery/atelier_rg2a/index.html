@@ -107,7 +107,26 @@
       padding: 0.6rem 1rem 0.2rem;
     }
 
+    /* autres critères */
+    .criteria-row {
+      display: grid;
+      grid-template-columns: 1fr 6rem 4.5rem;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.3rem 1rem;
+      font-size: 0.8rem;
+    }
+    .criteria-row:hover { background: var(--color-base-200); }
+    .criteria-label { display: flex; flex-direction: column; min-width: 0; }
+    .criteria-label .ref { font-size: 0.62rem; opacity: 0.55; }
+    .criteria-detail { font-size: 0.72rem; text-align: right; opacity: 0.8; }
+    .criteria-row .badge { justify-self: end; }
+
     /* ------- mise en action : typographie « markdown sérialisé » ------- */
+    /* le spécimen est un instrument de mesure : sans transitions, sinon on
+       lit des couleurs en cours d'animation au changement de thème */
+    #specimen, #specimen * { transition: none !important; }
+
     .article {
       max-width: 46rem;
       margin: 0 auto;
@@ -235,6 +254,18 @@
               <span id="pair-badge" class="badge"></span>
             </div>
           </div>
+        </div>
+
+        <div class="card bg-base-100 border border-base-300 overflow-hidden">
+          <div class="panel-title">
+            <span>autres critères automatisables</span>
+            <span id="criteria-score" class="badge badge-sm"></span>
+          </div>
+          <div id="criteria-table" class="py-1"></div>
+          <p class="text-xs opacity-60 px-4 pb-3 leading-relaxed">
+            Mesurés sur le spécimen rendu, recalculés à chaque thème. Le focus
+            est testé en donnant réellement le focus au lien et au bouton.
+          </p>
         </div>
 
         <p class="text-xs opacity-60 px-1 leading-relaxed">

@@ -381,6 +381,130 @@ function renderActionParams() {
     .join('');
 }
 
+// ------------------------------------------------------------- autres critères
+
+// Critères RGAA/WCAG automatisables sur le spécimen, recalculés à chaque thème.
+function checkCriteria() {
+  const specimen = $('specimen');
+  const rows = [];
+
+  // interligne : au moins 1,5 fois le corps sur les blocs de texte
+  let minLh = Infinity;
+  for (const b of specimen.querySelectorAll('p, li, blockquote')) {
+    const cs = getComputedStyle(b);
+    const lh = parseFloat(cs.lineHeight) / parseFloat(cs.fontSize);
+    if (lh < minLh) minLh = lh;
+  }
+  rows.push({
+    label: 'interligne ≥ 1,5', ref: 'WCAG 1.4.12',
+    ok: minLh >= 1.5, detail: '×' + minLh.toFixed(2).replace('.', ','),
+  });
+
+  // corps du texte courant
+  const p = specimen.querySelector('p[data-check]');
+  const corps = parseFloat(getComputedStyle(p).fontSize);
+  rows.push({
+    label: 'corps du texte ≥ 16px', ref: 'bonne pratique',
+    ok: corps >= 16, detail: Math.round(corps) + 'px',
+  });
+
+  // liens repérables autrement que par la couleur seule : soulignement,
+  // sinon 3:1 entre la couleur du lien et celle du texte qui l'entoure
+  let linksOk = true;
+  let linkDetail = 'soulignés';
+  for (const a of specimen.querySelectorAll('a')) {
+    const cs = getComputedStyle(a);
+    if (!cs.textDecorationLine.includes('underline')) {
+      const bg = effectiveColors(a).bg;
+      const linkRgb = over(paintResolve(cs.color), bg);
+      const textRgb = over(paintResolve(getComputedStyle(p).color), bg);
+      const r = contrast(linkRgb, textRgb);
+      linkDetail = formatRatio(r) + ' vs texte';
+      if (r < 3) linksOk = false;
+    }
+  }
+  rows.push({
+    label: 'liens repérables sans la couleur seule', ref: 'RGAA 10.6',
+    ok: linksOk, detail: linkDetail,
+  });
+
+  // hiérarchie des titres : commence à h1, aucun niveau sauté en descendant
+  const levels = [...specimen.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+    .map((h) => Number(h.tagName[1]));
+  let titlesOk = levels.length > 0 && levels[0] === 1;
+  for (let i = 1; i < levels.length; i += 1) {
+    if (levels[i] > levels[i - 1] + 1) titlesOk = false;
+  }
+  rows.push({
+    label: 'hiérarchie des titres sans saut', ref: 'RGAA 9.1',
+    ok: titlesOk, detail: levels.map((n) => 'h' + n).join(' → '),
+  });
+
+  // taille des cibles interactives : 24 px de côté minimum
+  let minSide = Infinity;
+  for (const b of specimen.querySelectorAll('button')) {
+    const rect = b.getBoundingClientRect();
+    minSide = Math.min(minSide, rect.width, rect.height);
+  }
+  rows.push({
+    label: 'cibles ≥ 24×24 px', ref: 'WCAG 2.5.8',
+    ok: minSide >= 24, detail: Math.round(minSide) + 'px',
+  });
+
+  // focus visible : le style doit changer quand l'élément prend le focus
+  const snap = (el) => {
+    const cs = getComputedStyle(el);
+    return [cs.outlineStyle, cs.outlineWidth, cs.outlineColor, cs.boxShadow].join('|');
+  };
+  let focusOk = true;
+  for (const el of [specimen.querySelector('a'), specimen.querySelector('button')]) {
+    if (!el) continue;
+    const before = snap(el);
+    el.focus({ preventScroll: true });
+    const changed = snap(el) !== before;
+    el.blur();
+    if (!changed) focusOk = false;
+  }
+  rows.push({
+    label: 'focus visible (lien et bouton)', ref: 'RGAA 10.7',
+    ok: focusOk, detail: focusOk ? 'contour détecté' : 'aucun changement',
+  });
+
+  // bordure du bouton contour : 3:1 contre le fond (composant d'interface)
+  const outlineBtn = specimen.querySelector('[data-check="bouton contour"]');
+  const btnBg = effectiveColors(outlineBtn).bg;
+  const borderRgb = over(paintResolve(getComputedStyle(outlineBtn).borderTopColor), btnBg);
+  const borderRatio = contrast(borderRgb, btnBg);
+  rows.push({
+    label: 'bordure de composant ≥ 3:1', ref: 'WCAG 1.4.11',
+    ok: borderRatio >= 3, detail: formatRatio(borderRatio),
+  });
+
+  return rows;
+}
+
+function renderCriteria() {
+  const rows = checkCriteria();
+  const host = $('criteria-table');
+  host.innerHTML = '';
+  for (const row of rows) {
+    const div = document.createElement('div');
+    div.className = 'criteria-row';
+    div.innerHTML = `
+      <span class="criteria-label">
+        <span>${row.label}</span>
+        <span class="ref mono">${row.ref}</span>
+      </span>
+      <span class="mono criteria-detail">${row.detail}</span>
+      <span class="badge badge-sm ${row.ok ? 'badge-success' : 'badge-error'}">${row.ok ? 'conforme' : 'KO'}</span>`;
+    host.appendChild(div);
+  }
+  const ok = rows.filter((r) => r.ok).length;
+  const badge = $('criteria-score');
+  badge.textContent = `${ok}/${rows.length}`;
+  badge.className = 'badge badge-sm ' + (ok === rows.length ? 'badge-success' : 'badge-error');
+}
+
 // ------------------------------------------------------------- thèmes candidats
 
 const STRIP_TOKENS = ['base-100', 'base-200', 'base-300', 'primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
@@ -462,6 +586,7 @@ function applyTheme(name) {
   renderMatrices();
   renderPair();
   renderAction();
+  renderCriteria();
 }
 
 function buildThemeMenu() {
@@ -499,6 +624,7 @@ function refreshAll() {
   renderCandidates();
   renderPair();
   renderAction();
+  renderCriteria();
 }
 
 function boot() {
@@ -533,6 +659,9 @@ function boot() {
 
   let saved = 'papier';
   try { saved = localStorage.getItem(STORAGE_KEY) || 'papier'; } catch (_) { /* privé */ }
+  // ?theme=encre force un thème : lien partageable, et testable en headless
+  const urlTheme = new URLSearchParams(location.search).get('theme');
+  if (urlTheme && ALL_THEMES.includes(urlTheme)) saved = urlTheme;
   applyTheme(ALL_THEMES.includes(saved) ? saved : 'papier');
   renderCandidates();
 
