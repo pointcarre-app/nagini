@@ -234,7 +234,10 @@ async function initBrythonManager() {
         return window.brythonManager;
     }
     const { Nagini } = await import('../src/nagini.js');
-    window.brythonManager = await Nagini.createManager('brython', [], [], '', '');
+    window.brythonManager = await Nagini.createManager('brython', [], [], [], '', {
+        brythonJsPath: '../src/brython/lib/brython.js',
+        brythonStdlibPath: '../src/brython/lib/brython_stdlib.js'
+    });
     await Nagini.waitForReady(window.brythonManager, 10000);
     return window.brythonManager;
 }

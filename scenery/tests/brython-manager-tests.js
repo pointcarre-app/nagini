@@ -25,7 +25,7 @@ export class BrythonManagerTests {
                     brythonJsPath: "/src/brython/lib/brython.js",
                     brythonStdlibPath: "/src/brython/lib/brython_stdlib.js"
                 };
-                testManager = await Nagini.createManager('brython', [], [], '', brythonOptions);
+                testManager = await Nagini.createManager('brython', [], [], [], '', brythonOptions);
                 await Nagini.waitForReady(testManager, 10000);
             }
 

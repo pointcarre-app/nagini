@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>brython headless check</title></head>
+<body>
+<div id="result">PENDING</div>
+<script type="module">
+  const out = document.getElementById('result');
+  try {
+    const { Nagini } = await import('../../src/nagini.js');
+    const manager = await Nagini.createManager('brython', [], [], [], '', {
+      brythonJsPath: '../../src/brython/lib/brython.js',
+      brythonStdlibPath: '../../src/brython/lib/brython_stdlib.js'
+    });
+    await Nagini.waitForReady(manager, 15000);
+    const result = await manager.executeAsync('check.py', "print('brython-ok')");
+    out.textContent = result.stdout.includes('brython-ok')
+      ? 'PASS stdout=' + result.stdout.trim()
+      : 'FAIL stdout=' + JSON.stringify(result) ;
+  } catch (e) {
+    out.textContent = 'FAIL error=' + e.message;
+  }
+</script>
+</body>
+</html>
