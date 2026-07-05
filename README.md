@@ -728,6 +728,28 @@ Nagini does not apply any sandboxing beyond what the browser and WebAssembly alr
 
 `ValidationUtils.checkDangerousPatterns` (in `src/utils/validation.js`) is an opt-in helper that scans code for known risky patterns. It is **not** applied automatically before execution: if you want it, call it yourself before passing code to `executeAsync`. It is a heuristic filter, not a sandbox, and can be bypassed.
 
+### Brython backend: no isolation
+
+> [!WARNING]
+> Unlike the Pyodide backend (which runs in a web worker), the **Brython backend executes Python in the main thread of the host page, with full DOM access**: cookies, `fetch` with the page's session, the whole document. Only run first-party, trusted code through the Brython backend. Never feed it end-user or student code on a page that holds a session.
+
+### Content Security Policy
+
+Nagini needs a blob worker plus scripts fetched from wherever you host Pyodide and the bundles. A reference CSP for a page embedding Nagini, assuming self-hosted assets plus the jsDelivr Pyodide CDN:
+
+```
+Content-Security-Policy:
+  script-src 'self' https://cdn.jsdelivr.net;
+  worker-src 'self' blob:;
+  connect-src 'self' https://cdn.jsdelivr.net https://pypi.org https://files.pythonhosted.org;
+```
+
+`connect-src` must cover the hosts Pyodide fetches wheels from (jsDelivr for `loadPackage`, PyPI for micropip). If you self-host Pyodide (see `pyodideCdnUrl`), replace the CDN entries with your own origin. For interactive `input()` support and best performance, also send the cross-origin isolation headers shown in `serve.py`: `Cross-Origin-Embedder-Policy: require-corp` and `Cross-Origin-Opener-Policy: same-origin`.
+
+### Pinning and integrity
+
+Load Nagini and `worker-dist.js` from your own origin in production, or pin CDN URLs to an immutable commit SHA rather than a tag (tags can be re-pointed). The demo pages in this repository pin their third-party CDN assets to exact versions with `integrity` (SRI) attributes; do the same in your embedding pages. SRI cannot cover dynamically imported modules or `importScripts`, which is one more reason to self-host in production.
+
 ## Performance
 
 - **Initialization**: ~3-7 seconds (packages + network)

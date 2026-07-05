@@ -1,3 +1,10 @@
+# v0.0.43
+
+- **Build chain**: `nagini.umd.js` is no longer a hand-maintained copy: it is generated from `src/nagini.js` by webpack (`npm run build:umd`), with managers bundled inline; `npm run build` rebuilds both committed bundles (worker + UMD)
+- **Packaging**: root `package.json` is now a real package (`nagini`, `exports` map for `.`, `./umd` and `./pyodide/worker`, `files` whitelist, version synced with tags)
+- **SRI**: all third-party CDN assets in the demo pages (daisyUI, Tailwind browser, CodeMirror, BokehJS) are pinned to exact versions with `integrity` + `crossorigin` attributes; hashes verified against the served content
+- **Documentation**: Security section extended with a Brython isolation warning (main-thread execution, full DOM access: trusted code only), a reference Content Security Policy, and CDN pinning guidance
+
 # v0.0.42
 
 - **Brython robustness**: `executeAsync` now wraps user code in try/except: a raising script resolves with `error` set (type, message, traceback appended to stderr) instead of hanging forever; completion callbacks are keyed per execution id (no shared global slot); new `timeoutMs` parameter (default 30000 ms) mirroring the Pyodide backend
