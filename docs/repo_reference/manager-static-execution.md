@@ -18,16 +18,6 @@ This class only contains static methods and is not meant to be instantiated.
     -   `namespace` (Object, optional): An object to use as the global namespace.
 -   **Throws:** `Error` if any of the parameters are invalid.
 
-### `executeAsync(worker, isReady, executionHistory, setHandleMessage, getHandleMessage, filename, code, namespace)`
--   **Description:** Executes Python code asynchronously and returns a promise that resolves with the execution result. This method implements the "Handler Replacement Pattern" to manage the asynchronous communication with the worker.
--   **Parameters:**
-    -   `worker` (Worker): The web worker instance.
-    -   `isReady` (boolean): `true` if the Pyodide environment is ready.
-    -   `executionHistory` (Array): A reference to the execution history array for logging the result.
-    -   `setHandleMessage` (function): A function to set the worker's `onmessage` handler.
-    -   `getHandleMessage` (function): A function to get the current `onmessage` handler.
-    -   `filename` (string): A name for the execution.
-    -   `code` (string): The Python code to execute.
-    -   `namespace` (Object, optional): An object to use as the global namespace.
--   **Returns:** A `Promise` that resolves with the `ExecutionResult` object.
--   **Throws:** `Error` if the manager is not ready or if the execution times out. 
+### Promise-based execution
+
+Promise-based execution lives in `PyodideManager.executeAsync(filename, code, namespace, timeoutMs)`, built on id-correlated worker messages: every request carries an id, the worker echoes it back in the response, and a single permanent `onmessage` handler settles the matching promise. See `manager.md`. This class only keeps the fire-and-forget `executeFile`. 

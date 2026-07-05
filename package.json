@@ -1,6 +1,6 @@
 {
   "name": "nagini",
-  "version": "0.0.42",
+  "version": "0.0.44",
   "description": "Python in the browser via Pyodide/Brython with a worker-based architecture",
   "type": "module",
   "license": "AGPL-3.0-only",
@@ -30,7 +30,7 @@
     "build": "npm run build:worker && npm run build:umd",
     "build:worker": "npm --prefix src/pyodide/worker run build",
     "build:umd": "npm --prefix src/pyodide/worker run build:umd",
-    "docs:api": "jsdoc2md --configure jsdoc.conf.json --files src/**/*.js > docs/api-reference.md"
+    "docs:api": "jsdoc2md --configure jsdoc.conf.json --files src/nagini.js src/pyodide/manager/manager.js src/pyodide/manager/manager-static-execution.js src/pyodide/manager/manager-input.js src/pyodide/manager/manager-fs.js src/pyodide/file-loader/file-loader.js src/brython/manager/manager.js src/brython/manager/executor.js src/brython/manager/loader.js src/utils/validation.js src/utils/createBlobWorker.js > docs/api-reference.md"
   },
   "devDependencies": {
     "jsdoc-to-markdown": "^8.0.0"

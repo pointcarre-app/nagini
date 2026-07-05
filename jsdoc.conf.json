@@ -1,8 +1,7 @@
 {
   "source": {
-    "include": ["src"],
     "includePattern": ".+\\.js(doc|x)?$",
-    "excludePattern": "(^|\\/|\\\\)_|node_modules|lib|worker|dist"
+    "excludePattern": "(^|\\/|\\\\)_|node_modules|lib|worker|dist|umd"
   },
   "opts": {
     "template": "node_modules/jsdoc-to-markdown/dist/template",
@@ -16,4 +15,4 @@
     "cleverLinks": true,
     "monospaceLinks": true
   }
-} 
+}
