@@ -1,11 +1,38 @@
 {
-  "name": "nagini-docs",
-  "version": "1.0.0",
-  "description": "Documentation generator for Nagini",
+  "name": "nagini",
+  "version": "0.0.42",
+  "description": "Python in the browser via Pyodide/Brython with a worker-based architecture",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pointcarre-app/nagini.git"
+  },
+  "homepage": "https://pointcarre-app.github.io/nagini/",
+  "main": "./src/nagini.js",
+  "exports": {
+    ".": "./src/nagini.js",
+    "./umd": "./src/nagini.umd.js",
+    "./pyodide/worker": "./src/pyodide/worker/worker-dist.js"
+  },
+  "sideEffects": [
+    "./src/nagini.umd.js"
+  ],
+  "files": [
+    "src",
+    "!src/brython/lib",
+    "!src/pyodide/worker/node_modules",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
+    "build": "npm run build:worker && npm run build:umd",
+    "build:worker": "npm --prefix src/pyodide/worker run build",
+    "build:umd": "npm --prefix src/pyodide/worker run build:umd",
     "docs:api": "jsdoc2md --configure jsdoc.conf.json --files src/**/*.js > docs/api-reference.md"
   },
   "devDependencies": {
     "jsdoc-to-markdown": "^8.0.0"
   }
-} 
+}

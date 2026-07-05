@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.cjs --mode=production",
     "build-dev": "webpack --config webpack.config.cjs --mode=development",
+    "build:umd": "webpack --config webpack.umd.config.cjs --mode=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["pyodide", "worker", "python"],
