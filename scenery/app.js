@@ -266,6 +266,7 @@ async function runAllTests() {
         { id: 'status-umd-1', desc: "1️⃣ UMD - Load Bundle from CDN (v0.0.19)", func: () => UMDTests.test1LoadUMDFromCDN('v0.0.19').then(() => window.updateTestStatus('status-umd-1', 'pass')) },
         { id: 'status-umd-2', desc: "2️⃣ UMD - Compatibility Test (v0.0.19)", func: () => UMDTests.test2UMDCompatibility('v0.0.19').then(() => window.updateTestStatus('status-umd-2', 'pass')) },
         { id: 'status-umd-3', desc: "3️⃣ UMD - Dependency Resolution (v0.0.19)", func: () => UMDTests.test3UMDDependencyResolution('v0.0.19').then(() => window.updateTestStatus('status-umd-3', 'pass')) },
+        { id: 'status-umd-4', desc: "4️⃣ UMD - Local bundle forwards pyodideCdnUrl", func: () => UMDTests.test4LocalPyodideCdnUrl(minimalPyodidePath, pyodideWorkerPath).then(() => window.updateTestStatus('status-umd-4', 'pass')) },
         
         // esm.sh Tests ⭐ (Recommended Solution)
         { id: 'status-esm-sh-1', desc: "1️⃣ esm.sh ⭐ - Load from CDN (v0.0.19)", func: () => EsmShTests.test1LoadFromEsmSh('v0.0.19').then(() => window.updateTestStatus('status-esm-sh-1', 'pass')) },
@@ -289,17 +290,36 @@ async function runAllTests() {
     }
 
     // Brython backend tests
+    console.log("\nBrython Backend Tests");
+    console.log("=" .repeat(50));
+    const brythonTestIds = ['status-brython-manager-1', 'status-brython-manager-2', 'status-brython-manager-3'];
+    let brythonManager = null;
     try {
-        console.log("\nBrython Backend Tests");
-        console.log("=" .repeat(50));
         const brythonManagerResult = await NaginiTests.test1CreateManager('brython', [], [], [], '', brythonOptions);
-        const brythonManager = brythonManagerResult.manager;
+        brythonManager = brythonManagerResult.manager;
         await NaginiTests.test2WaitForReady(brythonManager);
-        await BrythonManagerTests.test1SimpleExecution(brythonManager);
-        window.updateTestStatus('status-brython-manager-1', 'pass');
     } catch (error) {
-        console.error("Brython tests failed:", error);
-        window.updateTestStatus('status-brython-manager-1', 'fail', error);
+        console.error("Brython manager creation failed:", error);
+        for (const id of brythonTestIds) {
+            window.updateTestStatus(id, 'fail', error);
+        }
+    }
+
+    if (brythonManager) {
+        const brythonTests = [
+            { id: 'status-brython-manager-1', func: () => BrythonManagerTests.test1SimpleExecution(brythonManager) },
+            { id: 'status-brython-manager-2', func: () => BrythonManagerTests.test2ErrorPropagation(brythonManager) },
+            { id: 'status-brython-manager-3', func: () => BrythonManagerTests.test3ConcurrentExecutions(brythonManager) },
+        ];
+        for (const test of brythonTests) {
+            try {
+                await test.func();
+                window.updateTestStatus(test.id, 'pass');
+            } catch (error) {
+                console.error("Brython test failed:", error);
+                window.updateTestStatus(test.id, 'fail', error);
+            }
+        }
     }
 }
 

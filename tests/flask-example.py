@@ -90,4 +90,5 @@ if __name__ == "__main__":
     print(f"📡 Make sure Nagini server is running on http://127.0.0.1:{STATIC_PORT}")
     print("🔗 Flask server will redirect to unified test page")
     print("📊 Visit http://127.0.0.1:5001 (redirects) or http://127.0.0.1:5001/info")
-    app.run(debug=True, host="0.0.0.0", port=5001)
+    # Démo locale uniquement : pas de debugger Werkzeug exposé, pas de bind réseau
+    app.run(debug=False, host="127.0.0.1", port=5001)

@@ -1,3 +1,12 @@
+# v0.0.42
+
+- **Brython robustness**: `executeAsync` now wraps user code in try/except: a raising script resolves with `error` set (type, message, traceback appended to stderr) instead of hanging forever; completion callbacks are keyed per execution id (no shared global slot); new `timeoutMs` parameter (default 30000 ms) mirroring the Pyodide backend
+- **UMD fix**: the UMD bundle now forwards `pyodideCdnUrl` to `PyodideManager`; offline/local Pyodide was silently ignored through the UMD path
+- **Memory**: `executionHistory` is capped at 50 entries and no longer stores base64 figures; `executeAsync` results are built from the worker payload and still carry `figures`/`bokeh_figures`
+- **Dev servers**: `serve.py` binds 127.0.0.1 by default (pass `--host 0.0.0.0` to expose); Flask example runs with `debug=False` on 127.0.0.1
+- **Documentation**: README pinned CDN URLs updated from v0.0.29 to v0.0.35
+- **Testing**: three new scenery tests (Brython error propagation, Brython concurrent executions, local UMD `pyodideCdnUrl` forwarding); full suite green 60/60
+
 # v0.0.35
 
 - **Arcade Game**: New `scenery/arcade/` page with two game modes for students

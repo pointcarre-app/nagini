@@ -84,7 +84,11 @@
                     const managerUrl = `${baseUrl}/../manager/manager.js`;
                     
                     const { PyodideManager } = await import(managerUrl);
-                    return new PyodideManager(packages, micropipPackages, filesToLoad, workerPath);
+                    // Forward config so offline/local Pyodide (pyodideCdnUrl) works via UMD too
+                    const pyodideConfig = {
+                        pyodideCdnUrl: options.pyodideCdnUrl
+                    };
+                    return new PyodideManager(packages, micropipPackages, filesToLoad, workerPath, pyodideConfig);
                 } catch (error) {
                     throw new Error(`🐍 [Nagini UMD] Failed to load PyodideManager: ${error.message}. Make sure all dependencies are available at the same CDN location.`);
                 }

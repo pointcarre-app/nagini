@@ -33,14 +33,14 @@ class BrythonManager {
   }
 
   // ------------------ Execution APIs ------------------
-  async executeAsync(filename, code, namespace = undefined) {
+  async executeAsync(filename, code, namespace = undefined, timeoutMs = 30000) {
     if (!this.isReady) {
       await this._readyPromise;
     }
 
     ValidationUtils.validateExecutionParams(filename, code, undefined, 'BrythonManager');
 
-    const raw = await _executeAsync(code, filename);
+    const raw = await _executeAsync(code, filename, timeoutMs);
 
     const result = {
       filename,
@@ -49,7 +49,7 @@ class BrythonManager {
       stderr: raw.stderr || '',
       missive: raw.missive ?? null,
       figures: [], // turtle draws directly to canvas
-      error: null,
+      error: raw.error ?? null,
       timestamp: new Date().toISOString()
     };
 

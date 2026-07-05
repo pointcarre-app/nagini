@@ -162,12 +162,51 @@ export class UMDTests {
             
             console.log('✅ UMD bundle has all dependencies bundled inline');
             console.log(`   Supported backends: ${backends.join(', ')}`);
-            
+
             logTestPass(testName);
         } catch (error) {
             console.error(`❌ Failed UMD dependency resolution test for version ${version}:`, error);
             logTestFail(testName, error);
             throw error;
+        }
+    }
+
+    /**
+     * Test that the LOCAL UMD bundle forwards the pyodideCdnUrl config
+     * to PyodideManager (offline/Capacitor support through the UMD path).
+     * Uses the repository's own nagini.umd.js, not a CDN copy.
+     * @param {string} pyodideCdnUrl - Local Pyodide path to forward
+     * @param {string} workerPath - Path to the bundled worker
+     * @returns {Promise<void>}
+     */
+    static async test4LocalPyodideCdnUrl(pyodideCdnUrl, workerPath) {
+        const testName = 'localPyodideCdnUrl (local bundle)';
+        const className = 'UMD';
+        logTestStart(className, testName);
+        let manager = null;
+
+        try {
+            // Import the local UMD bundle: it registers window.Nagini,
+            // overwriting any CDN copy loaded by the previous UMD tests
+            await import('../../src/nagini.umd.js');
+            const NaginiUMD = window.Nagini;
+            assert(NaginiUMD && typeof NaginiUMD.createManager === 'function',
+                'window.Nagini should be set by the local UMD bundle');
+
+            manager = await NaginiUMD.createManager('pyodide', [], [], [], workerPath, { pyodideCdnUrl });
+
+            assert(manager.pyodideCdnUrl === pyodideCdnUrl,
+                `manager.pyodideCdnUrl should be forwarded through the UMD path (got: ${manager.pyodideCdnUrl})`);
+
+            console.log('✅ Local UMD bundle forwards pyodideCdnUrl to PyodideManager');
+            logTestPass(testName);
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        } finally {
+            if (manager && typeof manager.destroy === 'function') {
+                manager.destroy();
+            }
         }
     }
 }

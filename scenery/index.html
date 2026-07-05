@@ -447,6 +447,30 @@
           </td>
           <td id="status-brython-manager-1" class="test-status-pending">⏳</td>
         </tr>
+        <tr>
+          <td>2️⃣</td>
+          <td>
+            <code>BrythonManager</code>
+          </td>
+          <td>
+            <code>executeAsync error propagation</code>
+            <br />
+            A raising script resolves with error set instead of hanging
+          </td>
+          <td id="status-brython-manager-2" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td>3️⃣</td>
+          <td>
+            <code>BrythonManager</code>
+          </td>
+          <td>
+            <code>executeAsync concurrent executions</code>
+            <br />
+            Per-execution callbacks: overlapping runs keep their own stdout
+          </td>
+          <td id="status-brython-manager-3" class="test-status-pending">⏳</td>
+        </tr>
         <!-- End BrythonManager -->
 
         <!-- PyodideFileLoader Tests -->
@@ -891,6 +915,18 @@
             Test UMD bundle inline dependency resolution without external imports
           </td>
           <td id="status-umd-3" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td>4️⃣</td>
+          <td>
+            <code>UMD</code>
+          </td>
+          <td>
+            <code>localPyodideCdnUrl(path)</code>
+            <br />
+            Local UMD bundle forwards pyodideCdnUrl config to PyodideManager
+          </td>
+          <td id="status-umd-4" class="test-status-pending">⏳</td>
         </tr>
 
         <!-- esm.sh Tests ⭐ (Recommended Solution) -->

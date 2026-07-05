@@ -80,12 +80,12 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 ```html
 <script type="module">
     // esm.sh automatically resolves ALL ES6 imports - no configuration needed!
-    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.35/src/nagini.js');
     const Nagini = naginiModule.Nagini;
     
     // Create manager and start using Python immediately
     const manager = await Nagini.createManager('pyodide', ['numpy'], [], [], 
-        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/worker/worker-dist.js');
+        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.35/src/pyodide/worker/worker-dist.js');
     
     await Nagini.waitForReady(manager);
     
@@ -115,7 +115,7 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 **UMD Bundle (Maximum Compatibility):**
 ```html
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.umd.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.35/src/nagini.umd.js');
     const Nagini = naginiModule.default || naginiModule;
 </script>
 ```
@@ -125,13 +125,13 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 <script type="importmap">
 {
   "imports": {
-    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/utils/validation.js",
-    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/manager/manager.js"
+    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.35/src/utils/validation.js",
+    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.35/src/pyodide/manager/manager.js"
   }
 }
 </script>
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.35/src/nagini.js');
     const Nagini = naginiModule.Nagini;
 </script>
 ```

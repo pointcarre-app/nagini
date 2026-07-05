@@ -41,4 +41,55 @@ export class BrythonManagerTests {
             throw error;
         }
     }
+
+    /**
+     * A script that raises must resolve with error set (not hang forever).
+     */
+    static async test2ErrorPropagation(manager) {
+        const testName = "executeAsync error propagation";
+        logTestStart("BrythonManager", testName);
+
+        try {
+            const result = await manager.executeAsync(
+                'boom.py',
+                "print('before the raise')\nraise ValueError('boom')"
+            );
+
+            assert(result, 'Result should be returned even when the code raises');
+            assert(result.error, 'result.error should be set when the code raises');
+            assertContains(result.stderr, 'ValueError', 'stderr should contain the traceback');
+            assertContains(result.stdout, 'before the raise', 'stdout before the raise should be captured');
+            logTestPass(testName);
+            return { result, testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Overlapping executions must each resolve with their own stdout
+     * (per-execution callbacks, no shared global slot).
+     */
+    static async test3ConcurrentExecutions(manager) {
+        const testName = "executeAsync concurrent executions";
+        logTestStart("BrythonManager", testName);
+
+        try {
+            const [a, b] = await Promise.all([
+                manager.executeAsync('alpha.py', "print('alpha-output')"),
+                manager.executeAsync('beta.py', "print('beta-output')")
+            ]);
+
+            assertContains(a.stdout, 'alpha-output', 'first execution should keep its own stdout');
+            assert(!a.stdout.includes('beta-output'), 'first execution must not capture second stdout');
+            assertContains(b.stdout, 'beta-output', 'second execution should keep its own stdout');
+            assert(!b.stdout.includes('alpha-output'), 'second execution must not capture first stdout');
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
 } 

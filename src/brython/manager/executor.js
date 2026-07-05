@@ -1,23 +1,91 @@
 import { loadBrython } from './loader.js';
 
 /**
- * Execute Python code with Brython, capturing stdout, stderr and missive.
- * Renamed from brython-executor.js
+ * Execute Python code with Brython, capturing stdout, stderr, missive and errors.
+ *
+ * The user code is embedded as a JSON-escaped string and run through
+ * exec(compile(...)) inside a try/except, so the completion callback fires
+ * whether the code succeeds or raises. The callback is keyed by execution id,
+ * so overlapping executions cannot clobber each other.
  */
-export async function executeAsync(code, filename = 'script.py') {
+export async function executeAsync(code, filename = 'script.py', timeoutMs = 30000) {
   await loadBrython();
   return new Promise((resolve, reject) => {
     const start = performance.now();
-    const id = `__brython_exec_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    window.__brython_finish_cb = (payload) => {
-      const end = performance.now();
+    const suffix = `${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const id = `__brython_exec_${suffix}`;
+    const cbName = `__brython_cb_${suffix}`;
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
       const el = document.getElementById(id);
       if (el) el.remove();
-      delete window.__brython_finish_cb;
+      delete window[cbName];
+    };
+
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      reject(new Error(`🐍 [BrythonManager] Execution timeout after ${timeoutMs / 1000} seconds`));
+    }, timeoutMs);
+
+    window[cbName] = (payload) => {
+      const end = performance.now();
+      cleanup();
       resolve({ filename, time: end - start, ...payload });
     };
 
-    const wrapped = `\nimport sys\nfrom browser import window\n\n_stdout_buf, _stderr_buf = [], []\n\nclass _Stdout:\n    def write(self, data):\n        _stdout_buf.append(str(data))\n    def flush(self):\n        pass\n\nclass _Stderr:\n    def write(self, data):\n        _stderr_buf.append(str(data))\n    def flush(self):\n        pass\n\nsys.stdout = _Stdout()\nsys.stderr = _Stderr()\n\n_missive_value = None\n\ndef missive(obj):\n    global _missive_value\n    if _missive_value is not None:\n        raise ValueError('missive() can only be called once')\n    _missive_value = obj\n\n# --- user code starts here ---\n${code}\n# --- end user code ---\n\nwindow.__brython_finish_cb({\n    'stdout': ''.join(_stdout_buf),\n    'stderr': ''.join(_stderr_buf),\n    'missive': _missive_value\n})\n`;
+    // JSON string literals are valid Python string literals
+    const codeJson = JSON.stringify(code);
+    const filenameJson = JSON.stringify(filename);
+
+    const wrapped = `
+import sys
+import traceback
+from browser import window
+
+_stdout_buf, _stderr_buf = [], []
+
+class _Stdout:
+    def write(self, data):
+        _stdout_buf.append(str(data))
+    def flush(self):
+        pass
+
+class _Stderr:
+    def write(self, data):
+        _stderr_buf.append(str(data))
+    def flush(self):
+        pass
+
+sys.stdout = _Stdout()
+sys.stderr = _Stderr()
+
+_missive_value = None
+
+def missive(obj):
+    global _missive_value
+    if _missive_value is not None:
+        raise ValueError('missive() can only be called once')
+    _missive_value = obj
+
+_error = None
+try:
+    exec(compile(${codeJson}, ${filenameJson}, 'exec'), globals())
+except BaseException as _exc:
+    _error = {
+        'type': type(_exc).__name__,
+        'message': str(_exc),
+        'traceback': traceback.format_exc()
+    }
+    _stderr_buf.append(traceback.format_exc())
+
+window.${cbName}({
+    'stdout': ''.join(_stdout_buf),
+    'stderr': ''.join(_stderr_buf),
+    'missive': _missive_value,
+    'error': _error
+})
+`;
 
     const script = document.createElement('script');
     script.type = 'text/python3';
@@ -28,7 +96,8 @@ export async function executeAsync(code, filename = 'script.py') {
     if (typeof window.brython === 'function') {
       window.brython();
     } else {
+      cleanup();
       reject(new Error('Brython runtime not initialised'));
     }
   });
-} 
+}

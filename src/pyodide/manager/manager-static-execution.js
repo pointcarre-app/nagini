@@ -178,8 +178,21 @@ export class PyodideManagerStaticExecutor {
               if (data.type === "result") {
                   clearTimeout(timeoutId);
                   setHandleMessage(originalHandler); // Restore original handler
-                  
-                  const result = executionHistory[executionHistory.length - 1];
+
+                  // Build the result from the worker payload rather than reading
+                  // back executionHistory: the history entry is intentionally
+                  // lighter (no figures) and capped
+                  const result = {
+                    filename: data.filename,
+                    time: data.time,
+                    stdout: data.stdout,
+                    stderr: data.stderr,
+                    missive: data.missive,
+                    figures: data.figures,
+                    bokeh_figures: data.bokeh_figures,
+                    error: data.error,
+                    timestamp: new Date().toISOString(),
+                  };
                   // Always resolve with the result, even if it contains Python errors
                   // This allows the caller to access stderr for full traceback information
                   resolve(result);

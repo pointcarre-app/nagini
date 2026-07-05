@@ -16,3 +16,6 @@
 
 # Node.js
 /node_modules/
+# Documents de travail locaux (revue et plan, non publiés)
+/revue-code-*.md
+/plan-implementation-*.md

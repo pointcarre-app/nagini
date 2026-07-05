@@ -33,6 +33,9 @@ import { PyodideManagerFS } from './manager-fs.js';
 import { ValidationUtils } from '../../utils/validation.js';
 import { createBlobWorkerUrl } from '../../utils/createBlobWorker.js';
 
+/** Cap on executionHistory entries (ring buffer behaviour) */
+const MAX_EXECUTION_HISTORY = 50;
+
 class PyodideManager {
   /**
    * Create a new PyodideManager instance
@@ -206,20 +209,23 @@ class PyodideManager {
         error: data.error
       });
 
-      // Create execution entry with all result data
+      // Create execution entry: figures are kept out of the history (base64
+      // payloads accumulate into an effective memory leak in long sessions);
+      // they remain available on the result resolved by executeAsync
       const entry = {
         filename: data.filename,
         time: data.time,
         stdout: data.stdout,
         stderr: data.stderr,
         missive: data.missive,
-        figures: data.figures,
-        bokeh_figures: data.bokeh_figures,
         error: data.error,
         timestamp: new Date().toISOString(),
       };
 
       this.executionHistory.push(entry);
+      if (this.executionHistory.length > MAX_EXECUTION_HISTORY) {
+        this.executionHistory.shift();
+      }
     }
   }
 

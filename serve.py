@@ -26,6 +26,7 @@ class ReusableTCPServer(socketserver.TCPServer):
 
 
 PORT = 8010
+HOST = "127.0.0.1"
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -33,6 +34,9 @@ if __name__ == "__main__":
             PORT = int(sys.argv[1])
         except ValueError:
             print("Invalid port number. Using default port 8010.")
+    # Serveur de dev local uniquement : passer --host 0.0.0.0 pour exposer au réseau
+    if "--host" in sys.argv:
+        HOST = sys.argv[sys.argv.index("--host") + 1]
 
     # Big red startup message with emojis and ASCII art
     print("\n" + "=" * 60)
@@ -48,8 +52,8 @@ if __name__ == "__main__":
     print("🌐 " + "\033[1;36m" + "CORS ENABLED" + "\033[0m" + " - Cross-origin requests allowed 🔓")
     print("=" * 60)
 
-    with ReusableTCPServer(("", PORT), CORSRequestHandler) as httpd:
-        print(f"🔥 \033[1;32mServer blazing at http://localhost:{PORT}/\033[0m 🔥")
+    with ReusableTCPServer((HOST, PORT), CORSRequestHandler) as httpd:
+        print(f"🔥 \033[1;32mServer blazing at http://{HOST}:{PORT}/\033[0m 🔥")
         print("⚡ \033[1;35mPress Ctrl+C to stop the server\033[0m ⚡")
         print("=" * 60 + "\n")
 
