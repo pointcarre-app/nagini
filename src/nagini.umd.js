@@ -27,10 +27,6 @@ __webpack_require__.d(__webpack_exports__, {
 var validation = __webpack_require__(800);
 ;// ../manager/manager-static-execution.js
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { if (r) i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n;else { var o = function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); }; o("next", 0), o("throw", 1), o("return", 2); } }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
@@ -39,24 +35,14 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 /**
  * PyodideManagerStaticExecutor - Static utility class for Python execution logic
  *
- * This class contains the core execution logic extracted from PyodideManager
- * to improve separation of concerns and testability.
- *
- * 📋 RECENT CHANGES:
- * - Renamed from PyodideStaticExecutor to PyodideManagerStaticExecutor
- * - File renamed from pyodide-static-executor.js to pyodide-manager-static-execution.js
- * - All log messages and error messages updated to use new class name
- * - Updated as part of the comprehensive "Simple" prefix removal initiative
- *
  * 🎯 PURPOSE:
- * - Provides pure, testable static methods for Python code execution
- * - Handles both fire-and-forget and Promise-based execution patterns
- * - Manages namespace isolation and parameter validation
- * - Separates execution logic from PyodideManager lifecycle management
+ * - Provides a pure, testable static method for fire-and-forget execution
+ * - Manages namespace forwarding and parameter validation
  *
- * ⚡ STATIC METHODS:
- * - executeFile(): Fire-and-forget execution
- * - executeAsync(): Promise-based execution with result tracking
+ * Promise-based execution lives in PyodideManager.executeAsync, built on
+ * id-correlated worker messages (see PyodideManager._postRequest): every
+ * request carries an id, the worker echoes it back, and a single permanent
+ * onmessage handler settles the matching promise. No handler replacement.
  */
 
 
@@ -73,12 +59,12 @@ var PyodideManagerStaticExecutor = /*#__PURE__*/function () {
      * TECHNICAL DETAILS FOR PYODIDE:
      * - This method sends a message to the web worker containing the execution request
      * - The worker receives: {type: 'execute', filename, code, namespace?}
-     * - Worker calls pyodide.runPython(code) or pyodide.runPython(code, namespace)
+     * - Worker calls pyodide.runPythonAsync(code) or pyodide.runPythonAsync(code, {globals})
      *
      * NAMESPACE FLOW:
      * 1. JavaScript object namespace -> sent to worker via postMessage
      * 2. Worker receives it as JavaScript object
-     * 3. Worker passes it directly to pyodide.runPython() as second parameter
+     * 3. Worker passes it to pyodide.runPythonAsync() as execution globals
      * 4. Pyodide converts JavaScript object to Python dict automatically
      * 5. Python code executes with that dict as its namespace
      *
@@ -119,150 +105,6 @@ var PyodideManagerStaticExecutor = /*#__PURE__*/function () {
         console.error("Failed to dispatch execution: ".concat(error.message));
       }
     }
-
-    /**
-     * Execute Python code asynchronously and return a Promise with the result
-     *
-     * This method provides Promise-based execution with comprehensive result tracking.
-     * It implements the HANDLER REPLACEMENT PATTERN to enable Promise-based APIs
-     * over web worker message passing.
-     *
-     * 🔧 HANDLER REPLACEMENT PATTERN IMPLEMENTATION:
-     *
-     * THE PROBLEM:
-     * Web workers communicate via messages, not direct function calls. When we send
-     * a message to the worker, we get a response later via handleMessage(). But
-     * JavaScript functions expect immediate return values or Promises.
-     *
-     * THE SOLUTION:
-     * We temporarily "hijack" the handleMessage function to capture the specific
-     * result for the specific caller, then restore the original function.
-     *
-     * STEP-BY-STEP PROCESS:
-     * 1. Save the original handleMessage function
-     * 2. Replace handleMessage with a custom function that:
-     *    - Still calls the original (for normal processing)
-     *    - BUT ALSO checks if this is the result we're waiting for
-     *    - If yes: resolve the Promise with the result
-     *    - Then restore the original handleMessage
-     * 3. Send the message to the worker
-     * 4. When the result comes back, our custom handler catches it
-     * 5. Original handler is restored for future calls
-     *
-     * WHY THIS IS SAFE:
-     * Only one execution may be in flight at a time: PyodideManager.executeAsync
-     * serializes calls through its executionChain before delegating here.
-     *
-     * @param {Worker} worker - Web worker instance for executing Python code
-     * @param {boolean} isReady - Whether Pyodide is ready for execution
-     * @param {Array<ExecutionResult>} executionHistory - Array to store execution results
-     * @param {function(Function): void} setHandleMessage - Function to set the message handler
-     * @param {function(): Function} getHandleMessage - Function to get the current message handler
-     * @param {string} filename - Name for this execution (for tracking and debugging)
-     * @param {string} code - Python code to execute
-     * @param {Object|undefined} [namespace] - Optional namespace object for Python execution
-     * @returns {Promise<ExecutionResult>} Promise that resolves with execution result
-     * @throws {Error} If manager is not ready or execution times out
-     */
-  }, {
-    key: "executeAsync",
-    value: (function () {
-      var _executeAsync = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(worker, isReady, executionHistory, setHandleMessage, getHandleMessage, filename, code) {
-        var namespace,
-          timeoutMs,
-          _args = arguments;
-        return _regenerator().w(function (_context) {
-          while (1) switch (_context.n) {
-            case 0:
-              namespace = _args.length > 7 && _args[7] !== undefined ? _args[7] : undefined;
-              timeoutMs = _args.length > 8 && _args[8] !== undefined ? _args[8] : 30000;
-              // Comprehensive parameter validation
-              validation/* ValidationUtils */.n.validateWorker(worker, 'PyodideManagerStaticExecutor');
-              validation/* ValidationUtils */.n.validateBoolean(isReady, 'isReady', 'PyodideManagerStaticExecutor');
-              validation/* ValidationUtils */.n.validateArray(executionHistory, 'executionHistory', 'PyodideManagerStaticExecutor');
-              validation/* ValidationUtils */.n.validateFunction(setHandleMessage, 'setHandleMessage', 'PyodideManagerStaticExecutor');
-              validation/* ValidationUtils */.n.validateFunction(getHandleMessage, 'getHandleMessage', 'PyodideManagerStaticExecutor');
-              validation/* ValidationUtils */.n.validateExecutionParams(filename, code, namespace, 'PyodideManagerStaticExecutor');
-              if (isReady) {
-                _context.n = 1;
-                break;
-              }
-              throw new Error("⚡ [PyodideManagerStaticExecutor] Manager not ready yet. Wait for initialization to complete.");
-            case 1:
-              return _context.a(2, new Promise(function (resolve, reject) {
-                // Add timeout to prevent hanging
-                var timeoutId = setTimeout(function () {
-                  try {
-                    setHandleMessage(originalHandler);
-                  } catch (error) {
-                    console.warn("Failed to restore handler on timeout:", error.message);
-                  }
-                  reject(new Error("\u26A1 [PyodideManagerStaticExecutor] Execution timeout after ".concat(timeoutMs / 1000, " seconds")));
-                }, timeoutMs);
-
-                // Save original handler and replace with interceptor
-                var originalHandler = getHandleMessage();
-                if (!originalHandler) {
-                  clearTimeout(timeoutId);
-                  reject(new Error("⚡ [PyodideManagerStaticExecutor] No message handler available"));
-                  return;
-                }
-                setHandleMessage(function (data) {
-                  try {
-                    // Call original handler for normal processing
-                    originalHandler.call(this, data);
-
-                    // Check if this is the result we're waiting for
-                    if (data.type === "result") {
-                      clearTimeout(timeoutId);
-                      setHandleMessage(originalHandler); // Restore original handler
-
-                      // Build the result from the worker payload rather than reading
-                      // back executionHistory: the history entry is intentionally
-                      // lighter (no figures) and capped
-                      var result = {
-                        filename: data.filename,
-                        time: data.time,
-                        stdout: data.stdout,
-                        stderr: data.stderr,
-                        missive: data.missive,
-                        figures: data.figures,
-                        bokeh_figures: data.bokeh_figures,
-                        error: data.error,
-                        timestamp: new Date().toISOString()
-                      };
-                      // Always resolve with the result, even if it contains Python errors
-                      // This allows the caller to access stderr for full traceback information
-                      resolve(result);
-                    } else if (data.type === "error") {
-                      clearTimeout(timeoutId);
-                      setHandleMessage(originalHandler);
-                      reject(new Error("\u26A1 [PyodideManagerStaticExecutor] Execution error: ".concat(data.message || data.error || 'Unknown error')));
-                    }
-                  } catch (error) {
-                    clearTimeout(timeoutId);
-                    setHandleMessage(originalHandler);
-                    reject(new Error("\u26A1 [PyodideManagerStaticExecutor] Handler error: ".concat(error.message)));
-                  }
-                });
-
-                // Send execution message to worker
-                try {
-                  PyodideManagerStaticExecutor.executeFile(worker, isReady, filename, code, namespace);
-                } catch (error) {
-                  clearTimeout(timeoutId);
-                  setHandleMessage(originalHandler);
-                  reject(new Error("\u26A1 [PyodideManagerStaticExecutor] Failed to send execution message: ".concat(error.message)));
-                }
-              }));
-          }
-        }, _callee);
-      }));
-      function executeAsync(_x, _x2, _x3, _x4, _x5, _x6, _x7) {
-        return _executeAsync.apply(this, arguments);
-      }
-      return executeAsync;
-    }())
   }]);
 }();
 
@@ -451,10 +293,10 @@ function manager_fs_typeof(o) { "@babel/helpers - typeof"; return manager_fs_typ
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = manager_fs_toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function manager_fs_regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return manager_fs_regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (manager_fs_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, manager_fs_regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, manager_fs_regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), manager_fs_regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", manager_fs_regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), manager_fs_regeneratorDefine2(u), manager_fs_regeneratorDefine2(u, o, "Generator"), manager_fs_regeneratorDefine2(u, n, function () { return this; }), manager_fs_regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (manager_fs_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function manager_fs_regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } manager_fs_regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { if (r) i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n;else { var o = function o(r, n) { manager_fs_regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); }; o("next", 0), o("throw", 1), o("return", 2); } }, manager_fs_regeneratorDefine2(e, r, n, t); }
-function manager_fs_asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function manager_fs_asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { manager_fs_asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { manager_fs_asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { if (r) i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n;else { var o = function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); }; o("next", 0), o("throw", 1), o("return", 2); } }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function manager_fs_classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function manager_fs_defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, manager_fs_toPropertyKey(o.key), o); } }
 function manager_fs_createClass(e, r, t) { return r && manager_fs_defineProperties(e.prototype, r), t && manager_fs_defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
@@ -470,7 +312,10 @@ function manager_fs_toPrimitive(t, r) { if ("object" != manager_fs_typeof(t) || 
  * - File operations (read, write, mkdir, exists, listdir)
  * - Promise-based async filesystem interface
  * - Error handling and timeout management
- * - Message handler interception pattern
+ *
+ * Requests are id-correlated (see PyodideManager._postRequest): a filesystem
+ * operation can run while an execution is in flight without any handler
+ * clobbering.
  */
 
 
@@ -495,15 +340,19 @@ var PyodideManagerFS = /*#__PURE__*/function () {
      * @throws {Error} If operation fails or times out
      */
     function () {
-      var _fs = manager_fs_asyncToGenerator(/*#__PURE__*/manager_fs_regenerator().m(function _callee(manager, operation, params) {
-        var result, _t;
-        return manager_fs_regenerator().w(function (_context) {
+      var _fs = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(manager, operation, params) {
+        var timeoutMs,
+          result,
+          _args = arguments,
+          _t;
+        return _regenerator().w(function (_context) {
           while (1) switch (_context.n) {
             case 0:
+              timeoutMs = _args.length > 3 && _args[3] !== undefined ? _args[3] : 10000;
               validation/* ValidationUtils */.n.validateString(operation, 'operation', 'PyodideManagerFS');
               validation/* ValidationUtils */.n.validateObject(params, 'params', 'PyodideManagerFS');
               _context.n = 1;
-              return PyodideManagerFS._sendFSCommand(manager, operation, params);
+              return PyodideManagerFS._sendFSCommand(manager, operation, params, timeoutMs);
             case 1:
               result = _context.v;
               _t = operation;
@@ -539,8 +388,8 @@ var PyodideManagerFS = /*#__PURE__*/function () {
   }, {
     key: "writeFile",
     value: (function () {
-      var _writeFile = manager_fs_asyncToGenerator(/*#__PURE__*/manager_fs_regenerator().m(function _callee2(manager, path, content) {
-        return manager_fs_regenerator().w(function (_context2) {
+      var _writeFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(manager, path, content) {
+        return _regenerator().w(function (_context2) {
           while (1) switch (_context2.n) {
             case 0:
               validation/* ValidationUtils */.n.validateString(path, 'path', 'PyodideManagerFS');
@@ -568,8 +417,8 @@ var PyodideManagerFS = /*#__PURE__*/function () {
   }, {
     key: "readFile",
     value: (function () {
-      var _readFile = manager_fs_asyncToGenerator(/*#__PURE__*/manager_fs_regenerator().m(function _callee3(manager, path) {
-        return manager_fs_regenerator().w(function (_context3) {
+      var _readFile = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(manager, path) {
+        return _regenerator().w(function (_context3) {
           while (1) switch (_context3.n) {
             case 0:
               validation/* ValidationUtils */.n.validateString(path, 'path', 'PyodideManagerFS');
@@ -595,8 +444,8 @@ var PyodideManagerFS = /*#__PURE__*/function () {
   }, {
     key: "mkdir",
     value: (function () {
-      var _mkdir = manager_fs_asyncToGenerator(/*#__PURE__*/manager_fs_regenerator().m(function _callee4(manager, path) {
-        return manager_fs_regenerator().w(function (_context4) {
+      var _mkdir = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(manager, path) {
+        return _regenerator().w(function (_context4) {
           while (1) switch (_context4.n) {
             case 0:
               validation/* ValidationUtils */.n.validateString(path, 'path', 'PyodideManagerFS');
@@ -622,8 +471,8 @@ var PyodideManagerFS = /*#__PURE__*/function () {
   }, {
     key: "exists",
     value: (function () {
-      var _exists = manager_fs_asyncToGenerator(/*#__PURE__*/manager_fs_regenerator().m(function _callee5(manager, path) {
-        return manager_fs_regenerator().w(function (_context5) {
+      var _exists = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(manager, path) {
+        return _regenerator().w(function (_context5) {
           while (1) switch (_context5.n) {
             case 0:
               validation/* ValidationUtils */.n.validateString(path, 'path', 'PyodideManagerFS');
@@ -649,8 +498,8 @@ var PyodideManagerFS = /*#__PURE__*/function () {
   }, {
     key: "listdir",
     value: (function () {
-      var _listdir = manager_fs_asyncToGenerator(/*#__PURE__*/manager_fs_regenerator().m(function _callee6(manager, path) {
-        return manager_fs_regenerator().w(function (_context6) {
+      var _listdir = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(manager, path) {
+        return _regenerator().w(function (_context6) {
           while (1) switch (_context6.n) {
             case 0:
               validation/* ValidationUtils */.n.validateString(path, 'path', 'PyodideManagerFS');
@@ -666,35 +515,18 @@ var PyodideManagerFS = /*#__PURE__*/function () {
       return listdir;
     }()
     /**
-     * Private helper method to send FS commands to worker with message interception
+     * Private helper method to send FS commands to the worker
      *
-     * This method implements the HANDLER REPLACEMENT PATTERN to enable Promise-based
-     * filesystem operations over web worker message passing.
-     *
-     * 🔧 HANDLER REPLACEMENT PATTERN FOR FILESYSTEM OPERATIONS:
-     *
-     * This method uses the same core pattern as PyodideManagerStaticExecutor.executeAsync(),
-     * but specialized for filesystem operations:
-     *
-     * 1. Save the original handleMessage function
-     * 2. Replace with a custom interceptor that:
-     *    - Still calls the original handler (for normal processing)
-     *    - BUT ALSO checks if this is the FS result we're waiting for
-     *    - If yes: resolve the Promise with the result
-     *    - Then restore the original handleMessage
-     * 3. Send the filesystem command to the worker
-     * 4. When the FS result comes back, our custom handler catches it
-     * 5. Original handler is restored for future calls
-     *
-     * This enables clean Promise-based filesystem APIs like:
-     * - await manager.fs("writeFile", {path: "test.txt", content: "hello"})
-     * - await manager.fs("readFile", {path: "test.txt"})
-     * - await manager.fs("mkdir", {path: "new-directory"})
+     * The request goes through PyodideManager._postRequest: it carries a
+     * correlation id, the worker echoes it back on fs_result/fs_error, and the
+     * manager's permanent onmessage handler settles this promise. Filesystem
+     * operations therefore work while an execution is in flight.
      *
      * @private
      * @param {PyodideManager} manager - Manager instance
      * @param {FSOperation} operation - FS operation name
      * @param {FSOperationParams} params - Operation parameters
+     * @param {number} [timeoutMs=10000] - Timeout in milliseconds
      * @returns {Promise<FSOperationResult>} Operation result
      * @throws {Error} If operation fails or times out
      */
@@ -702,68 +534,23 @@ var PyodideManagerFS = /*#__PURE__*/function () {
   }, {
     key: "_sendFSCommand",
     value: (function () {
-      var _sendFSCommand2 = manager_fs_asyncToGenerator(/*#__PURE__*/manager_fs_regenerator().m(function _callee7(manager, operation, params) {
-        return manager_fs_regenerator().w(function (_context7) {
+      var _sendFSCommand2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(manager, operation, params) {
+        var timeoutMs,
+          _args7 = arguments;
+        return _regenerator().w(function (_context7) {
           while (1) switch (_context7.n) {
             case 0:
+              timeoutMs = _args7.length > 3 && _args7[3] !== undefined ? _args7[3] : 10000;
               if (manager.isReady) {
                 _context7.n = 1;
                 break;
               }
               throw new Error("🐍 [PyodideManagerFS] Manager not ready yet. Wait for initialization to complete.");
             case 1:
-              return _context7.a(2, new Promise(function (resolve, reject) {
-                // Add timeout to prevent hanging
-                var timeoutId = setTimeout(function () {
-                  try {
-                    manager.handleMessage = originalHandler;
-                  } catch (error) {
-                    console.warn("Failed to restore handler on timeout:", error.message);
-                  }
-                  reject(new Error("🐍 [PyodideManagerFS] Filesystem operation timeout"));
-                }, 10000);
-
-                // Save original handler and replace with interceptor
-                var originalHandler = manager.handleMessage.bind(manager);
-                if (!originalHandler) {
-                  clearTimeout(timeoutId);
-                  reject(new Error("🎛️ [PyodideManagerFS] No message handler available"));
-                  return;
-                }
-                manager.handleMessage = function (data) {
-                  try {
-                    // Call original handler for normal processing
-                    originalHandler(data);
-
-                    // Check if this is the FS result we're waiting for
-                    if (data.type === "fs_result") {
-                      clearTimeout(timeoutId);
-                      manager.handleMessage = originalHandler;
-                      resolve(data.result);
-                    } else if (data.type === "fs_error") {
-                      clearTimeout(timeoutId);
-                      manager.handleMessage = originalHandler;
-                      reject(new Error("\uD83C\uDF9B\uFE0F [PyodideManagerFS] Filesystem error: ".concat(data.error)));
-                    }
-                  } catch (error) {
-                    clearTimeout(timeoutId);
-                    manager.handleMessage = originalHandler;
-                    reject(new Error("\uD83C\uDF9B\uFE0F [PyodideManagerFS] Handler error: ".concat(error.message)));
-                  }
-                };
-
-                // Send FS command to worker
-                try {
-                  manager.worker.postMessage(_objectSpread({
-                    type: "fs_operation",
-                    operation: operation
-                  }, params));
-                } catch (error) {
-                  clearTimeout(timeoutId);
-                  manager.handleMessage = originalHandler;
-                  reject(new Error("\uD83C\uDF9B\uFE0F [PyodideManagerFS] Failed to send filesystem command: ".concat(error.message)));
-                }
-              }));
+              return _context7.a(2, manager._postRequest(_objectSpread({
+                type: "fs_operation",
+                operation: operation
+              }, params), timeoutMs, "🐍 [PyodideManagerFS] Filesystem operation timeout"));
           }
         }, _callee7);
       }));
@@ -906,6 +693,12 @@ function revokeBlobUrl(blobUrl) {
 }
 ;// ../manager/manager.js
 function manager_typeof(o) { "@babel/helpers - typeof"; return manager_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, manager_typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function manager_ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function manager_objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? manager_ownKeys(Object(t), !0).forEach(function (r) { manager_defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : manager_ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function manager_defineProperty(e, r, t) { return (r = manager_toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function manager_regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return manager_regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (manager_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, manager_regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, manager_regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), manager_regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", manager_regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), manager_regeneratorDefine2(u), manager_regeneratorDefine2(u, o, "Generator"), manager_regeneratorDefine2(u, n, function () { return this; }), manager_regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (manager_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function manager_regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } manager_regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { if (r) i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n;else { var o = function o(r, n) { manager_regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); }; o("next", 0), o("throw", 1), o("return", 2); } }, manager_regeneratorDefine2(e, r, n, t); }
 function manager_asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -965,6 +758,7 @@ var PyodideManager = /*#__PURE__*/function () {
    * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
   function PyodideManager(packages, micropipPackages, filesToLoad, workerPath) {
+    var _this = this;
     var config = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
     manager_classCallCheck(this, PyodideManager);
     // Minimal logging - constructor called
@@ -1013,9 +807,36 @@ var PyodideManager = /*#__PURE__*/function () {
     /** @type {Promise<any>} Serialization chain for executeAsync calls */
     this.executionChain = Promise.resolve();
 
+    /** @type {Map<number, {resolve: Function, reject: Function, timeoutId: number}>}
+     *  Pending id-correlated requests (execute, fs) awaiting a worker response */
+    this._pendingRequests = new Map();
+
+    /** @type {number} Monotonic id for request correlation */
+    this._nextRequestId = 1;
+
+    /** @type {Promise<void>} Resolves on the worker "ready" message, rejects
+     *  with the original cause if initialization fails */
+    this.readyPromise = new Promise(function (resolve, reject) {
+      _this._readySettled = false;
+      _this._readyResolve = function () {
+        _this._readySettled = true;
+        resolve();
+      };
+      _this._readyReject = function (error) {
+        if (!_this._readySettled) {
+          _this._readySettled = true;
+          reject(error);
+        }
+      };
+    });
+    // Guard: an init failure must not surface as an unhandled rejection when
+    // the consumer only polls isReady
+    this.readyPromise.catch(function () {});
+
     // Initialize worker asynchronously
     this.initWorker().catch(function (error) {
       console.error("🚨 [PyodideManager] Worker initialization failed:", error);
+      _this._readyReject(error);
     });
   }
 
@@ -1048,7 +869,7 @@ var PyodideManager = /*#__PURE__*/function () {
     key: "initWorker",
     value: (function () {
       var _initWorker = manager_asyncToGenerator(/*#__PURE__*/manager_regenerator().m(function _callee() {
-        var _this = this;
+        var _this2 = this;
         var _t;
         return manager_regenerator().w(function (_context) {
           while (1) switch (_context.n) {
@@ -1061,21 +882,22 @@ var PyodideManager = /*#__PURE__*/function () {
               // Create worker from blob URL
               this.worker = new Worker(this.blobUrl);
 
-              // Set up message handling
+              // Set up message handling: dispatch routes id-correlated responses to
+              // their pending promise, then hands the message to handleMessage
               this.worker.onmessage = function (e) {
-                return _this.handleMessage(e.data);
+                return _this2._dispatchMessage(e.data);
               };
 
               // Surface worker crashes (wasm trap, failed import, ...) as error
               // messages so pending executions reject instead of hanging forever
               this.worker.onerror = function (e) {
-                _this.handleMessage({
+                _this2._dispatchMessage({
                   type: "error",
                   message: "Worker crashed: ".concat(e.message || "unknown error")
                 });
               };
               this.worker.onmessageerror = function () {
-                _this.handleMessage({
+                _this2._dispatchMessage({
                   type: "error",
                   message: "Worker message could not be deserialized"
                 });
@@ -1107,13 +929,138 @@ var PyodideManager = /*#__PURE__*/function () {
       return initWorker;
     }()
     /**
+     * Route a worker message: settle the matching pending request (by id) if
+     * any, then hand the message to handleMessage for normal processing
+     * (execution history, input state, logging)
+     *
+     * @private
+     * @param {WorkerMessage} data - Message from worker
+     * @returns {void}
+     */
+    )
+  }, {
+    key: "_dispatchMessage",
+    value: function _dispatchMessage(data) {
+      var pending = data && data.id !== undefined ? this._pendingRequests.get(data.id) : undefined;
+      if (pending) {
+        this._pendingRequests.delete(data.id);
+        clearTimeout(pending.timeoutId);
+      }
+
+      // Normal processing first: history push, input state reset, logs. A
+      // throwing handler must not leave the pending request unsettled
+      try {
+        this.handleMessage(data);
+      } catch (error) {
+        console.error("🚨 [PyodideManager] handleMessage failed:", error);
+      }
+      if (data && data.type === "ready") {
+        this._readyResolve();
+      }
+      if (data && data.type === "error" && data.id === undefined) {
+        // Id-less error: init failure or worker crash. Fail readiness (during
+        // init) and every in-flight request, none of them can complete
+        var error = new Error(data.message || data.error || "Worker error");
+        this._readyReject(error);
+        this._failAllPending(error);
+      }
+      if (!pending) return;
+      if (data.type === "result") {
+        // Resolve with a result built from the worker payload, even when it
+        // contains a Python error: callers read stderr for the full traceback
+        pending.resolve({
+          filename: data.filename,
+          time: data.time,
+          stdout: data.stdout,
+          stderr: data.stderr,
+          missive: data.missive,
+          figures: data.figures,
+          bokeh_figures: data.bokeh_figures,
+          error: data.error,
+          timestamp: new Date().toISOString()
+        });
+      } else if (data.type === "fs_result") {
+        pending.resolve(data.result);
+      } else if (data.type === "fs_error") {
+        pending.reject(new Error("\uD83C\uDF9B\uFE0F [PyodideManagerFS] Filesystem error: ".concat(data.error)));
+      } else if (data.type === "error") {
+        pending.reject(new Error("\u26A1 [PyodideManager] Execution error: ".concat(data.message || data.error || "Unknown error")));
+      } else {
+        pending.reject(new Error("\uD83D\uDEA8 [PyodideManager] Unexpected response type for request: ".concat(data.type)));
+      }
+    }
+
+    /**
+     * Send an id-correlated request to the worker and return a promise settled
+     * by the matching response (see _dispatchMessage)
+     *
+     * @private
+     * @param {Object} message - Message to post (id is added here)
+     * @param {number} timeoutMs - Timeout in milliseconds
+     * @param {string} timeoutLabel - Error message on timeout
+     * @returns {Promise<any>}
+     */
+  }, {
+    key: "_postRequest",
+    value: function _postRequest(message, timeoutMs, timeoutLabel) {
+      var _this3 = this;
+      return new Promise(function (resolve, reject) {
+        var id = _this3._nextRequestId++;
+        var timeoutId = setTimeout(function () {
+          // A response arriving later is simply discarded by _dispatchMessage
+          _this3._pendingRequests.delete(id);
+          reject(new Error(timeoutLabel));
+        }, timeoutMs);
+        _this3._pendingRequests.set(id, {
+          resolve: resolve,
+          reject: reject,
+          timeoutId: timeoutId
+        });
+        try {
+          _this3.worker.postMessage(manager_objectSpread(manager_objectSpread({}, message), {}, {
+            id: id
+          }));
+        } catch (error) {
+          clearTimeout(timeoutId);
+          _this3._pendingRequests.delete(id);
+          reject(new Error("\uD83D\uDEA8 [PyodideManager] Failed to send message to worker: ".concat(error.message)));
+        }
+      });
+    }
+
+    /**
+     * Reject every pending request (worker crash, destroy)
+     *
+     * @private
+     * @param {Error} error - Rejection cause
+     * @returns {void}
+     */
+  }, {
+    key: "_failAllPending",
+    value: function _failAllPending(error) {
+      var _iterator = _createForOfIteratorHelper(this._pendingRequests.values()),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var pending = _step.value;
+          clearTimeout(pending.timeoutId);
+          pending.reject(error);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      this._pendingRequests.clear();
+    }
+
+    /**
      * Handle messages from the Pyodide worker
      * Updates UI status and manages execution context
      *
      * @param {WorkerMessage} data - Message from worker
      * @returns {void}
      */
-    )
   }, {
     key: "handleMessage",
     value: function handleMessage(data) {
@@ -1203,10 +1150,13 @@ var PyodideManager = /*#__PURE__*/function () {
     key: "fs",
     value: function () {
       var _fs = manager_asyncToGenerator(/*#__PURE__*/manager_regenerator().m(function _callee2(operation, params) {
+        var timeoutMs,
+          _args2 = arguments;
         return manager_regenerator().w(function (_context2) {
           while (1) switch (_context2.n) {
             case 0:
-              return _context2.a(2, PyodideManagerFS.fs(this, operation, params));
+              timeoutMs = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : 10000;
+              return _context2.a(2, PyodideManagerFS.fs(this, operation, params, timeoutMs));
           }
         }, _callee2, this);
       }));
@@ -1215,31 +1165,6 @@ var PyodideManager = /*#__PURE__*/function () {
       }
       return fs;
     }()
-    /**
-     * Get or set the current message handler
-     *
-     * @param {Function} [newHandler] - New message handler to set
-     * @returns {Function} Current message handler
-     */
-  }, {
-    key: "setHandleMessage",
-    value: function setHandleMessage(newHandler) {
-      if (newHandler) {
-        this.handleMessage = newHandler;
-      }
-    }
-
-    /**
-     * Get the current message handler
-     *
-     * @returns {Function} Current message handler
-     */
-  }, {
-    key: "getHandleMessage",
-    value: function getHandleMessage() {
-      return this.handleMessage;
-    }
-
     /**
      * Execute Python code in the worker with optional namespace isolation
      *
@@ -1268,33 +1193,56 @@ var PyodideManager = /*#__PURE__*/function () {
   }, {
     key: "executeAsync",
     value: (function () {
-      var _executeAsync = manager_asyncToGenerator(/*#__PURE__*/manager_regenerator().m(function _callee3(filename, code) {
-        var _this2 = this;
+      var _executeAsync = manager_asyncToGenerator(/*#__PURE__*/manager_regenerator().m(function _callee4(filename, code) {
+        var _this4 = this;
         var namespace,
           timeoutMs,
           run,
           result,
-          _args3 = arguments;
-        return manager_regenerator().w(function (_context3) {
-          while (1) switch (_context3.n) {
+          _args4 = arguments;
+        return manager_regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
             case 0:
-              namespace = _args3.length > 2 && _args3[2] !== undefined ? _args3[2] : undefined;
-              timeoutMs = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : 30000;
-              // Executions are serialized: the worker and the message interceptor in
-              // PyodideManagerStaticExecutor only support one execution at a time, so
-              // concurrent calls are queued instead of corrupting each other
-              run = function run() {
-                return PyodideManagerStaticExecutor.executeAsync(_this2.worker, _this2.isReady, _this2.executionHistory, function (handler) {
-                  return _this2.setHandleMessage(handler);
-                }, function () {
-                  return _this2.getHandleMessage();
-                }, filename, code, namespace, timeoutMs);
-              };
+              namespace = _args4.length > 2 && _args4[2] !== undefined ? _args4[2] : undefined;
+              timeoutMs = _args4.length > 3 && _args4[3] !== undefined ? _args4[3] : 30000;
+              // Executions are serialized: one Python interpreter lives in the worker,
+              // so concurrent calls are queued rather than interleaved. Responses are
+              // correlated by request id, so a late result from a timed-out run can
+              // never be attributed to the next execution
+              run = /*#__PURE__*/function () {
+                var _ref = manager_asyncToGenerator(/*#__PURE__*/manager_regenerator().m(function _callee3() {
+                  var message;
+                  return manager_regenerator().w(function (_context3) {
+                    while (1) switch (_context3.n) {
+                      case 0:
+                        validation/* ValidationUtils */.n.validateExecutionParams(filename, code, namespace, 'PyodideManager');
+                        if (_this4.isReady) {
+                          _context3.n = 1;
+                          break;
+                        }
+                        throw new Error("⚡ [PyodideManager] Manager not ready yet. Wait for initialization to complete.");
+                      case 1:
+                        message = {
+                          type: "execute",
+                          filename: filename,
+                          code: code
+                        };
+                        if (namespace !== undefined) {
+                          message.namespace = namespace;
+                        }
+                        return _context3.a(2, _this4._postRequest(message, timeoutMs, "\u26A1 [PyodideManager] Execution timeout after ".concat(timeoutMs / 1000, " seconds")));
+                    }
+                  }, _callee3);
+                }));
+                return function run() {
+                  return _ref.apply(this, arguments);
+                };
+              }();
               result = this.executionChain.then(run, run);
               this.executionChain = result.catch(function () {});
-              return _context3.a(2, result);
+              return _context4.a(2, result);
           }
-        }, _callee3, this);
+        }, _callee4, this);
       }));
       function executeAsync(_x3, _x4) {
         return _executeAsync.apply(this, arguments);
@@ -1333,6 +1281,11 @@ var PyodideManager = /*#__PURE__*/function () {
         URL.revokeObjectURL(this.blobUrl);
         this.blobUrl = null;
       }
+
+      // Settle everything still waiting on this manager
+      var error = new Error("🚨 [PyodideManager] Manager destroyed");
+      this._failAllPending(error);
+      this._readyReject(error);
 
       // Reset state
       this.isReady = false;
@@ -1902,6 +1855,10 @@ var BrythonManager = /*#__PURE__*/function () {
       _this.isReady = true;
       console.log('🐍 [BrythonManager] ready');
     });
+
+    // Same readiness surface as PyodideManager (used by Nagini.waitForReady)
+    this.readyPromise = this._readyPromise;
+    this.readyPromise.catch(function () {});
   }
 
   // ------------------ Execution APIs ------------------
@@ -2191,6 +2148,12 @@ var Nagini = {
   }(),
   /**
    * Wait for a manager to be ready for execution
+   *
+   * Built-in managers expose a readyPromise that resolves on the worker
+   * "ready" message and rejects with the original cause when
+   * initialization fails (bad worker path, CDN failure, ...). Managers
+   * without a readyPromise fall back to polling isReady.
+   *
    * @param {Manager} manager - Manager instance to wait for
    * @param {number} [timeout] - Timeout in milliseconds (default: 30000)
    * @returns {Promise<void>} Resolves when manager is ready
@@ -2198,35 +2161,54 @@ var Nagini = {
   waitForReady: function () {
     var _waitForReady = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(manager) {
       var timeout,
+        timer,
         startTime,
         _args2 = arguments;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.n) {
           case 0:
             timeout = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : 30000;
-            startTime = Date.now();
-          case 1:
-            if (manager.isReady) {
+            if (!manager.readyPromise) {
               _context2.n = 4;
               break;
             }
+            _context2.p = 1;
+            _context2.n = 2;
+            return Promise.race([manager.readyPromise, new Promise(function (_, reject) {
+              timer = setTimeout(function () {
+                return reject(new Error("\uD83D\uDC0D [Nagini] Manager initialization timeout after ".concat(timeout, "ms")));
+              }, timeout);
+            })]);
+          case 2:
+            _context2.p = 2;
+            clearTimeout(timer);
+            return _context2.f(2);
+          case 3:
+            return _context2.a(2);
+          case 4:
+            startTime = Date.now();
+          case 5:
+            if (manager.isReady) {
+              _context2.n = 8;
+              break;
+            }
             if (!(Date.now() - startTime > timeout)) {
-              _context2.n = 2;
+              _context2.n = 6;
               break;
             }
             throw new Error("\uD83D\uDC0D [Nagini] Manager initialization timeout after ".concat(timeout, "ms"));
-          case 2:
-            _context2.n = 3;
+          case 6:
+            _context2.n = 7;
             return new Promise(function (resolve) {
               return setTimeout(resolve, 100);
             });
-          case 3:
-            _context2.n = 1;
+          case 7:
+            _context2.n = 5;
             break;
-          case 4:
+          case 8:
             return _context2.a(2);
         }
-      }, _callee2);
+      }, _callee2, null, [[1,, 2, 3]]);
     }));
     function waitForReady(_x) {
       return _waitForReady.apply(this, arguments);

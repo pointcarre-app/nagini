@@ -16,15 +16,15 @@ import { PYODIDE_WORKER_CONFIG } from './worker-config.js';
  */
 export async function handleFSOperation(data, workerState) {
   if (!workerState.isInitialized || !workerState.pyodide) {
-    postFSError(PYODIDE_WORKER_CONFIG.MESSAGES.FS_NOT_INITIALIZED);
+    postFSError(PYODIDE_WORKER_CONFIG.MESSAGES.FS_NOT_INITIALIZED, data.id);
     return;
   }
 
   try {
     const result = executeFS(data, workerState.pyodide);
-    self.postMessage({ type: "fs_result", result });
+    self.postMessage({ type: "fs_result", id: data.id, result });
   } catch (error) {
-    postFSError(error.message);
+    postFSError(error.message, data.id);
   }
 }
 
@@ -91,8 +91,9 @@ export async function loadPackages(packages, workerState) {
   }
 }
 
-// Helper functions for messaging
-const postFSError = (error) => self.postMessage({ type: "fs_error", error: `🔧 [Worker] ${error}` });
+// Helper functions for messaging: the request id (when present) is echoed
+// back so the manager can correlate the response with its pending promise
+const postFSError = (error, id) => self.postMessage({ type: "fs_error", id, error: `🔧 [Worker] ${error}` });
 const postInfo = (message) => self.postMessage({ type: "info", message: `🔧 [Worker] ${message}` });
 const postWarning = (message) => self.postMessage({ type: "warning", message: `🔧 [Worker] ${message}` });
 

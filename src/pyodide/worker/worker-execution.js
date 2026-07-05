@@ -16,9 +16,9 @@ import { PYODIDE_WORKER_CONFIG } from './worker-config.js';
  * @returns {Promise<void>}
  */
 export async function handleExecute(data, workerState) {
-  if (!validateInitialized(workerState)) return;
+  if (!validateInitialized(workerState, data.id)) return;
 
-  const { code, filename, namespace } = data;
+  const { code, filename, namespace, id } = data;
   const start = Date.now();
   let stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [], error = null;
 
@@ -62,7 +62,7 @@ export async function handleExecute(data, workerState) {
   });
   
   postResult({
-    filename, stdout, stderr, missive, figures, bokeh_figures, error,
+    id, filename, stdout, stderr, missive, figures, bokeh_figures, error,
     time: Date.now() - start,
     executedWithNamespace: namespace !== undefined
   });
@@ -144,18 +144,20 @@ export function captureOutputs(pyodide, isErrorCase = false) {
   return { stdout, stderr, missive, figures, bokeh_figures };
 }
 
-// Helper functions for messaging
+// Helper functions for messaging: the request id (when present) is echoed
+// back so the manager can correlate the response with its pending promise
 const postResult = (data) => self.postMessage({ type: "result", ...data });
-const postError = (message) => self.postMessage({ type: "error", message: `🐍 [Worker] ${message}` });
+const postError = (message, id) => self.postMessage({ type: "error", id, message: `🐍 [Worker] ${message}` });
 
 /**
  * Validate that worker is properly initialized
  * @param {WorkerState} workerState - Current worker state
+ * @param {number} [id] - Request id to echo in the error response
  * @returns {boolean} True if initialized, false otherwise
  */
-function validateInitialized(workerState) {
+function validateInitialized(workerState, id) {
   if (!workerState.isInitialized || !workerState.pyodide) {
-    postError(PYODIDE_WORKER_CONFIG.MESSAGES.NOT_INITIALIZED);
+    postError(PYODIDE_WORKER_CONFIG.MESSAGES.NOT_INITIALIZED, id);
     return false;
   }
   return true;

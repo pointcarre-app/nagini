@@ -1,3 +1,13 @@
+# v0.0.44
+
+- **Message protocol rework**: worker requests (execute, fs) now carry a correlation id echoed back in the response; a single permanent `onmessage` handler settles the matching promise. The handler-replacement pattern ("handler hijack") is gone from both `manager-static-execution.js` and `manager-fs.js`
+  - **Fix**: a `fs()` call issued while an execution is in flight no longer hangs (the interceptors used to clobber each other's handler)
+  - **Fix**: a late result from a timed-out execution is discarded by id instead of being attributed to the next execution
+  - **Fix**: a worker crash rejects every pending request with the crash cause
+- **Readiness**: managers expose `readyPromise`, resolved on the worker `ready` message and rejected with the original cause on init failure (bad worker path, CDN error); `Nagini.waitForReady` races it instead of polling `isReady` every 100 ms, so a broken `workerPath` rejects fast with the real error. Available on both Pyodide and Brython backends
+- **API**: `manager.fs(operation, params, timeoutMs)` accepts an optional timeout (default 10000 ms); `setHandleMessage`/`getHandleMessage` removed (internal-only, no known consumers)
+- **Testing**: four new scenery tests (fs during execution, concurrent executeAsync, timeout recovery with id-based discard, waitForReady rejection cause); full suite green 64/64
+
 # v0.0.43
 
 - **Build chain**: `nagini.umd.js` is no longer a hand-maintained copy: it is generated from `src/nagini.js` by webpack (`npm run build:umd`), with managers bundled inline; `npm run build` rebuilds both committed bundles (worker + UMD)

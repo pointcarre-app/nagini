@@ -61,11 +61,35 @@ export const Nagini = {
 
     /**
      * Wait for a manager to be ready for execution
+     *
+     * Built-in managers expose a readyPromise that resolves on the worker
+     * "ready" message and rejects with the original cause when
+     * initialization fails (bad worker path, CDN failure, ...). Managers
+     * without a readyPromise fall back to polling isReady.
+     *
      * @param {Manager} manager - Manager instance to wait for
      * @param {number} [timeout] - Timeout in milliseconds (default: 30000)
      * @returns {Promise<void>} Resolves when manager is ready
      */
     waitForReady: async (manager, timeout = 30000) => {
+      if (manager.readyPromise) {
+        let timer;
+        try {
+          await Promise.race([
+            manager.readyPromise,
+            new Promise((_, reject) => {
+              timer = setTimeout(
+                () => reject(new Error(`🐍 [Nagini] Manager initialization timeout after ${timeout}ms`)),
+                timeout
+              );
+            }),
+          ]);
+        } finally {
+          clearTimeout(timer);
+        }
+        return;
+      }
+
       const startTime = Date.now();
       while (!manager.isReady) {
         if (Date.now() - startTime > timeout) {

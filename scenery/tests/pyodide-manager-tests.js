@@ -293,4 +293,91 @@ missive({"plot_type": "sine_wave", "x_points": len(x)})`
             throw error;
         }
     }
+
+    /**
+     * A filesystem operation issued while an execution is in flight must
+     * resolve (id-correlated messages, no handler clobbering).
+     */
+    static async testFsDuringExecution(manager) {
+        const testName = "fs() while executeAsync in flight";
+        logTestStart("PyodideManager", testName);
+        try {
+            const execPromise = manager.executeAsync(
+                "slow_exec.py",
+                "import time\ntime.sleep(1)\nprint('slow done')"
+            );
+            const fsPromise = manager.fs("writeFile", { path: "race_check.txt", content: "raced" });
+
+            const [execResult] = await Promise.all([execPromise, fsPromise]);
+            assertContains(execResult.stdout, "slow done", "Execution should complete normally");
+
+            const readBack = await manager.fs("readFile", { path: "race_check.txt" });
+            assertEquals(readBack, "raced", "FS write issued mid-execution should have landed");
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Two concurrent executeAsync calls are serialized and each resolves
+     * with its own result.
+     */
+    static async testConcurrentExecuteAsync(manager) {
+        const testName = "concurrent executeAsync calls";
+        logTestStart("PyodideManager", testName);
+        try {
+            const [a, b] = await Promise.all([
+                manager.executeAsync("conc_a.py", "print('alpha-run')"),
+                manager.executeAsync("conc_b.py", "print('beta-run')")
+            ]);
+            assertContains(a.stdout, "alpha-run", "First result should carry first stdout");
+            assert(!a.stdout.includes("beta-run"), "First result must not carry second stdout");
+            assertContains(b.stdout, "beta-run", "Second result should carry second stdout");
+            assert(!b.stdout.includes("alpha-run"), "Second result must not carry first stdout");
+            assertEquals(a.filename, "conc_a.py", "First result should keep its filename");
+            assertEquals(b.filename, "conc_b.py", "Second result should keep its filename");
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+
+    /**
+     * After a timeout, the stale result is discarded by id: the next
+     * execution resolves with its own result, not the late one.
+     */
+    static async testTimeoutRecovery(manager) {
+        const testName = "timeout then healthy execution";
+        logTestStart("PyodideManager", testName);
+        try {
+            let timedOut = false;
+            try {
+                await manager.executeAsync(
+                    "too_slow.py",
+                    "import time\ntime.sleep(3)\nprint('late output')",
+                    undefined,
+                    1000
+                );
+            } catch (error) {
+                timedOut = true;
+                assertContains(error.message, "timeout", "Rejection should be the timeout error");
+            }
+            assert(timedOut, "The slow execution should have timed out");
+
+            const result = await manager.executeAsync("healthy.py", "print('healthy-output')");
+            assertContains(result.stdout, "healthy-output", "Next execution should resolve with its own stdout");
+            assert(!result.stdout.includes("late output"), "Late result from the timed-out run must not leak in");
+            assertEquals(result.filename, "healthy.py", "Result should belong to the healthy execution");
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
 } 

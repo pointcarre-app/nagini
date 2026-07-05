@@ -194,6 +194,7 @@ async function runAllTests() {
         { id: 'status-nagini-3', desc: "3️⃣ Nagini.executeFromUrl() - Pyodide", func: () => NaginiTests.test3ExecuteFromUrl(manager, "./tests/sympy_test.py").then(() => window.updateTestStatus('status-nagini-3', 'pass')) },
         { id: 'status-nagini-4', desc: "4️⃣ Nagini.getSupportedBackends()", func: () => NaginiTests.test4GetSupportedBackends().then(() => window.updateTestStatus('status-nagini-4', 'pass')) },
         { id: 'status-nagini-5', desc: "5️⃣ Nagini.isBackendSupported()", func: () => NaginiTests.test5IsBackendSupported().then(() => window.updateTestStatus('status-nagini-5', 'pass')) },
+        { id: 'status-nagini-6', desc: "6️⃣ Nagini.waitForReady() rejects with cause", func: () => NaginiTests.testInitFailureRejects().then(() => window.updateTestStatus('status-nagini-6', 'pass')) },
         
         // PyodideManager Tests
         { id: 'status-pyodide-manager-1', desc: "1️⃣ executeAsync()", func: () => PyodideManagerTests.test4ExecuteAsync(manager).then(() => window.updateTestStatus('status-pyodide-manager-1', 'pass')) },
@@ -209,6 +210,9 @@ async function runAllTests() {
         { id: 'status-pyodide-manager-11', desc: "1️⃣1️⃣ input handling", func: () => PyodideManagerTests.test15InputHandling(manager).then(() => window.updateTestStatus('status-pyodide-manager-11', 'pass')) },
         { id: 'status-pyodide-manager-12', desc: "1️⃣2️⃣ matplotlib figure capture", func: () => PyodideManagerTests.test16MatplotlibFigureCapture(manager).then(() => window.updateTestStatus('status-pyodide-manager-12', 'pass')) },
         { id: 'status-pyodide-manager-13', desc: "1️⃣3️⃣ filesystem operations", func: () => PyodideManagerTests.test17FilesystemOperations(manager).then(() => window.updateTestStatus('status-pyodide-manager-13', 'pass')) },
+        { id: 'status-pyodide-manager-14', desc: "1️⃣4️⃣ fs() while executeAsync in flight", func: () => PyodideManagerTests.testFsDuringExecution(manager).then(() => window.updateTestStatus('status-pyodide-manager-14', 'pass')) },
+        { id: 'status-pyodide-manager-15', desc: "1️⃣5️⃣ concurrent executeAsync calls", func: () => PyodideManagerTests.testConcurrentExecuteAsync(manager).then(() => window.updateTestStatus('status-pyodide-manager-15', 'pass')) },
+        { id: 'status-pyodide-manager-16', desc: "1️⃣6️⃣ timeout then healthy execution", func: () => PyodideManagerTests.testTimeoutRecovery(manager).then(() => window.updateTestStatus('status-pyodide-manager-16', 'pass')) },
 
         // FileLoader Tests
         { id: 'status-file-loader-1', desc: "1️⃣ PyodideFileLoader.loadFiles()", func: () => FileLoaderTests.test14LoadFilesAndImport(manager, filesToLoad).then(() => window.updateTestStatus('status-file-loader-1', 'pass')) },

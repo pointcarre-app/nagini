@@ -8,7 +8,10 @@
  * - File operations (read, write, mkdir, exists, listdir)
  * - Promise-based async filesystem interface
  * - Error handling and timeout management
- * - Message handler interception pattern
+ *
+ * Requests are id-correlated (see PyodideManager._postRequest): a filesystem
+ * operation can run while an execution is in flight without any handler
+ * clobbering.
  */
 
 import { ValidationUtils } from '../../utils/validation.js';
@@ -26,11 +29,11 @@ export class PyodideManagerFS {
    * @returns {Promise<any>} Operation result
    * @throws {Error} If operation fails or times out
    */
-  static async fs(manager, operation, params) {
+  static async fs(manager, operation, params, timeoutMs = 10000) {
     ValidationUtils.validateString(operation, 'operation', 'PyodideManagerFS');
     ValidationUtils.validateObject(params, 'params', 'PyodideManagerFS');
 
-    const result = await PyodideManagerFS._sendFSCommand(manager, operation, params);
+    const result = await PyodideManagerFS._sendFSCommand(manager, operation, params, timeoutMs);
 
     // Return appropriate result based on operation type
     switch(operation) {
@@ -115,98 +118,31 @@ export class PyodideManagerFS {
   }
 
   /**
-   * Private helper method to send FS commands to worker with message interception
+   * Private helper method to send FS commands to the worker
    *
-   * This method implements the HANDLER REPLACEMENT PATTERN to enable Promise-based
-   * filesystem operations over web worker message passing.
-   *
-   * 🔧 HANDLER REPLACEMENT PATTERN FOR FILESYSTEM OPERATIONS:
-   *
-   * This method uses the same core pattern as PyodideManagerStaticExecutor.executeAsync(),
-   * but specialized for filesystem operations:
-   *
-   * 1. Save the original handleMessage function
-   * 2. Replace with a custom interceptor that:
-   *    - Still calls the original handler (for normal processing)
-   *    - BUT ALSO checks if this is the FS result we're waiting for
-   *    - If yes: resolve the Promise with the result
-   *    - Then restore the original handleMessage
-   * 3. Send the filesystem command to the worker
-   * 4. When the FS result comes back, our custom handler catches it
-   * 5. Original handler is restored for future calls
-   *
-   * This enables clean Promise-based filesystem APIs like:
-   * - await manager.fs("writeFile", {path: "test.txt", content: "hello"})
-   * - await manager.fs("readFile", {path: "test.txt"})
-   * - await manager.fs("mkdir", {path: "new-directory"})
+   * The request goes through PyodideManager._postRequest: it carries a
+   * correlation id, the worker echoes it back on fs_result/fs_error, and the
+   * manager's permanent onmessage handler settles this promise. Filesystem
+   * operations therefore work while an execution is in flight.
    *
    * @private
    * @param {PyodideManager} manager - Manager instance
    * @param {FSOperation} operation - FS operation name
    * @param {FSOperationParams} params - Operation parameters
+   * @param {number} [timeoutMs=10000] - Timeout in milliseconds
    * @returns {Promise<FSOperationResult>} Operation result
    * @throws {Error} If operation fails or times out
    */
-  static async _sendFSCommand(manager, operation, params) {
+  static async _sendFSCommand(manager, operation, params, timeoutMs = 10000) {
     if (!manager.isReady) {
       throw new Error("🐍 [PyodideManagerFS] Manager not ready yet. Wait for initialization to complete.");
     }
 
-    return new Promise((resolve, reject) => {
-      // Add timeout to prevent hanging
-      const timeoutId = setTimeout(() => {
-        try {
-          manager.handleMessage = originalHandler;
-        } catch (error) {
-          console.warn("Failed to restore handler on timeout:", error.message);
-        }
-        reject(new Error("🐍 [PyodideManagerFS] Filesystem operation timeout"));
-      }, 10000);
-
-      // Save original handler and replace with interceptor
-      const originalHandler = manager.handleMessage.bind(manager);
-
-      if (!originalHandler) {
-        clearTimeout(timeoutId);
-        reject(new Error("🎛️ [PyodideManagerFS] No message handler available"));
-        return;
-      }
-
-      manager.handleMessage = function (data) {
-        try {
-          // Call original handler for normal processing
-          originalHandler(data);
-
-          // Check if this is the FS result we're waiting for
-          if (data.type === "fs_result") {
-            clearTimeout(timeoutId);
-            manager.handleMessage = originalHandler;
-            resolve(data.result);
-          } else if (data.type === "fs_error") {
-            clearTimeout(timeoutId);
-            manager.handleMessage = originalHandler;
-            reject(new Error(`🎛️ [PyodideManagerFS] Filesystem error: ${data.error}`));
-          }
-        } catch (error) {
-          clearTimeout(timeoutId);
-          manager.handleMessage = originalHandler;
-          reject(new Error(`🎛️ [PyodideManagerFS] Handler error: ${error.message}`));
-        }
-      };
-
-      // Send FS command to worker
-      try {
-        manager.worker.postMessage({
-          type: "fs_operation",
-          operation: operation,
-          ...params
-        });
-      } catch (error) {
-        clearTimeout(timeoutId);
-        manager.handleMessage = originalHandler;
-        reject(new Error(`🎛️ [PyodideManagerFS] Failed to send filesystem command: ${error.message}`));
-      }
-    });
+    return manager._postRequest(
+      { type: "fs_operation", operation, ...params },
+      timeoutMs,
+      "🐍 [PyodideManagerFS] Filesystem operation timeout"
+    );
   }
 }
 

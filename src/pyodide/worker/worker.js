@@ -50,9 +50,11 @@ self.onmessage = async function (e) {
     // Use the imported handleMessage function directly
     await handleMessage(e, workerState);
   } catch (error) {
-    // Error during message handling
+    // Error during message handling; echo the request id (if any) so the
+    // manager can reject the matching pending promise
     self.postMessage({
       type: "error",
+      id: e.data?.id,
       message: `🔧 [Worker] Failed to handle message: ${error.message}`
     });
   }

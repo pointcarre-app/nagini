@@ -95,9 +95,30 @@ class PyodideManager {
     /** @type {Promise<any>} Serialization chain for executeAsync calls */
     this.executionChain = Promise.resolve();
 
+    /** @type {Map<number, {resolve: Function, reject: Function, timeoutId: number}>}
+     *  Pending id-correlated requests (execute, fs) awaiting a worker response */
+    this._pendingRequests = new Map();
+
+    /** @type {number} Monotonic id for request correlation */
+    this._nextRequestId = 1;
+
+    /** @type {Promise<void>} Resolves on the worker "ready" message, rejects
+     *  with the original cause if initialization fails */
+    this.readyPromise = new Promise((resolve, reject) => {
+      this._readySettled = false;
+      this._readyResolve = () => { this._readySettled = true; resolve(); };
+      this._readyReject = (error) => {
+        if (!this._readySettled) { this._readySettled = true; reject(error); }
+      };
+    });
+    // Guard: an init failure must not surface as an unhandled rejection when
+    // the consumer only polls isReady
+    this.readyPromise.catch(() => {});
+
     // Initialize worker asynchronously
     this.initWorker().catch((error) => {
       console.error("🚨 [PyodideManager] Worker initialization failed:", error);
+      this._readyReject(error);
     });
   }
 
@@ -132,20 +153,21 @@ class PyodideManager {
       
       // Create worker from blob URL
       this.worker = new Worker(this.blobUrl);
-      
-      // Set up message handling
-      this.worker.onmessage = (e) => this.handleMessage(e.data);
+
+      // Set up message handling: dispatch routes id-correlated responses to
+      // their pending promise, then hands the message to handleMessage
+      this.worker.onmessage = (e) => this._dispatchMessage(e.data);
 
       // Surface worker crashes (wasm trap, failed import, ...) as error
       // messages so pending executions reject instead of hanging forever
       this.worker.onerror = (e) => {
-        this.handleMessage({
+        this._dispatchMessage({
           type: "error",
           message: `Worker crashed: ${e.message || "unknown error"}`,
         });
       };
       this.worker.onmessageerror = () => {
-        this.handleMessage({
+        this._dispatchMessage({
           type: "error",
           message: "Worker message could not be deserialized",
         });
@@ -164,6 +186,117 @@ class PyodideManager {
       console.error("🚨 [PyodideManager] Failed to initialize blob worker:", error);
       throw new Error(`Failed to initialize blob worker: ${error.message}`);
     }
+  }
+
+  /**
+   * Route a worker message: settle the matching pending request (by id) if
+   * any, then hand the message to handleMessage for normal processing
+   * (execution history, input state, logging)
+   *
+   * @private
+   * @param {WorkerMessage} data - Message from worker
+   * @returns {void}
+   */
+  _dispatchMessage(data) {
+    const pending = data && data.id !== undefined
+      ? this._pendingRequests.get(data.id)
+      : undefined;
+    if (pending) {
+      this._pendingRequests.delete(data.id);
+      clearTimeout(pending.timeoutId);
+    }
+
+    // Normal processing first: history push, input state reset, logs. A
+    // throwing handler must not leave the pending request unsettled
+    try {
+      this.handleMessage(data);
+    } catch (error) {
+      console.error("🚨 [PyodideManager] handleMessage failed:", error);
+    }
+
+    if (data && data.type === "ready") {
+      this._readyResolve();
+    }
+
+    if (data && data.type === "error" && data.id === undefined) {
+      // Id-less error: init failure or worker crash. Fail readiness (during
+      // init) and every in-flight request, none of them can complete
+      const error = new Error(data.message || data.error || "Worker error");
+      this._readyReject(error);
+      this._failAllPending(error);
+    }
+
+    if (!pending) return;
+
+    if (data.type === "result") {
+      // Resolve with a result built from the worker payload, even when it
+      // contains a Python error: callers read stderr for the full traceback
+      pending.resolve({
+        filename: data.filename,
+        time: data.time,
+        stdout: data.stdout,
+        stderr: data.stderr,
+        missive: data.missive,
+        figures: data.figures,
+        bokeh_figures: data.bokeh_figures,
+        error: data.error,
+        timestamp: new Date().toISOString(),
+      });
+    } else if (data.type === "fs_result") {
+      pending.resolve(data.result);
+    } else if (data.type === "fs_error") {
+      pending.reject(new Error(`🎛️ [PyodideManagerFS] Filesystem error: ${data.error}`));
+    } else if (data.type === "error") {
+      pending.reject(new Error(`⚡ [PyodideManager] Execution error: ${data.message || data.error || "Unknown error"}`));
+    } else {
+      pending.reject(new Error(`🚨 [PyodideManager] Unexpected response type for request: ${data.type}`));
+    }
+  }
+
+  /**
+   * Send an id-correlated request to the worker and return a promise settled
+   * by the matching response (see _dispatchMessage)
+   *
+   * @private
+   * @param {Object} message - Message to post (id is added here)
+   * @param {number} timeoutMs - Timeout in milliseconds
+   * @param {string} timeoutLabel - Error message on timeout
+   * @returns {Promise<any>}
+   */
+  _postRequest(message, timeoutMs, timeoutLabel) {
+    return new Promise((resolve, reject) => {
+      const id = this._nextRequestId++;
+      const timeoutId = setTimeout(() => {
+        // A response arriving later is simply discarded by _dispatchMessage
+        this._pendingRequests.delete(id);
+        reject(new Error(timeoutLabel));
+      }, timeoutMs);
+
+      this._pendingRequests.set(id, { resolve, reject, timeoutId });
+
+      try {
+        this.worker.postMessage({ ...message, id });
+      } catch (error) {
+        clearTimeout(timeoutId);
+        this._pendingRequests.delete(id);
+        reject(new Error(`🚨 [PyodideManager] Failed to send message to worker: ${error.message}`));
+      }
+    });
+  }
+
+  /**
+   * Reject every pending request (worker crash, destroy)
+   *
+   * @private
+   * @param {Error} error - Rejection cause
+   * @returns {void}
+   */
+  _failAllPending(error) {
+    for (const pending of this._pendingRequests.values()) {
+      clearTimeout(pending.timeoutId);
+      pending.reject(error);
+    }
+    this._pendingRequests.clear();
   }
 
   /**
@@ -237,28 +370,7 @@ class PyodideManager {
   getCurrentPrompt() { return PyodideManagerInput.getCurrentPrompt(this); }
 
   // Filesystem operations - delegate to filesystem module
-  async fs(operation, params) { return PyodideManagerFS.fs(this, operation, params); }
-
-  /**
-   * Get or set the current message handler
-   *
-   * @param {Function} [newHandler] - New message handler to set
-   * @returns {Function} Current message handler
-   */
-  setHandleMessage(newHandler) {
-    if (newHandler) {
-      this.handleMessage = newHandler;
-    }
-  }
-
-  /**
-   * Get the current message handler
-   *
-   * @returns {Function} Current message handler
-   */
-  getHandleMessage() {
-    return this.handleMessage;
-  }
+  async fs(operation, params, timeoutMs = 10000) { return PyodideManagerFS.fs(this, operation, params, timeoutMs); }
 
   /**
    * Execute Python code in the worker with optional namespace isolation
@@ -283,20 +395,25 @@ class PyodideManager {
    * @throws {Error} If manager is not ready or execution times out
    */
   async executeAsync(filename, code, namespace = undefined, timeoutMs = 30000) {
-    // Executions are serialized: the worker and the message interceptor in
-    // PyodideManagerStaticExecutor only support one execution at a time, so
-    // concurrent calls are queued instead of corrupting each other
-    const run = () => PyodideManagerStaticExecutor.executeAsync(
-      this.worker,
-      this.isReady,
-      this.executionHistory,
-      (handler) => this.setHandleMessage(handler),
-      () => this.getHandleMessage(),
-      filename,
-      code,
-      namespace,
-      timeoutMs
-    );
+    // Executions are serialized: one Python interpreter lives in the worker,
+    // so concurrent calls are queued rather than interleaved. Responses are
+    // correlated by request id, so a late result from a timed-out run can
+    // never be attributed to the next execution
+    const run = async () => {
+      ValidationUtils.validateExecutionParams(filename, code, namespace, 'PyodideManager');
+      if (!this.isReady) {
+        throw new Error("⚡ [PyodideManager] Manager not ready yet. Wait for initialization to complete.");
+      }
+      const message = { type: "execute", filename, code };
+      if (namespace !== undefined) {
+        message.namespace = namespace;
+      }
+      return this._postRequest(
+        message,
+        timeoutMs,
+        `⚡ [PyodideManager] Execution timeout after ${timeoutMs / 1000} seconds`
+      );
+    };
     const result = this.executionChain.then(run, run);
     this.executionChain = result.catch(() => {});
     return result;
@@ -323,13 +440,18 @@ class PyodideManager {
       this.worker.terminate();
       this.worker = null;
     }
-    
+
     // Revoke blob URL to prevent memory leaks
     if (this.blobUrl) {
       URL.revokeObjectURL(this.blobUrl);
       this.blobUrl = null;
     }
-    
+
+    // Settle everything still waiting on this manager
+    const error = new Error("🚨 [PyodideManager] Manager destroyed");
+    this._failAllPending(error);
+    this._readyReject(error);
+
     // Reset state
     this.isReady = false;
     this.executionHistory = [];

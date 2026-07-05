@@ -160,4 +160,43 @@ export class NaginiTests {
             throw error;
         }
     }
+
+    /**
+     * A broken workerPath must reject waitForReady quickly with the real
+     * cause (readyPromise), not hang until the generic polling timeout.
+     */
+    static async testInitFailureRejects() {
+        const testName = "waitForReady rejects with cause on bad workerPath";
+        logTestStart("Nagini", testName);
+        let manager = null;
+        try {
+            manager = await Nagini.createManager(
+                'pyodide', [], [], [],
+                './definitely-missing/worker-dist.js'
+            );
+
+            const start = Date.now();
+            let rejected = false;
+            try {
+                await Nagini.waitForReady(manager, 8000);
+            } catch (error) {
+                rejected = true;
+                assert(
+                    !error.message.includes('initialization timeout'),
+                    `Rejection should carry the real cause, got: ${error.message}`
+                );
+            }
+            assert(rejected, "waitForReady should reject on init failure");
+            assert(Date.now() - start < 7000, "Rejection should be fast (readyPromise), not the full timeout");
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        } finally {
+            if (manager && typeof manager.destroy === 'function') {
+                manager.destroy();
+            }
+        }
+    }
 }

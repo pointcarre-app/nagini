@@ -30,6 +30,10 @@ class BrythonManager {
       this.isReady = true;
       console.log('🐍 [BrythonManager] ready');
     });
+
+    // Same readiness surface as PyodideManager (used by Nagini.waitForReady)
+    this.readyPromise = this._readyPromise;
+    this.readyPromise.catch(() => {});
   }
 
   // ------------------ Execution APIs ------------------

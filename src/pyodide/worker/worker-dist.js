@@ -148,17 +148,17 @@ function handleExecute(_x, _x2) {
  */
 function _handleExecute() {
   _handleExecute = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(data, workerState) {
-    var code, filename, namespace, start, stdout, stderr, missive, figures, bokeh_figures, error, result, pyodideNamespace, _captureOutputs, _captureOutputs2, _t;
+    var code, filename, namespace, id, start, stdout, stderr, missive, figures, bokeh_figures, error, result, pyodideNamespace, _captureOutputs, _captureOutputs2, _t;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
-          if (validateInitialized(workerState)) {
+          if (validateInitialized(workerState, data.id)) {
             _context.n = 1;
             break;
           }
           return _context.a(2);
         case 1:
-          code = data.code, filename = data.filename, namespace = data.namespace;
+          code = data.code, filename = data.filename, namespace = data.namespace, id = data.id;
           start = Date.now();
           stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [], error = null;
           _context.p = 2;
@@ -223,6 +223,7 @@ function _handleExecute() {
             time: Date.now() - start + "ms"
           });
           postResult({
+            id: id,
             filename: filename,
             stdout: stdout,
             stderr: stderr,
@@ -323,15 +324,17 @@ function captureOutputs(pyodide) {
   };
 }
 
-// Helper functions for messaging
+// Helper functions for messaging: the request id (when present) is echoed
+// back so the manager can correlate the response with its pending promise
 var postResult = function postResult(data) {
   return self.postMessage(_objectSpread({
     type: "result"
   }, data));
 };
-var postError = function postError(message) {
+var postError = function postError(message, id) {
   return self.postMessage({
     type: "error",
+    id: id,
     message: "\uD83D\uDC0D [Worker] ".concat(message)
   });
 };
@@ -339,11 +342,12 @@ var postError = function postError(message) {
 /**
  * Validate that worker is properly initialized
  * @param {WorkerState} workerState - Current worker state
+ * @param {number} [id] - Request id to echo in the error response
  * @returns {boolean} True if initialized, false otherwise
  */
-function validateInitialized(workerState) {
+function validateInitialized(workerState, id) {
   if (!workerState.isInitialized || !workerState.pyodide) {
-    postError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.NOT_INITIALIZED);
+    postError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.NOT_INITIALIZED, id);
     return false;
   }
   return true;
@@ -554,17 +558,18 @@ function _handleFSOperation() {
             _context.n = 1;
             break;
           }
-          postFSError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.FS_NOT_INITIALIZED);
+          postFSError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.FS_NOT_INITIALIZED, data.id);
           return _context.a(2);
         case 1:
           try {
             result = executeFS(data, workerState.pyodide);
             self.postMessage({
               type: "fs_result",
+              id: data.id,
               result: result
             });
           } catch (error) {
-            postFSError(error.message);
+            postFSError(error.message, data.id);
           }
         case 2:
           return _context.a(2);
@@ -632,7 +637,8 @@ function loadPackages(_x3, _x4) {
   return _loadPackages.apply(this, arguments);
 }
 
-// Helper functions for messaging
+// Helper functions for messaging: the request id (when present) is echoed
+// back so the manager can correlate the response with its pending promise
 function _loadPackages() {
   _loadPackages = worker_fs_asyncToGenerator(/*#__PURE__*/worker_fs_regenerator().m(function _callee2(packages, workerState) {
     var toLoad, loaded, _t;
@@ -673,9 +679,10 @@ function _loadPackages() {
   }));
   return _loadPackages.apply(this, arguments);
 }
-var postFSError = function postFSError(error) {
+var postFSError = function postFSError(error, id) {
   return self.postMessage({
     type: "fs_error",
+    id: id,
     error: "\uD83D\uDD27 [Worker] ".concat(error)
   });
 };
@@ -1384,7 +1391,7 @@ var workerState = {
  */
 self.onmessage = /*#__PURE__*/function () {
   var _ref = worker_asyncToGenerator(/*#__PURE__*/worker_regenerator().m(function _callee(e) {
-    var _t;
+    var _e$data, _t;
     return worker_regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
@@ -1397,9 +1404,11 @@ self.onmessage = /*#__PURE__*/function () {
         case 2:
           _context.p = 2;
           _t = _context.v;
-          // Error during message handling
+          // Error during message handling; echo the request id (if any) so the
+          // manager can reject the matching pending promise
           self.postMessage({
             type: "error",
+            id: (_e$data = e.data) === null || _e$data === void 0 ? void 0 : _e$data.id,
             message: "\uD83D\uDD27 [Worker] Failed to handle message: ".concat(_t.message)
           });
         case 3:
