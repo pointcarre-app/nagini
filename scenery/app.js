@@ -288,7 +288,7 @@ async function runAllTests() {
         }
     }
 
-    // Brython tests - currently breaking, run separately
+    // Brython backend tests
     try {
         console.log("\nBrython Backend Tests");
         console.log("=" .repeat(50));
