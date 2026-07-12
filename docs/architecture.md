@@ -60,7 +60,7 @@ does what, and how the pieces are wired together.
    URL.createObjectURL                     +----------------+----------------+
    src/utils/createBlobWorker.js                            |
                     |                                       v
-      new Worker(blobUrl)                  +---------------------------------+
+ new Worker(blobUrl,{type:'module'})       +---------------------------------+
                     |                      |  BRYTHON RUNTIME (main thread)  |
                     v                      |  src/brython/lib/brython.js     |
 +---------------------------------------+  |  src/brython/lib/               |
@@ -88,7 +88,7 @@ does what, and how the pieces are wired together.
 |       setup                           |
 +-------------------+-------------------+
                     |
-     importScripts(cdnUrl + "pyodide.js")
+   await import(cdnUrl + "pyodide.mjs")
                     |
                     v
 +---------------------------------------+
@@ -294,8 +294,8 @@ and bundled into `worker-dist.js`.
 
 By default the worker loads Pyodide from the jsDelivr CDN pinned in
 [worker-config.js](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-config.js#L17).
-Passing `options.pyodideCdnUrl` to `createManager` makes the worker call
-[`importScripts` and `loadPyodide`](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-handlers.js#L131-L132)
+Passing `options.pyodideCdnUrl` to `createManager` makes the worker run
+[`import(pyodide.mjs)` and `loadPyodide`](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-handlers.js#L131-L136)
 against your own origin instead, which is how offline and Capacitor setups
 work. See
 [LOCAL_PYODIDE_CONFIGURATION.md](LOCAL_PYODIDE_CONFIGURATION.md)

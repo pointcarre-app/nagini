@@ -61,7 +61,7 @@ component. Column key:
      |                           |  timeout promise)          |                             |                             |
      |                           |                            |                             |                             |
      |                           |                            |                             |- handleInit():              |
-     |                           |                            |                             |  importScripts(pyodide.js)  |
+     |                           |                            |                             |  import(pyodide.mjs),       |
      |                           |                            |                             |  await loadPyodide()        |
      |                           |                            |                             |---------------------------->|
      |                           |                            |                             | write capture_system.py,    |
@@ -127,9 +127,9 @@ Step by step:
    ([worker-handlers.js#L85](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-handlers.js#L84))
    to `handleInit`
    ([worker-handlers.js#L117](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-handlers.js#L116)):
-   `importScripts` and `loadPyodide`
-   ([worker-handlers.js#L132-L133](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-handlers.js#L131-L132))
-   pull the runtime from the CDN pinned in
+   a dynamic `import` of `pyodide.mjs` followed by `loadPyodide`
+   ([worker-handlers.js#L131-L136](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-handlers.js#L131-L136))
+   pulls the runtime from the CDN pinned in
    ([worker-config.js#L17](https://github.com/pointcarre-app/nagini/blob/v0.0.45/src/pyodide/worker/worker-config.js#L17))
    or from `options.pyodideCdnUrl`.
 5. The three bundled Python modules are written to the virtual filesystem,

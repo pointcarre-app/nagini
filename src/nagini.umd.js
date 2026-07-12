@@ -878,8 +878,12 @@ var PyodideManager = /*#__PURE__*/function () {
               return createBlobWorkerUrl(this.workerPath);
             case 1:
               this.blobUrl = _context.v;
-              // Create worker from blob URL
-              this.worker = new Worker(this.blobUrl);
+              // Create worker from blob URL, as a module worker: the bundled worker
+              // loads Pyodide with a dynamic import (pyodide.mjs, ESM-only in
+              // Pyodide 314+), which importScripts-based classic workers cannot do
+              this.worker = new Worker(this.blobUrl, {
+                type: "module"
+              });
 
               // Set up message handling: dispatch routes id-correlated responses to
               // their pending promise, then hands the message to handleMessage

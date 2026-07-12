@@ -1,3 +1,9 @@
+# v0.0.46
+
+- **Module worker**: the Pyodide worker now runs as a module worker (`new Worker(blobUrl, { type: "module" })`) and loads the runtime with a native dynamic `import` of `pyodide.mjs` instead of `importScripts(pyodide.js)`. Same public API and the same bundled `worker-dist.js`; this is the plumbing prerequisite for Pyodide 314, whose distribution is ESM-only and no longer supports classic workers
+- Local and offline setups (`pyodideCdnUrl`) keep working: `pyodide.mjs` ships in every Pyodide distribution in use, including the minimal local folders. Module workers require an evergreen browser (Firefox 114+ notably)
+- **Testing**: full suite green 63/63 on Pyodide 0.29.4, covering the default CDN and the local 0.28 folders
+
 # v0.0.45
 
 - **Scenery reorganized**: stray pages moved to `scenery/legacy/` (`v0.0.26.html`, `full_local*.html`, the old critics JSON), the hub gained a navigation header (suite, demos, legacy, docs), `scenery/README.md` rewritten as the directory map; public page URLs unchanged

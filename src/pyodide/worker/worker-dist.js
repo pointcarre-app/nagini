@@ -1180,7 +1180,7 @@ function handleInit(_x3, _x4) {
 }
 function _handleInit() {
   _handleInit = worker_handlers_asyncToGenerator(/*#__PURE__*/worker_handlers_regenerator().m(function _callee2(data, workerState) {
-    var packages, micropipPackages, filesToLoad, pyodideCdnUrl, cdnUrl, pythonModules, _i, _pythonModules, module, loader, toLoad, loaded, micropip, _t, _t2;
+    var packages, micropipPackages, filesToLoad, pyodideCdnUrl, cdnUrl, _yield$import, loadPyodide, pythonModules, _i, _pythonModules, module, loader, toLoad, loaded, micropip, _t, _t2;
     return worker_handlers_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -1194,13 +1194,16 @@ function _handleInit() {
           packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad, pyodideCdnUrl = data.pyodideCdnUrl; // Use provided CDN URL or fall back to default
           cdnUrl = pyodideCdnUrl || worker_config_PYODIDE_WORKER_CONFIG.PYODIDE_CDN; // Minimal init logging
           _context2.p = 2;
-          // Load Pyodide runtime
-          importScripts("".concat(cdnUrl, "pyodide.js"));
           _context2.n = 3;
+          return import(/* webpackIgnore: true */"".concat(cdnUrl, "pyodide.mjs"));
+        case 3:
+          _yield$import = _context2.v;
+          loadPyodide = _yield$import.loadPyodide;
+          _context2.n = 4;
           return loadPyodide({
             indexURL: cdnUrl
           });
-        case 3:
+        case 4:
           workerState.pyodide = _context2.v;
           // Write the bundled Python modules to the filesystem and import them by
           // reference. Nothing is executed in the interpreter's global namespace:
@@ -1231,35 +1234,35 @@ function _handleInit() {
           workerState.captureSystem.reset_captures();
 
           // Set up input handling system
-          _context2.n = 4;
+          _context2.n = 5;
           return setupInputHandling(workerState.pyodide);
-        case 4:
+        case 5:
           if (!(filesToLoad && filesToLoad.length > 0)) {
-            _context2.n = 8;
-            break;
-          }
-          _context2.p = 5;
-          loader = new PyodideFileLoader(filesToLoad);
-          _context2.n = 6;
-          return loader.loadFiles(workerState.pyodide);
-        case 6:
-          _context2.n = 8;
-          break;
-        case 7:
-          _context2.p = 7;
-          _t = _context2.v;
-          console.error("Failed to load custom files:", _t);
-          throw _t;
-        case 8:
-          if (!((packages === null || packages === void 0 ? void 0 : packages.length) > 0)) {
             _context2.n = 9;
             break;
           }
+          _context2.p = 6;
+          loader = new PyodideFileLoader(filesToLoad);
+          _context2.n = 7;
+          return loader.loadFiles(workerState.pyodide);
+        case 7:
           _context2.n = 9;
-          return loadPackages(packages, workerState);
+          break;
+        case 8:
+          _context2.p = 8;
+          _t = _context2.v;
+          console.error("Failed to load custom files:", _t);
+          throw _t;
         case 9:
+          if (!((packages === null || packages === void 0 ? void 0 : packages.length) > 0)) {
+            _context2.n = 10;
+            break;
+          }
+          _context2.n = 10;
+          return loadPackages(packages, workerState);
+        case 10:
           if (!((micropipPackages === null || micropipPackages === void 0 ? void 0 : micropipPackages.length) > 0)) {
-            _context2.n = 12;
+            _context2.n = 13;
             break;
           }
           toLoad = micropipPackages.filter(function (pkg) {
@@ -1272,22 +1275,22 @@ function _handleInit() {
             worker_handlers_postInfo("[Micropip] Skipping ".concat(loaded.length, " already installed packages: ").concat(loaded.join(", ")));
           }
           if (!(toLoad.length > 0)) {
-            _context2.n = 12;
+            _context2.n = 13;
             break;
           }
           worker_handlers_postInfo("[Micropip] Installing ".concat(toLoad.length, " packages: ").concat(toLoad.join(", "), "..."));
-          _context2.n = 10;
-          return workerState.pyodide.loadPackage("micropip");
-        case 10:
-          micropip = workerState.pyodide.pyimport("micropip");
           _context2.n = 11;
-          return micropip.install(toLoad);
+          return workerState.pyodide.loadPackage("micropip");
         case 11:
+          micropip = workerState.pyodide.pyimport("micropip");
+          _context2.n = 12;
+          return micropip.install(toLoad);
+        case 12:
           toLoad.forEach(function (pkg) {
             return workerState.micropipPackagesLoaded.add(pkg);
           });
           worker_handlers_postInfo("[Micropip] Packages installed successfully.");
-        case 12:
+        case 13:
           // Set up matplotlib if it was loaded
           try {
             workerState.pyodideUtilities.setup_matplotlib();
@@ -1298,18 +1301,18 @@ function _handleInit() {
           self.postMessage({
             type: "ready"
           });
-          _context2.n = 14;
+          _context2.n = 15;
           break;
-        case 13:
-          _context2.p = 13;
+        case 14:
+          _context2.p = 14;
           _t2 = _context2.v;
           workerState.pyodide = null;
           workerState.isInitialized = false;
           worker_handlers_postError("".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.INIT_FAILED, ": ").concat(_t2.message));
-        case 14:
+        case 15:
           return _context2.a(2);
       }
-    }, _callee2, null, [[5, 7], [2, 13]]);
+    }, _callee2, null, [[6, 8], [2, 14]]);
   }));
   return _handleInit.apply(this, arguments);
 }

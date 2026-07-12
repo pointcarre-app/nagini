@@ -626,7 +626,7 @@ Content-Security-Policy:
 
 ### Pinning and integrity
 
-Load Nagini and `worker-dist.js` from your own origin in production, or pin CDN URLs to an immutable commit SHA rather than a tag (tags can be re-pointed). The demo pages in this repository pin their third-party CDN assets to exact versions with `integrity` (SRI) attributes; do the same in your embedding pages. SRI cannot cover dynamically imported modules or `importScripts`, which is one more reason to self-host in production.
+Load Nagini and `worker-dist.js` from your own origin in production, or pin CDN URLs to an immutable commit SHA rather than a tag (tags can be re-pointed). The demo pages in this repository pin their third-party CDN assets to exact versions with `integrity` (SRI) attributes; do the same in your embedding pages. SRI cannot cover dynamically imported modules (the worker loads `pyodide.mjs` with a dynamic import), which is one more reason to self-host in production.
 
 ## Performance
 

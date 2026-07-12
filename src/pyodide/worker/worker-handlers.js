@@ -127,8 +127,10 @@ async function handleInit(data, workerState) {
   // Minimal init logging
 
   try {
-    // Load Pyodide runtime
-    importScripts(`${cdnUrl}pyodide.js`);
+    // Load the Pyodide runtime as an ES module. The worker runs as a module
+    // worker (importScripts is not available there); webpackIgnore keeps the
+    // dynamic import native so the URL is resolved at runtime
+    const { loadPyodide } = await import(/* webpackIgnore: true */ `${cdnUrl}pyodide.mjs`);
     workerState.pyodide = await loadPyodide({ indexURL: cdnUrl });
 
     // Write the bundled Python modules to the filesystem and import them by
