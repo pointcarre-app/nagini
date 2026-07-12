@@ -117,6 +117,9 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 /**
@@ -148,7 +151,7 @@ function handleExecute(_x, _x2) {
  */
 function _handleExecute() {
   _handleExecute = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(data, workerState) {
-    var code, filename, namespace, id, start, stdout, stderr, missive, figures, bokeh_figures, error, result, pyodideNamespace, _captureOutputs, _captureOutputs2, _t;
+    var code, filename, namespace, id, start, stdout, stderr, missive, figures, error, result, pyodideNamespace, _captureOutputs, _captureOutputs2, _t;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
@@ -160,11 +163,11 @@ function _handleExecute() {
         case 1:
           code = data.code, filename = data.filename, namespace = data.namespace, id = data.id;
           start = Date.now();
-          stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [], error = null;
+          stdout = "", stderr = "", missive = null, figures = [], error = null;
           _context.p = 2;
           // Transform code for async execution if needed
           result = transformCodeForExecution(code, workerState);
-          workerState.pyodide.runPython("reset_captures()");
+          workerState.captureSystem.reset_captures();
 
           // Always execute through runPythonAsync: it handles synchronous code
           // identically and enables top-level await in any user code (asyncio,
@@ -190,12 +193,11 @@ function _handleExecute() {
           _context.n = 7;
           return workerState.pyodide.runPythonAsync(result.code);
         case 7:
-          _captureOutputs = captureOutputs(workerState.pyodide);
+          _captureOutputs = captureOutputs(workerState);
           stdout = _captureOutputs.stdout;
           stderr = _captureOutputs.stderr;
           missive = _captureOutputs.missive;
           figures = _captureOutputs.figures;
-          bokeh_figures = _captureOutputs.bokeh_figures;
           _context.n = 9;
           break;
         case 8:
@@ -205,12 +207,17 @@ function _handleExecute() {
             name: _t.name || "PythonError",
             message: _t.message || "Unknown execution error"
           };
-          _captureOutputs2 = captureOutputs(workerState.pyodide, true);
+          _captureOutputs2 = captureOutputs(workerState, true);
           stdout = _captureOutputs2.stdout;
           stderr = _captureOutputs2.stderr;
           figures = _captureOutputs2.figures;
-          bokeh_figures = _captureOutputs2.bokeh_figures;
         case 9:
+          // Default-namespace runs persist their globals, so a rebinding of the
+          // exposed builtins (missive, input) outlives this execution: warn once
+          if (namespace === undefined) {
+            warnShadowedBuiltins(workerState, filename);
+          }
+
           // 🐍 POST EXECUTION RESULTS (always logged with snake emoji)
           console.log("🐍 Worker execution result:", {
             filename: filename,
@@ -218,7 +225,6 @@ function _handleExecute() {
             stderr: stderr.length + " chars",
             missive: missive,
             figures: figures.length + " figures",
-            bokeh_figures: bokeh_figures.length + " bokeh figures",
             error: error,
             time: Date.now() - start + "ms"
           });
@@ -229,7 +235,6 @@ function _handleExecute() {
             stderr: stderr,
             missive: missive,
             figures: figures,
-            bokeh_figures: bokeh_figures,
             error: error,
             time: Date.now() - start,
             executedWithNamespace: namespace !== undefined
@@ -247,8 +252,9 @@ function transformCodeForExecution(code, workerState) {
   // que du passage en exécution asynchrone (runPythonAsync).
   var needsAsync = /(?<![\w.])input\s*\(/.test(code);
   if (needsAsync) {
-    // Transform the code using Python transformation
-    var transformedCode = workerState.pyodide.runPython("transform_code_for_execution(".concat(JSON.stringify(code), ")"));
+    // Transform the code using the Python transformation, called through the
+    // module reference (immune to user code rebinding the name)
+    var transformedCode = workerState.codeTransformation.transform_code_for_execution(code);
     return {
       code: transformedCode,
       needsAsync: true
@@ -263,25 +269,27 @@ function transformCodeForExecution(code, workerState) {
 }
 
 /**
- * Capture Python outputs (stdout, stderr, missive, figures, bokeh_figures)
- * Retrieves execution outputs from Python runtime
+ * Capture Python outputs (stdout, stderr, missive, figures)
+ * Retrieves execution outputs through the capture_system module reference,
+ * never by name lookup in the interpreter globals: user code rebinding
+ * get_stdout, get_missive or json cannot corrupt the capture
  *
- * @param {PyodideAPI} pyodide - Pyodide instance
+ * @param {WorkerState} workerState - Current worker state object
  * @param {boolean} [isErrorCase=false] - Whether this is capturing after an error
- * @returns {CapturedOutputs} Object containing stdout, stderr, missive, figures, and bokeh_figures
+ * @returns {CapturedOutputs} Object containing stdout, stderr, missive, and figures
  */
-function captureOutputs(pyodide) {
+function captureOutputs(workerState) {
   var isErrorCase = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var capture = workerState.captureSystem;
   var stdout = "",
     stderr = "",
     missive = null,
-    figures = [],
-    bokeh_figures = [];
+    figures = [];
   try {
-    stdout = pyodide.runPython("get_stdout()") || "";
-    stderr = pyodide.runPython("get_stderr()") || "";
+    stdout = capture.get_stdout() || "";
+    stderr = capture.get_stderr() || "";
     if (!isErrorCase) {
-      var missiveJson = pyodide.runPython("get_missive()");
+      var missiveJson = capture.get_missive();
       if (missiveJson) {
         // Keep as string - get_missive() already returns JSON string via json.dumps()
         missive = missiveJson;
@@ -289,26 +297,15 @@ function captureOutputs(pyodide) {
 
       // Capture matplotlib figures
       try {
-        var figuresResult = pyodide.runPython("get_figures()");
+        var figuresResult = capture.get_figures();
         if (figuresResult && figuresResult.toJs) {
           figures = figuresResult.toJs();
+          figuresResult.destroy();
         } else if (Array.isArray(figuresResult)) {
           figures = figuresResult;
         }
       } catch (e) {
         console.warn("🐍 Failed to capture matplotlib figures:", e.message);
-      }
-
-      // Capture Bokeh figures
-      try {
-        var bokehResult = pyodide.runPython("get_bokeh_figures()");
-        if (bokehResult && bokehResult.toJs) {
-          bokeh_figures = bokehResult.toJs();
-        } else if (Array.isArray(bokehResult)) {
-          bokeh_figures = bokehResult;
-        }
-      } catch (e) {
-        console.warn("🐍 Failed to capture Bokeh figures:", e.message);
       }
     }
   } catch (err) {
@@ -319,9 +316,41 @@ function captureOutputs(pyodide) {
     stdout: stdout,
     stderr: stderr,
     missive: missive,
-    figures: figures,
-    bokeh_figures: bokeh_figures
+    figures: figures
   };
+}
+
+/**
+ * Warn (once per name per worker life) when user code rebound one of the
+ * exposed builtins (missive, input) in the persistent global namespace.
+ * A diagnostic must never fail an execution: errors are swallowed.
+ *
+ * @param {WorkerState} workerState - Current worker state object
+ * @param {string} filename - Execution that triggered the check
+ * @returns {void}
+ */
+function warnShadowedBuiltins(workerState, filename) {
+  try {
+    var result = workerState.captureSystem.detect_shadowed_names(workerState.pyodide.globals);
+    var shadowed = result.toJs ? result.toJs() : result;
+    if (result.destroy) result.destroy();
+    var _iterator = _createForOfIteratorHelper(shadowed),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var name = _step.value;
+        if (workerState.shadowWarnedNames.has(name)) continue;
+        workerState.shadowWarnedNames.add(name);
+        postWarning("The global name \"".concat(name, "\" was rebound by user code (").concat(filename, ") and now shadows ") + "the built-in ".concat(name, "(). It persists across executions: later code cannot call the ") + "built-in until the shadow is removed (del ".concat(name, ")."));
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  } catch (e) {
+    // Diagnostic only: never let it affect the execution result
+  }
 }
 
 // Helper functions for messaging: the request id (when present) is echoed
@@ -335,6 +364,12 @@ var postError = function postError(message, id) {
   return self.postMessage({
     type: "error",
     id: id,
+    message: "\uD83D\uDC0D [Worker] ".concat(message)
+  });
+};
+var postWarning = function postWarning(message) {
+  return self.postMessage({
+    type: "warning",
     message: "\uD83D\uDC0D [Worker] ".concat(message)
   });
 };
@@ -365,9 +400,8 @@ function validateInitialized(workerState, id) {
  * @typedef {Object} CapturedOutputs
  * @property {string} stdout - Standard output
  * @property {string} stderr - Standard error
- * @property {Object|null} missive - Structured JSON data
+ * @property {string|null} missive - Missive as a JSON string (parse on the consumer side)
  * @property {string[]} figures - Base64 encoded matplotlib figures
- * @property {string[]} bokeh_figures - JSON strings of Bokeh figures
  */
 
 /**
@@ -375,6 +409,9 @@ function validateInitialized(workerState, id) {
  * @property {PyodideAPI|null} pyodide - Pyodide instance
  * @property {boolean} isInitialized - Whether Pyodide is initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names
+ * @property {Object|null} captureSystem - PyProxy of the capture_system module
+ * @property {Object|null} codeTransformation - PyProxy of the code_transformation module
+ * @property {Set<string>} shadowWarnedNames - Built-in names already reported as shadowed
  */
 ;// ./worker-input.js
 function worker_input_regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return worker_input_regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (worker_input_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, worker_input_regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, worker_input_regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), worker_input_regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", worker_input_regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), worker_input_regeneratorDefine2(u), worker_input_regeneratorDefine2(u, o, "Generator"), worker_input_regeneratorDefine2(u, n, function () { return this; }), worker_input_regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (worker_input_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
@@ -410,6 +447,7 @@ function setupInputHandling(_x) {
  */
 function _setupInputHandling() {
   _setupInputHandling = worker_input_asyncToGenerator(/*#__PURE__*/worker_input_regenerator().m(function _callee2(pyodide) {
+    var setupNamespace;
     return worker_input_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -435,13 +473,25 @@ function _setupInputHandling() {
             }, _callee);
           }));
 
-          // Set up the Python environment with input handling
-          _context2.n = 1;
-          return pyodide.runPythonAsync("\nimport asyncio\nimport builtins\nimport sys\nfrom js import requestInput\n\n# Set up input handling\nasync def input_handler(prompt=\"\"):\n    # Always print the prompt to stdout first\n    if prompt:\n        print(prompt, end=\"\", flush=True)\n        sys.stdout.flush()  # Make sure it's flushed\n\n    # Request input from JavaScript\n    user_input = await requestInput(prompt)\n    return user_input\n\n# Replace the built-in input function with our async version\nbuiltins.input = input_handler\n\nprint(\"\uD83D\uDC0D Python: Input handling system set up successfully\")\n");
-        case 1:
+          // Set up the Python environment with input handling. The snippet runs in
+          // a throwaway namespace: none of its names (sys, requestInput,
+          // input_handler) leak into the interpreter globals where user code runs,
+          // so they cannot be shadowed or rebound from user code. The handler keeps
+          // them alive through its own module-level closure.
+          setupNamespace = pyodide.toPy({});
+          _context2.p = 1;
+          _context2.n = 2;
+          return pyodide.runPythonAsync("\nimport builtins\nimport sys\nfrom js import requestInput\n\nasync def input_handler(prompt=\"\"):\n    # Always print the prompt to stdout first\n    if prompt:\n        print(prompt, end=\"\", flush=True)\n        sys.stdout.flush()\n\n    # Request input from JavaScript\n    return await requestInput(prompt)\n\n# Replace the built-in input function with our async version\nbuiltins.input = input_handler\n", {
+            globals: setupNamespace
+          });
+        case 2:
+          _context2.p = 2;
+          setupNamespace.destroy();
+          return _context2.f(2);
+        case 3:
           return _context2.a(2);
       }
-    }, _callee2);
+    }, _callee2, null, [[1,, 2, 3]]);
   }));
   return _setupInputHandling.apply(this, arguments);
 }
@@ -671,7 +721,7 @@ function _loadPackages() {
         case 3:
           _context2.p = 3;
           _t = _context2.v;
-          postWarning("".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.PACKAGE_WARNING, " ").concat(_t.message));
+          worker_fs_postWarning("".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.PACKAGE_WARNING, " ").concat(_t.message));
         case 4:
           return _context2.a(2);
       }
@@ -692,7 +742,7 @@ var postInfo = function postInfo(message) {
     message: "\uD83D\uDD27 [Worker] ".concat(message)
   });
 };
-var postWarning = function postWarning(message) {
+var worker_fs_postWarning = function postWarning(message) {
   return self.postMessage({
     type: "warning",
     message: "\uD83D\uDD27 [Worker] ".concat(message)
@@ -728,13 +778,13 @@ function file_loader_regeneratorDefine2(e, r, n, t) { var i = Object.definePrope
 function file_loader_asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function file_loader_asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { file_loader_asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { file_loader_asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function file_loader_typeof(o) { "@babel/helpers - typeof"; return file_loader_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, file_loader_typeof(o); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || file_loader_unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function file_loader_createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = file_loader_unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
+function file_loader_unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return file_loader_arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? file_loader_arrayLikeToArray(r, a) : void 0; } }
+function file_loader_arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, file_loader_toPropertyKey(o.key), o); } }
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
@@ -772,7 +822,7 @@ var PyodideFileLoader = /*#__PURE__*/function () {
     }
 
     // Validate each file object
-    var _iterator = _createForOfIteratorHelper(filesToLoad.entries()),
+    var _iterator = file_loader_createForOfIteratorHelper(filesToLoad.entries()),
       _step;
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -830,7 +880,7 @@ var PyodideFileLoader = /*#__PURE__*/function () {
               }
               throw new Error("📦 [PyodideFileLoader] Invalid pyodide instance - missing FS");
             case 1:
-              _iterator2 = _createForOfIteratorHelper(this.filesToLoad);
+              _iterator2 = file_loader_createForOfIteratorHelper(this.filesToLoad);
               _context2.p = 2;
               _loop = /*#__PURE__*/file_loader_regenerator().m(function _loop() {
                 var file, retryCount, response, content, dir, dirExists, errorMsg, _t;
@@ -952,13 +1002,11 @@ var PyodideFileLoader = /*#__PURE__*/function () {
  * @property {Function} FS.mkdir - Create directory
  */
 ;// ../python/capture_system.py
-const capture_system_namespaceObject = "# =============================================================================\n# Output Capture System for Pyodide\n# =============================================================================\n# This module handles stdout/stderr capture and the missive system\n# Uses direct sys.stdout/stderr replacement for reliable capture in WebAssembly\n\nimport json\nimport io\nimport sys\nimport builtins\n\n# Store original stdout/stderr so we can restore them if needed\n_original_stdout = sys.stdout\n_original_stderr = sys.stderr\n\n# Create capture buffers\n_stdout_buffer = io.StringIO()\n_stderr_buffer = io.StringIO()\n\n# Storage for missive system - using builtins to ensure global availability\nif not hasattr(builtins, \"_nagini_current_missive\"):\n    builtins._nagini_current_missive = None\nif not hasattr(builtins, \"_nagini_missive_already_called\"):\n    builtins._nagini_missive_already_called = False\n\n\nclass CaptureStream:\n    \"\"\"Custom stream that captures all write operations\"\"\"\n\n    def __init__(self, buffer):\n        self.buffer = buffer\n\n    def write(self, text):\n        self.buffer.write(text)\n        return len(text)\n\n    def flush(self):\n        self.buffer.flush()\n\n    def isatty(self):\n        return False\n\n\n# Create capture streams\n_stdout_capturer = CaptureStream(_stdout_buffer)\n_stderr_capturer = CaptureStream(_stderr_buffer)\n\n\ndef reset_captures() -> None:\n    \"\"\"Reset capture buffers and activate capturing by replacing sys.stdout/stderr\"\"\"\n    # Clear buffers\n    _stdout_buffer.truncate(0)\n    _stdout_buffer.seek(0)\n    _stderr_buffer.truncate(0)\n    _stderr_buffer.seek(0)\n\n    # Clear missive data using builtins for global access\n    builtins._nagini_current_missive = None\n    builtins._nagini_missive_already_called = False\n\n    # Close any existing matplotlib figures (if matplotlib is available)\n    try:\n        import matplotlib.pyplot as plt\n\n        plt.close(\"all\")\n    except ImportError:\n        pass  # matplotlib not available, skip\n    except Exception:\n        pass  # Ignore other errors\n\n    # Clear any existing Bokeh figures (if bokeh is available)\n    try:\n        from bokeh.plotting import curdoc\n\n        doc = curdoc()\n        doc.clear()\n    except ImportError:\n        pass  # bokeh not available, skip\n    except Exception:\n        pass  # Ignore other errors\n\n    # Activate capturing by replacing sys.stdout/stderr\n    sys.stdout = _stdout_capturer\n    sys.stderr = _stderr_capturer\n\n\ndef get_stdout() -> str:\n    \"\"\"Get captured stdout content\"\"\"\n    return _stdout_buffer.getvalue()\n\n\ndef get_stderr() -> str:\n    \"\"\"Get captured stderr content\"\"\"\n    return _stderr_buffer.getvalue()\n\n\ndef restore_original_streams() -> None:\n    \"\"\"Restore original stdout/stderr (for debugging if needed)\"\"\"\n    sys.stdout = _original_stdout\n    sys.stderr = _original_stderr\n\n\ndef get_missive() -> str | None:\n    \"\"\"\n    Get the current missive dictionary as a JSON string.\n\n    A \"missive\" is our term for structured data that user code wants to send\n    back to JavaScript. It's always a Python dictionary that gets converted\n    to JSON format (which JavaScript can easily understand).\n\n    Returns:\n        str | None: JSON string of the missive data, or None if no missive was sent\n\n    Example:\n        If user code did: missive({\"result\": 42, \"status\": \"success\"})\n        This would return: '{\"result\": 42, \"status\": \"success\"}'\n    \"\"\"\n    if builtins._nagini_current_missive is None:\n        return None  # No missive was stored\n    return json.dumps(builtins._nagini_current_missive)  # Convert Python dict to JSON string\n\n\ndef get_figures() -> list:\n    \"\"\"\n    Capture matplotlib figures and return them as base64 encoded strings.\n\n    Returns:\n        list: List of base64 encoded PNG images of matplotlib figures\n    \"\"\"\n    figures = []\n\n    try:\n        # Import matplotlib only when needed (after packages are loaded)\n        import matplotlib.pyplot as plt\n        import base64\n\n        if hasattr(plt, \"get_fignums\"):\n            try:\n                for fig_num in plt.get_fignums():\n                    plt.figure(fig_num)\n                    buf = io.BytesIO()\n                    plt.savefig(buf, format=\"png\", dpi=100, bbox_inches=\"tight\")\n                    buf.seek(0)\n                    figures.append(base64.b64encode(buf.read()).decode(\"utf-8\"))\n                    plt.close(fig_num)\n            except Exception as e:\n                print(f\"Error capturing figures: {e}\")\n    except ImportError:\n        # matplotlib not available, return empty list\n        pass\n    except Exception as e:\n        print(f\"Error importing matplotlib: {e}\")\n\n    return figures\n\n\ndef get_bokeh_figures() -> list:\n    \"\"\"\n    Capture Bokeh figures and return them as JSON for frontend rendering.\n\n    Returns:\n        list: List of JSON strings representing Bokeh figures\n    \"\"\"\n    bokeh_figures = []\n\n    try:\n        # Import bokeh only when needed\n        from bokeh.plotting import curdoc\n        from bokeh.embed import json_item\n\n        # Get the current document\n        doc = curdoc()\n\n        # Check if there are any roots (plots/layouts) in the document\n        if doc.roots:\n            for root in doc.roots:\n                try:\n                    # Convert each root to JSON format\n                    item_json = json_item(root)\n                    bokeh_figures.append(json.dumps(item_json))\n                except Exception as e:\n                    print(f\"Error converting Bokeh figure to JSON: {e}\")\n\n        # Also check for figures that might not be in curdoc yet\n        # This handles cases where figures are created but not added to document\n        try:\n            from bokeh import plotting\n\n            # Check if there are any current plots\n            if hasattr(plotting, \"curplot\") and plotting.curplot() is not None:\n                plot = plotting.curplot()\n                if plot not in doc.roots:\n                    item_json = json_item(plot)\n                    bokeh_figures.append(json.dumps(item_json))\n        except:\n            pass  # curplot might not exist in all versions\n\n    except ImportError:\n        # bokeh not available, return empty list\n        pass\n    except Exception as e:\n        print(f\"Error capturing Bokeh figures: {e}\")\n\n    return bokeh_figures\n\n\ndef missive(data):\n    \"\"\"Send structured data back to JavaScript (once per execution)\n\n    Runs while user output is being captured, so it must not print:\n    anything written here would end up in the user's stdout.\n    \"\"\"\n    if builtins._nagini_missive_already_called:\n        raise ValueError(\n            \"missive() can only be called once per execution. \"\n            \"If you need to send multiple pieces of data, \"\n            \"put them all in one dictionary.\"\n        )\n    builtins._nagini_current_missive = data\n    builtins._nagini_missive_already_called = True\n\n\n# Make the missive function available globally\nbuiltins.missive = missive\n\n# Legacy global variables for backward compatibility\ncurrent_missive = builtins._nagini_current_missive\nmissive_already_called = builtins._nagini_missive_already_called\n\n\ndef debug_missive_system():\n    \"\"\"Debug function to check the current state of the missive system\"\"\"\n    print(f\"[DEBUG] _nagini_current_missive: {builtins._nagini_current_missive}\")\n    print(f\"[DEBUG] _nagini_missive_already_called: {builtins._nagini_missive_already_called}\")\n    print(f\"[DEBUG] get_missive() returns: {get_missive()}\")\n    print(f\"[DEBUG] missive function available: {hasattr(builtins, 'missive')}\")\n    return {\n        \"current_missive\": builtins._nagini_current_missive,\n        \"missive_already_called\": builtins._nagini_missive_already_called,\n        \"get_missive_result\": get_missive(),\n        \"missive_function_available\": hasattr(builtins, \"missive\"),\n    }\n\n\n# Make debug function available globally too\nbuiltins.debug_missive_system = debug_missive_system\n";
+const capture_system_namespaceObject = "# =============================================================================\n# Output Capture System for Pyodide\n# =============================================================================\n# This module handles stdout/stderr capture and the missive system\n# Uses direct sys.stdout/stderr replacement for reliable capture in WebAssembly\n\nimport json\nimport io\nimport sys\nimport builtins\n\n# Store original stdout/stderr so we can restore them if needed\n_original_stdout = sys.stdout\n_original_stderr = sys.stderr\n\n# Create capture buffers\n_stdout_buffer = io.StringIO()\n_stderr_buffer = io.StringIO()\n\n# Storage for missive system - using builtins to ensure global availability\nif not hasattr(builtins, \"_nagini_current_missive\"):\n    builtins._nagini_current_missive = None\nif not hasattr(builtins, \"_nagini_missive_already_called\"):\n    builtins._nagini_missive_already_called = False\n\n\nclass CaptureStream:\n    \"\"\"Custom stream that captures all write operations\"\"\"\n\n    def __init__(self, buffer):\n        self.buffer = buffer\n\n    def write(self, text):\n        self.buffer.write(text)\n        return len(text)\n\n    def flush(self):\n        self.buffer.flush()\n\n    def isatty(self):\n        return False\n\n\n# Create capture streams\n_stdout_capturer = CaptureStream(_stdout_buffer)\n_stderr_capturer = CaptureStream(_stderr_buffer)\n\n\ndef reset_captures() -> None:\n    \"\"\"Reset capture buffers and activate capturing by replacing sys.stdout/stderr\"\"\"\n    # Clear buffers\n    _stdout_buffer.truncate(0)\n    _stdout_buffer.seek(0)\n    _stderr_buffer.truncate(0)\n    _stderr_buffer.seek(0)\n\n    # Clear missive data using builtins for global access\n    builtins._nagini_current_missive = None\n    builtins._nagini_missive_already_called = False\n\n    # Close any existing matplotlib figures (if matplotlib is available)\n    try:\n        import matplotlib.pyplot as plt\n\n        plt.close(\"all\")\n    except ImportError:\n        pass  # matplotlib not available, skip\n    except Exception:\n        pass  # Ignore other errors\n\n    # Activate capturing by replacing sys.stdout/stderr\n    sys.stdout = _stdout_capturer\n    sys.stderr = _stderr_capturer\n\n\ndef get_stdout() -> str:\n    \"\"\"Get captured stdout content\"\"\"\n    return _stdout_buffer.getvalue()\n\n\ndef get_stderr() -> str:\n    \"\"\"Get captured stderr content\"\"\"\n    return _stderr_buffer.getvalue()\n\n\ndef restore_original_streams() -> None:\n    \"\"\"Restore original stdout/stderr (for debugging if needed)\"\"\"\n    sys.stdout = _original_stdout\n    sys.stderr = _original_stderr\n\n\ndef get_missive() -> str | None:\n    \"\"\"\n    Get the current missive dictionary as a JSON string.\n\n    A \"missive\" is our term for structured data that user code wants to send\n    back to JavaScript. It's always a Python dictionary that gets converted\n    to JSON format (which JavaScript can easily understand).\n\n    Returns:\n        str | None: JSON string of the missive data, or None if no missive was sent\n\n    Example:\n        If user code did: missive({\"result\": 42, \"status\": \"success\"})\n        This would return: '{\"result\": 42, \"status\": \"success\"}'\n    \"\"\"\n    if builtins._nagini_current_missive is None:\n        return None  # No missive was stored\n    return json.dumps(builtins._nagini_current_missive)  # Convert Python dict to JSON string\n\n\ndef get_figures() -> list:\n    \"\"\"\n    Capture matplotlib figures and return them as base64 encoded strings.\n\n    Returns:\n        list: List of base64 encoded PNG images of matplotlib figures\n    \"\"\"\n    figures = []\n\n    try:\n        # Import matplotlib only when needed (after packages are loaded)\n        import matplotlib.pyplot as plt\n        import base64\n\n        if hasattr(plt, \"get_fignums\"):\n            try:\n                for fig_num in plt.get_fignums():\n                    plt.figure(fig_num)\n                    buf = io.BytesIO()\n                    plt.savefig(buf, format=\"png\", dpi=100, bbox_inches=\"tight\")\n                    buf.seek(0)\n                    figures.append(base64.b64encode(buf.read()).decode(\"utf-8\"))\n                    plt.close(fig_num)\n            except Exception as e:\n                print(f\"Error capturing figures: {e}\")\n    except ImportError:\n        # matplotlib not available, return empty list\n        pass\n    except Exception as e:\n        print(f\"Error importing matplotlib: {e}\")\n\n    return figures\n\n\ndef missive(data):\n    \"\"\"Send structured data back to JavaScript (once per execution)\n\n    Runs while user output is being captured, so it must not print:\n    anything written here would end up in the user's stdout.\n    \"\"\"\n    if builtins._nagini_missive_already_called:\n        raise ValueError(\n            \"missive() can only be called once per execution. \"\n            \"If you need to send multiple pieces of data, \"\n            \"put them all in one dictionary.\"\n        )\n    builtins._nagini_current_missive = data\n    builtins._nagini_missive_already_called = True\n\n\n# Make the missive function available globally: it is the one name (with\n# input) deliberately exposed to user code. Everything else in this module\n# is reached by the worker through a module reference, never by name lookup\n# in the user's namespace.\nbuiltins.missive = missive\n\n\ndef detect_shadowed_names(user_globals) -> list:\n    \"\"\"Names rebound by user code in its globals, hiding the built-ins\n    Nagini exposes (missive, input). The worker calls this after each\n    default-namespace execution to emit a one-time warning.\"\"\"\n    shadowed = []\n    for name in (\"missive\", \"input\"):\n        if name in user_globals and user_globals[name] is not getattr(builtins, name, None):\n            shadowed.append(name)\n    return shadowed\n";
 ;// ../python/code_transformation.py
 const code_transformation_namespaceObject = "# =============================================================================\n# Code transformation for async input support\n# =============================================================================\n# Le builtin input() est remplacé côté worker par une coroutine asynchrone\n# (voir worker-input.js). Il faut donc préfixer d'un await les vrais appels\n# input(). La détection et la réécriture se font sur l'AST : seuls les appels\n# au builtin input sont touchés, jamais un identifiant comme some_func__input\n# ni une méthode obj.input(). Le code est exécuté par runPythonAsync, qui\n# autorise le await de premier niveau, donc on n'enveloppe pas le code dans une\n# fonction : les variables de niveau module restent dans les globals.\n\nimport ast\n\n\nclass _AwaitInputTransformer(ast.NodeTransformer):\n    \"\"\"Préfixe d'un await chaque appel au builtin input() exécutable au niveau\n    module ou dans une fonction async. Les appels situés dans une fonction\n    synchrone ou un lambda sont laissés tels quels : un await y serait invalide\n    et casserait tout le programme.\"\"\"\n\n    def __init__(self):\n        self.inserted = False\n        self._sync_scope_depth = 0\n\n    def visit_FunctionDef(self, node):\n        self._sync_scope_depth += 1\n        self.generic_visit(node)\n        self._sync_scope_depth -= 1\n        return node\n\n    def visit_Lambda(self, node):\n        self._sync_scope_depth += 1\n        self.generic_visit(node)\n        self._sync_scope_depth -= 1\n        return node\n\n    def visit_ClassDef(self, node):\n        # un corps de classe est un scope propre où await est toujours\n        # invalide, même au niveau module\n        self._sync_scope_depth += 1\n        self.generic_visit(node)\n        self._sync_scope_depth -= 1\n        return node\n\n    def visit_AsyncFunctionDef(self, node):\n        # await redevient valide ici, même quand la fonction async est définie\n        # à l'intérieur d'une fonction synchrone : on repart de zéro\n        saved = self._sync_scope_depth\n        self._sync_scope_depth = 0\n        self.generic_visit(node)\n        self._sync_scope_depth = saved\n        return node\n\n    def visit_Call(self, node):\n        self.generic_visit(node)\n        is_input_builtin = isinstance(node.func, ast.Name) and node.func.id == \"input\"\n        if is_input_builtin and self._sync_scope_depth == 0:\n            self.inserted = True\n            return ast.Await(value=node)\n        return node\n\n\ndef _rewrite_input_calls(code):\n    \"\"\"Renvoie le code réécrit (await input) si au moins un appel a été\n    transformé, sinon None. Laisse remonter SyntaxError si le code ne parse\n    pas, pour que l'erreur soit reportée telle quelle à l'exécution.\"\"\"\n    tree = ast.parse(code)\n    transformer = _AwaitInputTransformer()\n    new_tree = transformer.visit(tree)\n    if not transformer.inserted:\n        return None\n    ast.fix_missing_locations(new_tree)\n    return ast.unparse(new_tree)\n\n\ndef prepare_code_for_async_input(code):\n    \"\"\"Réécrit les appels input() en await input(). Renvoie le code inchangé si\n    aucun vrai appel input() n'est présent ou si le code ne parse pas.\"\"\"\n    try:\n        rewritten = _rewrite_input_calls(code)\n    except SyntaxError:\n        return code\n    return code if rewritten is None else rewritten\n\n\ndef transform_code_for_execution(code):\n    \"\"\"Transforme le code utilisateur pour le support de input() asynchrone.\n\n    Idempotent vis-à-vis du code sans input() : il est renvoyé inchangé.\"\"\"\n    return prepare_code_for_async_input(code)\n";
 ;// ../python/pyodide_utilities.py
 const pyodide_utilities_namespaceObject = "# =============================================================================\n# Pyodide Utilities\n# =============================================================================\n# This module contains utility functions for Pyodide environment setup\n\n\ndef setup_matplotlib():\n    \"\"\"Set up matplotlib configuration if the package is available\"\"\"\n    try:\n        import matplotlib\n        import matplotlib.pyplot as plt\n\n        # Use the non-interactive 'agg' backend, which is required for rendering in a worker.\n        plt.switch_backend(\"agg\")\n\n        # Pyodide n'embarque que les polices DejaVu : pointer sans-serif\n        # vers Arial déclenchait un warning findfont sur chaque rendu\n        matplotlib.rcParams[\"font.family\"] = \"sans-serif\"\n        matplotlib.rcParams[\"font.sans-serif\"] = [\"DejaVu Sans\"]\n        matplotlib.rcParams[\"text.usetex\"] = False\n\n        # Override plt.show() to prevent display attempts\n        def custom_show(*args, **kwargs):\n            pass  # No-op since we capture figures manually\n\n        plt.show = custom_show\n        print(\"🎨 Matplotlib configured successfully with 'agg' backend and font caching disabled\")\n    except ImportError:\n        # matplotlib not available, skip setup\n        pass\n    except Exception as e:\n        print(f\"Warning: Could not configure matplotlib: {e}\")\n\n\n# Additional utility functions can be added here as needed\n";
-;// ../python/pyodide_init.py
-const pyodide_init_namespaceObject = "# =============================================================================\n# Pyodide Python Initialization Script - Modular Version\n# =============================================================================\n# This file contains Python utilities that run inside the Pyodide environment.\n# It coordinates all the modular components for a cleaner architecture.\n\n# Standard Library Imports\n# ------------------------\nimport json  # JavaScript Object Notation\nimport builtins  # Built-in functions and exceptions\n\n# Local Module Imports\n# --------------------\nfrom capture_system import (\n    reset_captures,\n    get_stdout,\n    get_stderr,\n    get_missive,\n    get_figures,\n    missive,\n    restore_original_streams,\n)\n\nfrom code_transformation import transform_code_for_execution, prepare_code_for_async_input\n\nfrom pyodide_utilities import setup_matplotlib\n\n# =============================================================================\n# MAKE FUNCTIONS AVAILABLE GLOBALLY\n# =============================================================================\n# Export all the necessary functions to the global namespace so they can be\n# called from JavaScript and from user Python code\n\n# Capture system functions\nbuiltins.reset_captures = reset_captures\nbuiltins.get_stdout = get_stdout\nbuiltins.get_stderr = get_stderr\nbuiltins.get_missive = get_missive\nbuiltins.get_figures = get_figures\nbuiltins.missive = missive\nbuiltins.restore_original_streams = restore_original_streams\n\n# Code transformation functions\nbuiltins.transform_code_for_execution = transform_code_for_execution\nbuiltins.prepare_code_for_async_input = prepare_code_for_async_input\n\n# Utility functions\nbuiltins.setup_matplotlib = setup_matplotlib\n\n# Other globals\nbuiltins.json = json\n\n# =============================================================================\n# INITIALIZATION\n# =============================================================================\n\n# Initialize capture system immediately\nreset_captures()\n\nprint(\"🐍 Pyodide initialization completed successfully!\")\nprint(\"🔧 All modules loaded and capture system active\")\n\n# Note: setup_matplotlib() will be called after packages are loaded\n# in the worker initialization process\n";
 ;// ./worker-handlers.js
 function worker_handlers_regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return worker_handlers_regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (worker_handlers_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, worker_handlers_regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, worker_handlers_regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), worker_handlers_regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", worker_handlers_regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), worker_handlers_regeneratorDefine2(u), worker_handlers_regeneratorDefine2(u, o, "Generator"), worker_handlers_regeneratorDefine2(u, n, function () { return this; }), worker_handlers_regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (worker_handlers_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function worker_handlers_regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } worker_handlers_regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { if (r) i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n;else { var o = function o(r, n) { worker_handlers_regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); }; o("next", 0), o("throw", 1), o("return", 2); } }, worker_handlers_regeneratorDefine2(e, r, n, t); }
@@ -983,7 +1031,6 @@ function worker_handlers_toPrimitive(t, r) { if ("object" != worker_handlers_typ
 
 
 // Import Python modules as bundled strings
-
 
 
 
@@ -1155,8 +1202,11 @@ function _handleInit() {
           });
         case 3:
           workerState.pyodide = _context2.v;
-          // Using bundled Python modules
-          // Load bundled Python modules directly (no HTTP fetching needed!)
+          // Write the bundled Python modules to the filesystem and import them by
+          // reference. Nothing is executed in the interpreter's global namespace:
+          // user code cannot shadow or replace the capture infrastructure by
+          // rebinding names, it only sees the two builtins deliberately exposed
+          // (missive, input)
           pythonModules = [{
             name: 'capture_system.py',
             content: capture_system_namespaceObject
@@ -1169,19 +1219,16 @@ function _handleInit() {
           }];
           for (_i = 0, _pythonModules = pythonModules; _i < _pythonModules.length; _i++) {
             module = _pythonModules[_i];
-            try {
-              // Write to filesystem for potential imports
-              workerState.pyodide.FS.writeFile(module.name, module.content);
-              // Execute the module so it can be imported
-              workerState.pyodide.runPython(module.content);
-              // Module loaded successfully
-            } catch (error) {
-              console.warn("Could not load bundled Python module ".concat(module.name, ":"), error.message);
-            }
+            workerState.pyodide.FS.writeFile(module.name, module.content);
           }
 
-          // Load main Python initialization script from bundle
-          workerState.pyodide.runPython(pyodide_init_namespaceObject);
+          // Importing capture_system also installs builtins.missive
+          workerState.captureSystem = workerState.pyodide.pyimport('capture_system');
+          workerState.codeTransformation = workerState.pyodide.pyimport('code_transformation');
+          workerState.pyodideUtilities = workerState.pyodide.pyimport('pyodide_utilities');
+
+          // Activate output capture
+          workerState.captureSystem.reset_captures();
 
           // Set up input handling system
           _context2.n = 4;
@@ -1243,7 +1290,7 @@ function _handleInit() {
         case 12:
           // Set up matplotlib if it was loaded
           try {
-            workerState.pyodide.runPython("setup_matplotlib()");
+            workerState.pyodideUtilities.setup_matplotlib();
           } catch (e) {
             // Matplotlib setup skipped (not available)
           }
@@ -1274,6 +1321,10 @@ function _handleInit() {
  * @property {boolean} isInitialized - Whether Pyodide is initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names
  * @property {Set<string>} micropipPackagesLoaded - Set of loaded micropip package names
+ * @property {Object|null} captureSystem - PyProxy of the capture_system module
+ * @property {Object|null} codeTransformation - PyProxy of the code_transformation module
+ * @property {Object|null} pyodideUtilities - PyProxy of the pyodide_utilities module
+ * @property {Set<string>} shadowWarnedNames - Built-in names already reported as shadowed
  */
 
 /**
@@ -1378,7 +1429,15 @@ var workerState = {
   /** @type {Set<string>} Tracks loaded packages to prevent duplicate loading 📦 */
   packagesLoaded: new Set(),
   /** @type {Set<string>} Tracks loaded micropip packages to prevent duplicate loading 📦 */
-  micropipPackagesLoaded: new Set()
+  micropipPackagesLoaded: new Set(),
+  /** @type {Object|null} PyProxy of the capture_system module (set at init) */
+  captureSystem: null,
+  /** @type {Object|null} PyProxy of the code_transformation module (set at init) */
+  codeTransformation: null,
+  /** @type {Object|null} PyProxy of the pyodide_utilities module (set at init) */
+  pyodideUtilities: null,
+  /** @type {Set<string>} Built-in names already reported as shadowed by user code */
+  shadowWarnedNames: new Set()
 };
 
 /**

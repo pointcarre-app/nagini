@@ -839,7 +839,6 @@ pca-nagini/
 │       ├── file-loader/
 │       │   └── file-loader.js     # Remote file loading
 │       └── python/
-│           ├── pyodide_init.py    # Python initialization script
 │           ├── capture_system.py  # Output capture system
 │           ├── code_transformation.py # Code transformation utilities
 │           └── pyodide_utilities.py # Python helper functions
@@ -1189,12 +1188,12 @@ We appreciate your contributions to making Nagini better!
 
 ### Automated Release Validation
 
-To ensure the stability of every release, Nagini uses a sophisticated, automated test harness that validates the entire application before any new version can be tagged. This system is a critical part of our quality assurance process.
+Before a release is tagged, the full test suite is validated in a real browser.
 
--   **Selenium & Chrome**: A Selenium script (`scenery/run_tests.py`) runs a headless Chrome browser to execute the full test suite in a real-world environment.
--   **Failure Simulation**: The test suite includes tests that are *designed* to fail (an assertion failure, or "flop", and a runtime error, or "glitch"). These tests are located in `scenery/tests/failure-tests.js`. They are crucial for ensuring that our error-handling and reporting systems are working correctly.
--   **`pre-push` Git Hook**: When a new tag is pushed (e.g., `git push origin v0.0.11`), a `pre-push` hook (`hooks/pre-push`) automatically runs the Selenium tests. It checks the JSON output in the `scenery/critics/` directory to ensure that only the expected "flop" and "glitch" tests have failed. If any other test fails, or if the failure tests unexpectedly pass, the push is aborted.
+-   **Selenium & Chrome**: A Selenium script (`scenery/run_tests.py`) starts a local server, loads `scenery/index.html` in headless Chrome, waits for the suite to publish its results in the `#test-results-json` element and fails if any test reports a failure.
+-   **Failure labels**: Each failing test is labelled in the JSON output as a "flop" (assertion failure) or a "glitch" (runtime error), see `updateTestStatus` in `scenery/app.js`.
+-   **Result snapshots**: Passing an output path as first argument saves the raw JSON results to that file. An archived run from v0.0.11 is kept in `scenery/legacy/v0.0.11-test.json`.
 
-This system guarantees that no broken code can ever be tagged for release.
+This validation is run manually before tagging: the repository ships no git hook that enforces it.
 
 --- 

@@ -456,7 +456,6 @@ src/
     ├── file-loader/
     │   └── file-loader.js          # Remote file loading
     └── python/
-        ├── pyodide_init.py         # Python initialization script
         ├── capture_system.py       # Output capture system
         ├── code_transformation.py  # Code transformation utilities
         └── pyodide_utilities.py    # Python helper functions

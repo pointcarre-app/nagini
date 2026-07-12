@@ -238,7 +238,6 @@ class PyodideManager {
         stderr: data.stderr,
         missive: data.missive,
         figures: data.figures,
-        bokeh_figures: data.bokeh_figures,
         error: data.error,
         timestamp: new Date().toISOString(),
       });
@@ -338,7 +337,6 @@ class PyodideManager {
         stderr: data.stderr ? data.stderr.length + " chars" : "empty",
         missive: data.missive,
         figures: data.figures ? data.figures.length + " figures" : "none",
-        bokeh_figures: data.bokeh_figures ? data.bokeh_figures.length + " bokeh figures" : "none",
         error: data.error
       });
 
@@ -477,7 +475,7 @@ export { PyodideManager };
  * @property {number} [time] - Execution time in milliseconds
  * @property {string} [stdout] - Standard output
  * @property {string} [stderr] - Standard error
- * @property {Object|null} [missive] - Structured data from Python
+ * @property {string|null} [missive] - Missive as a JSON string from Python
  * @property {Object|null} [error] - Execution error object
  * @property {any} [result] - Filesystem operation result
  */
@@ -488,7 +486,8 @@ export { PyodideManager };
  * @property {number} time - Execution time in milliseconds
  * @property {string} stdout - Standard output from Python execution
  * @property {string} stderr - Standard error from Python execution
- * @property {Object|null} missive - Structured JSON data from Python
+ * @property {string|null} missive - Missive as a JSON string (parse on the consumer side)
+ * @property {string[]} [figures] - Base64 encoded matplotlib figures (executeAsync result only, not stored in history)
  * @property {Object|null} error - JavaScript execution error object
  * @property {string} timestamp - ISO timestamp of execution
  * @property {boolean} [executedWithNamespace] - Whether execution used namespace

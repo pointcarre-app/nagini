@@ -32,9 +32,21 @@ const workerState = {
 
   /** @type {Set<string>} Tracks loaded packages to prevent duplicate loading 📦 */
   packagesLoaded: new Set(),
-  
+
   /** @type {Set<string>} Tracks loaded micropip packages to prevent duplicate loading 📦 */
-  micropipPackagesLoaded: new Set()
+  micropipPackagesLoaded: new Set(),
+
+  /** @type {Object|null} PyProxy of the capture_system module (set at init) */
+  captureSystem: null,
+
+  /** @type {Object|null} PyProxy of the code_transformation module (set at init) */
+  codeTransformation: null,
+
+  /** @type {Object|null} PyProxy of the pyodide_utilities module (set at init) */
+  pyodideUtilities: null,
+
+  /** @type {Set<string>} Built-in names already reported as shadowed by user code */
+  shadowWarnedNames: new Set()
 };
 
 /**

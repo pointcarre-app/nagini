@@ -22,6 +22,28 @@
             padding: 0.5rem 1rem;
         }
 
+        nav.hub {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fafafa;
+            padding: 4px 20px 16px;
+            margin-top: 1.5rem;
+        }
+
+        nav.hub h2 {
+            margin-top: 1.25rem;
+            font-size: 1.05em;
+        }
+
+        nav.hub ul {
+            margin: 0.5rem 0 0;
+            padding-left: 1.2rem;
+        }
+
+        nav.hub li {
+            margin: 0.35rem 0;
+        }
+
         #pyodide-console {
             height: 100px;
             overflow-y: auto;
@@ -148,34 +170,52 @@
   <body>
     <h1>Scenery for Nagini</h1>
 
-    <nav style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-                padding: 15px 20px;
-                border-radius: 8px;
-                margin-bottom: 2rem">
-      <strong style="color: #e94560;">🧪 Other Test Pages:</strong>
-      <ul style="margin: 10px 0 0 0; padding-left: 20px; list-style: none;">
-        <li style="margin: 8px 0;">
-          <a href="full_local.html" style="color: #60a5fa; text-decoration: none;">
-            📦 <strong>full_local.html</strong>
-          </a>
-          <span style="color: #9ca3af;">— Local Pyodide test (Capacitor/iOS offline mode)</span>
-        </li>
-        <li style="margin: 8px 0;">
-          <a href="full_local_needed_for_app.html" style="color: #60a5fa; text-decoration: none;">
-            🎯 <strong>full_local_needed_for_app.html</strong>
-          </a>
-          <span style="color: #9ca3af;">— Minimal bundle (~18MB) with SymPy + Pydantic only</span>
-        </li>
-        <li style="margin: 8px 0;">
-          <a href="v0.0.26.html" style="color: #60a5fa; text-decoration: none;">
-            🌐 <strong>v0.0.26.html</strong>
-          </a>
-          <span style="color: #9ca3af;"> — esm.sh CDN import test with <code style="background: #2d3748; padding: 2px 6px; border-radius: 3px; color: #e94560;">?bundle</code> flag</span>
-        </li>
-      </ul>
+    <p>
+      This page is the browser test suite for Nagini. The programmatic tests start
+      on load and take a few minutes. <code>run_tests.py</code> drives this page
+      headless and reads the hidden <code>#test-results-json</code> element once
+      the run completes.
+    </p>
+
+    <nav class="hub">
+      <div class="hub-section">
+        <h2>Test suite (this page)</h2>
+        <ul>
+          <li><a href="#programmatic-tests">Programmatic tests</a>: automated checks for every class of the API, results in the table below.</li>
+          <li><a href="#interactive-tests">Interactive tests</a>: manual <code>input()</code>, matplotlib and Brython turtle demos.</li>
+        </ul>
+      </div>
+      <div class="hub-section">
+        <h2>Demo pages</h2>
+        <ul>
+          <li><a href="examples/index.html">examples/</a>: showcase of the Nagini API with editable, runnable snippets.</li>
+          <li><a href="executions/index.html">executions/</a>: one runnable example per execution flow, with the matching integration code and flow diagram.</li>
+          <li><a href="lycee/index.html">lycee/</a>: French high-school maths algorithms as runnable programs.</li>
+          <li><a href="dataeng/index.html">dataeng/</a>: data engineering snippets (Python, SQL, streams); includes <a href="dataeng/api-live/index.html">api-live/</a>, FastAPI served in the browser.</li>
+          <li><a href="arcade/index.html">arcade/</a>: data engineer challenges and a sprint mode.</li>
+          <li><a href="atelier/index.html">atelier/</a>: theme workshop for daisyUI and CodeMirror.</li>
+          <li><a href="atelier_rg2a/index.html">atelier_rg2a/</a>: RGAA contrast workshop on the same stack.</li>
+        </ul>
+      </div>
+      <div class="hub-section">
+        <h2>Legacy and local Pyodide pages</h2>
+        <ul>
+          <li><a href="legacy/full_local.html">legacy/full_local.html</a>: full local Pyodide (Capacitor/iOS offline mode); requires the untracked <code>pyodide-local/</code> folder at the repo root.</li>
+          <li><a href="legacy/full_local_needed_for_app.html">legacy/full_local_needed_for_app.html</a>: minimal local bundle (about 18 MB, SymPy and Pydantic only); requires the untracked <code>pyodide-local-needed-for-app/</code> folder.</li>
+          <li><a href="legacy/v0.0.26.html">legacy/v0.0.26.html</a>: esm.sh CDN import check pinned on v0.0.26, with the <code>?bundle</code> flag.</li>
+        </ul>
+      </div>
+      <div class="hub-section">
+        <h2>Documentation</h2>
+        <ul>
+          <li><a href="../docs/execution-flows.md">docs/execution-flows.md</a>: step-by-step ASCII diagrams of every execution flow.</li>
+          <li><a href="../docs/architecture.md">docs/architecture.md</a>: system map, from host page to worker to build chain.</li>
+          <li><a href="../README.md">README.md</a>: project overview, quick start and pinned CDN URLs.</li>
+        </ul>
+      </div>
     </nav>
 
-    <h2>Programmatic tests</h2>
+    <h2 id="programmatic-tests">Programmatic tests</h2>
     <h3>Status</h3>
     <table>
       <thead>
@@ -593,20 +633,6 @@
             Data visualization workflow: multiple <code>matplotlib</code> figures, statistical analysis
           </td>
           <td id="status-integration-2" class="test-status-pending">⏳</td>
-        </tr>
-        <tr>
-          <td>2️⃣-bis</td>
-          <td>
-            <code>PyodideIntegration</code>
-          </td>
-          <td>
-            <code>testBokehCaptureWorkflow()</code>
-            <br />
-            Bokeh capture test: verify <code>bokeh</code> figures are captured as JSON without rendering
-            <br />
-            Tests the capture system works without BokehJS libraries loaded
-          </td>
-          <td id="status-integration-2bis" class="test-status-pending">⏳</td>
         </tr>
         <tr>
           <td>3️⃣</td>
@@ -1079,7 +1105,7 @@
       We could use a separate Manager but tests are already long enough ro run.
     </div>
 
-    <h2>Interactive tests</h2>
+    <h2 id="interactive-tests">Interactive tests</h2>
 
     <h3>Input (with Pyodide)</h3>
 

@@ -167,7 +167,7 @@ window.updateTestStatus = function(testId, status, error = null) {
 async function runAllTests() {
     console.log("Starting Nagini Test Suite\n");
 
-    const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy", "bokeh"];
+    const packages = ["sympy", "pydantic", "strictyaml", "matplotlib", "numpy"];
     const micropipPackages = ["antlr4-python3-runtime"];
     const pyodideWorkerPath = "../src/pyodide/worker/worker-dist.js"; // Use relative path
     // Local Pyodide path for CDN Config test 3 (requires Pyodide to be downloaded to this location)
@@ -222,7 +222,6 @@ async function runAllTests() {
         // Integration Tests
         { id: 'status-integration-1', desc: "1️⃣ complex input data scenarios", func: () => PyodideIntegrationTests.testComplexInputData(manager).then(() => window.updateTestStatus('status-integration-1', 'pass')) },
         { id: 'status-integration-2', desc: "2️⃣ data visualization workflow", func: () => PyodideIntegrationTests.testDataVisualizationWorkflow(manager).then(() => window.updateTestStatus('status-integration-2', 'pass')) },
-        { id: 'status-integration-2bis', desc: "2️⃣-bis bokeh capture workflow", func: () => PyodideIntegrationTests.testBokehCaptureWorkflow(manager).then(() => window.updateTestStatus('status-integration-2bis', 'pass')) },
         { id: 'status-integration-3', desc: "3️⃣ filesystem and import workflow", func: () => PyodideIntegrationTests.testFileSystemAndImportWorkflow(manager).then(() => window.updateTestStatus('status-integration-3', 'pass')) },
         { id: 'status-integration-4', desc: "4️⃣ mixed execution scenarios", func: () => PyodideIntegrationTests.testMixedExecutionScenarios(manager).then(() => window.updateTestStatus('status-integration-4', 'pass')) },
         { id: 'status-integration-5', desc: "5️⃣ advanced matplotlib workflow", func: () => PyodideIntegrationTests.testAdvancedMatplotlibWorkflow(manager).then(() => window.updateTestStatus('status-integration-5', 'pass')) },

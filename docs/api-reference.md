@@ -889,7 +889,7 @@ so overlapping executions cannot clobber each other.</p>
 | [time] | <code>number</code> | <p>Execution time in milliseconds</p> |
 | [stdout] | <code>string</code> | <p>Standard output</p> |
 | [stderr] | <code>string</code> | <p>Standard error</p> |
-| [missive] | <code>Object</code> \| <code>null</code> | <p>Structured data from Python</p> |
+| [missive] | <code>string</code> \| <code>null</code> | <p>Missive as a JSON string from Python</p> |
 | [error] | <code>Object</code> \| <code>null</code> | <p>Execution error object</p> |
 | [result] | <code>any</code> | <p>Filesystem operation result</p> |
 
@@ -905,7 +905,8 @@ so overlapping executions cannot clobber each other.</p>
 | time | <code>number</code> | <p>Execution time in milliseconds</p> |
 | stdout | <code>string</code> | <p>Standard output from Python execution</p> |
 | stderr | <code>string</code> | <p>Standard error from Python execution</p> |
-| missive | <code>Object</code> \| <code>null</code> | <p>Structured JSON data from Python</p> |
+| missive | <code>string</code> \| <code>null</code> | <p>Missive as a JSON string (parse on the consumer side)</p> |
+| [figures] | <code>Array.&lt;string&gt;</code> | <p>Base64 encoded matplotlib figures (executeAsync result only, not stored in history)</p> |
 | error | <code>Object</code> \| <code>null</code> | <p>JavaScript execution error object</p> |
 | timestamp | <code>string</code> | <p>ISO timestamp of execution</p> |
 | [executedWithNamespace] | <code>boolean</code> | <p>Whether execution used namespace</p> |
@@ -922,9 +923,8 @@ so overlapping executions cannot clobber each other.</p>
 | time | <code>number</code> | <p>Execution time in milliseconds</p> |
 | stdout | <code>string</code> | <p>Standard output from Python execution</p> |
 | stderr | <code>string</code> | <p>Standard error from Python execution</p> |
-| missive | <code>Object</code> \| <code>null</code> | <p>Structured JSON data from Python</p> |
+| missive | <code>string</code> \| <code>null</code> | <p>Missive as a JSON string (parse on the consumer side)</p> |
 | figures | <code>Array.&lt;string&gt;</code> | <p>Base64 encoded matplotlib figures</p> |
-| bokeh_figures | <code>Array.&lt;string&gt;</code> | <p>JSON strings of Bokeh figures</p> |
 | error | <code>Object</code> \| <code>null</code> | <p>JavaScript execution error object</p> |
 | timestamp | <code>string</code> | <p>ISO timestamp of execution</p> |
 | [executedWithNamespace] | <code>boolean</code> | <p>Whether execution used namespace</p> |

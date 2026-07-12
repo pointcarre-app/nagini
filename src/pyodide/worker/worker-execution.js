@@ -20,13 +20,13 @@ export async function handleExecute(data, workerState) {
 
   const { code, filename, namespace, id } = data;
   const start = Date.now();
-  let stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [], error = null;
+  let stdout = "", stderr = "", missive = null, figures = [], error = null;
 
   try {
     // Transform code for async execution if needed
     const result = transformCodeForExecution(code, workerState);
 
-    workerState.pyodide.runPython("reset_captures()");
+    workerState.captureSystem.reset_captures();
 
     // Always execute through runPythonAsync: it handles synchronous code
     // identically and enables top-level await in any user code (asyncio,
@@ -42,27 +42,32 @@ export async function handleExecute(data, workerState) {
       await workerState.pyodide.runPythonAsync(result.code);
     }
 
-    ({ stdout, stderr, missive, figures, bokeh_figures } = captureOutputs(workerState.pyodide));
+    ({ stdout, stderr, missive, figures } = captureOutputs(workerState));
 
   } catch (err) {
     error = { name: err.name || "PythonError", message: err.message || "Unknown execution error" };
-    ({ stdout, stderr, figures, bokeh_figures } = captureOutputs(workerState.pyodide, true));
+    ({ stdout, stderr, figures } = captureOutputs(workerState, true));
+  }
+
+  // Default-namespace runs persist their globals, so a rebinding of the
+  // exposed builtins (missive, input) outlives this execution: warn once
+  if (namespace === undefined) {
+    warnShadowedBuiltins(workerState, filename);
   }
 
   // 🐍 POST EXECUTION RESULTS (always logged with snake emoji)
   console.log("🐍 Worker execution result:", {
     filename,
     stdout: stdout.length + " chars",
-    stderr: stderr.length + " chars", 
+    stderr: stderr.length + " chars",
     missive,
     figures: figures.length + " figures",
-    bokeh_figures: bokeh_figures.length + " bokeh figures",
     error,
     time: (Date.now() - start) + "ms"
   });
-  
+
   postResult({
-    id, filename, stdout, stderr, missive, figures, bokeh_figures, error,
+    id, filename, stdout, stderr, missive, figures, error,
     time: Date.now() - start,
     executedWithNamespace: namespace !== undefined
   });
@@ -81,8 +86,9 @@ export function transformCodeForExecution(code, workerState) {
   const needsAsync = /(?<![\w.])input\s*\(/.test(code);
 
   if (needsAsync) {
-    // Transform the code using Python transformation
-    const transformedCode = workerState.pyodide.runPython(`transform_code_for_execution(${JSON.stringify(code)})`);
+    // Transform the code using the Python transformation, called through the
+    // module reference (immune to user code rebinding the name)
+    const transformedCode = workerState.codeTransformation.transform_code_for_execution(code);
     return { code: transformedCode, needsAsync: true };
   } else {
     // Return original code as-is
@@ -91,22 +97,25 @@ export function transformCodeForExecution(code, workerState) {
 }
 
 /**
- * Capture Python outputs (stdout, stderr, missive, figures, bokeh_figures)
- * Retrieves execution outputs from Python runtime
+ * Capture Python outputs (stdout, stderr, missive, figures)
+ * Retrieves execution outputs through the capture_system module reference,
+ * never by name lookup in the interpreter globals: user code rebinding
+ * get_stdout, get_missive or json cannot corrupt the capture
  *
- * @param {PyodideAPI} pyodide - Pyodide instance
+ * @param {WorkerState} workerState - Current worker state object
  * @param {boolean} [isErrorCase=false] - Whether this is capturing after an error
- * @returns {CapturedOutputs} Object containing stdout, stderr, missive, figures, and bokeh_figures
+ * @returns {CapturedOutputs} Object containing stdout, stderr, missive, and figures
  */
-export function captureOutputs(pyodide, isErrorCase = false) {
-  let stdout = "", stderr = "", missive = null, figures = [], bokeh_figures = [];
+export function captureOutputs(workerState, isErrorCase = false) {
+  const capture = workerState.captureSystem;
+  let stdout = "", stderr = "", missive = null, figures = [];
 
   try {
-    stdout = pyodide.runPython("get_stdout()") || "";
-    stderr = pyodide.runPython("get_stderr()") || "";
+    stdout = capture.get_stdout() || "";
+    stderr = capture.get_stderr() || "";
 
     if (!isErrorCase) {
-      const missiveJson = pyodide.runPython("get_missive()");
+      const missiveJson = capture.get_missive();
       if (missiveJson) {
         // Keep as string - get_missive() already returns JSON string via json.dumps()
         missive = missiveJson;
@@ -114,26 +123,15 @@ export function captureOutputs(pyodide, isErrorCase = false) {
 
       // Capture matplotlib figures
       try {
-        const figuresResult = pyodide.runPython("get_figures()");
+        const figuresResult = capture.get_figures();
         if (figuresResult && figuresResult.toJs) {
           figures = figuresResult.toJs();
+          figuresResult.destroy();
         } else if (Array.isArray(figuresResult)) {
           figures = figuresResult;
         }
       } catch (e) {
         console.warn("🐍 Failed to capture matplotlib figures:", e.message);
-      }
-
-      // Capture Bokeh figures
-      try {
-        const bokehResult = pyodide.runPython("get_bokeh_figures()");
-        if (bokehResult && bokehResult.toJs) {
-          bokeh_figures = bokehResult.toJs();
-        } else if (Array.isArray(bokehResult)) {
-          bokeh_figures = bokehResult;
-        }
-      } catch (e) {
-        console.warn("🐍 Failed to capture Bokeh figures:", e.message);
       }
     }
   } catch (err) {
@@ -141,13 +139,43 @@ export function captureOutputs(pyodide, isErrorCase = false) {
     if (isErrorCase) stderr = `${PYODIDE_WORKER_CONFIG.MESSAGES.OUTPUT_RETRIEVAL_FAILED}: ${err.message}`;
   }
 
-  return { stdout, stderr, missive, figures, bokeh_figures };
+  return { stdout, stderr, missive, figures };
+}
+
+/**
+ * Warn (once per name per worker life) when user code rebound one of the
+ * exposed builtins (missive, input) in the persistent global namespace.
+ * A diagnostic must never fail an execution: errors are swallowed.
+ *
+ * @param {WorkerState} workerState - Current worker state object
+ * @param {string} filename - Execution that triggered the check
+ * @returns {void}
+ */
+function warnShadowedBuiltins(workerState, filename) {
+  try {
+    const result = workerState.captureSystem.detect_shadowed_names(workerState.pyodide.globals);
+    const shadowed = result.toJs ? result.toJs() : result;
+    if (result.destroy) result.destroy();
+
+    for (const name of shadowed) {
+      if (workerState.shadowWarnedNames.has(name)) continue;
+      workerState.shadowWarnedNames.add(name);
+      postWarning(
+        `The global name "${name}" was rebound by user code (${filename}) and now shadows ` +
+        `the built-in ${name}(). It persists across executions: later code cannot call the ` +
+        `built-in until the shadow is removed (del ${name}).`
+      );
+    }
+  } catch (e) {
+    // Diagnostic only: never let it affect the execution result
+  }
 }
 
 // Helper functions for messaging: the request id (when present) is echoed
 // back so the manager can correlate the response with its pending promise
 const postResult = (data) => self.postMessage({ type: "result", ...data });
 const postError = (message, id) => self.postMessage({ type: "error", id, message: `🐍 [Worker] ${message}` });
+const postWarning = (message) => self.postMessage({ type: "warning", message: `🐍 [Worker] ${message}` });
 
 /**
  * Validate that worker is properly initialized
@@ -175,9 +203,8 @@ function validateInitialized(workerState, id) {
  * @typedef {Object} CapturedOutputs
  * @property {string} stdout - Standard output
  * @property {string} stderr - Standard error
- * @property {Object|null} missive - Structured JSON data
+ * @property {string|null} missive - Missive as a JSON string (parse on the consumer side)
  * @property {string[]} figures - Base64 encoded matplotlib figures
- * @property {string[]} bokeh_figures - JSON strings of Bokeh figures
  */
 
 /**
@@ -185,4 +212,7 @@ function validateInitialized(workerState, id) {
  * @property {PyodideAPI|null} pyodide - Pyodide instance
  * @property {boolean} isInitialized - Whether Pyodide is initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names
+ * @property {Object|null} captureSystem - PyProxy of the capture_system module
+ * @property {Object|null} codeTransformation - PyProxy of the code_transformation module
+ * @property {Set<string>} shadowWarnedNames - Built-in names already reported as shadowed
  */

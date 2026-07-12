@@ -2,7 +2,7 @@
  * Example catalog for the Nagini showcase page.
  * Each entry: { id, tab, title, desc, code, timeoutMs? }
  * All examples run against one manager preloaded with numpy, matplotlib,
- * bokeh and sympy. Figures use a shared dark palette matching the page.
+ * sympy. Figures use a shared dark palette matching the page.
  */
 
 const BG = '#0a0a0c';
@@ -272,54 +272,6 @@ plt.tight_layout()
 plt.show()
 
 print(f"alive cells at t={gens[-1]}: {int(snapshots[-1].sum())}")`,
-  },
-
-  {
-    id: 'bokeh-phyllotaxis',
-    tab: 'BOKEH',
-    title: 'Interactive phyllotaxis',
-    desc: 'A real BokehJS figure shipped to the page: pan, zoom, hover the nodes.',
-    code: `# phyllotaxis :: 1400 nodes on the golden angle, fully interactive
-import numpy as np
-from bokeh.plotting import figure
-from bokeh.io import curdoc
-from bokeh.models import ColumnDataSource
-
-n = 1400
-i = np.arange(n)
-golden = np.pi * (3 - 5 ** 0.5)
-r = np.sqrt(i / n)
-x, y = r * np.cos(i * golden), r * np.sin(i * golden)
-
-def lerp(a, b, k):
-    return int(a + (b - a) * k)
-
-cols = ["#%02x%02x%02x" % (lerp(0x00, 0xff, k), lerp(0xe5, 0x2d, k),
-                           lerp(0xa0, 0x3f, k)) for k in i / (n - 1)]
-
-src = ColumnDataSource(dict(x=x, y=y, node=i, radius=np.round(r, 3),
-                            color=cols, size=4 + 9 * r))
-
-p = figure(width=620, height=620, match_aspect=True,
-           title="PHYLLOTAXIS :: 1400 NODES :: GOLDEN ANGLE",
-           tools="pan,wheel_zoom,box_zoom,reset,hover",
-           tooltips=[("node", "@node"), ("radius", "@radius")])
-p.scatter("x", "y", source=src, size="size", fill_color="color",
-          line_color=None, fill_alpha=0.85)
-
-p.background_fill_color = "${BG}"
-p.border_fill_color = "${BG}"
-p.grid.grid_line_color = "#16181d"
-p.axis.axis_line_color = "#16181d"
-p.axis.major_tick_line_color = "#16181d"
-p.axis.minor_tick_line_color = None
-p.axis.major_label_text_color = "#d7dde2"
-p.title.text_color = "#d7dde2"
-p.title.text_font = "monospace"
-p.outline_line_color = "#16181d"
-
-curdoc().add_root(p)
-print("interactive figure shipped, try the wheel zoom")`,
   },
 
   {

@@ -7,7 +7,7 @@ import { Nagini } from '../../src/nagini.js';
 import { EXAMPLES } from './examples.js';
 
 const WORKER_PATH = '../../src/pyodide/worker/worker-dist.js';
-const PACKAGES = ['numpy', 'matplotlib', 'bokeh', 'sympy'];
+const PACKAGES = ['numpy', 'matplotlib', 'sympy'];
 const DEFAULT_TIMEOUT_MS = 60000;
 
 const $ = (id) => document.getElementById(id);
@@ -68,8 +68,6 @@ function show(panelId) {
   $('out-placeholder').classList.add('hidden');
 }
 
-let bokehCounter = 0;
-
 function renderResult(result) {
   if (result.stdout && result.stdout.trim()) {
     $('out-stdout').textContent = result.stdout;
@@ -96,21 +94,6 @@ function renderResult(result) {
     }
     show('panel-figures');
   }
-  if (result.bokeh_figures && result.bokeh_figures.length && window.Bokeh) {
-    for (const json of result.bokeh_figures) {
-      const target = document.createElement('div');
-      target.id = 'bokeh-fig-' + (bokehCounter++);
-      target.className = 'bokeh-target';
-      figures.appendChild(target);
-      try {
-        window.Bokeh.embed.embed_item(JSON.parse(json), target.id);
-      } catch (e) {
-        target.textContent = 'bokeh embed failed: ' + e.message;
-      }
-    }
-    show('panel-figures');
-  }
-
   $('exec-time').textContent = result.time != null ? `${result.time} ms` : '';
 }
 

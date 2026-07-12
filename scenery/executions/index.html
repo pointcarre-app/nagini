@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="black">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NAGINI :: EXECUTIONS</title>
+  <link rel="icon" href="data:," />
+
+  <!-- daisyUI + Tailwind (browser builds, no bundler) -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.6.13/daisyui.css" integrity="sha384-hkKMOiqazvq4xU6ZxEd4U1lgelLdgECadr61tDrV5Es0ctC6GJd3mUTLhfNk4LVP" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.6.13/themes.css" integrity="sha384-tEjj/1a4PBkMPOwHeZ1f3t+Gr1KeXlbzwRt1OUKu43YqAop0yMvj73h53srsmKjP" rel="stylesheet" type="text/css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.2" integrity="sha384-shaHAtPgz0ulP7R/YmFe0nZtC8FxdhJPi73vwJQcADVttxvHLJBJt/pjzkLSbIvL" crossorigin="anonymous"></script>
+
+  <!-- fonts: sharp grotesque for UI, clean mono for code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" crossorigin="anonymous" />
+
+  <!-- CodeMirror 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" integrity="sha384-zaeBlB/vwYsDRSlFajnDd7OydJ0cWk+c2OWybl3eSUf6hW2EbhlCsQPqKr3gkznT" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" integrity="sha384-ZYmwuq4n2gOcNxMSiJ6jyTj+BbIrilr7p6dlq6q5nmSWKmsH9UU4K1qqjycMkfmR" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js" integrity="sha384-Xy+2exU6lBoT4OpUOtnQb+cUpn+nlJQEHvRobWVtwz6wIsw4oNoO7xyd/l8rYgMy" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js" integrity="sha384-g0o+WW9mdIxA7LaaCKTkRm0M5TVT+Bb4s9eocxPsI2G0Xm0POG9iD6G6qP1IIsfS" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --ink: #0a0a0c;
+      --panel: #0e0f12;
+      --line: #1d2025;
+      --fg: #d7dde2;
+      --muted: #6b7280;
+      --red: #ff2d3f;
+      --green: #00e5a0;
+      --cyan: #4cc9f0;
+    }
+
+    html, body {
+      background: var(--ink);
+      color: var(--fg);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* faint engineering grid, subtle on purpose */
+    body {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 32px 32px;
+      scroll-behavior: smooth;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* insurance: panel visibility must not depend on the CDN utility build */
+    .hidden { display: none !important; }
+
+    /* everything squared */
+    .btn, .badge, .panel, .CodeMirror, input { border-radius: 0 !important; }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+    .panel-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      padding: 0.45rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* status led */
+    .status-led {
+      width: 9px; height: 9px; display: inline-block; margin-right: 0.5rem;
+    }
+    .status-led.idle  { background: var(--muted); }
+    .status-led.boot  { background: var(--cyan); animation: pulse 1.2s infinite; }
+    .status-led.busy  { background: #ffb454;   animation: pulse 0.7s infinite; }
+    .status-led.ready { background: var(--green); }
+    .status-led.error { background: var(--red); }
+    @keyframes pulse { 50% { opacity: 0.25; } }
+
+    /* CodeMirror theme: nagini, auto-height variant */
+    .CodeMirror {
+      height: auto;
+      background: var(--panel);
+      color: var(--fg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+    .cm-s-nagini .CodeMirror-gutters { background: var(--panel); border-right: 1px solid var(--line); }
+    .cm-s-nagini .CodeMirror-linenumber { color: #3a3f46; }
+    .cm-s-nagini .CodeMirror-cursor { border-left: 2px solid var(--red); }
+    .cm-s-nagini .CodeMirror-selected { background: #1c2733; }
+    .cm-s-nagini span.cm-comment { color: #565f6b; font-style: italic; }
+    .cm-s-nagini span.cm-keyword { color: var(--red); }
+    .cm-s-nagini span.cm-builtin { color: var(--cyan); }
+    .cm-s-nagini span.cm-def { color: var(--cyan); }
+    .cm-s-nagini span.cm-number { color: #ffb454; }
+    .cm-s-nagini span.cm-string { color: var(--green); }
+    .cm-s-nagini span.cm-string-2 { color: var(--green); }
+    .cm-s-nagini span.cm-operator { color: #b0b8c0; }
+    .cm-s-nagini span.cm-variable { color: var(--fg); }
+    .cm-s-nagini span.cm-variable-2 { color: var(--fg); }
+    .cm-s-nagini span.cm-property { color: #b388ff; }
+    .CodeMirror-focused .CodeMirror-cursor { border-left: 2px solid var(--red); }
+    .js-snippet .CodeMirror { font-size: 11.5px; }
+
+    /* outputs */
+    .term {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding: 0.7rem;
+      max-height: 300px;
+      overflow: auto;
+      margin: 0;
+    }
+    .out-stdout { color: var(--green); }
+    .out-stderr, .out-error, .out-rejected { color: var(--red); }
+    .out-missive-raw, .out-missive-parsed { color: var(--cyan); }
+    .out-dump { color: var(--fg); }
+
+    .figure-img { width: 100%; height: auto; display: block; border-top: 1px solid var(--line); }
+    .figure-img:first-child { border-top: none; }
+
+    /* page layout */
+    .intro {
+      color: var(--muted);
+      font-size: 0.9rem;
+      max-width: 60rem;
+      margin: 0 0 1rem;
+    }
+    #anchor-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.1rem;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 0.55rem 0.9rem;
+      margin-bottom: 2.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+    }
+    #anchor-nav a { color: var(--muted); }
+    #anchor-nav a:hover { color: var(--red); }
+
+    .exec-section { margin-bottom: 4rem; scroll-margin-top: 1.5rem; }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+    .section-head h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .anchor-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--red);
+    }
+    .doc-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      margin-left: auto;
+    }
+    .doc-link:hover { color: var(--fg); }
+    .blurb { color: var(--muted); font-size: 0.85rem; max-width: 62rem; margin-bottom: 1rem; }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+    @media (min-width: 1280px) {
+      .section-grid {
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 0.9fr);
+      }
+      .col-demo { grid-column: 1; }
+      .col-js   { grid-column: 2; }
+      .col-flow { grid-column: 3; }
+    }
+
+    .demo-heading {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      color: var(--fg);
+      margin-bottom: 0.3rem;
+    }
+    .demo-note { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.6rem; }
+    .step { margin-bottom: 0.9rem; }
+
+    .runbar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      padding: 0.6rem 0;
+    }
+    .exec-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+    .btn-exec {
+      background: var(--red); border: none; color: #0a0a0c;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
+    }
+    .btn-exec:hover { background: #ff4757; }
+    .btn-exec:disabled { background: #2a2d33; color: #565f6b; }
+
+    .outputs { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .stdin-label { color: var(--red); }
+    .stdin-body {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0.75rem;
+    }
+    .stdin-prompt { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+    .stdin-field, .fs-field {
+      flex: 1;
+      min-width: 8rem;
+      background: var(--ink);
+      border: 1px solid var(--line);
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.5rem;
+    }
+    .stdin-field:focus, .fs-field:focus { outline: 1px solid var(--red); border-color: var(--red); }
+    .fs-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .flow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--cyan);
+      padding: 0.75rem;
+      margin: 0;
+      overflow-x: auto;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #23262c; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</head>
+<body>
+
+  <!-- top bar with the manager status strip -->
+  <header class="border-b" style="border-color: var(--line); background: rgba(10,10,12,0.92);">
+    <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-baseline gap-3">
+        <span class="mono font-bold text-lg tracking-widest">NAGINI<span style="color: var(--red);">://</span>EXECUTIONS</span>
+        <span class="mono text-xs" style="color: var(--muted);">every execution shape, live :: pyodide worker</span>
+      </div>
+      <div class="mono text-xs flex items-center">
+        <span id="status-led" class="status-led idle"></span>
+        <span id="status-text" style="color: var(--muted);">idle, boots on first run</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-screen-2xl mx-auto px-4 py-6">
+    <p class="intro">
+      Each typical Nagini execution case, shown three ways: a runnable editor,
+      the exact JS integration code this page calls, and a compact flow excerpt
+      linking to the step-by-step documentation. One shared Pyodide manager is
+      created on your first run (30 to 60 seconds, it also loads matplotlib)
+      and reused for everything below.
+    </p>
+
+    <nav id="anchor-nav" aria-label="sections">
+      <a href="#classic">#classic</a>
+      <a href="#error">#error</a>
+      <a href="#input">#input</a>
+      <a href="#matplotlib">#matplotlib</a>
+      <a href="#multiple">#multiple</a>
+      <a href="#missive">#missive</a>
+      <a href="#fs">#fs</a>
+    </nav>
+
+    <noscript>
+      <p class="mono text-sm" style="color: var(--red);">
+        This page needs JavaScript: it boots a Python interpreter in a web worker.
+      </p>
+    </noscript>
+
+    <div id="sections"></div>
+  </main>
+
+  <footer class="max-w-screen-2xl mx-auto px-4 py-6 mono text-xs" style="color: #3a3f46;">
+    nagini :: AGPL-3.0 :: everything on this page runs locally in your browser
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

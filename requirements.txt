@@ -1,5 +1,7 @@
-mkdocs
-mkdocs-material[imaging]
-pymdown-extensions
-mkdocs-git-revision-date-localized-plugin
-mkdocs-simple-hooks 
+# Docs build, verified on Python 3.12 (mkdocs 1.6 + python-markdown crash on the
+# raw lookbehind regex in older docs was fixed in docs/repo_reference/worker-execution.md)
+mkdocs==1.6.1
+mkdocs-material[imaging]==9.7.6
+pymdown-extensions==11.0.1
+mkdocs-git-revision-date-localized-plugin==1.5.3
+mkdocs-simple-hooks==0.1.5

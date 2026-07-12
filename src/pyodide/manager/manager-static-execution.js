@@ -75,9 +75,8 @@ export class PyodideManagerStaticExecutor {
  * @property {number} time - Execution time in milliseconds
  * @property {string} stdout - Standard output from Python execution
  * @property {string} stderr - Standard error from Python execution
- * @property {Object|null} missive - Structured JSON data from Python
+ * @property {string|null} missive - Missive as a JSON string (parse on the consumer side)
  * @property {string[]} figures - Base64 encoded matplotlib figures
- * @property {string[]} bokeh_figures - JSON strings of Bokeh figures
  * @property {Object|null} error - JavaScript execution error object
  * @property {string} timestamp - ISO timestamp of execution
  * @property {boolean} [executedWithNamespace] - Whether execution used namespace

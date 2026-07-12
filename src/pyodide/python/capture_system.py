@@ -68,17 +68,6 @@ def reset_captures() -> None:
     except Exception:
         pass  # Ignore other errors
 
-    # Clear any existing Bokeh figures (if bokeh is available)
-    try:
-        from bokeh.plotting import curdoc
-
-        doc = curdoc()
-        doc.clear()
-    except ImportError:
-        pass  # bokeh not available, skip
-    except Exception:
-        pass  # Ignore other errors
-
     # Activate capturing by replacing sys.stdout/stderr
     sys.stdout = _stdout_capturer
     sys.stderr = _stderr_capturer
@@ -154,56 +143,6 @@ def get_figures() -> list:
     return figures
 
 
-def get_bokeh_figures() -> list:
-    """
-    Capture Bokeh figures and return them as JSON for frontend rendering.
-
-    Returns:
-        list: List of JSON strings representing Bokeh figures
-    """
-    bokeh_figures = []
-
-    try:
-        # Import bokeh only when needed
-        from bokeh.plotting import curdoc
-        from bokeh.embed import json_item
-
-        # Get the current document
-        doc = curdoc()
-
-        # Check if there are any roots (plots/layouts) in the document
-        if doc.roots:
-            for root in doc.roots:
-                try:
-                    # Convert each root to JSON format
-                    item_json = json_item(root)
-                    bokeh_figures.append(json.dumps(item_json))
-                except Exception as e:
-                    print(f"Error converting Bokeh figure to JSON: {e}")
-
-        # Also check for figures that might not be in curdoc yet
-        # This handles cases where figures are created but not added to document
-        try:
-            from bokeh import plotting
-
-            # Check if there are any current plots
-            if hasattr(plotting, "curplot") and plotting.curplot() is not None:
-                plot = plotting.curplot()
-                if plot not in doc.roots:
-                    item_json = json_item(plot)
-                    bokeh_figures.append(json.dumps(item_json))
-        except:
-            pass  # curplot might not exist in all versions
-
-    except ImportError:
-        # bokeh not available, return empty list
-        pass
-    except Exception as e:
-        print(f"Error capturing Bokeh figures: {e}")
-
-    return bokeh_figures
-
-
 def missive(data):
     """Send structured data back to JavaScript (once per execution)
 
@@ -220,27 +159,19 @@ def missive(data):
     builtins._nagini_missive_already_called = True
 
 
-# Make the missive function available globally
+# Make the missive function available globally: it is the one name (with
+# input) deliberately exposed to user code. Everything else in this module
+# is reached by the worker through a module reference, never by name lookup
+# in the user's namespace.
 builtins.missive = missive
 
-# Legacy global variables for backward compatibility
-current_missive = builtins._nagini_current_missive
-missive_already_called = builtins._nagini_missive_already_called
 
-
-def debug_missive_system():
-    """Debug function to check the current state of the missive system"""
-    print(f"[DEBUG] _nagini_current_missive: {builtins._nagini_current_missive}")
-    print(f"[DEBUG] _nagini_missive_already_called: {builtins._nagini_missive_already_called}")
-    print(f"[DEBUG] get_missive() returns: {get_missive()}")
-    print(f"[DEBUG] missive function available: {hasattr(builtins, 'missive')}")
-    return {
-        "current_missive": builtins._nagini_current_missive,
-        "missive_already_called": builtins._nagini_missive_already_called,
-        "get_missive_result": get_missive(),
-        "missive_function_available": hasattr(builtins, "missive"),
-    }
-
-
-# Make debug function available globally too
-builtins.debug_missive_system = debug_missive_system
+def detect_shadowed_names(user_globals) -> list:
+    """Names rebound by user code in its globals, hiding the built-ins
+    Nagini exposes (missive, input). The worker calls this after each
+    default-namespace execution to emit a one-time warning."""
+    shadowed = []
+    for name in ("missive", "input"):
+        if name in user_globals and user_globals[name] is not getattr(builtins, name, None):
+            shadowed.append(name)
+    return shadowed

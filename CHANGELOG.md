@@ -1,3 +1,15 @@
+# v0.0.45
+
+- **Scenery reorganized**: stray pages moved to `scenery/legacy/` (`v0.0.26.html`, `full_local*.html`, the old critics JSON), the hub gained a navigation header (suite, demos, legacy, docs), `scenery/README.md` rewritten as the directory map; public page URLs unchanged
+- **Documentation**: new `docs/architecture.md` (full-system ASCII diagram, every box linked to its source) and `docs/execution-flows.md` (ASCII sequence diagrams for init, execute, input(), figures, state across executions, fs(), Brython, missive, each step linked to the code); links pinned to the release tag
+- **Executions page**: new `scenery/executions/` (daisyUI + CodeMirror), one runnable section per flow (#classic, #error, #input, #matplotlib, #multiple, #missive, #fs), each showing the exact integration JS and the matching flow excerpt
+- **Namespace hardening**: the worker writes the bundled Python modules to the virtual filesystem and imports them by reference (`pyodide.pyimport`), keeping PyProxy handles; the capture infrastructure is never resolved by name in the interpreter globals anymore, so user code rebinding `get_stdout`, `reset_captures` or `json` cannot corrupt result capture. `pyodide_init.py` is gone; the only names Nagini exposes to user code are the builtins `missive` and `input` (`builtins.json`, `debug_missive_system` and the raw execution of module sources into globals are removed)
+- **Shadow warning**: a default-namespace execution that rebinds `missive` or `input` in the persistent globals triggers a one-time `warning` message naming the offending file (surfaced as `console.warn` by the manager)
+- **Input setup**: the input bridge snippet runs in a throwaway namespace; `requestInput` and `input_handler` no longer leak into user globals
+- **Bokeh removed**: `get_bokeh_figures()`, the `bokeh_figures` result field, the showcase example, the root `examples/` and `notes/` folders and all related documentation; matplotlib capture is unchanged
+- **Documentation**: namespace isolation guarantees and limits (what a namespaced run still shares: builtins, `sys.modules`, filesystem, matplotlib state) documented in the execution flows, with a pointer from the README security section; broken Brython `createManager` examples in the README fixed (`filesToLoad` must be an array)
+- **Testing**: full suite green 63/63 (the bokeh capture test leaves with the feature)
+
 # v0.0.44
 
 - **Message protocol rework**: worker requests (execute, fs) now carry a correlation id echoed back in the response; a single permanent `onmessage` handler settles the matching promise. The handler-replacement pattern ("handler hijack") is gone from both `manager-static-execution.js` and `manager-fs.js`

@@ -28,29 +28,33 @@ export async function setupInputHandling(pyodide) {
     });
   };
 
-  // Set up the Python environment with input handling
-  await pyodide.runPythonAsync(`
-import asyncio
+  // Set up the Python environment with input handling. The snippet runs in
+  // a throwaway namespace: none of its names (sys, requestInput,
+  // input_handler) leak into the interpreter globals where user code runs,
+  // so they cannot be shadowed or rebound from user code. The handler keeps
+  // them alive through its own module-level closure.
+  const setupNamespace = pyodide.toPy({});
+  try {
+    await pyodide.runPythonAsync(`
 import builtins
 import sys
 from js import requestInput
 
-# Set up input handling
 async def input_handler(prompt=""):
     # Always print the prompt to stdout first
     if prompt:
         print(prompt, end="", flush=True)
-        sys.stdout.flush()  # Make sure it's flushed
+        sys.stdout.flush()
 
     # Request input from JavaScript
-    user_input = await requestInput(prompt)
-    return user_input
+    return await requestInput(prompt)
 
 # Replace the built-in input function with our async version
 builtins.input = input_handler
-
-print("🐍 Python: Input handling system set up successfully")
-`);
+`, { globals: setupNamespace });
+  } finally {
+    setupNamespace.destroy();
+  }
 }
 
 /**

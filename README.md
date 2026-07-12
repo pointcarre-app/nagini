@@ -6,13 +6,10 @@
 - **Visual Showcase (`scenery/examples`):** [https://pointcarre-app.github.io/nagini/scenery/examples/](https://pointcarre-app.github.io/nagini/scenery/examples/) - 12 visual examples (daisyUI + CodeMirror)
 - **High-School Maths Algorithms (`scenery/lycee`):** [https://pointcarre-app.github.io/nagini/scenery/lycee/](https://pointcarre-app.github.io/nagini/scenery/lycee/) - official French curriculum algorithms (seconde, première, terminale)
 - **Main Documentation (MkDocs):** [https://pointcarre-app.github.io/nagini/](https://pointcarre-app.github.io/nagini/)
+- **Architecture:** [https://pointcarre-app.github.io/nagini/architecture/](https://pointcarre-app.github.io/nagini/architecture/) - the whole system on one ASCII diagram, every box linked to its source file ([docs/architecture.md](docs/architecture.md))
+- **Execution flows:** [https://pointcarre-app.github.io/nagini/execution-flows/](https://pointcarre-app.github.io/nagini/execution-flows/) - step-by-step sequence diagrams for init, execute, input(), figures, state, fs(), Brython and missive ([docs/execution-flows.md](docs/execution-flows.md))
 - **API Reference:** [https://pointcarre-app.github.io/nagini/api-reference/](https://pointcarre-app.github.io/nagini/api-reference/)
 - **Repository Reference:** [https://pointcarre-app.github.io/nagini/repo_reference/](https://pointcarre-app.github.io/nagini/repo_reference/)
-
-**Interactive Bokeh Examples:**
-- **📊 Bokeh Interactive Demo:** [https://pointcarre-app.github.io/nagini/examples/bokeh-interactive.html](https://pointcarre-app.github.io/nagini/examples/bokeh-interactive.html) - Multiple plot types with pan/zoom/hover
-- **🎛️ Bokeh Bidirectional Widgets:** [https://pointcarre-app.github.io/nagini/examples/bokeh-interactive-widgets.html](https://pointcarre-app.github.io/nagini/examples/bokeh-interactive-widgets.html) - JavaScript controls updating Python plots
-- **🧪 Bokeh Test Example:** [https://pointcarre-app.github.io/nagini/examples/bokeh-test.html](https://pointcarre-app.github.io/nagini/examples/bokeh-test.html) - Simple implementation test
 
 **Python in the Browser via Pyodide WebAssembly**
 
@@ -62,7 +59,6 @@ environments.
 - **📦 Micropip Support** - Install packages from PyPI using micropip (Pyodide only)
 - **🎮 Interactive Input** - Natural `input()` support with queue/callbacks (Pyodide only)
 - **📊 Matplotlib Integration** - Automatic figure capture as base64 images (Pyodide only)
-- **📈 Bokeh Integration** - Interactive plot capture as JSON with full pan/zoom/hover (Pyodide only)
 - **🔗 Remote Module Loading** - Load Python modules from URLs with retry logic (Pyodide only)
 - **🎯 Namespace Isolation** - Complete execution isolation between runs
 - **💬 Structured Data Exchange** - "Missive" system for Python ↔ JavaScript communication
@@ -176,8 +172,8 @@ console.log(result.missive);  // {"solutions": ["-2", "2"]}
 const manager = await Nagini.createManager(
     'brython',      // Backend - no worker requirements
     [],             // Packages ignored (uses Brython stdlib only)
-    [],             // Files ignored
-    '',             // Init path ignored
+    [],             // Micropip packages ignored
+    [],             // Files to load (must be an array)
     ''              // Worker path ignored
 );
 
@@ -221,7 +217,7 @@ const manager = await Nagini.createManager(
     'brython',  // No worker requirements for Brython
     [],         // Only Brython stdlib available
     [],
-    '',         // Ignored for Brython
+    [],         // Files to load (must be an array)
     ''          // Ignored for Brython
 );
 ```
@@ -326,89 +322,6 @@ result.figures.forEach((base64, i) => {
 });
 ```
 
-## Bokeh Visualization
-
-Nagini supports capturing Bokeh plots as JSON for interactive visualization in the browser.
-
-### Basic Setup
-
-```javascript
-// 1. Load Bokeh packages in Pyodide
-const manager = await Nagini.createManager(
-    'pyodide',
-    ['numpy', 'bokeh'],  // Include bokeh in packages
-    [],
-    [],
-    './src/pyodide/worker/worker-dist.js'
-);
-
-// 2. Execute Bokeh code
-const result = await manager.executeAsync("bokeh_plot.py", `
-from bokeh.plotting import figure, curdoc
-from bokeh.models import HoverTool
-
-# Create plot
-p = figure(title="Interactive Plot", width=600, height=400)
-p.line([1, 2, 3, 4, 5], [2, 5, 3, 6, 4], line_width=2)
-
-# Add to document for capture
-curdoc().add_root(p)
-print("Bokeh plot created!")
-`);
-
-// Access captured Bokeh figures (as JSON strings)
-console.log(result.bokeh_figures);  // Array of JSON strings
-```
-
-### Rendering Bokeh Plots (Frontend Requirements)
-
-**⚠️ Important**: To render Bokeh plots interactively, you need to load BokehJS libraries in your HTML:
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- Required: BokehJS libraries for rendering -->
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.2.min.js"></script>
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.2.min.js"></script>
-</head>
-<body>
-    <div id="bokeh-plot"></div>
-    
-    <script type="module">
-        import { Nagini } from './src/nagini.js';
-        
-        // ... create manager and execute Bokeh code ...
-        
-        // Render the captured Bokeh plot
-        if (result.bokeh_figures && result.bokeh_figures.length > 0) {
-            const figureJson = JSON.parse(result.bokeh_figures[0]);
-            await Bokeh.embed.embed_item(figureJson, 'bokeh-plot');
-        }
-    </script>
-</body>
-</html>
-```
-
-### Key Differences: Matplotlib vs Bokeh
-
-| Feature | Matplotlib | Bokeh |
-|---------|------------|-------|
-| **Output Format** | Base64 PNG images | JSON objects |
-| **Interactivity** | Static images | Interactive plots (pan, zoom, hover) |
-| **Frontend Requirements** | None (uses `<img>` tags) | Requires BokehJS libraries |
-| **Capture Method** | `result.figures` (base64 strings) | `result.bokeh_figures` (JSON strings) |
-| **Display Method** | Set img.src to data URL | Use `Bokeh.embed.embed_item()` |
-
-### Complete Example with Bidirectional Interaction
-
-See `examples/bokeh-interactive-widgets.html` for a full example showing how to:
-- Create HTML controls that pass parameters to Python
-- Generate Bokeh plots based on those parameters
-- Render interactive visualizations
-- Update plots dynamically based on user input
-
 ## Remote Module Loading
 
 ```javascript
@@ -455,7 +368,7 @@ Main Thread                          Blob Web Worker (Cross-Origin Compatible)
 │  ├─ executeAsync    │ Blob Worker │  ├─ Python Env      │
 │  ├─ executeFile     │  Creation   │  ├─ Package Mgmt    │
 │  ├─ queueInput      │             │  ├─ Matplotlib      │
-│  ├─ fs()            │             │  ├─ Bokeh Capture   │
+│  ├─ fs()            │             │  ├─ Figure Capture  │
 │  └─ Input Callbacks │             │  ├─ File Loading    │
 │                     │             │  └─ WebAssembly     │
 └─────────────────────┘             └─────────────────────┘
@@ -470,13 +383,6 @@ Nagini automatically captures visualization outputs from Python execution:
 - **Process**: Saves plots to BytesIO → Base64 encoding → Returns as strings
 - **Output**: `result.figures` array containing base64 PNG images
 - **Display**: Direct embedding in `<img>` tags
-
-#### Bokeh Capture
-- **Method**: `get_bokeh_figures()` in `capture_system.py`
-- **Process**: Extracts from `curdoc()` → `json_item()` conversion → Returns as JSON strings
-- **Output**: `result.bokeh_figures` array containing JSON representations
-- **Display**: Requires BokehJS library and `Bokeh.embed.embed_item()`
-- **Note**: The worker bundle (`worker-dist.js`) must be rebuilt after modifying capture system
 
 ### Brython Backend (Main Thread Only)
 
@@ -515,8 +421,8 @@ const pyodideManager = await Nagini.createManager(
 const brythonManager = await Nagini.createManager(
     'brython', 
     [],      // Packages ignored
-    [],      // Files ignored  
-    '',      // Init path ignored
+    [],      // Micropip packages ignored
+    [],      // Files to load (must be an array)
     ''       // Worker path ignored
 );
 
@@ -692,39 +598,11 @@ The unified test suite covers all core features:
 
 ## Troubleshooting
 
-### Bokeh Plots Not Appearing
-
-1. **Check BokehJS Libraries**: Ensure you've loaded the required BokehJS scripts in your HTML:
-   ```html
-   <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
-   ```
-
-2. **Verify Package Loading**: Include 'bokeh' in the packages array when creating the manager:
-   ```javascript
-   const manager = await Nagini.createManager('pyodide', ['bokeh'], ...);
-   ```
-
-3. **Check Document Root**: Bokeh plots must be added to `curdoc()` to be captured:
-   ```python
-   from bokeh.plotting import curdoc
-   curdoc().add_root(plot)  # Required for capture
-   ```
-
-4. **Rebuild Worker Bundle**: After modifying capture system files, rebuild the worker:
-   ```bash
-   cd src/pyodide/worker
-   npm run build
-   ```
-
-### Empty bokeh_figures Array
-
-- Ensure plots are added to the document before execution ends
-- Check console for Python errors during plot creation
-- Verify Bokeh package version compatibility
-
 ## Security
 
 Nagini does not apply any sandboxing beyond what the browser and WebAssembly already provide. Python code runs with full access to the Pyodide environment (virtual filesystem, network requests via the browser, `js` module bridge to the page or worker scope). Do not treat Nagini as a security boundary for untrusted code.
+
+To keep runs from stepping on each other, pass the `namespace` parameter to `executeAsync`: assignments and rebindings then die with the run instead of persisting in the shared globals. The guarantees and the honest list of what a namespaced run can still affect (builtins, `sys.modules`, the virtual filesystem, matplotlib state) are documented in [docs/execution-flows.md](docs/execution-flows.md), section "State across executions". The capture infrastructure itself is called through module references held by the worker since init, so user code rebinding names like `get_stdout` or `json` cannot corrupt result capture; shadowing `missive` or `input` in the persistent globals triggers a one-time `warning` message.
 
 `ValidationUtils.checkDangerousPatterns` (in `src/utils/validation.js`) is an opt-in helper that scans code for known risky patterns. It is **not** applied automatically before execution: if you want it, call it yourself before passing code to `executeAsync`. It is a heuristic filter, not a sandbox, and can be bypassed.
 

@@ -14,7 +14,6 @@ import { PyodideFileLoader } from '../file-loader/file-loader.js';
 import captureSystemPy from '@python/capture_system.py';
 import codeTransformationPy from '@python/code_transformation.py';
 import pyodideUtilitiesPy from '@python/pyodide_utilities.py';
-import pyodideInitPy from '@python/pyodide_init.py';
 
 /**
  * Post error message to main thread
@@ -132,9 +131,11 @@ async function handleInit(data, workerState) {
     importScripts(`${cdnUrl}pyodide.js`);
     workerState.pyodide = await loadPyodide({ indexURL: cdnUrl });
 
-    // Using bundled Python modules
-
-    // Load bundled Python modules directly (no HTTP fetching needed!)
+    // Write the bundled Python modules to the filesystem and import them by
+    // reference. Nothing is executed in the interpreter's global namespace:
+    // user code cannot shadow or replace the capture infrastructure by
+    // rebinding names, it only sees the two builtins deliberately exposed
+    // (missive, input)
     const pythonModules = [
       { name: 'capture_system.py', content: captureSystemPy },
       { name: 'code_transformation.py', content: codeTransformationPy },
@@ -142,19 +143,16 @@ async function handleInit(data, workerState) {
     ];
 
     for (const module of pythonModules) {
-      try {
-        // Write to filesystem for potential imports
-        workerState.pyodide.FS.writeFile(module.name, module.content);
-        // Execute the module so it can be imported
-        workerState.pyodide.runPython(module.content);
-        // Module loaded successfully
-      } catch (error) {
-        console.warn(`Could not load bundled Python module ${module.name}:`, error.message);
-      }
+      workerState.pyodide.FS.writeFile(module.name, module.content);
     }
 
-    // Load main Python initialization script from bundle
-    workerState.pyodide.runPython(pyodideInitPy);
+    // Importing capture_system also installs builtins.missive
+    workerState.captureSystem = workerState.pyodide.pyimport('capture_system');
+    workerState.codeTransformation = workerState.pyodide.pyimport('code_transformation');
+    workerState.pyodideUtilities = workerState.pyodide.pyimport('pyodide_utilities');
+
+    // Activate output capture
+    workerState.captureSystem.reset_captures();
 
     // Set up input handling system
     await setupInputHandling(workerState.pyodide);
@@ -194,7 +192,7 @@ async function handleInit(data, workerState) {
 
     // Set up matplotlib if it was loaded
     try {
-      workerState.pyodide.runPython("setup_matplotlib()");
+      workerState.pyodideUtilities.setup_matplotlib();
     } catch (e) {
       // Matplotlib setup skipped (not available)
     }
@@ -217,6 +215,10 @@ export { handleMessage, handleInit, handleExecute, handleFSOperation, handleInpu
  * @property {boolean} isInitialized - Whether Pyodide is initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names
  * @property {Set<string>} micropipPackagesLoaded - Set of loaded micropip package names
+ * @property {Object|null} captureSystem - PyProxy of the capture_system module
+ * @property {Object|null} codeTransformation - PyProxy of the code_transformation module
+ * @property {Object|null} pyodideUtilities - PyProxy of the pyodide_utilities module
+ * @property {Set<string>} shadowWarnedNames - Built-in names already reported as shadowed
  */
 
 /**

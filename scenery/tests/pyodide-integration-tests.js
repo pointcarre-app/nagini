@@ -180,59 +180,6 @@ missive({"x_points": len(x), "datasets": 3, "figures": 2, "mean_y1": mean_y1, "s
         }
     }
 
-    static async testBokehCaptureWorkflow(manager) {
-        const testName = "bokeh capture workflow";
-        logTestStart("PyodideIntegration", testName);
-
-        try {
-            // Simplified test - just verify the bokeh_figures property exists in results
-            // We don't actually need bokeh installed to test the capture system
-            const result = await manager.executeAsync(
-                "bokeh_capture_test",
-                `# Simple test that doesn't require bokeh to be installed
-# Just verify the capture system returns bokeh_figures property
-print("Testing bokeh capture system...")
-
-# Create some dummy data that would normally come from bokeh
-dummy_bokeh_json = '{"target_id": "test", "root_id": "1001", "doc": {"title": "Test"}}'
-
-print("Would capture bokeh figures here if bokeh was installed")
-print("The bokeh_figures property should still exist in the result")
-
-# Send test data via missive
-missive({
-    "test": "bokeh_capture_system",
-    "bokeh_available": False,
-    "capture_system_ready": True
-})`
-            );
-
-            // The main test: verify bokeh_figures property exists in the result
-            assert(!result.error, "Test execution should not have errors");
-            assertContains(result.stdout, "Testing bokeh capture system", "Should run test");
-            
-            // This is the key test - bokeh_figures should always be present in results
-            assert(result.bokeh_figures !== undefined, "Result should have bokeh_figures property");
-            assert(Array.isArray(result.bokeh_figures), "bokeh_figures should be an array");
-            
-            // For this test, we expect an empty array since we didn't actually create bokeh figures
-            console.log(`bokeh_figures property exists: ${result.bokeh_figures !== undefined}`);
-            console.log(`bokeh_figures is array: ${Array.isArray(result.bokeh_figures)}`);
-            console.log(`bokeh_figures length: ${result.bokeh_figures.length}`);
-            
-            // Parse and verify missive data
-            const missiveData = JSON.parse(result.missive);
-            assertEquals(missiveData.test, "bokeh_capture_system", "Should have test identifier");
-            assertEquals(missiveData.capture_system_ready, true, "Capture system should be ready");
-
-            logTestPass(testName);
-            return { result, testName };
-        } catch (error) {
-            logTestFail(testName, error);
-            throw error;
-        }
-    }
-
     static async testFileSystemAndImportWorkflow(manager) {
         const testName = "filesystem and import workflow";
         logTestStart("PyodideIntegration", testName);
