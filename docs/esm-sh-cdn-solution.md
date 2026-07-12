@@ -35,7 +35,7 @@ esm.sh acts as a smart proxy that:
 ```html
 <script type="module">
     // One-line import - esm.sh handles all dependencies automatically
-    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
     const Nagini = naginiModule.Nagini;
     
     // Use Nagini normally
@@ -44,7 +44,7 @@ esm.sh acts as a smart proxy that:
         ['numpy'],
         [],
         [],
-        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/worker/worker-dist.js'
+        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js'
     );
     
     await Nagini.waitForReady(manager);
@@ -72,7 +72,7 @@ esm.sh acts as a smart proxy that:
             try {
                 // Load Nagini from esm.sh CDN
                 console.log('Loading Nagini from esm.sh...');
-                const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+                const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
                 const Nagini = naginiModule.Nagini;
                 
                 // Create Pyodide manager
@@ -81,7 +81,7 @@ esm.sh acts as a smart proxy that:
                     ['numpy', 'matplotlib'],
                     [],
                     [],
-                    'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/worker/worker-dist.js'
+                    'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js'
                 );
                 
                 console.log('Waiting for Nagini to be ready...');
@@ -156,7 +156,7 @@ class NaginiService {
         
         try {
             // Load from esm.sh
-            const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+            const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
             this.nagini = naginiModule.Nagini;
             
             // Create manager
@@ -165,7 +165,7 @@ class NaginiService {
                 ['pandas', 'numpy', 'matplotlib'],
                 ['scikit-learn'],
                 [],
-                'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/worker/worker-dist.js'
+                'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js'
             );
             
             await this.nagini.waitForReady(this.manager);
@@ -233,7 +233,7 @@ print(f"Circle area with radius {radius}: {area:.2f}")
         // Initialize Nagini when app starts
         document.addEventListener('deviceready', async function() {
             try {
-                const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+                const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
                 const Nagini = naginiModule.Nagini;
                 
                 // Use Brython for faster mobile startup
@@ -287,10 +287,10 @@ print(f"Circle area with radius {radius}: {area:.2f}")
 
 ```javascript
 // Pin to specific Nagini version
-const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
 
 // Pin to specific esm.sh features
-const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js?bundle');
+const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js?bundle');
 ```
 
 ### Error Handling
@@ -299,14 +299,14 @@ const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.
 async function loadNaginiWithFallback() {
     try {
         // Try esm.sh first
-        const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+        const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
         return naginiModule.Nagini;
     } catch (esmError) {
         console.warn('esm.sh failed, falling back to UMD bundle:', esmError);
         
         try {
             // Fallback to UMD bundle
-            const umdModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.umd.js');
+            const umdModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.umd.js');
             return umdModule.default || umdModule;
         } catch (umdError) {
             console.error('All CDN methods failed:', { esmError, umdError });
@@ -320,7 +320,7 @@ async function loadNaginiWithFallback() {
 
 ```javascript
 // Preload for better performance
-const naginiPromise = import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+const naginiPromise = import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
 
 // Use when needed
 async function usePython() {
@@ -351,7 +351,7 @@ async function usePython() {
 
 ```javascript
 // Enable verbose logging
-const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js?dev');
+const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js?dev');
 ```
 
 ## Migration Guide
@@ -360,25 +360,25 @@ const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.
 
 **Before (broken):**
 ```javascript
-const module = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+const module = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
 ```
 
 **After (working):**
 ```javascript
-const module = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+const module = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
 ```
 
 ### From UMD Bundle
 
 **Before:**
 ```javascript
-const module = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.umd.js');
+const module = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.umd.js');
 const Nagini = module.default || module;
 ```
 
 **After:**
 ```javascript
-const module = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+const module = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
 const Nagini = module.Nagini;
 ```
 

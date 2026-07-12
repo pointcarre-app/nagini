@@ -22,7 +22,7 @@ When loaded from a CDN like jsDelivr, these relative imports fail because:
 
 ```html
 <script type="module">
-    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
     const Nagini = naginiModule.Nagini;
 </script>
 ```
@@ -35,7 +35,7 @@ When loaded from a CDN like jsDelivr, these relative imports fail because:
 
 ```html
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.umd.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.umd.js');
     const Nagini = naginiModule.default || naginiModule;
 </script>
 ```
@@ -50,14 +50,14 @@ When loaded from a CDN like jsDelivr, these relative imports fail because:
 <script type="importmap">
 {
   "imports": {
-    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/utils/validation.js",
-    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/manager/manager.js",
-    "./brython/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/brython/manager/manager.js"
+    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/utils/validation.js",
+    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/manager/manager.js",
+    "./brython/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/brython/manager/manager.js"
   }
 }
 </script>
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
     const Nagini = naginiModule.Nagini;
 </script>
 ```
@@ -78,7 +78,7 @@ When loaded from a CDN like jsDelivr, these relative imports fail because:
     <script type="module">
         try {
             // Load Nagini from esm.sh
-            const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.29/src/nagini.js');
+            const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
             const Nagini = naginiModule.Nagini;
             
             // Create manager
@@ -87,7 +87,7 @@ When loaded from a CDN like jsDelivr, these relative imports fail because:
                 ['numpy'],
                 [],
                 [],
-                'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/pyodide/worker/worker-dist.js'
+                'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js'
             );
             
             await Nagini.waitForReady(manager);
@@ -126,7 +126,7 @@ When loaded from a CDN like jsDelivr, these relative imports fail because:
     <script type="module">
         try {
             // UMD bundle works well in Cordova
-            const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.29/src/nagini.umd.js');
+            const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.umd.js');
             const Nagini = naginiModule.default || naginiModule;
             
             // Create Brython manager for lightweight execution

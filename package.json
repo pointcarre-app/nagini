@@ -1,6 +1,6 @@
 {
   "name": "pca-nagini",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "description": "Python in the browser via Pyodide/Brython with a worker-based architecture",
   "type": "module",
   "license": "AGPL-3.0-only",

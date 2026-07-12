@@ -1,3 +1,11 @@
+# v0.0.50
+
+- **Fix**: `provideInput` and `queueInput` accept the empty string. A bare Enter is a legal answer to `input()` (Python returns `""`); previously the manager threw `input cannot be empty` before anything reached the worker. The scenery input demos were hardened accordingly (value sent before the field is hidden, submission wrapped in try/catch)
+- **npm**: the package is named `pca-nagini` (`nagini` is taken on the registry by an unrelated 2023 package). CDN and git consumption are unaffected
+- **New demo page**: `scenery/sympy/` with six sections (symbolic algebra, equation solving, figures, input, strictyaml parsing)
+- **Documentation**: factual cross-check of docs against src (snapshot cache key description, `captureOutputs` signature, missing `timeoutMs` parameters, worker-snapshot in the build-chain diagram, file-loader retries, SharedArrayBuffer dependency removed from the input flow); the MkDocs `site_name` hook appends the tag as plain text instead of HTML that leaked into `title`/`aria-label` attributes
+- **Testing**: new suite test proving a queued empty string resolves `input()` with `""`; full suite green 66/66
+
 # v0.0.49
 
 - **Native synchronous input() via JSPI**: when the browser supports WebAssembly stack switching (Chrome 137+ and other evergreen engines), `builtins.input` blocks natively on the host response through `pyodide.ffi.run_sync` and user code runs completely unmodified: `input()` now also works inside sync functions, lambdas and class bodies, places the AST rewrite could never reach. Without JSPI the previous behavior remains as fallback (async handler plus AST rewrite of genuine `input()` calls)
