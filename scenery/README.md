@@ -9,7 +9,7 @@ cd scenery
 env/bin/python run_tests.py
 ```
 
-Needs network access (Pyodide download, jsDelivr and esm.sh tests) and takes about 4 minutes for 65 tests. On success it prints `All programmatic scenery tests passed!` and exits 0. Pass a file path as first argument to save the JSON report there.
+Needs network access (Pyodide download, jsDelivr and esm.sh tests) and takes about 4 minutes for 66 tests. On success it prints `All programmatic scenery tests passed!` and exits 0. Pass a file path as first argument to save the JSON report there.
 
 If `env/` does not exist yet (it is untracked), create it first:
 

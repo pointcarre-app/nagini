@@ -597,25 +597,28 @@ Call this when the manager is no longer needed to prevent memory leaks</p>
 
 ### PyodideManagerInput.provideInput(manager, input) ⇒ <code>void</code>
 <p>Provide input to Python code that's waiting for input</p>
+<p>The empty string is a valid answer: Python's input() returns &quot;&quot; when
+the user just presses Enter, so only the type is enforced here.</p>
 
 **Kind**: static method of [<code>PyodideManagerInput</code>](#PyodideManagerInput)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | manager | [<code>PyodideManager</code>](#PyodideManager) | <p>Manager instance</p> |
-| input | <code>string</code> | <p>The input value to provide</p> |
+| input | <code>string</code> | <p>The input value to provide (may be empty)</p> |
 
 <a name="PyodideManagerInput.queueInput"></a>
 
 ### PyodideManagerInput.queueInput(manager, input) ⇒ <code>void</code>
 <p>Queue input for later provision when Python code requests it</p>
+<p>The empty string is a valid answer, same as in provideInput.</p>
 
 **Kind**: static method of [<code>PyodideManagerInput</code>](#PyodideManagerInput)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | manager | [<code>PyodideManager</code>](#PyodideManager) | <p>Manager instance</p> |
-| input | <code>string</code> | <p>The input value to queue</p> |
+| input | <code>string</code> | <p>The input value to queue (may be empty)</p> |
 
 <a name="PyodideManagerInput.setInputCallback"></a>
 

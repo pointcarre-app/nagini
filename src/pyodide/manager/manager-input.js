@@ -34,12 +34,15 @@ export class PyodideManagerInput {
   /**
    * Provide input to Python code that's waiting for input
    *
+   * The empty string is a valid answer: Python's input() returns "" when
+   * the user just presses Enter, so only the type is enforced here.
+   *
    * @param {PyodideManager} manager - Manager instance
-   * @param {string} input - The input value to provide
+   * @param {string} input - The input value to provide (may be empty)
    * @returns {void}
    */
   static provideInput(manager, input) {
-    ValidationUtils.validateString(input, 'input', 'PyodideManagerInput');
+    ValidationUtils.validateString(input, 'input', 'PyodideManagerInput', true);
 
     if (!manager.isReady) {
       console.error("Manager not ready");
@@ -58,12 +61,14 @@ export class PyodideManagerInput {
   /**
    * Queue input for later provision when Python code requests it
    *
+   * The empty string is a valid answer, same as in provideInput.
+   *
    * @param {PyodideManager} manager - Manager instance
-   * @param {string} input - The input value to queue
+   * @param {string} input - The input value to queue (may be empty)
    * @returns {void}
    */
   static queueInput(manager, input) {
-    ValidationUtils.validateString(input, 'input', 'PyodideManagerInput');
+    ValidationUtils.validateString(input, 'input', 'PyodideManagerInput', true);
 
     manager.inputState.inputQueue.push(input);
   }

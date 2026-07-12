@@ -227,6 +227,31 @@ missive({"input_system": "ready", "name": name})`
             throw error;
         }
     }
+    static async testEmptyInputAnswer(manager) {
+        const testName = "empty input answer";
+        logTestStart("PyodideManager", testName);
+        try {
+            // A bare Enter is a legal answer: input() must return "" and the
+            // queue path (which calls provideInput("")) must not throw
+            manager.queueInput("");
+            const result = await manager.executeAsync(
+                "test_empty_input.py",
+                `answer = input("press enter: ")
+print(f"got:[{answer}]")
+missive({"empty_ok": answer == ""})`
+            );
+            assert(!result.error, "Empty input answer should not error");
+            assertContains(result.stdout, "got:[]", "input() should return the empty string");
+            const missiveData = JSON.parse(result.missive);
+            assert(missiveData.empty_ok === true, "Python should see exactly the empty string");
+
+            logTestPass(testName);
+            return { result, testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
     static async test16MatplotlibFigureCapture(manager) {
         const testName = "matplotlib figure capture";
         logTestStart("PyodideManager", testName);

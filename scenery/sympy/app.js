@@ -115,9 +115,14 @@ function hideStdin(ctx) {
 
 function submitStdin(ctx) {
   if (!manager) return;
-  const value = ctx.stdin.field.value;
-  hideStdin(ctx);
-  manager.provideInput(value);
+  try {
+    // empty string is a valid answer: input() returns "" on a bare Enter
+    manager.provideInput(ctx.stdin.field.value);
+    hideStdin(ctx);
+  } catch (e) {
+    // keep the field visible so the run is not stranded waiting
+    console.error('provideInput failed:', e);
+  }
 }
 
 // ------------------------------------------------------------- rendering
