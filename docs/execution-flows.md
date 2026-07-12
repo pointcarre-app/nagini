@@ -1,7 +1,7 @@
 # Execution flows
 
 All source links on this page are pinned to the released tag
-[v0.0.46](https://github.com/pointcarre-app/nagini/tree/v0.0.46), so they stay
+[v0.0.47](https://github.com/pointcarre-app/nagini/tree/v0.0.47), so they stay
 valid whatever happens on `main`. They are re-pinned at each release, the same
 habit as the CDN URLs in the README.
 
