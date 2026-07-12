@@ -28,6 +28,7 @@ env/bin/pip install -r requirements.txt
 | `examples/` | Showcase of the Nagini API with editable, runnable snippets. |
 | `executions/` | One runnable example per execution flow, with the integration code and the matching diagram from `../docs/execution-flows.md`. Boots its shared manager with `snapshotCache: true`. |
 | `experiments-snapshot/` | Benchmark spike behind the snapshot cache: measures fresh boot against IndexedDB snapshot restore. Not part of the suite. |
+| `sympy/` | Computer algebra showcase on the executions-page template: symbolic manipulation, exact calculus, equation solving, a symbolic-to-figure pipeline, input() feeding sympify, and strictyaml (installed from PyPI through micropip) validating YAML that sympy then solves. |
 | `lycee/` | French high-school maths algorithms as runnable programs. |
 | `dataeng/` | Data engineering snippets (Python, SQL, streams). `dataeng/api-live/` serves a FastAPI app in the browser through a service worker. |
 | `arcade/` | Data engineer challenges and a sprint mode. |
