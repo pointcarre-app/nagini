@@ -14,8 +14,11 @@ def on_config(config):
             .strip()
         )
 
-        # Append the tag to the site name with a custom badge
-        config["site_name"] += f' <span class="version-badge">{tag}</span>'
+        # Append the tag as plain text. No HTML here: Material copies
+        # site_name into title and aria-label attributes, where a double
+        # quote closes the attribute early and the leftover markup leaks
+        # into the page as visible text.
+        config["site_name"] += f" {tag}"
     except Exception as e:
         print(f"Warning: Could not get git tag, using default site name. Error: {e}")
 
