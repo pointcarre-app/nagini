@@ -1,7 +1,7 @@
 # Execution flows
 
 All source links on this page are pinned to the released tag
-[v0.0.48](https://github.com/pointcarre-app/nagini/tree/v0.0.48), so they stay
+[v0.0.49](https://github.com/pointcarre-app/nagini/tree/v0.0.49), so they stay
 valid whatever happens on `main`. They are re-pinned at each release, the same
 habit as the CDN URLs in the README.
 
@@ -97,43 +97,43 @@ component. Column key:
 Step by step:
 
 1. `Nagini.createManager("pyodide", packages, micropipPackages, filesToLoad, workerPath, options)`
-   ([nagini.js#L28](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L28))
+   ([nagini.js#L28](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L28))
    checks the backend name with `validateBackend`
-   ([validation.js#L208](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/utils/validation.js#L208)),
+   ([validation.js#L208](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/utils/validation.js#L208)),
    requires a `worker-dist.js` path
-   ([nagini.js#L34-L45](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L34-L45)),
+   ([nagini.js#L34-L45](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L34-L45)),
    dynamically imports the backend
-   ([nagini.js#L47](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L47))
+   ([nagini.js#L47](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L47))
    and constructs the manager
-   ([nagini.js#L52](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L53)).
+   ([nagini.js#L52](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L53)).
 2. The `PyodideManager` constructor
-   ([manager.js#L51](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L52))
+   ([manager.js#L51](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L52))
    validates every argument
-   ([manager.js#L55-L63](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L56-L64)),
+   ([manager.js#L55-L63](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L56-L64)),
    creates the `readyPromise`
-   ([manager.js#L107-L116](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L117-L126))
+   ([manager.js#L107-L116](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L123-L132))
    and calls `initWorker`
-   ([manager.js#L119](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L129)).
+   ([manager.js#L119](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L135)).
 3. `initWorker`
-   ([manager.js#L149](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L159))
+   ([manager.js#L149](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L165))
    fetches the bundle and wraps it in a blob URL with `createBlobWorkerUrl`
-   ([createBlobWorker.js#L15](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/utils/createBlobWorker.js#L15)),
+   ([createBlobWorker.js#L15](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/utils/createBlobWorker.js#L15)),
    creates the `Worker`
-   ([manager.js#L157](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L167)),
+   ([manager.js#L157](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L173)),
    installs `_dispatchMessage` as the permanent `onmessage` handler
-   ([manager.js#L159](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L171))
+   ([manager.js#L159](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L177))
    and posts the `init` message
-   ([manager.js#L177-L183](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L189-L196)).
+   ([manager.js#L177-L183](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L195-L202)).
 4. In the worker, `self.onmessage`
-   ([worker.js#L48](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker.js#L60))
+   ([worker.js#L48](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker.js#L64))
    routes through `handleMessage`
-   ([worker-handlers.js#L85](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L85))
+   ([worker-handlers.js#L85](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L85))
    to `handleInit`
-   ([worker-handlers.js#L117](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L117)):
+   ([worker-handlers.js#L117](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L117)):
    a dynamic `import` of `pyodide.mjs` followed by `loadPyodide`
-   ([worker-handlers.js#L131-L136](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L132-L169))
+   ([worker-handlers.js#L131-L136](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L132-L169))
    pulls the runtime from the CDN pinned in
-   ([worker-config.js#L17](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-config.js#L17))
+   ([worker-config.js#L17](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-config.js#L17))
    or from `options.pyodideCdnUrl`.
 5. The three bundled Python modules are written to the virtual filesystem,
    then imported by reference with `pyodide.pyimport`
@@ -158,17 +158,17 @@ Step by step:
    nor `input_handler` appears in the globals user code runs in.
 7. `filesToLoad` entries are downloaded into the virtual filesystem by
    `PyodideFileLoader.loadFiles`
-   ([worker-handlers.js#L163-L171](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L215-L223),
-   [file-loader.js#L58](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/file-loader/file-loader.js#L58)),
+   ([worker-handlers.js#L163-L171](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L216-L224),
+   [file-loader.js#L58](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/file-loader/file-loader.js#L58)),
    with three retries and exponential backoff.
 8. Packages install through `loadPackages`
-   ([worker-handlers.js#L174](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L226),
-   [worker-fs.js#L73](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-fs.js#L73)),
+   ([worker-handlers.js#L174](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L227),
+   [worker-fs.js#L73](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-fs.js#L73)),
    micropip packages through `micropip.install`
-   ([worker-handlers.js#L177-L193](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L229-L245));
+   ([worker-handlers.js#L177-L193](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L230-L246));
    both skip what this worker already loaded. Then `setup_matplotlib()`
-   ([worker-handlers.js#L195](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L249),
-   [pyodide_utilities.py#L7](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/pyodide_utilities.py#L7))
+   ([worker-handlers.js#L195](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L250),
+   [pyodide_utilities.py#L7](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/pyodide_utilities.py#L7))
    switches matplotlib to the `agg` backend if the package is present.
 9. The worker posts `{type: "ready", snapshotRestored, inputMode}`
    ([worker-handlers.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-handlers.js)).
@@ -176,13 +176,13 @@ Step by step:
    `manager.snapshotRestored` and `manager.inputMode`
    ([manager.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/manager/manager.js))
    and resolves the `readyPromise`
-   ([manager.js#L217-L219](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L230-L232)).
+   ([manager.js#L217-L219](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L236-L238)).
 10. `Nagini.waitForReady`
-    ([nagini.js#L74](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L75))
+    ([nagini.js#L74](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L75))
     races the `readyPromise` against a timeout
-    ([nagini.js#L78-L86](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L79-L87));
+    ([nagini.js#L78-L86](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L79-L87));
     managers without a `readyPromise` fall back to polling `isReady`
-    ([nagini.js#L93-L99](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L94-L100)).
+    ([nagini.js#L93-L99](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L94-L100)).
 
 ### The snapshot cache branch
 
@@ -246,23 +246,23 @@ host page can tell which path ran; `inputMode` travels on the same message.
 
 Failure path: a bad worker path, a CDN failure or a crash during init produces
 an error message without id
-([worker-handlers.js#L205-L209](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L257-L261)).
+([worker-handlers.js#L205-L209](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L258-L262)).
 The manager then rejects the `readyPromise` with the original cause and fails
 every pending request
-([manager.js#L221-L227](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L234-L240)),
+([manager.js#L221-L227](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L240-L246)),
 so `waitForReady` surfaces the real error instead of a generic timeout.
 
 Integration snippet:
 
 ```javascript
-import { Nagini } from "https://esm.sh/gh/pointcarre-app/nagini@v0.0.48/src/nagini.js";
+import { Nagini } from "https://esm.sh/gh/pointcarre-app/nagini@v0.0.49/src/nagini.js";
 
 const manager = await Nagini.createManager(
     "pyodide",
     ["numpy"],        // packages resolved by pyodide.loadPackage
     [],               // micropip packages (PyPI)
     [],               // filesToLoad: [{ url, path }]
-    "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.48/src/pyodide/worker/worker-dist.js"
+    "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.49/src/pyodide/worker/worker-dist.js"
 );
 await Nagini.waitForReady(manager, 60000);
 ```
@@ -327,29 +327,29 @@ creates and initializes the shared manager
 Step by step:
 
 1. `manager.executeAsync(filename, code, namespace?, timeoutMs = 30000)`
-   ([manager.js#L397](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L409))
+   ([manager.js#L397](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L416))
    chains the run on `executionChain`
-   ([manager.js#L417-L418](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L429-L430)),
+   ([manager.js#L417-L418](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L436-L437)),
    so two calls on the same manager never interleave.
 2. When its turn comes, `run()` validates the parameters
-   ([manager.js#L403](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L415),
-   [validation.js#L170](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/utils/validation.js#L170))
+   ([manager.js#L403](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L422),
+   [validation.js#L170](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/utils/validation.js#L170))
    and throws if the manager is not ready
-   ([manager.js#L404-L406](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L416-L418)).
+   ([manager.js#L404-L406](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L423-L425)).
 3. `_postRequest`
-   ([manager.js#L266](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L278))
+   ([manager.js#L266](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L284))
    allocates a correlation id
-   ([manager.js#L268](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L280)),
+   ([manager.js#L268](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L286)),
    stores `{resolve, reject, timeoutId}` in `_pendingRequests`
-   ([manager.js#L275](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L287)),
+   ([manager.js#L275](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L293)),
    arms the timeout
-   ([manager.js#L269-L273](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L281-L285))
+   ([manager.js#L269-L273](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L287-L291))
    and posts `{type: "execute", filename, code, id}`
-   ([manager.js#L278](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L290)).
+   ([manager.js#L278](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L296)).
    `namespace` is added to the message only when provided
-   ([manager.js#L407-L410](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L419-L422)).
+   ([manager.js#L407-L410](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L426-L429)).
 4. In the worker, `handleExecute`
-   ([worker-execution.js#L18](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L18))
+   ([worker-execution.js#L18](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L18))
    first calls `transformCodeForExecution`
    ([worker-execution.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-execution.js)).
    In jspi input mode the code always passes through unchanged; in async
@@ -357,48 +357,48 @@ Step by step:
    passes through unchanged too (both modes are detailed in the
    [input() flow](#input-pausing-python-for-the-host)).
 5. `reset_captures()`
-   ([worker-execution.js#L29](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L29),
-   [capture_system.py#L49](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L49))
+   ([worker-execution.js#L29](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L29),
+   [capture_system.py#L49](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L49))
    truncates the buffers, clears the missive slot, closes leftover figures and
    swaps `sys.stdout` and `sys.stderr` for capture streams
-   ([capture_system.py#L83-L84](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L72-L73)).
+   ([capture_system.py#L83-L84](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L72-L73)).
 6. The code always runs through `runPythonAsync`
-   ([worker-execution.js#L42](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L42)):
+   ([worker-execution.js#L42](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L42)):
    it handles synchronous code identically and enables top-level `await`.
 7. `captureOutputs`
-   ([worker-execution.js#L109](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L109))
+   ([worker-execution.js#L109](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L110))
    pulls `get_stdout()` and `get_stderr()`
-   ([capture_system.py#L87-L94](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L76-L83)),
+   ([capture_system.py#L87-L94](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L76-L83)),
    `get_missive()`
-   ([capture_system.py#L103](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L92)),
+   ([capture_system.py#L103](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L92)),
    and `get_figures()`, all through the `capture_system` module reference
    (user code rebinding those names cannot affect capture). On a Python
    exception,
    `handleExecute` catches it and builds `{name, message}`
-   ([worker-execution.js#L47-L50](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L47-L56));
+   ([worker-execution.js#L47-L50](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L47-L56));
    stdout and stderr are still captured, so `result.stderr` carries the full
    traceback.
 8. `postResult` sends one `result` message echoing the request id
-   ([worker-execution.js#L64-L68](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L69-L73),
-   [worker-execution.js#L149](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L176)).
+   ([worker-execution.js#L64-L68](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L69-L73),
+   [worker-execution.js#L149](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L177)).
 9. Back in the manager, `_dispatchMessage`
-   ([manager.js#L200](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L213))
+   ([manager.js#L200](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L219))
    finds the pending entry by id and clears its timeout
-   ([manager.js#L201-L207](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L214-L220)),
+   ([manager.js#L201-L207](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L220-L226)),
    lets `handleMessage` push the history entry (figures excluded, capped at 50
    entries,
-   [manager.js#L348-L361](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L360-L373)
+   [manager.js#L348-L361](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L367-L380)
    and
-   [manager.js#L37](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L37)),
+   [manager.js#L37](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L37)),
    then resolves the promise with the full result
-   ([manager.js#L231-L244](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L244-L256)).
+   ([manager.js#L231-L244](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L250-L262)).
 
 A Python error does not reject the promise: the promise resolves and the
 result carries `error` plus the traceback in `stderr`. Rejections are reserved
 for infrastructure problems (timeout, crash, invalid arguments). On current
 Pyodide the caught error often has an empty `.message`, so `error.message`
 falls back to `"Unknown execution error"`
-([worker-execution.js#L48](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L48));
+([worker-execution.js#L48](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L48));
 the real diagnostic is in `result.stderr`.
 
 Integration snippet:
@@ -493,9 +493,9 @@ Step by step:
    `ready` message reports the choice and the manager exposes it as
    `manager.inputMode` (`'jspi'` or `'async'`).
 2. Before or during the run, the host queues answers with `queueInput`
-   ([manager-input.js#L65](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L65))
+   ([manager-input.js#L65](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-input.js#L65))
    or registers a callback with `setInputCallback`
-   ([manager-input.js#L78](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L78)).
+   ([manager-input.js#L78](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-input.js#L78)).
 3. The execute message reaches the worker as usual. In jspi mode
    `transformCodeForExecution`
    ([worker-execution.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-execution.js))
@@ -508,27 +508,27 @@ Step by step:
    code needs no transformation, and why `input()` also works inside sync
    functions, lambdas and class bodies in this mode.
 5. `requestInput`
-   ([worker-input.js#L18-L29](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L18-L29))
+   ([worker-input.js#L18-L29](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-input.js#L26-L37))
    posts `{type: "input_required", prompt}` and parks the resolver in
    `self.pendingInputResolver`. Python is now suspended and the worker
    event loop is free.
 6. On the manager side, `handleInputMessage`
-   ([manager-input.js#L113-L135](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L113-L135))
+   ([manager-input.js#L113-L135](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-input.js#L113-L135))
    records the prompt, then either dequeues a queued answer and calls
    `provideInput` immediately
-   ([manager-input.js#L120-L122](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L120-L122)),
+   ([manager-input.js#L120-L122](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-input.js#L120-L122)),
    or invokes the registered callback with the prompt
-   ([manager-input.js#L124-L127](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L124-L127)).
+   ([manager-input.js#L124-L127](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-input.js#L124-L127)).
 7. `provideInput`
-   ([manager-input.js#L41-L56](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L41-L56))
+   ([manager-input.js#L41-L56](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-input.js#L41-L56))
    posts `{type: "input_response", input}` to the worker.
 8. `handleInputResponse`
-   ([worker-input.js#L64-L81](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L68-L85))
+   ([worker-input.js#L64-L81](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-input.js#L96-L113))
    calls `pendingInputResolver(input)`: the promise resolves, `run_sync`
    returns the string, Python resumes. The rest of the run finishes like
    the classic flow, and the `result` message resets the input state
-   ([manager.js#L333](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L346),
-   [manager-input.js#L143](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L143)).
+   ([manager.js#L333](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L353),
+   [manager-input.js#L143](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-input.js#L143)).
 
 ### The async fallback: rewriting input() on the AST
 
@@ -566,14 +566,14 @@ The regex gate in `transformCodeForExecution`
 ([worker-execution.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-execution.js))
 only fires in this mode, and only on a genuine `input(` call. When it
 matches, `transform_code_for_execution`
-([code_transformation.py#L86](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L86))
+([code_transformation.py#L86](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/code_transformation.py#L86))
 parses the code and lets `_AwaitInputTransformer`
-([code_transformation.py#L15](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L15))
+([code_transformation.py#L15](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/code_transformation.py#L15))
 wrap every call to the builtin `input` in `ast.Await`
-([code_transformation.py#L54-L60](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L54-L60)).
+([code_transformation.py#L54-L60](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/code_transformation.py#L54-L60)).
 Names like `my_input()` or `obj.input()` are untouched, and calls inside
 sync `def`, `lambda` or class bodies are left alone
-([code_transformation.py#L25-L52](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L25-L52)),
+([code_transformation.py#L25-L52](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/code_transformation.py#L25-L52)),
 where `await` would be a syntax error: in this mode `input()` inside such
 scopes stays unsupported, which is exactly the limitation jspi mode
 removes. The code is not wrapped in a function, so top-level variables
@@ -581,7 +581,7 @@ keep landing in the globals.
 
 In both modes the execution timeout keeps ticking while Python waits for a
 human. Raise `timeoutMs` for interactive code
-([manager.js#L397](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L409)).
+([manager.js#L397](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L416)).
 If it fires while no input was provided, the promise rejects and any late
 result is discarded by id, but the paused execution keeps waiting inside
 the worker: that execution only finishes if a `provideInput` arrives later.
@@ -646,27 +646,27 @@ See it live:
 Step by step:
 
 1. At init time, `setup_matplotlib`
-   ([pyodide_utilities.py#L7](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/pyodide_utilities.py#L7))
+   ([pyodide_utilities.py#L7](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/pyodide_utilities.py#L7))
    switched matplotlib to the `agg` backend
-   ([pyodide_utilities.py#L14](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/pyodide_utilities.py#L14))
+   ([pyodide_utilities.py#L14](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/pyodide_utilities.py#L14))
    and made `plt.show()` a no-op
-   ([pyodide_utilities.py#L23-L26](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/pyodide_utilities.py#L23-L26)),
+   ([pyodide_utilities.py#L23-L26](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/pyodide_utilities.py#L23-L26)),
    so nothing tries to open a window inside the worker.
 2. `reset_captures()` closes figures left over from a previous run
-   ([capture_system.py#L61-L69](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L61-L69)).
+   ([capture_system.py#L61-L69](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L61-L69)).
 3. The user code draws. Figures stay open in the pyplot registry until capture.
 4. After the run, `captureOutputs` calls `get_figures()`
-   ([worker-execution.js#L126](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L126),
-   [capture_system.py#L123](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L112)):
+   ([worker-execution.js#L126](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L127),
+   [capture_system.py#L123](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L112)):
    each open figure is saved to a `BytesIO` as PNG, base64-encoded and closed
-   ([capture_system.py#L139-L145](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L128-L134)).
+   ([capture_system.py#L139-L145](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L128-L134)).
 5. The Python list converts to a JavaScript array with `.toJs()`
    ([worker-execution.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-execution.js))
    and travels in the `result` message. `result.figures` holds base64 PNG
    strings.
 6. The resolved result keeps the figures, but the `executionHistory` entry
    drops them to avoid piling base64 payloads in memory
-   ([manager.js#L345-L356](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L357-L368)).
+   ([manager.js#L345-L356](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L364-L375)).
 
 Rendering: a matplotlib figure needs nothing but an `img` tag.
 
@@ -728,11 +728,11 @@ That single fact explains everything in this section.
 
 Without a namespace, `runPythonAsync` executes in the interpreter's shared
 globals
-([worker-execution.js#L42](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L42)),
+([worker-execution.js#L42](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L42)),
 so module-level names survive from one `executeAsync` to the next. `input()`
 support keeps this property: in jspi mode the code is not touched at all, and
 the async-mode rewrite never wraps it in a function
-([code_transformation.py#L1-L11](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L1-L11)).
+([code_transformation.py#L1-L11](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/code_transformation.py#L1-L11)).
 
 ### The namespace parameter isolates a run
 
@@ -762,13 +762,13 @@ the async-mode rewrite never wraps it in a function
 ```
 
 Passing a plain object as third argument sends it with the message
-([manager.js#L407-L410](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L419-L422)).
+([manager.js#L407-L410](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L426-L429)).
 The worker converts it with `pyodide.toPy`
-([worker-execution.js#L35](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L35))
+([worker-execution.js#L35](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L35))
 and runs the code with that dict as its globals
-([worker-execution.js#L37](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L37)),
+([worker-execution.js#L37](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L37)),
 destroying the proxy afterwards
-([worker-execution.js#L39](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L39)).
+([worker-execution.js#L39](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L39)).
 Names created there never touch the shared globals.
 
 #### What namespace isolation protects against, and what it does not
@@ -833,11 +833,11 @@ domain: `destroy()` and recreate, or run several managers side by side.
 ```
 
 `executionChain`
-([manager.js#L417-L418](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L429-L430))
+([manager.js#L417-L418](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L436-L437))
 serializes the calls: the second `execute` message is only posted after the
 first settles (resolve or reject). Ids stay distinct, so responses can never
 be attributed to the wrong caller
-([manager.js#L397-L402](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L409-L414)).
+([manager.js#L397-L402](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L416-L421)).
 
 ### Timeout, and the late result
 
@@ -870,15 +870,15 @@ be attributed to the wrong caller
 ```
 
 The timeout armed by `_postRequest`
-([manager.js#L269-L273](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L281-L285))
+([manager.js#L269-L273](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L287-L291))
 deletes the pending entry and rejects the promise. Two honest caveats. First,
 the timeout does not interrupt Python: the worker keeps computing until the
 run finishes, and only then processes the next queued message. Second, when
 the late `result` finally arrives, `_dispatchMessage` finds no pending entry
 for its id, so the settled promise is untouched
-([manager.js#L200-L207](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L213-L220)),
+([manager.js#L200-L207](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L219-L226)),
 but the entry is still logged and pushed to `executionHistory`
-([manager.js#L332-L362](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L345-L374)).
+([manager.js#L332-L362](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L352-L381)).
 
 ### Worker crash rejects everything
 
@@ -903,14 +903,14 @@ but the entry is still logged and pushed to `executionHistory`
 ```
 
 `worker.onerror` and `worker.onmessageerror`
-([manager.js#L163-L174](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L175-L186))
+([manager.js#L163-L174](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L181-L192))
 synthesize an error message without id. `_dispatchMessage` treats it as fatal:
 `_readyReject(error)` and `_failAllPending(error)`
-([manager.js#L221-L227](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L234-L240),
-[manager.js#L294-L300](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L306-L312)),
+([manager.js#L221-L227](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L240-L246),
+[manager.js#L294-L300](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L312-L318)),
 so every in-flight `executeAsync` and `fs` promise rejects with the cause
 instead of hanging. `destroy()`
-([manager.js#L437-L458](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L449-L470))
+([manager.js#L437-L458](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L456-L477))
 does the same on purpose, then terminates the worker and revokes the blob URL.
 
 Integration snippet:
@@ -978,31 +978,31 @@ See it live:
 Step by step:
 
 1. `manager.fs(operation, params, timeoutMs = 10000)`
-   ([manager.js#L373](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L385))
+   ([manager.js#L373](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L392))
    delegates to `PyodideManagerFS.fs`
-   ([manager-fs.js#L32](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-fs.js#L32)),
+   ([manager-fs.js#L32](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-fs.js#L32)),
    which validates and forwards to `_sendFSCommand`
-   ([manager-fs.js#L136-L146](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-fs.js#L136-L146)).
+   ([manager-fs.js#L136-L146](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-fs.js#L136-L146)).
 2. The request goes through the same `_postRequest` machinery as executions,
    with its own timeout parameter (default 10 seconds, distinct from the
    30-second execution default). The message is
    `{type: "fs_operation", operation, ...params, id}`
-   ([manager-fs.js#L141-L145](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-fs.js#L141-L145)).
+   ([manager-fs.js#L141-L145](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-fs.js#L141-L145)).
 3. In the worker, `handleFSOperation`
-   ([worker-fs.js#L17](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-fs.js#L17))
+   ([worker-fs.js#L17](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-fs.js#L17))
    runs `executeFS`
-   ([worker-fs.js#L40-L63](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-fs.js#L40-L63)):
+   ([worker-fs.js#L40-L63](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-fs.js#L40-L63)):
    `writeFile` (creating the parent directory when needed), `readFile`,
    `mkdir`, `exists` via `FS.analyzePath`, `listdir` via `FS.readdir`.
 4. The worker answers `{type: "fs_result", id, result}`
-   ([worker-fs.js#L25](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-fs.js#L25))
+   ([worker-fs.js#L25](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-fs.js#L25))
    or `{type: "fs_error", id, error}`
-   ([worker-fs.js#L96](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-fs.js#L96)).
+   ([worker-fs.js#L96](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-fs.js#L96)).
 5. The manager resolves or rejects the pending promise
-   ([manager.js#L245-L248](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L257-L260)),
+   ([manager.js#L245-L248](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L263-L266)),
    and `fs()` unwraps the payload per operation: `readFile` returns the
    content, `exists` the boolean, `listdir` the file list
-   ([manager-fs.js#L38-L50](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-fs.js#L38-L50)).
+   ([manager-fs.js#L38-L50](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager-fs.js#L38-L50)).
 
 `fs()` requests are not serialized on `executionChain`. They are correlated by
 id like everything else, so one can be issued while an execution is in flight;
@@ -1077,49 +1077,49 @@ See it live:
 Step by step:
 
 1. `createManager("brython", ...)` constructs a `BrythonManager`
-   ([nagini.js#L53-L56](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L54-L57),
-   [manager.js#L12](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/manager.js#L12)).
+   ([nagini.js#L53-L56](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/nagini.js#L54-L57),
+   [manager.js#L12](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/manager.js#L12)).
    The constructor starts `loadBrython(brythonOptions)`
-   ([manager.js#L29-L36](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/manager.js#L29-L36)),
+   ([manager.js#L29-L36](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/manager.js#L29-L36)),
    which injects `brython.js` then `brython_stdlib.js` as script tags and
    calls `window.brython({debug: 0})`
-   ([loader.js#L14-L35](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/loader.js#L14-L35)).
+   ([loader.js#L14-L35](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/loader.js#L14-L35)).
    Default library paths are `/src/brython/lib/...`, overridable with
    `brythonJsPath` and `brythonStdlibPath`
-   ([loader.js#L5-L8](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/loader.js#L5-L8)).
+   ([loader.js#L5-L8](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/loader.js#L5-L8)).
 2. `executeAsync(filename, code, namespace, timeoutMs)`
-   ([manager.js#L40](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/manager.js#L40))
+   ([manager.js#L40](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/manager.js#L40))
    awaits readiness, validates, then delegates to the executor's
    `executeAsync`
-   ([executor.js#L11](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L11)).
+   ([executor.js#L11](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L11)).
    The `namespace` argument is accepted for API parity but not used.
 3. The executor builds a unique suffix for a script element id and a
    per-execution `window` callback name
-   ([executor.js#L15-L17](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L15-L17)),
+   ([executor.js#L15-L17](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L15-L17)),
    and arms the timeout
-   ([executor.js#L26-L29](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L26-L29)).
+   ([executor.js#L26-L29](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L26-L29)).
 4. The user code is embedded as a JSON string inside a wrapper that captures
    stdout and stderr, defines a once-per-run `missive`, and runs
    `exec(compile(code, filename, "exec"), globals())` inside `try/except`
-   ([executor.js#L41-L88](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L41-L88)).
+   ([executor.js#L41-L88](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L41-L88)).
 5. The wrapper is appended to the page as a `<script type="text/python3">`
    and `window.brython()` transpiles and runs it in the main thread
-   ([executor.js#L90-L97](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L90-L97)).
+   ([executor.js#L90-L97](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L90-L97)).
 6. Whether the code succeeds or raises, the wrapper calls the window callback
    with `{stdout, stderr, missive, error}`
-   ([executor.js#L82-L87](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L82-L87)).
+   ([executor.js#L82-L87](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L82-L87)).
    The callback clears the timeout, removes the script element, deletes
    itself, then resolves with the payload and the elapsed time
-   ([executor.js#L31-L35](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L31-L35)).
+   ([executor.js#L31-L35](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L31-L35)).
 7. `BrythonManager.executeAsync` maps the payload to the shared
    `ExecutionResult` shape (`figures` is always empty, turtle draws straight
    to a canvas) and pushes it to `executionHistory`
-   ([manager.js#L49-L61](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/manager.js#L49-L61)).
+   ([manager.js#L49-L61](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/manager.js#L49-L61)).
 8. On timeout, `cleanup()` removes the script element and the callback, and
    the promise rejects
-   ([executor.js#L19-L29](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L19-L29)).
+   ([executor.js#L19-L29](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L19-L29)).
    `input()`, packages and `fs()` are not supported on this backend
-   ([manager.js#L69-L77](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/manager.js#L69-L77)).
+   ([manager.js#L69-L77](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/manager.js#L69-L77)).
 
 No worker here: the code runs in the page with full DOM access. Only run
 first-party, trusted code through this backend (see the security section of
@@ -1183,14 +1183,14 @@ Pyodide backend: the missive travels as a JSON string.
 ```
 
 `missive(data)`
-([capture_system.py#L207-L224](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L146-L166))
+([capture_system.py#L207-L224](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L146-L166))
 guards against a second call
-([capture_system.py#L213-L218](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L152-L157))
+([capture_system.py#L213-L218](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L152-L157))
 and stores the dict. After the run, `get_missive()` serializes it with
 `json.dumps`
-([capture_system.py#L103-L120](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L92-L109))
+([capture_system.py#L103-L120](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/python/capture_system.py#L92-L109))
 and the worker keeps it as a string on purpose
-([worker-execution.js#L108-L113](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L117-L122)).
+([worker-execution.js#L108-L113](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-execution.js#L118-L123)).
 So on this backend `result.missive` is a JSON string: parse it yourself.
 
 Brython backend: the missive arrives as a live object.
@@ -1215,10 +1215,10 @@ Brython backend: the missive arrives as a live object.
 ```
 
 The wrapper defines its own once-per-run `missive(obj)`
-([executor.js#L65-L69](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/executor.js#L65-L69))
+([executor.js#L65-L69](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/executor.js#L65-L69))
 and passes the value through the window callback; the manager forwards it
 as-is
-([manager.js#L54](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/brython/manager/manager.js#L54)).
+([manager.js#L54](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/brython/manager/manager.js#L54)).
 So on this backend `result.missive` is already an object (or `null`), and
 calling `JSON.parse` on it would throw.
 
