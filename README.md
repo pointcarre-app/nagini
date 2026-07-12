@@ -76,12 +76,12 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 ```html
 <script type="module">
     // esm.sh automatically resolves ALL ES6 imports - no configuration needed!
-    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.47/src/nagini.js');
+    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.48/src/nagini.js');
     const Nagini = naginiModule.Nagini;
     
     // Create manager and start using Python immediately
     const manager = await Nagini.createManager('pyodide', ['numpy'], [], [], 
-        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.47/src/pyodide/worker/worker-dist.js');
+        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.48/src/pyodide/worker/worker-dist.js');
     
     await Nagini.waitForReady(manager);
     
@@ -111,7 +111,7 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 **UMD Bundle (Maximum Compatibility):**
 ```html
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.47/src/nagini.umd.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.48/src/nagini.umd.js');
     const Nagini = naginiModule.default || naginiModule;
 </script>
 ```
@@ -121,13 +121,13 @@ For static websites, web apps, and Cordova applications, use the **esm.sh CDN** 
 <script type="importmap">
 {
   "imports": {
-    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.47/src/utils/validation.js",
-    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.47/src/pyodide/manager/manager.js"
+    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.48/src/utils/validation.js",
+    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.48/src/pyodide/manager/manager.js"
   }
 }
 </script>
 <script type="module">
-    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.47/src/nagini.js');
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.48/src/nagini.js');
     const Nagini = naginiModule.Nagini;
 </script>
 ```
@@ -630,7 +630,8 @@ Load Nagini and `worker-dist.js` from your own origin in production, or pin CDN 
 
 ## Performance
 
-- **Initialization**: ~3-7 seconds (packages + network)
+- **Initialization**: ~1-3 seconds warm (packages + network); interpreter boot ~0.8 s
+- **Snapshot cache**: pass `{ snapshotCache: true }` in the `createManager` options and later boots restore the interpreter from an IndexedDB memory snapshot in ~100 ms (`manager.snapshotRestored` tells you it happened). Packages, `filesToLoad` and the input bridge are replayed after the restore, so package load and import time is still paid: current Pyodide cannot include package state in a snapshot. The ~31 MB entry is keyed by Pyodide origin plus a hash of the embedded Python sources, and any failure falls back to a fresh boot
 - **Execution**: Near-native Python speed in WebAssembly
 - **Memory**: ~100-300MB (package dependent)
 - **Figure Capture**: Real-time base64 encoding
