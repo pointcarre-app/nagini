@@ -31,7 +31,7 @@ environments.
 
 [![GitHub](https://img.shields.io/badge/GitHub-nagini-blue?logo=github)](https://github.com/pointcarre-app/nagini)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Pyodide](https://img.shields.io/badge/Pyodide-v0.29.4-blue.svg)](https://pyodide.org/)
+[![Pyodide](https://img.shields.io/badge/Pyodide-314.0.2-blue.svg)](https://pyodide.org/)
 [![Brython](https://img.shields.io/badge/Brython-stable-green.svg)](https://brython.info/)
 
 ## Table of Contents
@@ -589,7 +589,7 @@ The unified test suite covers all core features:
 
 ## Dependencies
 
-- **Pyodide v0.29.4** - Python runtime via WebAssembly (Mozilla Public License 2.0)
+- **Pyodide 314.0.2 (Python 3.14)** - Python runtime via WebAssembly (Mozilla Public License 2.0)
 - **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
 - **Modern Browser** - WebWorkers, SharedArrayBuffer support
 - **No external dependencies** - Self-contained system

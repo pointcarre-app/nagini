@@ -18,7 +18,7 @@ var worker_config_PYODIDE_WORKER_CONFIG = {
    * Pyodide CDN URL for loading runtime
    * @type {string}
    */
-  PYODIDE_CDN: "https://cdn.jsdelivr.net/pyodide/v0.29.4/full/",
+  PYODIDE_CDN: "https://cdn.jsdelivr.net/pyodide/v314.0.2/full/",
   /**
    * Centralized messages for consistent error reporting and logging
    * @type {WorkerMessages}

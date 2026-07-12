@@ -92,7 +92,7 @@ Nagini enables a wide range of applications across different domains:
 │   ┌─────────────────────────────────────────────────────────┐   │
 │   │         PyodideWorkerConfig                             │   │
 │   │                                                         │   │
-│   │ PYODIDE_CDN: "https://cdn.jsdelivr.net/pyodide/v0.29.4" │   │
+│   │ PYODIDE_CDN: ".../pyodide/v314.0.2"                      │   │
 │   │ MESSAGES: { error/warning/info constants }              │   │
 │   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │

@@ -1,3 +1,10 @@
+# v0.0.47
+
+- **Pyodide 314.0.2 (Python 3.14.2)**: default CDN bumped from 0.29.4. Everything the suite uses ships in the 314 distribution (numpy, matplotlib, sympy, pydantic, strictyaml, fastapi, httpx); sqlite3 and lzma are now part of the bundled stdlib, no package load needed
+- Notable runtime changes inherited from Pyodide: faster FFI (PyProxy creation, string conversions), JS errors deserialized with their original types, `ssl` module reduced to a stub (in-process ASGI demos unaffected), hashlib without OpenSSL-only algorithms
+- Local Pyodide folders (0.28) still work through `pyodideCdnUrl`: the loader only needs `pyodide.mjs`, present in both generations
+- **Testing**: full suite green 63/63 on 314.0.2
+
 # v0.0.46
 
 - **Module worker**: the Pyodide worker now runs as a module worker (`new Worker(blobUrl, { type: "module" })`) and loads the runtime with a native dynamic `import` of `pyodide.mjs` instead of `importScripts(pyodide.js)`. Same public API and the same bundled `worker-dist.js`; this is the plumbing prerequisite for Pyodide 314, whose distribution is ESM-only and no longer supports classic workers

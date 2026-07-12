@@ -93,7 +93,7 @@ does what, and how the pieces are wired together.
                     v
 +---------------------------------------+
 |  PYODIDE RUNTIME (CPython on wasm)    |
-|  default: jsDelivr CDN, v0.29.4       |
+|  default: jsDelivr CDN, 314.0.2       |
 |  overridable with options             |
 |  .pyodideCdnUrl for self-hosted       |
 |  or offline use                       |
@@ -237,7 +237,7 @@ which skips packages already loaded in this worker.
 [src/pyodide/worker/worker-config.js](https://github.com/pointcarre-app/nagini/blob/v0.0.46/src/pyodide/worker/worker-config.js)
 centralizes constants, most importantly the default
 [`PYODIDE_CDN`](https://github.com/pointcarre-app/nagini/blob/v0.0.46/src/pyodide/worker/worker-config.js#L17)
-URL (jsDelivr, Pyodide v0.29.4) used when the host does not pass
+URL (jsDelivr, Pyodide 314.0.2, Python 3.14) used when the host does not pass
 `options.pyodideCdnUrl`, plus every user-facing message string.
 
 ### Python capture layer (embedded in the bundle)
