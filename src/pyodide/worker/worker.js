@@ -46,7 +46,11 @@ const workerState = {
   pyodideUtilities: null,
 
   /** @type {Set<string>} Built-in names already reported as shadowed by user code */
-  shadowWarnedNames: new Set()
+  shadowWarnedNames: new Set(),
+
+  /** @type {'jspi'|'async'|null} How input() is bridged (set at init):
+   *  native stack switching, or async handler plus AST rewrite */
+  inputMode: null
 };
 
 /**

@@ -247,10 +247,11 @@ function _handleExecute() {
   return _handleExecute.apply(this, arguments);
 }
 function transformCodeForExecution(code, workerState) {
-  // Ne match que les vrais appels input(, pas some_func__input( ni obj.input(.
-  // La réécriture réelle est faite côté Python sur l'AST ; ce gate ne décide
-  // que du passage en exécution asynchrone (runPythonAsync).
-  var needsAsync = /(?<![\w.])input\s*\(/.test(code);
+  // En mode jspi, input() bloque nativement via run_sync : aucun besoin de
+  // réécrire le code. En mode async (pas de JSPI), le gate ne match que les
+  // vrais appels input(, pas some_func__input( ni obj.input( ; la réécriture
+  // réelle en await input() est faite côté Python sur l'AST.
+  var needsAsync = workerState.inputMode !== "jspi" && /(?<![\w.])input\s*\(/.test(code);
   if (needsAsync) {
     // Transform the code using the Python transformation, called through the
     // module reference (immune to user code rebinding the name)
@@ -428,10 +429,18 @@ function worker_input_asyncToGenerator(n) { return function () { var t = this, e
 
 /**
  * Set up input handling system in Python environment
- * Based on the successful implementation from the other repo
+ *
+ * Two modes, picked by browser capability:
+ * - "jspi": WebAssembly stack switching (JSPI) lets Pyodide block
+ *   synchronously on the JS promise via pyodide.ffi.run_sync. input() then
+ *   works anywhere, including inside sync functions, lambdas and class
+ *   bodies, and user code runs completely unmodified.
+ * - "async": no JSPI, builtins.input is an async handler and genuine
+ *   input() calls are rewritten to await input() on the AST before running
+ *   (see code_transformation.py).
  *
  * @param {PyodideAPI} pyodide - Pyodide instance
- * @returns {Promise<void>}
+ * @returns {Promise<'jspi'|'async'>} The input mode installed
  */
 function setupInputHandling(_x) {
   return _setupInputHandling.apply(this, arguments);
@@ -447,7 +456,7 @@ function setupInputHandling(_x) {
  */
 function _setupInputHandling() {
   _setupInputHandling = worker_input_asyncToGenerator(/*#__PURE__*/worker_input_regenerator().m(function _callee2(pyodide) {
-    var setupNamespace;
+    var jspi, handlerSnippet, setupNamespace;
     return worker_input_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -472,16 +481,15 @@ function _setupInputHandling() {
               }
             }, _callee);
           }));
-
-          // Set up the Python environment with input handling. The snippet runs in
-          // a throwaway namespace: none of its names (sys, requestInput,
-          // input_handler) leak into the interpreter globals where user code runs,
-          // so they cannot be shadowed or rebound from user code. The handler keeps
-          // them alive through its own module-level closure.
+          jspi = typeof WebAssembly !== "undefined" && typeof WebAssembly.Suspending === "function";
+          handlerSnippet = jspi ? "\nimport builtins\nimport sys\nfrom js import requestInput\nfrom pyodide.ffi import run_sync\n\ndef input_handler(prompt=\"\"):\n    # Always print the prompt to stdout first\n    if prompt:\n        print(prompt, end=\"\", flush=True)\n        sys.stdout.flush()\n\n    # Block on the JS promise through wasm stack switching\n    return run_sync(requestInput(prompt))\n\nbuiltins.input = input_handler\n" : "\nimport builtins\nimport sys\nfrom js import requestInput\n\nasync def input_handler(prompt=\"\"):\n    # Always print the prompt to stdout first\n    if prompt:\n        print(prompt, end=\"\", flush=True)\n        sys.stdout.flush()\n\n    # Request input from JavaScript\n    return await requestInput(prompt)\n\nbuiltins.input = input_handler\n"; // The snippet runs in a throwaway namespace: none of its names (sys,
+          // requestInput, input_handler) leak into the interpreter globals where
+          // user code runs, so they cannot be shadowed or rebound from user code.
+          // The handler keeps them alive through its own module-level closure.
           setupNamespace = pyodide.toPy({});
           _context2.p = 1;
           _context2.n = 2;
-          return pyodide.runPythonAsync("\nimport builtins\nimport sys\nfrom js import requestInput\n\nasync def input_handler(prompt=\"\"):\n    # Always print the prompt to stdout first\n    if prompt:\n        print(prompt, end=\"\", flush=True)\n        sys.stdout.flush()\n\n    # Request input from JavaScript\n    return await requestInput(prompt)\n\n# Replace the built-in input function with our async version\nbuiltins.input = input_handler\n", {
+          return pyodide.runPythonAsync(handlerSnippet, {
             globals: setupNamespace
           });
         case 2:
@@ -489,7 +497,7 @@ function _setupInputHandling() {
           setupNamespace.destroy();
           return _context2.f(2);
         case 3:
-          return _context2.a(2);
+          return _context2.a(2, jspi ? "jspi" : "async");
       }
     }, _callee2, null, [[1,, 2, 3]]);
   }));
@@ -1546,6 +1554,7 @@ function _handleInit() {
           _context2.n = 21;
           return setupInputHandling(workerState.pyodide);
         case 21:
+          workerState.inputMode = _context2.v;
           if (!(filesToLoad && filesToLoad.length > 0)) {
             _context2.n = 25;
             break;
@@ -1609,7 +1618,8 @@ function _handleInit() {
           workerState.isInitialized = true;
           self.postMessage({
             type: "ready",
-            snapshotRestored: snapshotRestored
+            snapshotRestored: snapshotRestored,
+            inputMode: workerState.inputMode
           });
           _context2.n = 31;
           break;
@@ -1751,7 +1761,10 @@ var workerState = {
   /** @type {Object|null} PyProxy of the pyodide_utilities module (set at init) */
   pyodideUtilities: null,
   /** @type {Set<string>} Built-in names already reported as shadowed by user code */
-  shadowWarnedNames: new Set()
+  shadowWarnedNames: new Set(),
+  /** @type {'jspi'|'async'|null} How input() is bridged (set at init):
+   *  native stack switching, or async handler plus AST rewrite */
+  inputMode: null
 };
 
 /**

@@ -381,6 +381,38 @@ missive({"plot_type": "sine_wave", "x_points": len(x)})`
         }
     }
 
+    static async testInputInSyncFunction(manager) {
+        const testName = "input() inside a sync function (jspi)";
+        logTestStart("PyodideManager", testName);
+
+        try {
+            if (manager.inputMode !== "jspi") {
+                // Without stack switching, input() only works at levels the
+                // AST rewrite can reach; the async path is covered by the
+                // other input tests
+                console.log("JSPI not available in this browser, sync-function input() not applicable");
+                logTestPass(testName);
+                return { testName, skipped: true };
+            }
+
+            manager.queueInput("42");
+            const result = await manager.executeAsync("sync_input.py",
+`def ask():
+    return input("n? ")
+
+value = ask()
+print("value:" + value)`);
+            assert(!result.error, "Sync-function input() should not error");
+            assertContains(result.stdout, "value:42", "input() inside a sync def should return the queued value");
+
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+
     static async testSnapshotCacheRestore() {
         const testName = "snapshot cache restore";
         logTestStart("PyodideManager", testName);

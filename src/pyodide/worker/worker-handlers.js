@@ -208,8 +208,9 @@ async function handleInit(data, workerState) {
       }
     }
 
-    // Set up input handling system
-    await setupInputHandling(workerState.pyodide);
+    // Set up input handling system (jspi mode when the browser supports
+    // stack switching, async mode with AST rewrite otherwise)
+    workerState.inputMode = await setupInputHandling(workerState.pyodide);
 
     // Load custom files into filesystem if provided
     if (filesToLoad && filesToLoad.length > 0) {
@@ -252,7 +253,7 @@ async function handleInit(data, workerState) {
     }
 
     workerState.isInitialized = true;
-    self.postMessage({ type: "ready", snapshotRestored });
+    self.postMessage({ type: "ready", snapshotRestored, inputMode: workerState.inputMode });
 
   } catch (err) {
     workerState.pyodide = null;

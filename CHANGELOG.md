@@ -1,3 +1,11 @@
+# v0.0.49
+
+- **Native synchronous input() via JSPI**: when the browser supports WebAssembly stack switching (Chrome 137+ and other evergreen engines), `builtins.input` blocks natively on the host response through `pyodide.ffi.run_sync` and user code runs completely unmodified: `input()` now also works inside sync functions, lambdas and class bodies, places the AST rewrite could never reach. Without JSPI the previous behavior remains as fallback (async handler plus AST rewrite of genuine `input()` calls)
+- `manager.inputMode` reports the active bridge (`"jspi"` or `"async"`)
+- **Fix**: the Brython turtle demo in scenery now draws even when user code omits `turtle.done()` (Brython's turtle only replays its frames into the SVG when `done()` runs; the demo appends it when missing)
+- **Documentation**: full sweep of docs and demo copy to the current architecture: input flow rewritten for the dual mode with the AST rewrite as explicit fallback, init flow gained the snapshot-cache branch, repo_reference pages corrected (module worker, pyimport references, worker-snapshot.js, `pyodide_init.py` tombstone), README input section updated, executions page mentions `snapshotCache` and `manager.inputMode`, API reference regenerated
+- **Testing**: new suite test proving `input()` inside a sync `def` returns the provided value in jspi mode; full suite green 65/65
+
 # v0.0.48
 
 - **Interpreter snapshot cache**: new `snapshotCache` option on `createManager` (Pyodide backend). The worker snapshots the bare interpreter plus Nagini's embedded Python modules right before the input bridge is installed, stores it in IndexedDB (~31 MB, keyed by Pyodide origin and a hash of the embedded sources, so any change invalidates it), and later boots restore it in about 100 ms instead of a ~0.8 s interpreter boot. Packages, micropip, `filesToLoad` and the input bridge are replayed after the restore: package state cannot live in the snapshot on current Pyodide (its serializer rejects the live JS references that package loading creates). Every cache failure degrades to a fresh boot; a corrupt entry is deleted and rebuilt

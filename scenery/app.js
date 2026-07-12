@@ -214,6 +214,7 @@ async function runAllTests() {
         { id: 'status-pyodide-manager-15', desc: "1️⃣5️⃣ concurrent executeAsync calls", func: () => PyodideManagerTests.testConcurrentExecuteAsync(manager).then(() => window.updateTestStatus('status-pyodide-manager-15', 'pass')) },
         { id: 'status-pyodide-manager-16', desc: "1️⃣6️⃣ timeout then healthy execution", func: () => PyodideManagerTests.testTimeoutRecovery(manager).then(() => window.updateTestStatus('status-pyodide-manager-16', 'pass')) },
         { id: 'status-pyodide-manager-17', desc: "1️⃣7️⃣ snapshot cache restore", func: () => PyodideManagerTests.testSnapshotCacheRestore().then(() => window.updateTestStatus('status-pyodide-manager-17', 'pass')) },
+        { id: 'status-pyodide-manager-18', desc: "1️⃣8️⃣ input() in sync function (jspi)", func: () => PyodideManagerTests.testInputInSyncFunction(manager).then(() => window.updateTestStatus('status-pyodide-manager-18', 'pass')) },
 
         // FileLoader Tests
         { id: 'status-file-loader-1', desc: "1️⃣ PyodideFileLoader.loadFiles()", func: () => FileLoaderTests.test14LoadFilesAndImport(manager, filesToLoad).then(() => window.updateTestStatus('status-file-loader-1', 'pass')) },

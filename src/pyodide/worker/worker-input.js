@@ -8,10 +8,18 @@ import { PYODIDE_WORKER_CONFIG } from './worker-config.js';
 
 /**
  * Set up input handling system in Python environment
- * Based on the successful implementation from the other repo
+ *
+ * Two modes, picked by browser capability:
+ * - "jspi": WebAssembly stack switching (JSPI) lets Pyodide block
+ *   synchronously on the JS promise via pyodide.ffi.run_sync. input() then
+ *   works anywhere, including inside sync functions, lambdas and class
+ *   bodies, and user code runs completely unmodified.
+ * - "async": no JSPI, builtins.input is an async handler and genuine
+ *   input() calls are rewritten to await input() on the AST before running
+ *   (see code_transformation.py).
  *
  * @param {PyodideAPI} pyodide - Pyodide instance
- * @returns {Promise<void>}
+ * @returns {Promise<'jspi'|'async'>} The input mode installed
  */
 export async function setupInputHandling(pyodide) {
   // Create the requestInput function in the worker's global scope
@@ -28,14 +36,25 @@ export async function setupInputHandling(pyodide) {
     });
   };
 
-  // Set up the Python environment with input handling. The snippet runs in
-  // a throwaway namespace: none of its names (sys, requestInput,
-  // input_handler) leak into the interpreter globals where user code runs,
-  // so they cannot be shadowed or rebound from user code. The handler keeps
-  // them alive through its own module-level closure.
-  const setupNamespace = pyodide.toPy({});
-  try {
-    await pyodide.runPythonAsync(`
+  const jspi = typeof WebAssembly !== "undefined" && typeof WebAssembly.Suspending === "function";
+
+  const handlerSnippet = jspi ? `
+import builtins
+import sys
+from js import requestInput
+from pyodide.ffi import run_sync
+
+def input_handler(prompt=""):
+    # Always print the prompt to stdout first
+    if prompt:
+        print(prompt, end="", flush=True)
+        sys.stdout.flush()
+
+    # Block on the JS promise through wasm stack switching
+    return run_sync(requestInput(prompt))
+
+builtins.input = input_handler
+` : `
 import builtins
 import sys
 from js import requestInput
@@ -49,12 +68,21 @@ async def input_handler(prompt=""):
     # Request input from JavaScript
     return await requestInput(prompt)
 
-# Replace the built-in input function with our async version
 builtins.input = input_handler
-`, { globals: setupNamespace });
+`;
+
+  // The snippet runs in a throwaway namespace: none of its names (sys,
+  // requestInput, input_handler) leak into the interpreter globals where
+  // user code runs, so they cannot be shadowed or rebound from user code.
+  // The handler keeps them alive through its own module-level closure.
+  const setupNamespace = pyodide.toPy({});
+  try {
+    await pyodide.runPythonAsync(handlerSnippet, { globals: setupNamespace });
   } finally {
     setupNamespace.destroy();
   }
+
+  return jspi ? "jspi" : "async";
 }
 
 /**

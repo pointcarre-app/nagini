@@ -80,10 +80,11 @@ export async function handleExecute(data, workerState) {
  * @returns {Object} - {code: transformedCode, needsAsync: boolean}
  */
 export function transformCodeForExecution(code, workerState) {
-  // Ne match que les vrais appels input(, pas some_func__input( ni obj.input(.
-  // La réécriture réelle est faite côté Python sur l'AST ; ce gate ne décide
-  // que du passage en exécution asynchrone (runPythonAsync).
-  const needsAsync = /(?<![\w.])input\s*\(/.test(code);
+  // En mode jspi, input() bloque nativement via run_sync : aucun besoin de
+  // réécrire le code. En mode async (pas de JSPI), le gate ne match que les
+  // vrais appels input(, pas some_func__input( ni obj.input( ; la réécriture
+  // réelle en await input() est faite côté Python sur l'AST.
+  const needsAsync = workerState.inputMode !== "jspi" && /(?<![\w.])input\s*\(/.test(code);
 
   if (needsAsync) {
     // Transform the code using the Python transformation, called through the

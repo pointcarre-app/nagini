@@ -807,6 +807,12 @@ var PyodideManager = /*#__PURE__*/function () {
      *  (set on the ready message) */
     this.snapshotRestored = false;
 
+    /** @type {'jspi'|'async'|null} How input() is bridged in the worker
+     *  (set on the ready message): 'jspi' blocks natively through wasm
+     *  stack switching and runs user code unmodified; 'async' falls back
+     *  to the AST rewrite of input() into await input() */
+    this.inputMode = null;
+
     /** @type {string|null} Blob URL for cleanup */
     this.blobUrl = null;
 
@@ -1081,6 +1087,7 @@ var PyodideManager = /*#__PURE__*/function () {
       if (data.type === "ready") {
         this.isReady = true;
         this.snapshotRestored = !!data.snapshotRestored;
+        this.inputMode = data.inputMode || "async";
       }
 
       // Pyodide initialization or execution error
