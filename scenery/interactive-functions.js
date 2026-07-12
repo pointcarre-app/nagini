@@ -271,7 +271,11 @@ async function executeTurtleCode() {
         // Prepend canvas setup to user code
         const setup = "import turtle\nfrom browser import document\n" +
                       "turtle.set_defaults(turtle_canvas_wrapper=document['turtle'])\n";
-        const code = setup + userCode + "\n\nprint('Drawing completed')";
+        // Brython's turtle only replays the recorded frames into the SVG when
+        // done()/mainloop() runs; without it nothing appears in #turtle
+        const callsDone = /\b(?:done|mainloop|exitonclick)\s*\(/.test(userCode);
+        const epilogue = callsDone ? "" : "\nturtle.done()";
+        const code = setup + userCode + epilogue + "\n\nprint('Drawing completed')";
 
         const result = await mgr.executeAsync('interactive_turtle_code', code);
         if (result.stdout) output.textContent += result.stdout;
