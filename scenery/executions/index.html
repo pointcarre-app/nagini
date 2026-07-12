@@ -293,8 +293,11 @@
       Each typical Nagini execution case, shown three ways: a runnable editor,
       the exact JS integration code this page calls, and a compact flow excerpt
       linking to the step-by-step documentation. One shared Pyodide manager is
-      created on your first run (30 to 60 seconds, it also loads matplotlib)
-      and reused for everything below.
+      created on your first run and reused for everything below. The manager
+      uses the snapshotCache option, so after the first visit the interpreter
+      restores from IndexedDB in about 100 ms on reload; the matplotlib
+      download and import still run each time, which is what you wait for on
+      the first run of a fresh tab (30 to 60 seconds cold, much less after).
     </p>
 
     <nav id="anchor-nav" aria-label="sections">

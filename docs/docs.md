@@ -448,16 +448,16 @@ Properties available: `isReady`, `executionHistory`, `packages`.
 
 ### Interactive Input System
 
-Nagini provides comprehensive support for Python's `input()` function with multiple interaction modes. The system is fully asynchronous, preventing the browser's UI from freezing while waiting for user input.
+Nagini supports Python's `input()` function with multiple interaction modes, without ever freezing the browser's UI while waiting for user input.
 
 **How It Works:**
-1.  When `input()` is called in Python, the code is transformed to an `async` function.
+1.  On browsers with JSPI (Chrome 137+), `builtins.input` is a synchronous function that blocks through `pyodide.ffi.run_sync`: user code runs unmodified, including `input()` inside sync functions, lambdas and class bodies. Without JSPI, genuine `input()` calls are rewritten to `await input()` on the AST and `builtins.input` is an async coroutine. The mode is picked at init and exposed as `manager.inputMode` (`'jspi'` or `'async'`).
 2.  The worker sends an `input_required` message to the main thread and pauses its execution, waiting for a JavaScript promise to resolve.
 3.  The main thread's `PyodideManager` receives this message and uses either the `inputQueue` or an `inputCallback` to get the required data.
 4.  The main thread sends the data back to the worker via an `input_response` message.
 5.  The worker resolves the pending promise, and the Python code resumes execution with the provided input.
 
-This asynchronous flow is critical for a non-blocking user experience.
+The message round trip is identical in both modes.
 
 #### 1. Programmatic Input Queue
 
@@ -828,6 +828,7 @@ pca-nagini/
 │       │   ├── worker-execution.js # Execution logic
 │       │   ├── worker-input.js    # Input handling
 │       │   ├── worker-fs.js       # Filesystem operations
+│       │   ├── worker-snapshot.js # Interpreter snapshot cache (IndexedDB)
 │       │   ├── webpack.config.cjs # Webpack bundling configuration
 │       │   ├── package.json       # NPM dependencies and build scripts
 │       │   ├── package-lock.json  # Dependency lock file

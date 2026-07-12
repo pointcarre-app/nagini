@@ -13,9 +13,9 @@ This file contains the core logic for handling messages sent to the Pyodide web 
     -   `workerState` (Object): The current state of the worker.
 
 ### `handleInit(data, workerState)`
--   **Description:** Initializes the Pyodide environment. This function is called when the worker receives a message of type `'init'`. It loads the Pyodide runtime, installs specified packages (both standard and `micropip`), and preloads any files into the virtual filesystem.
+-   **Description:** Initializes the Pyodide environment. This function is called when the worker receives a message of type `'init'`. It loads the Pyodide runtime as an ES module (dynamic `import` of `pyodide.mjs`; the worker is a module worker), writes and imports the embedded Python modules by reference (`pyodide.pyimport`), sets up input handling, installs specified packages (both standard and `micropip`), and preloads any files into the virtual filesystem. When `data.snapshotCache` is true, it first tries to restore the interpreter from an IndexedDB memory snapshot through `worker-snapshot.js`, and on a fresh boot it takes and stores a snapshot right before the input bridge is installed (the bridge and packages hold JavaScript references that Pyodide cannot serialize, so they are replayed on every boot). The final `ready` message carries `snapshotRestored` and `inputMode`.
 -   **Parameters:**
-    -   `data` (Object): The message data, containing `packages`, `micropipPackages`, and `filesToLoad`.
+    -   `data` (Object): The message data, containing `packages`, `micropipPackages`, `filesToLoad`, an optional `pyodideCdnUrl` and an optional `snapshotCache` flag.
     -   `workerState` (Object): The current state of the worker.
 
 ### Other Handlers

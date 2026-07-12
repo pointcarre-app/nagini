@@ -1,16 +1,9 @@
-# `pyodide/python/pyodide_init.py` - Pyodide Initialization
+# `pyodide/python/pyodide_init.py` - removed
 
-**Location:** `src/pyodide/python/pyodide_init.py`
+**Location:** none, this file no longer exists in the repository.
 
-This script is the main entry point for the Python environment within the Pyodide worker. It is responsible for importing all necessary Python modules and making their functions available in the global namespace so they can be called from JavaScript.
+`pyodide_init.py` used to be the Python entry point of the worker: it imported the other Python modules and attached their functions to `builtins`, so JavaScript could call them by name through `pyodide.runPython()`.
 
-## Core Logic
+That mechanism was replaced. The worker now writes `capture_system.py`, `code_transformation.py` and `pyodide_utilities.py` to the virtual filesystem, imports each one with `pyodide.pyimport` and keeps the returned PyProxy module references (see [`worker-handlers.js`](worker-handlers.md)). The capture infrastructure is only ever called through those references, never by name lookup in the interpreter globals, so user code rebinding a name cannot corrupt it. Importing `capture_system` installs `builtins.missive`; together with `input`, that is the only name Nagini exposes to user code.
 
-This script performs the following actions:
-
-1.  **Imports Modules:** It imports all the necessary functions from the other Python files in the same directory:
-    -   `capture_system.py`
-    -   `code_transformation.py`
-    -   `pyodide_utilities.py`
-2.  **Exposes Functions:** It attaches these functions to the `builtins` module, which makes them globally accessible in the Python environment. This allows JavaScript to call them via `pyodide.runPython()`.
-3.  **Initializes Capture System:** It calls `reset_captures()` to ensure that the `stdout` and `stderr` streams are redirected and ready to capture output from the very beginning. 
+This page is kept so old links keep resolving.

@@ -18,13 +18,14 @@ This section provides a detailed file-by-file reference for the Nagini repositor
     - [`worker-execution.js`](worker-execution.md) - Worker execution logic.
     - [`worker-input.js`](worker-input.md) - Worker input handling.
     - [`worker-fs.js`](worker-fs.md) - Worker filesystem operations.
+    - `worker-snapshot.js` - Interpreter snapshot cache (IndexedDB), described in [architecture](../architecture.md#worker-snapshotjs).
     - [`worker-config.js`](worker-config.md) - Worker configuration.
   - `file-loader/`
     - [`file-loader.js`](file-loader.md) - Remote file loading.
   - `python/`
-    - [`pyodide_init.py`](pyodide-init.md) - Pyodide Python initialization.
     - [`capture_system.py`](capture-system.md) - Output capture system.
-    - [`code_transformation.py`](code-transformation.md) - Code transformation for async input.
+    - [`code_transformation.py`](code-transformation.md) - Code transformation for async input (fallback without JSPI).
+    - [`pyodide_init.py`](pyodide-init.md) - Removed file, page kept for old links.
     - [`pyodide_utilities.py`](pyodide-utilities.md) - Pyodide utility functions.
 - `brython/`
   - `manager/`

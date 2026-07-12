@@ -6,13 +6,14 @@ This file contains the `PyodideManager` class, which is the core component for m
 
 ## Class: `PyodideManager`
 
-### `constructor(packages, micropipPackages, filesToLoad, workerPath)`
+### `constructor(packages, micropipPackages, filesToLoad, workerPath, config)`
 -   **Description:** Creates a new `PyodideManager` instance. It performs strict validation on all parameters and initializes the web worker.
 -   **Parameters:**
     -   `packages` (Array<string>): A list of standard Python packages to install.
     -   `micropipPackages` (Array<string>): A list of packages to install via `micropip`.
     -   `filesToLoad` (Array<Object>): An array of file objects to preload.
     -   `workerPath` (string): The path to the bundled worker script (`worker-dist.js`).
+    -   `config` (Object, optional): `pyodideCdnUrl` (custom Pyodide origin, for local or offline use) and `snapshotCache` (boolean, cache the bare interpreter as a memory snapshot in IndexedDB for near-instant later boots).
 -   **Throws:** `Error` if any parameter is invalid.
 
 ### `executeAsync(filename, code, namespace)`
@@ -44,6 +45,8 @@ This file contains the `PyodideManager` class, which is the core component for m
 
 ### Properties
 -   **`isReady`** (boolean): `true` if the manager is initialized and ready for execution.
+-   **`snapshotRestored`** (boolean): `true` when the worker booted from the IndexedDB snapshot cache (set on the `ready` message).
+-   **`inputMode`** (string): `'jspi'` (sync `input()` through wasm stack switching, user code unmodified) or `'async'` (AST rewrite fallback), set on the `ready` message.
 -   **`executionHistory`** (Array<Object>): A log of all execution results.
 -   **`worker`** (Worker): The `Worker` instance.
 -   **`packages`** (Array<string>): The list of packages to be loaded.

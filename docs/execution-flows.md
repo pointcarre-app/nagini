@@ -49,7 +49,8 @@ component. Column key:
      |                           |                            |---------------------------->|                             |
      |                           |                            | postMessage {type: 'init',  |                             |
      |                           |                            | packages, micropip,         |                             |
-     |                           |                            | filesToLoad, pyodideCdnUrl} |                             |
+     |                           |                            | filesToLoad, pyodideCdnUrl, |                             |
+     |                           |                            | snapshotCache}              |                             |
      |<--------------------------|                            |                             |                             |
      | manager (not ready yet)   |                            |                             |                             |
      |                           |                            |                             |                             |
@@ -74,8 +75,9 @@ component. Column key:
      |                           |                            |                             |                             |  reset_captures()
      |                           |                            |                             |---------------------------->|
      |                           |                            |                             | setupInputHandling()        |
-     |                           |                            |                             |                             |- builtins.input replaced by
-     |                           |                            |                             |                             |  async input_handler
+     |                           |                            |                             |                             |- builtins.input replaced:
+     |                           |                            |                             |                             |  sync run_sync bridge (jspi)
+     |                           |                            |                             |                             |  or async handler (no JSPI)
      |                           |                            |                             |- PyodideFileLoader          |
      |                           |                            |                             |  .loadFiles(filesToLoad)    |
      |                           |                            |                             |- loadPackages(packages),    |
@@ -83,7 +85,8 @@ component. Column key:
      |                           |                            |                             |---------------------------->|
      |                           |                            |                             | setup_matplotlib()          |
      |                           |                            |<----------------------------|                             |
-     |                           |                            | postMessage {type: 'ready'} |                             |
+     |                           |                            | postMessage {type: 'ready', |                             |
+     |                           |                            | snapshotRestored, inputMode}|                             |
      |                           |                            |- handleMessage():           |                             |
      |                           |                            |  isReady = true             |                             |
      |                           |                            |  _readyResolve()            |                             |
@@ -144,12 +147,15 @@ Step by step:
    in: the only names Nagini exposes to user code are `missive` and
    `input`.
 6. `setupInputHandling`
-   ([worker-input.js#L16](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L16))
-   defines `self.requestInput` and replaces `builtins.input` with an async
-   `input_handler`; the setup snippet runs in a throwaway namespace, so
-   neither `requestInput` nor `input_handler` appears in the globals user
-   code runs in
-   ([worker-input.js#L39-L50](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L43-L53)).
+   ([worker-input.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-input.js))
+   defines `self.requestInput` and replaces `builtins.input`. Two modes,
+   picked by browser capability: with JSPI (`WebAssembly.Suspending`,
+   Chrome 137+) the handler is a plain sync function that blocks through
+   `pyodide.ffi.run_sync`, without it the handler is an async coroutine and
+   genuine `input()` calls get rewritten before running (details in the
+   [input() flow](#input-pausing-python-for-the-host)). Either way the
+   setup snippet runs in a throwaway namespace, so neither `requestInput`
+   nor `input_handler` appears in the globals user code runs in.
 7. `filesToLoad` entries are downloaded into the virtual filesystem by
    `PyodideFileLoader.loadFiles`
    ([worker-handlers.js#L163-L171](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L215-L223),
@@ -164,10 +170,11 @@ Step by step:
    ([worker-handlers.js#L195](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L249),
    [pyodide_utilities.py#L7](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/pyodide_utilities.py#L7))
    switches matplotlib to the `agg` backend if the package is present.
-9. The worker posts `{type: "ready"}`
-   ([worker-handlers.js#L202-L203](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L254-L255)).
-   The manager flips `isReady`
-   ([manager.js#L311-L313](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L323-L326))
+9. The worker posts `{type: "ready", snapshotRestored, inputMode}`
+   ([worker-handlers.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-handlers.js)).
+   The manager flips `isReady`, exposes the two flags as
+   `manager.snapshotRestored` and `manager.inputMode`
+   ([manager.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/manager/manager.js))
    and resolves the `readyPromise`
    ([manager.js#L217-L219](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L230-L232)).
 10. `Nagini.waitForReady`
@@ -176,6 +183,66 @@ Step by step:
     ([nagini.js#L78-L86](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L79-L87));
     managers without a `readyPromise` fall back to polling `isReady`
     ([nagini.js#L93-L99](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/nagini.js#L94-L100)).
+
+### The snapshot cache branch
+
+Passing `{ snapshotCache: true }` in the `createManager` options adds a
+branch between steps 4 and 6: instead of always booting a fresh
+interpreter, the worker first looks for a memory snapshot in IndexedDB
+([worker-snapshot.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-snapshot.js)).
+The cache key is the Pyodide origin plus a SHA-256 of the embedded Python
+sources, so changing either invalidates the entry by construction.
+
+```
+              init with snapshotCache: true
+                           |
+                           v
+             +-----------------------------+
+             | IndexedDB entry for key =   |
+             | pyodide origin + SHA-256 of |
+             | embedded python sources ?   |
+             +-----------------------------+
+                  |                 |
+                  | hit             | miss
+                  v                 v
+    +----------------------+  +-----------------------------+
+    | loadPyodide restores |  | fresh boot, write + import  |
+    | the snapshot in      |  | the python modules, then    |
+    | ~100 ms; modules are |  | makeMemorySnapshot():       |
+    | already imported     |  | ~31 MB stored in IndexedDB, |
+    |                      |  | other entries evicted       |
+    +----------------------+  +-----------------------------+
+                  |                 |
+                  +--------+--------+
+                           |
+                           v
+             +-----------------------------+
+             | replayed on EVERY boot:     |
+             | input bridge, filesToLoad,  |
+             | packages, micropip          |
+             +-----------------------------+
+                           |
+                           v
+              ready message reports which
+              path ran: snapshotRestored
+```
+
+The snapshot is taken right before the input bridge is installed, and that
+placement is a hard constraint, not a style choice: the bridge keeps a live
+JavaScript reference (a hiwire entry) inside the interpreter, and Pyodide's
+snapshot serializer rejects those. Package loading creates the same kind of
+references, which is why package state cannot live in the snapshot on
+current Pyodide (the `Unexpected hiwire entry` error): after a restore,
+packages and micropip installs still load and import as usual, so a
+package-heavy manager saves only the interpreter boot (~0.8 s down to
+~100 ms), not the package time.
+
+The cache is best-effort by design: a missing IndexedDB, a quota error or a
+corrupt entry (deleted after a failed restore) all fall back to a fresh
+boot. Storing a new snapshot evicts every other Nagini entry, since a stale
+runtime or module version has no reader anymore. The `ready` message
+carries `snapshotRestored`, surfaced as `manager.snapshotRestored`, so a
+host page can tell which path ran; `inputMode` travels on the same message.
 
 Failure path: a bad worker path, a CDN failure or a crash during init produces
 an error message without id
@@ -228,7 +295,7 @@ creates and initializes the shared manager
      |                                       |                                  |- handleMessage()              |
      |                                       |                                  |  -> handleExecute()           |
      |                                       |                                  |- transformCodeForExecution(): |
-     |                                       |                                  |  no input() call in code      |
+     |                                       |                                  |  jspi mode or no input() call |
      |                                       |                                  |  -> code unchanged            |
      |                                       |                                  |------------------------------>|
      |                                       |                                  | captureSystem.reset_captures()|
@@ -284,11 +351,11 @@ Step by step:
 4. In the worker, `handleExecute`
    ([worker-execution.js#L18](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L18))
    first calls `transformCodeForExecution`
-   ([worker-execution.js#L77](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L82)):
-   a regex
-   ([worker-execution.js#L81](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L86))
-   looks for a genuine `input(` call. Without one, the code passes through
-   unchanged (the `input()` rewrite is the next flow).
+   ([worker-execution.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-execution.js)).
+   In jspi input mode the code always passes through unchanged; in async
+   mode a regex looks for a genuine `input(` call and, absent one, the code
+   passes through unchanged too (both modes are detailed in the
+   [input() flow](#input-pausing-python-for-the-host)).
 5. `reset_captures()`
    ([worker-execution.js#L29](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L29),
    [capture_system.py#L49](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/capture_system.py#L49))
@@ -356,6 +423,21 @@ and
 
 ## input(): pausing Python for the host
 
+`input()` runs on one of two engines, picked once at init and exposed as
+`manager.inputMode`. When the browser supports JSPI (WebAssembly stack
+switching: `typeof WebAssembly.Suspending === "function"`, Chrome 137 and
+later), `builtins.input` is a plain synchronous function that blocks
+through `pyodide.ffi.run_sync`: user code runs completely unmodified, and
+`input()` works anywhere, including inside sync functions, lambdas and
+class bodies. Without JSPI, the fallback keeps the earlier machinery:
+`builtins.input` is an async coroutine and genuine `input()` calls are
+rewritten to `await input()` on the AST before running. The message round
+trip between worker and host (`input_required`, then `provideInput`, then
+`input_response`) is identical in both modes; only the Python side of the
+bridge differs.
+
+The jspi mode first:
+
 ```
 [host page]                          [PyodideManager]                       [worker]                        [python]
      |                                       |                                  |                               |
@@ -368,23 +450,14 @@ and
      |                                       | postMessage {type: 'execute',    |                               |
      |                                       | filename, code, id}              |                               |
      |                                       |                                  |- transformCodeForExecution(): |
-     |                                       |                                  |  the regex finds a real       |
-     |                                       |                                  |  input( call                  |
+     |                                       |                                  |  inputMode is 'jspi'          |
+     |                                       |                                  |  -> code unchanged            |
      |                                       |                                  |------------------------------>|
-     |                                       |                                  | transform_code_for_           |
-     |                                       |                                  | execution(code)               |
-     |                                       |                                  |                               |- _AwaitInputTransformer rewrites
-     |                                       |                                  |                               |  input() -> await input() on the AST;
-     |                                       |                                  |                               |  sync def / lambda / class bodies
-     |                                       |                                  |                               |  are left untouched
-     |                                       |                                  |<------------------------------|
-     |                                       |                                  | rewritten source              |
-     |                                       |                                  |------------------------------>|
-     |                                       |                                  | await runPythonAsync(         |
-     |                                       |                                  | rewritten code)               |
-     |                                       |                                  |                               |- await input(prompt) enters
-     |                                       |                                  |                               |  input_handler(): prints the prompt,
-     |                                       |                                  |                               |  then awaits requestInput(prompt)
+     |                                       |                                  | await runPythonAsync(code)    |
+     |                                       |                                  |                               |- input(prompt) enters the sync
+     |                                       |                                  |                               |  input_handler: prints the prompt,
+     |                                       |                                  |                               |  then run_sync(requestInput(prompt))
+     |                                       |                                  |                               |  suspends the wasm stack
      |                                       |                                  |- requestInput(): stores       |
      |                                       |                                  |  self.pendingInputResolver    |
      |                                       |<---------------------------------|                               |
@@ -402,7 +475,7 @@ and
      |                                       | 'input_response', input}         |                               |
      |                                       |                                  |- handleInputResponse():       |
      |                                       |                                  |  pendingInputResolver(input)  |
-     |                                       |                                  |                               |- await returns 'Ada',
+     |                                       |                                  |                               |- run_sync returns 'Ada',
      |                                       |                                  |                               |  execution resumes
      |                                       |<---------------------------------|                               |
      |                                       | postMessage {type: 'result', id, |                               |
@@ -414,36 +487,31 @@ and
 
 Step by step:
 
-1. Before or during the run, the host queues answers with `queueInput`
+1. At init, `setupInputHandling`
+   ([worker-input.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-input.js))
+   probes `WebAssembly.Suspending` and installs the matching handler. The
+   `ready` message reports the choice and the manager exposes it as
+   `manager.inputMode` (`'jspi'` or `'async'`).
+2. Before or during the run, the host queues answers with `queueInput`
    ([manager-input.js#L65](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L65))
    or registers a callback with `setInputCallback`
    ([manager-input.js#L78](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L78)).
-2. The execute message reaches the worker as usual. This time the regex gate
-   in `transformCodeForExecution`
-   ([worker-execution.js#L81](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L86))
-   matches, so the worker calls the Python transformer
-   ([worker-execution.js#L91](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L91)).
-3. `transform_code_for_execution`
-   ([code_transformation.py#L86](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L86))
-   parses the code and lets `_AwaitInputTransformer`
-   ([code_transformation.py#L15](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L15))
-   wrap every call to the builtin `input` in `ast.Await`
-   ([code_transformation.py#L54-L60](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L54-L60)).
-   Names like `my_input()` or `obj.input()` are untouched, and calls inside
-   sync `def`, `lambda` or class bodies are left alone
-   ([code_transformation.py#L25-L52](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L25-L52)),
-   where `await` would be a syntax error. The code is not wrapped in a
-   function, so top-level variables keep landing in the globals.
-4. The rewritten code runs through `runPythonAsync`. Each `await input(...)`
-   enters `input_handler`
-   ([worker-input.js#L39-L50](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L43-L53)):
-   it prints the prompt into the captured stdout, then awaits
-   `requestInput(prompt)`.
+3. The execute message reaches the worker as usual. In jspi mode
+   `transformCodeForExecution`
+   ([worker-execution.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-execution.js))
+   returns the code untouched: there is nothing to rewrite.
+4. When user code calls `input(prompt)`, the sync `input_handler` prints
+   the prompt into the captured stdout, then calls
+   `pyodide.ffi.run_sync(requestInput(prompt))`: JSPI suspends the wasm
+   stack until the JavaScript promise settles, so a plain function call
+   blocks Python without blocking the worker's event loop. This is why the
+   code needs no transformation, and why `input()` also works inside sync
+   functions, lambdas and class bodies in this mode.
 5. `requestInput`
    ([worker-input.js#L18-L29](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L18-L29))
    posts `{type: "input_required", prompt}` and parks the resolver in
-   `self.pendingInputResolver`. The Python coroutine is now suspended and the
-   worker event loop is free.
+   `self.pendingInputResolver`. Python is now suspended and the worker
+   event loop is free.
 6. On the manager side, `handleInputMessage`
    ([manager-input.js#L113-L135](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L113-L135))
    records the prompt, then either dequeues a queued answer and calls
@@ -456,20 +524,69 @@ Step by step:
    posts `{type: "input_response", input}` to the worker.
 8. `handleInputResponse`
    ([worker-input.js#L64-L81](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L68-L85))
-   calls `pendingInputResolver(input)`: the awaited promise resolves, `input()`
-   returns the string, Python resumes. The rest of the run finishes like the
-   classic flow, and the `result` message resets the input state
+   calls `pendingInputResolver(input)`: the promise resolves, `run_sync`
+   returns the string, Python resumes. The rest of the run finishes like
+   the classic flow, and the `result` message resets the input state
    ([manager.js#L333](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L346),
    [manager-input.js#L143](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager-input.js#L143)).
 
-The execution timeout keeps ticking while Python waits for a human. Raise
-`timeoutMs` for interactive code
+### The async fallback: rewriting input() on the AST
+
+Without JSPI, a sync handler cannot block, so `builtins.input` is an async
+coroutine instead and the worker rewrites the code before running it. Only
+the worker and Python side changes; steps 5 to 8 above apply verbatim,
+except that in step 8 the awaited promise resolving is what resumes the
+coroutine:
+
+```
+[worker]                      [python]
+     |                             |
+     |- inputMode is 'async' and   |
+     |  the regex finds a genuine  |
+     |  input( call                |
+     |---------------------------->|
+     | transform_code_for_         |
+     | execution(code)             |
+     |                             |- _AwaitInputTransformer rewrites
+     |                             |  input() -> await input() on the
+     |                             |  AST; sync def / lambda / class
+     |                             |  bodies are left untouched
+     |<----------------------------|
+     | rewritten source            |
+     |---------------------------->|
+     | await runPythonAsync(       |
+     | rewritten code)             |
+     |                             |- await input(prompt) enters the
+     |                             |  async input_handler: prints the
+     |                             |  prompt, then awaits
+     |                             |  requestInput(prompt)
+```
+
+The regex gate in `transformCodeForExecution`
+([worker-execution.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-execution.js))
+only fires in this mode, and only on a genuine `input(` call. When it
+matches, `transform_code_for_execution`
+([code_transformation.py#L86](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L86))
+parses the code and lets `_AwaitInputTransformer`
+([code_transformation.py#L15](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L15))
+wrap every call to the builtin `input` in `ast.Await`
+([code_transformation.py#L54-L60](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L54-L60)).
+Names like `my_input()` or `obj.input()` are untouched, and calls inside
+sync `def`, `lambda` or class bodies are left alone
+([code_transformation.py#L25-L52](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L25-L52)),
+where `await` would be a syntax error: in this mode `input()` inside such
+scopes stays unsupported, which is exactly the limitation jspi mode
+removes. The code is not wrapped in a function, so top-level variables
+keep landing in the globals.
+
+In both modes the execution timeout keeps ticking while Python waits for a
+human. Raise `timeoutMs` for interactive code
 ([manager.js#L397](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L409)).
 If it fires while no input was provided, the promise rejects and any late
-result is discarded by id, but the coroutine keeps awaiting inside the
-worker: that execution only finishes if a `provideInput` arrives later.
+result is discarded by id, but the paused execution keeps waiting inside
+the worker: that execution only finishes if a `provideInput` arrives later.
 
-Integration snippet:
+Integration snippet, identical in both modes:
 
 ```javascript
 manager.queueInput("Ada");                  // consumed by the first input()
@@ -481,6 +598,8 @@ const result = await manager.executeAsync("ask.py", `
 name = input("Your name? ")
 print(f"Hello {name}")
 `, undefined, 120000);                      // 2 min budget for human input
+
+console.log(manager.inputMode);             // 'jspi' or 'async', picked at init
 ```
 
 See it live:
@@ -610,8 +729,9 @@ That single fact explains everything in this section.
 Without a namespace, `runPythonAsync` executes in the interpreter's shared
 globals
 ([worker-execution.js#L42](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L42)),
-so module-level names survive from one `executeAsync` to the next. The
-`input()` rewrite keeps this property: the code is never wrapped in a function
+so module-level names survive from one `executeAsync` to the next. `input()`
+support keeps this property: in jspi mode the code is not touched at all, and
+the async-mode rewrite never wraps it in a function
 ([code_transformation.py#L1-L11](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L1-L11)).
 
 ### The namespace parameter isolates a run
@@ -661,7 +781,8 @@ alongside other runs. Verified guarantees:
 - Rebinding `missive`, `input` or any other name cannot shadow them for
   other executions: the shadow dies with the namespace.
 - The capture infrastructure (stdout/stderr buffers, missive slot, figure
-  capture, the input() AST rewrite) is out of reach by construction: the
+  capture, the input() bridge and its rewrite) is out of reach by
+  construction: the
   worker calls it through module references held since init, never through
   a namespace (see the initialization flow above).
 
@@ -1030,7 +1151,7 @@ runs three BrythonManager tests in the browser
 A missive is the structured answer of a run: user code calls `missive({...})`
 once, and the value comes back on `result.missive`. The two backends agree on
 the name and the once-per-run rule, but not on the type. This asymmetry is
-real in v0.0.44, so portable host code must handle both.
+real in the current release, so portable host code must handle both.
 
 Pyodide backend: the missive travels as a JSON string.
 

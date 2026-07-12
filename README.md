@@ -57,7 +57,7 @@ environments.
 - **🚀 Worker Architecture** - Python execution isolated in web workers (Pyodide) or main thread (Brython)
 - **🔧 Automatic Blob Workers** - Cross-origin compatibility for Pyodide (Flask, Django, etc.)
 - **📦 Micropip Support** - Install packages from PyPI using micropip (Pyodide only)
-- **🎮 Interactive Input** - Natural `input()` support with queue/callbacks (Pyodide only)
+- **🎮 Interactive Input** - Natural `input()` support with queue/callbacks; blocks natively on JSPI browsers, AST-rewrite fallback elsewhere (Pyodide only)
 - **📊 Matplotlib Integration** - Automatic figure capture as base64 images (Pyodide only)
 - **🔗 Remote Module Loading** - Load Python modules from URLs with retry logic (Pyodide only)
 - **🎯 Namespace Isolation** - Complete execution isolation between runs
@@ -268,13 +268,14 @@ npm run build-dev
 
 ## Interactive Input
 
-Nagini provides robust, asynchronous support for Python's built-in `input()` function, allowing for both programmatic and user-driven interaction without blocking the main browser thread.
+Nagini supports Python's built-in `input()` function for both programmatic and user-driven interaction, without blocking the main browser thread. Two engines exist, picked once at init and exposed as `manager.inputMode`.
 
 ### How It Works
-1.  **Code Transformation**: Code containing `input()` is rewritten at the AST level: only genuine calls to the builtin `input()` are prefixed with `await` (names like `my_input()` or `obj.input()` are untouched, and calls inside sync `def`, `lambda` or class bodies are left as-is). The code is not wrapped in a function: it runs directly via `runPythonAsync` with top-level `await`, so top-level variables persist in the globals between runs.
-2.  **Pause and Wait**: The Python worker pauses execution and sends an `input_required` message to the main thread.
-3.  **Data Provision**: The main thread provides the input from a queue or a user-facing callback.
-4.  **Resume**: The worker receives the input and resumes Python execution.
+1.  **Native blocking (jspi mode)**: on browsers with JSPI (`WebAssembly.Suspending`, Chrome 137+), `builtins.input` is a plain synchronous function that blocks through `pyodide.ffi.run_sync`. User code runs completely unmodified, and `input()` works anywhere, including inside sync functions, lambdas and class bodies.
+2.  **AST rewrite (async fallback)**: without JSPI, code containing `input()` is rewritten at the AST level: only genuine calls to the builtin `input()` are prefixed with `await` (names like `my_input()` or `obj.input()` are untouched, and calls inside sync `def`, `lambda` or class bodies are left as-is). The code is not wrapped in a function: it runs directly via `runPythonAsync` with top-level `await`, so top-level variables persist in the globals between runs.
+3.  **Pause and Wait**: in both modes, the Python worker pauses execution and sends an `input_required` message to the main thread.
+4.  **Data Provision**: the main thread provides the input from a queue or a user-facing callback.
+5.  **Resume**: the worker receives the input and resumes Python execution.
 
 ### Programmatic Input
 
@@ -496,6 +497,7 @@ src/
     │   ├── worker-execution.js     # Execution logic
     │   ├── worker-input.js         # Input handling
     │   ├── worker-fs.js            # Filesystem operations
+    │   ├── worker-snapshot.js      # Interpreter snapshot cache (IndexedDB)
     │   ├── webpack.config.cjs      # Webpack bundling configuration
     │   ├── package.json            # NPM dependencies and build scripts
     │   ├── package-lock.json       # Dependency lock file
@@ -506,7 +508,6 @@ src/
     ├── file-loader/
     │   └── file-loader.js          # Remote file loading
     └── python/
-        ├── pyodide_init.py         # Python initialization script
         ├── capture_system.py       # Output capture system
         ├── code_transformation.py  # Code transformation utilities
         └── pyodide_utilities.py    # Python helper functions

@@ -62,7 +62,10 @@ const manager = await Nagini.createManager(
   ['matplotlib'],   // pyodide packages, loaded at boot
   [],               // micropip packages
   [],               // files to load into the worker fs
-  '../../src/pyodide/worker/worker-dist.js'
+  '../../src/pyodide/worker/worker-dist.js',
+  { snapshotCache: true }  // cache the interpreter in IndexedDB:
+                           // reloads of this page boot in ~100 ms,
+                           // packages still load each time
 );
 await Nagini.waitForReady(manager, 180000);
 
@@ -152,20 +155,31 @@ print("this line never runs")`,
     id: 'input',
     docAnchor: 'input-pausing-python-for-the-host',
     title: 'Interactive input()',
-    blurb: 'input() is rewritten to an awaitable call inside the worker. '
-      + 'The page decides how to answer: show a field to the user through '
-      + 'setInputCallback and provideInput, or queue values ahead of time '
-      + 'with queueInput.',
+    blurb: 'input() has two engines, picked at boot and exposed as '
+      + 'manager.inputMode: on browsers with JSPI (Chrome 137+) it blocks '
+      + 'natively and the code runs unmodified, even input() inside sync '
+      + 'functions; elsewhere the worker rewrites genuine input() calls to '
+      + 'await input() on the AST. Either way the page decides how to '
+      + 'answer: show a field through setInputCallback and provideInput, '
+      + 'or queue values ahead of time with queueInput.',
     flow: `executeAsync("ask.py", code)
         |
         v
 +-----------------------------+
-| worker sees input() calls,  |
-| rewrites the AST to await   |
+| manager.inputMode?          |
 +-----------------------------+
-        |
-        | input() reached
-        v
+    |                |
+    | jspi           | async
+    v                v
++-----------+  +-------------------+
+| code runs |  | worker rewrites   |
+| unchanged |  | input() to await  |
+|           |  | input() (AST)     |
++-----------+  +-------------------+
+    |                |
+    +--------+-------+
+             | input() reached
+             v
 +-----------------------------+
 | worker posts input_required |
 | with the prompt text        |
@@ -187,7 +201,7 @@ print("this line never runs")`,
     v                v
 +-----------------------------+
 | worker: input() returns,    |
-| the coroutine resumes       |
+| python resumes              |
 +-----------------------------+
         |
         v
@@ -198,7 +212,12 @@ result as usual`,
         heading: 'Interactive: answer in the field',
         note: 'A field appears under the editor when Python reaches input(). '
           + 'The run stays pending until you answer, so the timeout is raised.',
-        js: `// register once: called each time python reaches input()
+        js: `// manager.inputMode says which engine this browser got:
+// 'jspi' (input() blocks natively, code unmodified) or
+// 'async' (genuine input() calls rewritten to await input())
+console.log(manager.inputMode);
+
+// register once: called each time python reaches input()
 manager.setInputCallback((prompt) => showFieldFor(prompt));
 
 // the user submits the field:

@@ -17,7 +17,7 @@ This asynchronous function creates and initializes a backend manager.
 -   **`micropipPackages`** (Array<string>): A list of packages to install via `micropip`.
 -   **`filesToLoad`** (Array<Object>): An array of file objects to preload into the virtual filesystem. Each object should have a `url` and `path`.
 -   **`workerPath`** (string): The path to the Pyodide worker script (`worker-dist.js`). This is crucial for cross-origin scenarios.
--   **`options`** (Object): Backend-specific options.
+-   **`options`** (Object): Backend-specific options. For Pyodide: `pyodideCdnUrl` (self-hosted or offline runtime) and `snapshotCache` (boolean, cache the bare interpreter in IndexedDB for near-instant later boots). For Brython: `brythonJsPath` and `brythonStdlibPath`.
 
 **Returns:** A promise that resolves to a manager instance (`PyodideManager` or `BrythonManager`).
 

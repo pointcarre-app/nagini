@@ -362,6 +362,9 @@ to ensure consistent error handling and type checking.</p>
     * [.filesToLoad](#PyodideManager+filesToLoad) : [<code>Array.&lt;FileToLoad&gt;</code>](#FileToLoad)
     * [.workerPath](#PyodideManager+workerPath) : <code>string</code>
     * [.pyodideCdnUrl](#PyodideManager+pyodideCdnUrl) : <code>string</code> \| <code>undefined</code>
+    * [.snapshotCache](#PyodideManager+snapshotCache) : <code>boolean</code>
+    * [.snapshotRestored](#PyodideManager+snapshotRestored) : <code>boolean</code>
+    * [.inputMode](#PyodideManager+inputMode) : <code>&#x27;jspi&#x27;</code> \| <code>&#x27;async&#x27;</code> \| <code>null</code>
     * [.blobUrl](#PyodideManager+blobUrl) : <code>string</code> \| <code>null</code>
     * [.executionChain](#PyodideManager+executionChain) : <code>Promise.&lt;any&gt;</code>
     * [._pendingRequests](#PyodideManager+_pendingRequests) : <code>Map.&lt;number, {resolve: function(), reject: function(), timeoutId: number}&gt;</code>
@@ -392,6 +395,7 @@ to ensure consistent error handling and type checking.</p>
 | workerPath | <code>string</code> |  | <p>Path to the bundled web worker file (must be worker-dist.js)</p> |
 | [config] | <code>Object</code> | <code>{}</code> | <p>Optional configuration object</p> |
 | [config.pyodideCdnUrl] | <code>string</code> |  | <p>Custom Pyodide CDN URL (for local/offline use, e.g., Capacitor apps)</p> |
+| [config.snapshotCache] | <code>boolean</code> |  | <p>Cache the bare interpreter as a memory snapshot in IndexedDB for near-instant later boots</p> |
 
 <a name="PyodideManager+worker"></a>
 
@@ -439,6 +443,24 @@ to ensure consistent error handling and type checking.</p>
 
 ### pyodideManager.pyodideCdnUrl : <code>string</code> \| <code>undefined</code>
 <p>Custom Pyodide CDN URL (for local/offline use)</p>
+
+**Kind**: instance property of [<code>PyodideManager</code>](#PyodideManager)  
+<a name="PyodideManager+snapshotCache"></a>
+
+### pyodideManager.snapshotCache : <code>boolean</code>
+<p>Cache the bare interpreter as a memory snapshot in IndexedDB: later boots restore it in ~100 ms instead of a full interpreter boot. Packages and files still load after the restore</p>
+
+**Kind**: instance property of [<code>PyodideManager</code>](#PyodideManager)  
+<a name="PyodideManager+snapshotRestored"></a>
+
+### pyodideManager.snapshotRestored : <code>boolean</code>
+<p>Whether this worker booted from a cached snapshot (set on the ready message)</p>
+
+**Kind**: instance property of [<code>PyodideManager</code>](#PyodideManager)  
+<a name="PyodideManager+inputMode"></a>
+
+### pyodideManager.inputMode : <code>&#x27;jspi&#x27;</code> \| <code>&#x27;async&#x27;</code> \| <code>null</code>
+<p>How input() is bridged in the worker (set on the ready message): 'jspi' blocks natively through wasm stack switching and runs user code unmodified; 'async' falls back to the AST rewrite of input() into await input()</p>
 
 **Kind**: instance property of [<code>PyodideManager</code>](#PyodideManager)  
 <a name="PyodideManager+blobUrl"></a>

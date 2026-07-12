@@ -74,6 +74,7 @@ does what, and how the pieces are wired together.
 |   worker-execution.js  execute path   |
 |   worker-input.js      input() bridge |
 |   worker-fs.js         fs operations  |
+|   worker-snapshot.js   snapshot cache |
 |   worker-config.js     constants      |
 |   ../file-loader/file-loader.js       |
 |       remote files at init            |
@@ -83,7 +84,7 @@ does what, and how the pieces are wired together.
 |   capture_system.py     stdout,       |
 |       stderr, missive, figures        |
 |   code_transformation.py AST rewrite  |
-|       of input() calls                |
+|       of input() (async fallback)     |
 |   pyodide_utilities.py  matplotlib    |
 |       setup                           |
 +-------------------+-------------------+
@@ -146,6 +147,9 @@ Every request goes through
 [`_postRequest`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L278)
 and every worker message through
 [`_dispatchMessage`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/manager/manager.js#L213).
+The `ready` message fills two read-only flags: `manager.snapshotRestored`
+(whether the interpreter came out of the snapshot cache) and
+`manager.inputMode` (`'jspi'` or `'async'`).
 
 ### Manager helper modules
 
@@ -198,8 +202,10 @@ routes messages by type in
 [`handleMessage`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L85)
 and owns
 [`handleInit`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L117):
-load Pyodide, run the bundled Python modules, set up input handling, load
-files and packages, then post `ready`. It imports the Python sources
+load Pyodide (from a cached snapshot when `snapshotCache` allows it),
+import the bundled Python modules, set up input handling, load files and
+packages, then post `ready` with the `snapshotRestored` and `inputMode`
+flags. It imports the Python sources
 [as bundled strings](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-handlers.js#L15-L18)
 through the webpack `@python` alias.
 
@@ -208,20 +214,28 @@ through the webpack `@python` alias.
 [src/pyodide/worker/worker-execution.js](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js)
 is the execute path:
 [`handleExecute`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L18)
-resets the capture buffers, optionally transforms the code for `input()`
-support, runs it through `runPythonAsync`, then collects everything with
+resets the capture buffers, transforms the code for `input()` support when
+needed (async input mode only, jspi mode runs the code untouched), runs it
+through `runPythonAsync`, then collects everything with
 [`captureOutputs`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-execution.js#L101)
 and posts a single `result` message carrying the request id.
 
 ### worker-input.js
 
 [src/pyodide/worker/worker-input.js](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js)
-bridges Python's `input()` to the page.
-[`setupInputHandling`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L16)
-replaces `builtins.input` with an async coroutine that awaits a JavaScript
-promise, and
+bridges Python's `input()` to the page, in one of two modes picked at init
+by
+[`setupInputHandling`](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-input.js).
+On browsers with JSPI (`WebAssembly.Suspending`), `builtins.input` becomes
+a plain sync function that blocks through `pyodide.ffi.run_sync`: user code
+runs unmodified and `input()` works even inside sync functions, lambdas and
+class bodies. Without JSPI, `builtins.input` is an async coroutine awaiting
+a JavaScript promise, paired with the AST rewrite in
+`code_transformation.py`. In both modes
 [`handleInputResponse`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-input.js#L68)
-resolves that promise when the manager sends the user's answer.
+resolves the parked promise when the manager sends the user's answer. The
+chosen mode travels on the `ready` message and is exposed as
+`manager.inputMode`.
 
 ### worker-fs.js
 
@@ -231,6 +245,23 @@ executes filesystem operations against Pyodide's virtual FS in
 (writeFile, readFile, mkdir, exists, listdir) and also hosts
 [`loadPackages`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/worker/worker-fs.js#L73),
 which skips packages already loaded in this worker.
+
+### worker-snapshot.js
+
+[src/pyodide/worker/worker-snapshot.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-snapshot.js)
+implements the optional interpreter snapshot cache behind the
+`snapshotCache` manager option. It stores a memory snapshot of the bare
+interpreter plus Nagini's embedded Python modules (~31 MB) in IndexedDB,
+keyed by the Pyodide origin and a SHA-256 of the embedded sources; storing
+a new entry evicts the others. The snapshot is taken right before the
+input bridge is installed: the bridge, loaded files and packages hold live
+JavaScript references (hiwire entries) that Pyodide's snapshot serializer
+rejects, so they are replayed on every boot instead. A matching entry cuts
+the interpreter boot from ~0.8 s to ~100 ms; every failure path (no
+IndexedDB, quota, corrupt entry) falls back to a fresh boot. The restore
+outcome is exposed as `manager.snapshotRestored`. The full branch is traced
+in the
+[initialization flow](execution-flows.md#the-snapshot-cache-branch).
 
 ### worker-config.js
 
@@ -264,6 +295,7 @@ plus the once-per-execution
 function.
 
 [code_transformation.py](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py)
+is the async input fallback (only used when the browser lacks JSPI): it
 rewrites genuine calls to the builtin `input()` into `await input()` on the
 AST, through
 [`transform_code_for_execution`](https://github.com/pointcarre-app/nagini/blob/v0.0.48/src/pyodide/python/code_transformation.py#L86)

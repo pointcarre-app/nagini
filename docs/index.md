@@ -189,13 +189,14 @@ npm run build-dev
 
 ## Interactive Input
 
-Nagini provides robust, asynchronous support for Python's built-in `input()` function, allowing for both programmatic and user-driven interaction without blocking the main browser thread.
+Nagini supports Python's built-in `input()` function for both programmatic and user-driven interaction, without blocking the main browser thread. Two engines exist, picked once at init and exposed as `manager.inputMode`.
 
 ### How It Works
-1.  **Code Transformation**: Code containing `input()` is rewritten at the AST level: only genuine calls to the builtin `input()` are prefixed with `await` (names like `my_input()` or `obj.input()` are untouched, and calls inside sync `def`, `lambda` or class bodies are left as-is). The code is not wrapped in a function: it runs directly via `runPythonAsync` with top-level `await`, so top-level variables persist in the globals between runs.
-2.  **Pause and Wait**: The Python worker pauses execution and sends an `input_required` message to the main thread.
-3.  **Data Provision**: The main thread provides the input from a queue or a user-facing callback.
-4.  **Resume**: The worker receives the input and resumes Python execution.
+1.  **Native blocking (jspi mode)**: on browsers with JSPI (`WebAssembly.Suspending`, Chrome 137+), `builtins.input` is a plain synchronous function that blocks through `pyodide.ffi.run_sync`. User code runs completely unmodified, and `input()` works anywhere, including inside sync functions, lambdas and class bodies.
+2.  **AST rewrite (async fallback)**: without JSPI, code containing `input()` is rewritten at the AST level: only genuine calls to the builtin `input()` are prefixed with `await` (names like `my_input()` or `obj.input()` are untouched, and calls inside sync `def`, `lambda` or class bodies are left as-is). The code is not wrapped in a function: it runs directly via `runPythonAsync` with top-level `await`, so top-level variables persist in the globals between runs.
+3.  **Pause and Wait**: in both modes, the Python worker pauses execution and sends an `input_required` message to the main thread.
+4.  **Data Provision**: the main thread provides the input from a queue or a user-facing callback.
+5.  **Resume**: the worker receives the input and resumes Python execution.
 
 ### Programmatic Input
 
@@ -446,6 +447,7 @@ src/
     │   ├── worker-execution.js     # Execution logic
     │   ├── worker-input.js         # Input handling
     │   ├── worker-fs.js            # Filesystem operations
+    │   ├── worker-snapshot.js      # Interpreter snapshot cache (IndexedDB)
     │   ├── webpack.config.cjs      # Webpack bundling configuration
     │   ├── package.json            # NPM dependencies and build scripts
     │   ├── package-lock.json       # Dependency lock file
@@ -539,9 +541,9 @@ The unified test suite covers all core features:
 
 ## Dependencies
 
-- **Pyodide v0.28.0** - Python runtime via WebAssembly (Mozilla Public License 2.0)
+- **Pyodide 314.0.2 (Python 3.14)** - Python runtime via WebAssembly (Mozilla Public License 2.0)
 - **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
-- **Matplotlib WebAgg Backend** - The new default backend for Matplotlib, providing a more stable and feature-rich experience.
+- **Matplotlib agg backend** - Figures are rendered off screen in the worker and captured as base64 PNG strings.
 - **Modern Browser** - WebWorkers, SharedArrayBuffer support
 - **No external dependencies** - Self-contained system
 

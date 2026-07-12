@@ -9,7 +9,7 @@ cd scenery
 env/bin/python run_tests.py
 ```
 
-Needs network access (Pyodide download, jsDelivr and esm.sh tests) and takes about 4 minutes for 64 tests. On success it prints `All programmatic scenery tests passed!` and exits 0. Pass a file path as first argument to save the JSON report there.
+Needs network access (Pyodide download, jsDelivr and esm.sh tests) and takes about 4 minutes for 65 tests. On success it prints `All programmatic scenery tests passed!` and exits 0. Pass a file path as first argument to save the JSON report there.
 
 If `env/` does not exist yet (it is untracked), create it first:
 
@@ -26,7 +26,8 @@ env/bin/pip install -r requirements.txt
 | `run_tests.py` | Selenium runner. Starts `../serve.py` on a free port, loads `index.html` in headless Chrome, waits up to 300 seconds for `#test-results-json`, fails on any `"status": "fail"`. |
 | `tests/` | Test modules (one file per class under test) plus Python fixtures loaded into the Pyodide filesystem. |
 | `examples/` | Showcase of the Nagini API with editable, runnable snippets. |
-| `executions/` | One runnable example per execution flow, with the integration code and the matching diagram from `../docs/execution-flows.md`. |
+| `executions/` | One runnable example per execution flow, with the integration code and the matching diagram from `../docs/execution-flows.md`. Boots its shared manager with `snapshotCache: true`. |
+| `experiments-snapshot/` | Benchmark spike behind the snapshot cache: measures fresh boot against IndexedDB snapshot restore. Not part of the suite. |
 | `lycee/` | French high-school maths algorithms as runnable programs. |
 | `dataeng/` | Data engineering snippets (Python, SQL, streams). `dataeng/api-live/` serves a FastAPI app in the browser through a service worker. |
 | `arcade/` | Data engineer challenges and a sprint mode. |
