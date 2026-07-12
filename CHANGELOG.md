@@ -1,3 +1,10 @@
+# v0.0.48
+
+- **Interpreter snapshot cache**: new `snapshotCache` option on `createManager` (Pyodide backend). The worker snapshots the bare interpreter plus Nagini's embedded Python modules right before the input bridge is installed, stores it in IndexedDB (~31 MB, keyed by Pyodide origin and a hash of the embedded sources, so any change invalidates it), and later boots restore it in about 100 ms instead of a ~0.8 s interpreter boot. Packages, micropip, `filesToLoad` and the input bridge are replayed after the restore: package state cannot live in the snapshot on current Pyodide (its serializer rejects the live JS references that package loading creates). Every cache failure degrades to a fresh boot; a corrupt entry is deleted and rebuilt
+- `manager.snapshotRestored` reports whether the current worker booted from the cache
+- The executions demo page runs with the option enabled
+- **Testing**: new suite test covering make, restore, and input() plus missive on a restored interpreter; full suite green 64/64
+
 # v0.0.47
 
 - **Pyodide 314.0.2 (Python 3.14.2)**: default CDN bumped from 0.29.4. Everything the suite uses ships in the 314 distribution (numpy, matplotlib, sympy, pydantic, strictyaml, fastapi, httpx); sqlite3 and lzma are now part of the bundled stdlib, no package load needed

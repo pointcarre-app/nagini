@@ -52,7 +52,8 @@ function ensureManager() {
   setStatus('boot', 'loading pyodide + ' + PACKAGES.join(', '));
   managerPromise = (async () => {
     const m = await Nagini.createManager(
-      'pyodide', PACKAGES, MICROPIP_PACKAGES, [], WORKER_PATH
+      'pyodide', PACKAGES, MICROPIP_PACKAGES, [], WORKER_PATH,
+      { snapshotCache: true }
     );
     await Nagini.waitForReady(m, BOOT_TIMEOUT_MS);
     m.setInputCallback(onInputRequired);

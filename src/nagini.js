@@ -47,7 +47,8 @@ export const Nagini = {
         const { PyodideManager } = await import('./pyodide/manager/manager.js');
         // Extract Pyodide-specific config options
         const pyodideConfig = {
-          pyodideCdnUrl: options.pyodideCdnUrl
+          pyodideCdnUrl: options.pyodideCdnUrl,
+          snapshotCache: options.snapshotCache
         };
         return new PyodideManager(packages, micropipPackages, filesToLoad, finalWorkerPath, pyodideConfig);
       } else if (backend.toLowerCase() === 'brython') {

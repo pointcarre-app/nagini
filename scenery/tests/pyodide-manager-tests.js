@@ -380,4 +380,44 @@ missive({"plot_type": "sine_wave", "x_points": len(x)})`
             throw error;
         }
     }
-} 
+
+    static async testSnapshotCacheRestore() {
+        const testName = "snapshot cache restore";
+        logTestStart("PyodideManager", testName);
+
+        try {
+            const { Nagini } = await import('../../src/nagini.js');
+            const workerPath = new URL('../../src/pyodide/worker/worker-dist.js', import.meta.url).href;
+
+            // First boot with the cache on: makes and stores the snapshot
+            // (or restores one left by a previous run, both are fine)
+            const m1 = await Nagini.createManager('pyodide', [], [], [], workerPath, { snapshotCache: true });
+            await Nagini.waitForReady(m1, 120000);
+            const r1 = await m1.executeAsync('snap1.py', 'missive({"boot": 1})\nprint("one")');
+            assert(!r1.error, "First boot should execute cleanly");
+            assertContains(r1.stdout, "one", "First boot should print");
+            m1.destroy();
+
+            // Second boot must restore from the cached snapshot
+            const m2 = await Nagini.createManager('pyodide', [], [], [], workerPath, { snapshotCache: true });
+            await Nagini.waitForReady(m2, 120000);
+            assert(m2.snapshotRestored === true, "Second boot should restore from the snapshot cache");
+
+            // The replayed input bridge and the capture layer must work on a
+            // restored interpreter
+            m2.queueInput("from-cache");
+            const r2 = await m2.executeAsync('snap2.py', 'x = input()\nprint("echo:" + x)\nmissive({"echo": x})');
+            assert(!r2.error, "Restored boot should execute cleanly");
+            assertContains(r2.stdout, "echo:from-cache", "input() should work after restore");
+            const missiveData = JSON.parse(r2.missive);
+            assertEquals(missiveData.echo, "from-cache", "missive should work after restore");
+            m2.destroy();
+
+            logTestPass(testName);
+            return { testName };
+        } catch (error) {
+            logTestFail(testName, error);
+            throw error;
+        }
+    }
+}

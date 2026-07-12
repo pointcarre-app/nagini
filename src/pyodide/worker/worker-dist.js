@@ -771,6 +771,229 @@ var worker_fs_postWarning = function postWarning(message) {
  * @property {boolean} isInitialized - Whether Pyodide is initialized
  * @property {Set<string>} packagesLoaded - Set of loaded package names
  */
+;// ./worker-snapshot.js
+function worker_snapshot_createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = worker_snapshot_unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
+function worker_snapshot_regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return worker_snapshot_regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (worker_snapshot_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, worker_snapshot_regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, worker_snapshot_regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), worker_snapshot_regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", worker_snapshot_regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), worker_snapshot_regeneratorDefine2(u), worker_snapshot_regeneratorDefine2(u, o, "Generator"), worker_snapshot_regeneratorDefine2(u, n, function () { return this; }), worker_snapshot_regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (worker_snapshot_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function worker_snapshot_regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } worker_snapshot_regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { if (r) i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n;else { var o = function o(r, n) { worker_snapshot_regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); }; o("next", 0), o("throw", 1), o("return", 2); } }, worker_snapshot_regeneratorDefine2(e, r, n, t); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || worker_snapshot_unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function worker_snapshot_unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return worker_snapshot_arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? worker_snapshot_arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return worker_snapshot_arrayLikeToArray(r); }
+function worker_snapshot_arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function worker_snapshot_asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function worker_snapshot_asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { worker_snapshot_asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { worker_snapshot_asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+/**
+ * PyodideWorker Snapshot Cache Module
+ *
+ * Optional interpreter snapshot cache (manager option snapshotCache). The
+ * snapshot covers the bare interpreter plus Nagini's embedded Python modules
+ * and is taken BEFORE input setup, file loading and package installation:
+ * those hold live JavaScript references (hiwire entries) that Pyodide cannot
+ * serialize, so they are replayed on every boot instead. Packages therefore
+ * still load and import after a restore; only the interpreter boot is saved.
+ *
+ * The cache key hashes the embedded module sources and includes the Pyodide
+ * origin, so changing either invalidates the entry by construction. Every
+ * failure path degrades to a fresh boot: the cache can never brick a worker.
+ */
+
+var DB_NAME = 'nagini-snapshots';
+var STORE = 'snapshots';
+var KEY_PREFIX = 'nagini-snap:v1:';
+function openDb() {
+  return new Promise(function (resolve, reject) {
+    var req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = function () {
+      return req.result.createObjectStore(STORE);
+    };
+    req.onsuccess = function () {
+      return resolve(req.result);
+    };
+    req.onerror = function () {
+      return reject(req.error);
+    };
+  });
+}
+
+/**
+ * Compute the cache key for a snapshot: prefix + Pyodide origin + SHA-256 of
+ * the embedded Python module sources
+ *
+ * @param {string} cdnUrl - Resolved Pyodide base URL (part of the key)
+ * @param {string[]} moduleSources - Embedded Python sources (hashed)
+ * @returns {Promise<string>} Cache key
+ */
+function snapshotKey(_x, _x2) {
+  return _snapshotKey.apply(this, arguments);
+}
+
+/**
+ * Read a cached snapshot; any failure (no IndexedDB, quota, missing key)
+ * resolves to null
+ *
+ * @param {string} key - Cache key
+ * @returns {Promise<Uint8Array|null>}
+ */
+function _snapshotKey() {
+  _snapshotKey = worker_snapshot_asyncToGenerator(/*#__PURE__*/worker_snapshot_regenerator().m(function _callee(cdnUrl, moduleSources) {
+    var data, digest, hex;
+    return worker_snapshot_regenerator().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          data = new TextEncoder().encode(moduleSources.join(' '));
+          _context.n = 1;
+          return crypto.subtle.digest('SHA-256', data);
+        case 1:
+          digest = _context.v;
+          hex = _toConsumableArray(new Uint8Array(digest)).map(function (b) {
+            return b.toString(16).padStart(2, '0');
+          }).join('');
+          return _context.a(2, "".concat(KEY_PREFIX).concat(cdnUrl, ":").concat(hex));
+      }
+    }, _callee);
+  }));
+  return _snapshotKey.apply(this, arguments);
+}
+function loadSnapshot(_x3) {
+  return _loadSnapshot.apply(this, arguments);
+}
+
+/**
+ * Store a snapshot and evict every other nagini-snap entry (stale runtimes
+ * or module versions have no reader anymore)
+ *
+ * @param {string} key - Cache key
+ * @param {Uint8Array} bytes - Snapshot buffer
+ * @returns {Promise<boolean>} True when stored
+ */
+function _loadSnapshot() {
+  _loadSnapshot = worker_snapshot_asyncToGenerator(/*#__PURE__*/worker_snapshot_regenerator().m(function _callee2(key) {
+    var db, _t;
+    return worker_snapshot_regenerator().w(function (_context2) {
+      while (1) switch (_context2.n) {
+        case 0:
+          _context2.p = 0;
+          _context2.n = 1;
+          return openDb();
+        case 1:
+          db = _context2.v;
+          _context2.n = 2;
+          return new Promise(function (resolve) {
+            var req = db.transaction(STORE).objectStore(STORE).get(key);
+            req.onsuccess = function () {
+              return resolve(req.result || null);
+            };
+            req.onerror = function () {
+              return resolve(null);
+            };
+          });
+        case 2:
+          return _context2.a(2, _context2.v);
+        case 3:
+          _context2.p = 3;
+          _t = _context2.v;
+          return _context2.a(2, null);
+      }
+    }, _callee2, null, [[0, 3]]);
+  }));
+  return _loadSnapshot.apply(this, arguments);
+}
+function storeSnapshot(_x4, _x5) {
+  return _storeSnapshot.apply(this, arguments);
+}
+
+/**
+ * Delete one snapshot entry (used after a failed restore)
+ *
+ * @param {string} key - Cache key
+ * @returns {Promise<void>}
+ */
+function _storeSnapshot() {
+  _storeSnapshot = worker_snapshot_asyncToGenerator(/*#__PURE__*/worker_snapshot_regenerator().m(function _callee3(key, bytes) {
+    var db, _t2;
+    return worker_snapshot_regenerator().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          _context3.p = 0;
+          _context3.n = 1;
+          return openDb();
+        case 1:
+          db = _context3.v;
+          _context3.n = 2;
+          return new Promise(function (resolve) {
+            var tx = db.transaction(STORE, 'readwrite');
+            var store = tx.objectStore(STORE);
+            var keysReq = store.getAllKeys();
+            keysReq.onsuccess = function () {
+              var _iterator = worker_snapshot_createForOfIteratorHelper(keysReq.result),
+                _step;
+              try {
+                for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                  var k = _step.value;
+                  if (typeof k === 'string' && k.startsWith(KEY_PREFIX) && k !== key) {
+                    store.delete(k);
+                  }
+                }
+              } catch (err) {
+                _iterator.e(err);
+              } finally {
+                _iterator.f();
+              }
+              store.put(bytes, key);
+            };
+            tx.oncomplete = function () {
+              return resolve(true);
+            };
+            tx.onerror = function () {
+              return resolve(false);
+            };
+          });
+        case 2:
+          return _context3.a(2, _context3.v);
+        case 3:
+          _context3.p = 3;
+          _t2 = _context3.v;
+          return _context3.a(2, false);
+      }
+    }, _callee3, null, [[0, 3]]);
+  }));
+  return _storeSnapshot.apply(this, arguments);
+}
+function deleteSnapshot(_x6) {
+  return _deleteSnapshot.apply(this, arguments);
+}
+function _deleteSnapshot() {
+  _deleteSnapshot = worker_snapshot_asyncToGenerator(/*#__PURE__*/worker_snapshot_regenerator().m(function _callee4(key) {
+    var db, _t3;
+    return worker_snapshot_regenerator().w(function (_context4) {
+      while (1) switch (_context4.n) {
+        case 0:
+          _context4.p = 0;
+          _context4.n = 1;
+          return openDb();
+        case 1:
+          db = _context4.v;
+          _context4.n = 2;
+          return new Promise(function (resolve) {
+            var tx = db.transaction(STORE, 'readwrite');
+            tx.objectStore(STORE).delete(key);
+            tx.oncomplete = resolve;
+            tx.onerror = resolve;
+          });
+        case 2:
+          _context4.n = 4;
+          break;
+        case 3:
+          _context4.p = 3;
+          _t3 = _context4.v;
+        case 4:
+          return _context4.a(2);
+      }
+    }, _callee4, null, [[0, 3]]);
+  }));
+  return _deleteSnapshot.apply(this, arguments);
+}
 ;// ../file-loader/file-loader.js
 function _regeneratorValues(e) { if (null != e) { var t = e["function" == typeof Symbol && Symbol.iterator || "@@iterator"], r = 0; if (t) return t.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) return { next: function next() { return e && r >= e.length && (e = void 0), { value: e && e[r++], done: !e }; } }; } throw new TypeError(file_loader_typeof(e) + " is not iterable"); }
 function file_loader_regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return file_loader_regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (file_loader_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, file_loader_regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, file_loader_regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), file_loader_regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", file_loader_regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), file_loader_regeneratorDefine2(u), file_loader_regeneratorDefine2(u, o, "Generator"), file_loader_regeneratorDefine2(u, n, function () { return this; }), file_loader_regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (file_loader_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
@@ -1030,6 +1253,7 @@ function worker_handlers_toPrimitive(t, r) { if ("object" != worker_handlers_typ
 
 
 
+
 // Import Python modules as bundled strings
 
 
@@ -1180,7 +1404,7 @@ function handleInit(_x3, _x4) {
 }
 function _handleInit() {
   _handleInit = worker_handlers_asyncToGenerator(/*#__PURE__*/worker_handlers_regenerator().m(function _callee2(data, workerState) {
-    var packages, micropipPackages, filesToLoad, pyodideCdnUrl, cdnUrl, _yield$import, loadPyodide, pythonModules, _i, _pythonModules, module, loader, toLoad, loaded, micropip, _t, _t2;
+    var packages, micropipPackages, filesToLoad, pyodideCdnUrl, snapshotCache, cdnUrl, _yield$import, loadPyodide, moduleSources, snapshotRestored, snapKey, cached, pythonModules, _i, _pythonModules, module, bytes, loader, toLoad, loaded, micropip, _t, _t2, _t3, _t4, _t5;
     return worker_handlers_regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
@@ -1191,7 +1415,7 @@ function _handleInit() {
           worker_handlers_postError(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.ALREADY_INITIALIZED);
           return _context2.a(2);
         case 1:
-          packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad, pyodideCdnUrl = data.pyodideCdnUrl; // Use provided CDN URL or fall back to default
+          packages = data.packages, micropipPackages = data.micropipPackages, filesToLoad = data.filesToLoad, pyodideCdnUrl = data.pyodideCdnUrl, snapshotCache = data.snapshotCache; // Use provided CDN URL or fall back to default
           cdnUrl = pyodideCdnUrl || worker_config_PYODIDE_WORKER_CONFIG.PYODIDE_CDN; // Minimal init logging
           _context2.p = 2;
           _context2.n = 3;
@@ -1199,33 +1423,93 @@ function _handleInit() {
         case 3:
           _yield$import = _context2.v;
           loadPyodide = _yield$import.loadPyodide;
-          _context2.n = 4;
+          moduleSources = [capture_system_namespaceObject, code_transformation_namespaceObject, pyodide_utilities_namespaceObject];
+          snapshotRestored = false;
+          snapKey = null; // Snapshot cache: restore the interpreter (plus Nagini's Python modules)
+          // from IndexedDB when a matching snapshot exists. Every failure falls
+          // back to a fresh boot
+          if (!snapshotCache) {
+            _context2.n = 13;
+            break;
+          }
+          _context2.p = 4;
+          _context2.n = 5;
+          return snapshotKey(cdnUrl, moduleSources);
+        case 5:
+          snapKey = _context2.v;
+          _context2.n = 6;
+          return loadSnapshot(snapKey);
+        case 6:
+          cached = _context2.v;
+          if (!cached) {
+            _context2.n = 11;
+            break;
+          }
+          _context2.p = 7;
+          _context2.n = 8;
           return loadPyodide({
-            indexURL: cdnUrl
+            indexURL: cdnUrl,
+            _loadSnapshot: cached
           });
-        case 4:
+        case 8:
           workerState.pyodide = _context2.v;
+          snapshotRestored = true;
+          worker_handlers_postInfo('[Snapshot] Interpreter restored from cache');
+          _context2.n = 11;
+          break;
+        case 9:
+          _context2.p = 9;
+          _t = _context2.v;
+          _context2.n = 10;
+          return deleteSnapshot(snapKey);
+        case 10:
+          worker_handlers_postWarning("[Snapshot] Restore failed, booting fresh: ".concat(_t.message));
+        case 11:
+          _context2.n = 13;
+          break;
+        case 12:
+          _context2.p = 12;
+          _t2 = _context2.v;
+          worker_handlers_postWarning("[Snapshot] Cache unavailable: ".concat(_t2.message));
+        case 13:
+          if (workerState.pyodide) {
+            _context2.n = 15;
+            break;
+          }
+          _context2.n = 14;
+          return loadPyodide(worker_handlers_objectSpread({
+            indexURL: cdnUrl
+          }, snapshotCache && snapKey ? {
+            _makeSnapshot: true
+          } : {}));
+        case 14:
+          workerState.pyodide = _context2.v;
+        case 15:
           // Write the bundled Python modules to the filesystem and import them by
           // reference. Nothing is executed in the interpreter's global namespace:
           // user code cannot shadow or replace the capture infrastructure by
           // rebinding names, it only sees the two builtins deliberately exposed
-          // (missive, input)
-          pythonModules = [{
-            name: 'capture_system.py',
-            content: capture_system_namespaceObject
-          }, {
-            name: 'code_transformation.py',
-            content: code_transformation_namespaceObject
-          }, {
-            name: 'pyodide_utilities.py',
-            content: pyodide_utilities_namespaceObject
-          }];
-          for (_i = 0, _pythonModules = pythonModules; _i < _pythonModules.length; _i++) {
-            module = _pythonModules[_i];
-            workerState.pyodide.FS.writeFile(module.name, module.content);
+          // (missive, input). A restored snapshot already contains the files and
+          // the imported modules
+          if (!snapshotRestored) {
+            pythonModules = [{
+              name: 'capture_system.py',
+              content: capture_system_namespaceObject
+            }, {
+              name: 'code_transformation.py',
+              content: code_transformation_namespaceObject
+            }, {
+              name: 'pyodide_utilities.py',
+              content: pyodide_utilities_namespaceObject
+            }];
+            for (_i = 0, _pythonModules = pythonModules; _i < _pythonModules.length; _i++) {
+              module = _pythonModules[_i];
+              workerState.pyodide.FS.writeFile(module.name, module.content);
+            }
           }
 
-          // Importing capture_system also installs builtins.missive
+          // Importing capture_system also installs builtins.missive (instant on a
+          // restored snapshot: the modules are already in sys.modules)
           workerState.captureSystem = workerState.pyodide.pyimport('capture_system');
           workerState.codeTransformation = workerState.pyodide.pyimport('code_transformation');
           workerState.pyodideUtilities = workerState.pyodide.pyimport('pyodide_utilities');
@@ -1233,36 +1517,61 @@ function _handleInit() {
           // Activate output capture
           workerState.captureSystem.reset_captures();
 
-          // Set up input handling system
-          _context2.n = 5;
-          return setupInputHandling(workerState.pyodide);
-        case 5:
-          if (!(filesToLoad && filesToLoad.length > 0)) {
-            _context2.n = 9;
+          // Snapshot point: the interpreter holds no JavaScript references yet.
+          // Everything after this line (input bridge, loaded files, packages)
+          // creates hiwire entries that Pyodide cannot serialize, so it is
+          // replayed on every boot instead of being part of the snapshot
+          if (!(snapshotCache && snapKey && !snapshotRestored)) {
+            _context2.n = 20;
             break;
           }
-          _context2.p = 6;
-          loader = new PyodideFileLoader(filesToLoad);
-          _context2.n = 7;
-          return loader.loadFiles(workerState.pyodide);
-        case 7:
-          _context2.n = 9;
+          _context2.p = 16;
+          bytes = workerState.pyodide.makeMemorySnapshot();
+          _context2.n = 17;
+          return storeSnapshot(snapKey, bytes);
+        case 17:
+          if (!_context2.v) {
+            _context2.n = 18;
+            break;
+          }
+          worker_handlers_postInfo("[Snapshot] Interpreter snapshot cached (".concat((bytes.byteLength / 1e6).toFixed(1), " MB)"));
+        case 18:
+          _context2.n = 20;
           break;
-        case 8:
-          _context2.p = 8;
-          _t = _context2.v;
-          console.error("Failed to load custom files:", _t);
-          throw _t;
-        case 9:
-          if (!((packages === null || packages === void 0 ? void 0 : packages.length) > 0)) {
-            _context2.n = 10;
+        case 19:
+          _context2.p = 19;
+          _t3 = _context2.v;
+          worker_handlers_postWarning("[Snapshot] Could not cache interpreter: ".concat(_t3.message));
+        case 20:
+          _context2.n = 21;
+          return setupInputHandling(workerState.pyodide);
+        case 21:
+          if (!(filesToLoad && filesToLoad.length > 0)) {
+            _context2.n = 25;
             break;
           }
-          _context2.n = 10;
+          _context2.p = 22;
+          loader = new PyodideFileLoader(filesToLoad);
+          _context2.n = 23;
+          return loader.loadFiles(workerState.pyodide);
+        case 23:
+          _context2.n = 25;
+          break;
+        case 24:
+          _context2.p = 24;
+          _t4 = _context2.v;
+          console.error("Failed to load custom files:", _t4);
+          throw _t4;
+        case 25:
+          if (!((packages === null || packages === void 0 ? void 0 : packages.length) > 0)) {
+            _context2.n = 26;
+            break;
+          }
+          _context2.n = 26;
           return loadPackages(packages, workerState);
-        case 10:
+        case 26:
           if (!((micropipPackages === null || micropipPackages === void 0 ? void 0 : micropipPackages.length) > 0)) {
-            _context2.n = 13;
+            _context2.n = 29;
             break;
           }
           toLoad = micropipPackages.filter(function (pkg) {
@@ -1275,22 +1584,22 @@ function _handleInit() {
             worker_handlers_postInfo("[Micropip] Skipping ".concat(loaded.length, " already installed packages: ").concat(loaded.join(", ")));
           }
           if (!(toLoad.length > 0)) {
-            _context2.n = 13;
+            _context2.n = 29;
             break;
           }
           worker_handlers_postInfo("[Micropip] Installing ".concat(toLoad.length, " packages: ").concat(toLoad.join(", "), "..."));
-          _context2.n = 11;
+          _context2.n = 27;
           return workerState.pyodide.loadPackage("micropip");
-        case 11:
+        case 27:
           micropip = workerState.pyodide.pyimport("micropip");
-          _context2.n = 12;
+          _context2.n = 28;
           return micropip.install(toLoad);
-        case 12:
+        case 28:
           toLoad.forEach(function (pkg) {
             return workerState.micropipPackagesLoaded.add(pkg);
           });
           worker_handlers_postInfo("[Micropip] Packages installed successfully.");
-        case 13:
+        case 29:
           // Set up matplotlib if it was loaded
           try {
             workerState.pyodideUtilities.setup_matplotlib();
@@ -1299,20 +1608,21 @@ function _handleInit() {
           }
           workerState.isInitialized = true;
           self.postMessage({
-            type: "ready"
+            type: "ready",
+            snapshotRestored: snapshotRestored
           });
-          _context2.n = 15;
+          _context2.n = 31;
           break;
-        case 14:
-          _context2.p = 14;
-          _t2 = _context2.v;
+        case 30:
+          _context2.p = 30;
+          _t5 = _context2.v;
           workerState.pyodide = null;
           workerState.isInitialized = false;
-          worker_handlers_postError("".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.INIT_FAILED, ": ").concat(_t2.message));
-        case 15:
+          worker_handlers_postError("".concat(worker_config_PYODIDE_WORKER_CONFIG.MESSAGES.INIT_FAILED, ": ").concat(_t5.message));
+        case 31:
           return _context2.a(2);
       }
-    }, _callee2, null, [[6, 8], [2, 14]]);
+    }, _callee2, null, [[22, 24], [16, 19], [7, 9], [4, 12], [2, 30]]);
   }));
   return _handleInit.apply(this, arguments);
 }
@@ -1337,6 +1647,7 @@ function _handleInit() {
  * @property {string[]} [micropipPackages] - Optional array of package names to install with micropip
  * @property {Array<FileToLoad>} filesToLoad - Files to load into filesystem
  * @property {string} [pyodideCdnUrl] - Optional custom Pyodide CDN URL (for local/offline use)
+ * @property {boolean} [snapshotCache] - Cache the bare interpreter as a memory snapshot in IndexedDB
  */
 
 /**

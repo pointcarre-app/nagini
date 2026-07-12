@@ -8,6 +8,7 @@ import { PYODIDE_WORKER_CONFIG } from './worker-config.js';
 import { handleExecute, transformCodeForExecution, captureOutputs } from './worker-execution.js';
 import { setupInputHandling, handleInputResponse } from './worker-input.js';
 import { handleFSOperation, executeFS, loadPackages } from './worker-fs.js';
+import { snapshotKey, loadSnapshot, storeSnapshot, deleteSnapshot } from './worker-snapshot.js';
 import { PyodideFileLoader } from '../file-loader/file-loader.js';
 
 // Import Python modules as bundled strings
@@ -119,8 +120,8 @@ async function handleInit(data, workerState) {
     return;
   }
 
-  const { packages, micropipPackages, filesToLoad, pyodideCdnUrl } = data;
-  
+  const { packages, micropipPackages, filesToLoad, pyodideCdnUrl, snapshotCache } = data;
+
   // Use provided CDN URL or fall back to default
   const cdnUrl = pyodideCdnUrl || PYODIDE_WORKER_CONFIG.PYODIDE_CDN;
 
@@ -131,30 +132,81 @@ async function handleInit(data, workerState) {
     // worker (importScripts is not available there); webpackIgnore keeps the
     // dynamic import native so the URL is resolved at runtime
     const { loadPyodide } = await import(/* webpackIgnore: true */ `${cdnUrl}pyodide.mjs`);
-    workerState.pyodide = await loadPyodide({ indexURL: cdnUrl });
+
+    const moduleSources = [captureSystemPy, codeTransformationPy, pyodideUtilitiesPy];
+    let snapshotRestored = false;
+    let snapKey = null;
+
+    // Snapshot cache: restore the interpreter (plus Nagini's Python modules)
+    // from IndexedDB when a matching snapshot exists. Every failure falls
+    // back to a fresh boot
+    if (snapshotCache) {
+      try {
+        snapKey = await snapshotKey(cdnUrl, moduleSources);
+        const cached = await loadSnapshot(snapKey);
+        if (cached) {
+          try {
+            workerState.pyodide = await loadPyodide({ indexURL: cdnUrl, _loadSnapshot: cached });
+            snapshotRestored = true;
+            postInfo('[Snapshot] Interpreter restored from cache');
+          } catch (restoreError) {
+            await deleteSnapshot(snapKey);
+            postWarning(`[Snapshot] Restore failed, booting fresh: ${restoreError.message}`);
+          }
+        }
+      } catch (cacheError) {
+        postWarning(`[Snapshot] Cache unavailable: ${cacheError.message}`);
+      }
+    }
+
+    if (!workerState.pyodide) {
+      workerState.pyodide = await loadPyodide({
+        indexURL: cdnUrl,
+        ...(snapshotCache && snapKey ? { _makeSnapshot: true } : {}),
+      });
+    }
 
     // Write the bundled Python modules to the filesystem and import them by
     // reference. Nothing is executed in the interpreter's global namespace:
     // user code cannot shadow or replace the capture infrastructure by
     // rebinding names, it only sees the two builtins deliberately exposed
-    // (missive, input)
-    const pythonModules = [
-      { name: 'capture_system.py', content: captureSystemPy },
-      { name: 'code_transformation.py', content: codeTransformationPy },
-      { name: 'pyodide_utilities.py', content: pyodideUtilitiesPy }
-    ];
+    // (missive, input). A restored snapshot already contains the files and
+    // the imported modules
+    if (!snapshotRestored) {
+      const pythonModules = [
+        { name: 'capture_system.py', content: captureSystemPy },
+        { name: 'code_transformation.py', content: codeTransformationPy },
+        { name: 'pyodide_utilities.py', content: pyodideUtilitiesPy }
+      ];
 
-    for (const module of pythonModules) {
-      workerState.pyodide.FS.writeFile(module.name, module.content);
+      for (const module of pythonModules) {
+        workerState.pyodide.FS.writeFile(module.name, module.content);
+      }
     }
 
-    // Importing capture_system also installs builtins.missive
+    // Importing capture_system also installs builtins.missive (instant on a
+    // restored snapshot: the modules are already in sys.modules)
     workerState.captureSystem = workerState.pyodide.pyimport('capture_system');
     workerState.codeTransformation = workerState.pyodide.pyimport('code_transformation');
     workerState.pyodideUtilities = workerState.pyodide.pyimport('pyodide_utilities');
 
     // Activate output capture
     workerState.captureSystem.reset_captures();
+
+    // Snapshot point: the interpreter holds no JavaScript references yet.
+    // Everything after this line (input bridge, loaded files, packages)
+    // creates hiwire entries that Pyodide cannot serialize, so it is
+    // replayed on every boot instead of being part of the snapshot
+    if (snapshotCache && snapKey && !snapshotRestored) {
+      try {
+        const bytes = workerState.pyodide.makeMemorySnapshot();
+        if (await storeSnapshot(snapKey, bytes)) {
+          postInfo(`[Snapshot] Interpreter snapshot cached (${(bytes.byteLength / 1e6).toFixed(1)} MB)`);
+        }
+      } catch (makeError) {
+        postWarning(`[Snapshot] Could not cache interpreter: ${makeError.message}`);
+      }
+    }
 
     // Set up input handling system
     await setupInputHandling(workerState.pyodide);
@@ -200,7 +252,7 @@ async function handleInit(data, workerState) {
     }
 
     workerState.isInitialized = true;
-    self.postMessage({ type: "ready" });
+    self.postMessage({ type: "ready", snapshotRestored });
 
   } catch (err) {
     workerState.pyodide = null;
@@ -230,6 +282,7 @@ export { handleMessage, handleInit, handleExecute, handleFSOperation, handleInpu
  * @property {string[]} [micropipPackages] - Optional array of package names to install with micropip
  * @property {Array<FileToLoad>} filesToLoad - Files to load into filesystem
  * @property {string} [pyodideCdnUrl] - Optional custom Pyodide CDN URL (for local/offline use)
+ * @property {boolean} [snapshotCache] - Cache the bare interpreter as a memory snapshot in IndexedDB
  */
 
 /**

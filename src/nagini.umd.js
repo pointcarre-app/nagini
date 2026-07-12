@@ -754,6 +754,7 @@ var PyodideManager = /*#__PURE__*/function () {
    * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
    * @param {Object} [config={}] - Optional configuration object
    * @param {string} [config.pyodideCdnUrl] - Custom Pyodide CDN URL (for local/offline use, e.g., Capacitor apps)
+   * @param {boolean} [config.snapshotCache] - Cache the bare interpreter as a memory snapshot in IndexedDB for near-instant later boots
    * @throws {Error} If any parameter has incorrect type or worker is not bundled
    */
   function PyodideManager(packages, micropipPackages, filesToLoad, workerPath) {
@@ -796,6 +797,15 @@ var PyodideManager = /*#__PURE__*/function () {
 
     /** @type {string|undefined} Custom Pyodide CDN URL (for local/offline use) */
     this.pyodideCdnUrl = config.pyodideCdnUrl;
+
+    /** @type {boolean} Cache the bare interpreter as a memory snapshot in
+     *  IndexedDB: later boots restore it in ~100 ms instead of a full
+     *  interpreter boot. Packages and files still load after the restore */
+    this.snapshotCache = !!config.snapshotCache;
+
+    /** @type {boolean} Whether this worker booted from a cached snapshot
+     *  (set on the ready message) */
+    this.snapshotRestored = false;
 
     /** @type {string|null} Blob URL for cleanup */
     this.blobUrl = null;
@@ -912,7 +922,8 @@ var PyodideManager = /*#__PURE__*/function () {
                 packages: this.packages,
                 micropipPackages: this.micropipPackages,
                 filesToLoad: this.filesToLoad,
-                pyodideCdnUrl: this.pyodideCdnUrl
+                pyodideCdnUrl: this.pyodideCdnUrl,
+                snapshotCache: this.snapshotCache
               });
               _context.n = 3;
               break;
@@ -1069,6 +1080,7 @@ var PyodideManager = /*#__PURE__*/function () {
       // Pyodide initialization complete
       if (data.type === "ready") {
         this.isReady = true;
+        this.snapshotRestored = !!data.snapshotRestored;
       }
 
       // Pyodide initialization or execution error
@@ -2122,7 +2134,8 @@ var Nagini = {
             PyodideManager = _yield$import.PyodideManager;
             // Extract Pyodide-specific config options
             pyodideConfig = {
-              pyodideCdnUrl: options.pyodideCdnUrl
+              pyodideCdnUrl: options.pyodideCdnUrl,
+              snapshotCache: options.snapshotCache
             };
             return _context.a(2, new PyodideManager(packages, micropipPackages, filesToLoad, finalWorkerPath, pyodideConfig));
           case 4:
