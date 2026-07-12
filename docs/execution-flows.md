@@ -76,8 +76,9 @@ component. Column key:
      |                           |                            |                             |---------------------------->|
      |                           |                            |                             | setupInputHandling()        |
      |                           |                            |                             |                             |- builtins.input replaced:
-     |                           |                            |                             |                             |  sync run_sync bridge (jspi)
-     |                           |                            |                             |                             |  or async handler (no JSPI)
+     |                           |                            |                             |                             |  sync run_sync bridge (jspi
+     |                           |                            |                             |                             |  mode) or async handler
+     |                           |                            |                             |                             |  (async mode, no JSPI)
      |                           |                            |                             |- PyodideFileLoader          |
      |                           |                            |                             |  .loadFiles(filesToLoad)    |
      |                           |                            |                             |- loadPackages(packages),    |
@@ -160,7 +161,7 @@ Step by step:
    `PyodideFileLoader.loadFiles`
    ([worker-handlers.js#L163-L171](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L216-L224),
    [file-loader.js#L58](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/file-loader/file-loader.js#L58)),
-   with three retries and exponential backoff.
+   with up to three attempts and a growing delay between them.
 8. Packages install through `loadPackages`
    ([worker-handlers.js#L174](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-handlers.js#L227),
    [worker-fs.js#L73](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-fs.js#L73)),
@@ -190,8 +191,9 @@ Passing `{ snapshotCache: true }` in the `createManager` options adds a
 branch between steps 4 and 6: instead of always booting a fresh
 interpreter, the worker first looks for a memory snapshot in IndexedDB
 ([worker-snapshot.js](https://github.com/pointcarre-app/nagini/blob/main/src/pyodide/worker/worker-snapshot.js)).
-The cache key is the Pyodide origin plus a SHA-256 of the embedded Python
-sources, so changing either invalidates the entry by construction.
+The cache key is the full Pyodide base URL plus a SHA-256 of the embedded
+Python sources, so changing either (a runtime upgrade included) invalidates
+the entry by construction.
 
 ```
               init with snapshotCache: true
@@ -199,8 +201,8 @@ sources, so changing either invalidates the entry by construction.
                            v
              +-----------------------------+
              | IndexedDB entry for key =   |
-             | pyodide origin + SHA-256 of |
-             | embedded python sources ?   |
+             | pyodide base URL + SHA-256  |
+             | of embedded python sources ?|
              +-----------------------------+
                   |                 |
                   | hit             | miss

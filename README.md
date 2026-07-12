@@ -60,7 +60,7 @@ environments.
 - **🎮 Interactive Input** - Natural `input()` support with queue/callbacks; blocks natively on JSPI browsers, AST-rewrite fallback elsewhere (Pyodide only)
 - **📊 Matplotlib Integration** - Automatic figure capture as base64 images (Pyodide only)
 - **🔗 Remote Module Loading** - Load Python modules from URLs with retry logic (Pyodide only)
-- **🎯 Namespace Isolation** - Complete execution isolation between runs
+- **🎯 Namespace Isolation** - Per-run namespace objects keep globals from leaking between runs (see the security section for the honest limits)
 - **💬 Structured Data Exchange** - "Missive" system for Python ↔ JavaScript communication
 - **📁 Filesystem Access** - Complete file operations (Pyodide only)
 - **🎨 Dual Backend Support** - Pyodide (full-featured) & Brython (lightweight, instant startup)
@@ -499,6 +499,7 @@ src/
     │   ├── worker-fs.js            # Filesystem operations
     │   ├── worker-snapshot.js      # Interpreter snapshot cache (IndexedDB)
     │   ├── webpack.config.cjs      # Webpack bundling configuration
+    │   ├── webpack.umd.config.cjs  # UMD bundle configuration
     │   ├── package.json            # NPM dependencies and build scripts
     │   ├── package-lock.json       # Dependency lock file
     │   ├── worker-dist.js          # **Bundled worker output** (generated)
@@ -592,7 +593,7 @@ The unified test suite covers all core features:
 
 - **Pyodide 314.0.2 (Python 3.14)** - Python runtime via WebAssembly (Mozilla Public License 2.0)
 - **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
-- **Modern Browser** - WebWorkers, SharedArrayBuffer support
+- **Modern Browser** - Web workers and WebAssembly; JSPI (Chrome 137+) enables the native-blocking `input()` mode
 - **No external dependencies** - Self-contained system
 
 **📄 For complete license information and compatibility details, see [3RD-PARTY.md](3RD-PARTY.md)**
@@ -623,7 +624,7 @@ Content-Security-Policy:
   connect-src 'self' https://cdn.jsdelivr.net https://pypi.org https://files.pythonhosted.org;
 ```
 
-`connect-src` must cover the hosts Pyodide fetches wheels from (jsDelivr for `loadPackage`, PyPI for micropip). If you self-host Pyodide (see `pyodideCdnUrl`), replace the CDN entries with your own origin. For interactive `input()` support and best performance, also send the cross-origin isolation headers shown in `serve.py`: `Cross-Origin-Embedder-Policy: require-corp` and `Cross-Origin-Opener-Policy: same-origin`.
+`connect-src` must cover the hosts Pyodide fetches wheels from (jsDelivr for `loadPackage`, PyPI for micropip). If you self-host Pyodide (see `pyodideCdnUrl`), replace the CDN entries with your own origin. Interactive `input()` needs no special headers (it is message-based, and native blocking uses JSPI, not SharedArrayBuffer). The cross-origin isolation headers shown in `serve.py` (`Cross-Origin-Embedder-Policy: require-corp`, `Cross-Origin-Opener-Policy: same-origin`) remain a good default and will be required the day execution interruption lands (it relies on SharedArrayBuffer).
 
 ### Pinning and integrity
 
@@ -632,7 +633,7 @@ Load Nagini and `worker-dist.js` from your own origin in production, or pin CDN 
 ## Performance
 
 - **Initialization**: ~1-3 seconds warm (packages + network); interpreter boot ~0.8 s
-- **Snapshot cache**: pass `{ snapshotCache: true }` in the `createManager` options and later boots restore the interpreter from an IndexedDB memory snapshot in ~100 ms (`manager.snapshotRestored` tells you it happened). Packages, `filesToLoad` and the input bridge are replayed after the restore, so package load and import time is still paid: current Pyodide cannot include package state in a snapshot. The ~31 MB entry is keyed by Pyodide origin plus a hash of the embedded Python sources, and any failure falls back to a fresh boot
+- **Snapshot cache**: pass `{ snapshotCache: true }` in the `createManager` options and later boots restore the interpreter from an IndexedDB memory snapshot in ~100 ms (`manager.snapshotRestored` tells you it happened). Packages, `filesToLoad` and the input bridge are replayed after the restore, so package load and import time is still paid: current Pyodide cannot include package state in a snapshot. The ~31 MB entry is keyed by the Pyodide base URL plus a hash of the embedded Python sources, and any failure falls back to a fresh boot
 - **Execution**: Near-native Python speed in WebAssembly
 - **Memory**: ~100-300MB (package dependent)
 - **Figure Capture**: Real-time base64 encoding

@@ -21,6 +21,7 @@ export const Nagini = {
      * @param {string} workerPath - Path to the bundled web worker file (must be worker-dist.js)
      * @param {Object} [options={}] - Backend-specific options
      * @param {string} [options.pyodideCdnUrl] - Custom Pyodide CDN URL (for local/offline use, e.g., Capacitor apps)
+     * @param {boolean} [options.snapshotCache] - Cache the bare interpreter as a memory snapshot in IndexedDB for near-instant later boots (Pyodide backend only)
      * @param {string} [options.brythonJsPath] - Path to Brython JS file (Brython backend only)
      * @param {string} [options.brythonStdlibPath] - Path to Brython stdlib (Brython backend only)
      * @returns {Manager} New manager instance

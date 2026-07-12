@@ -278,9 +278,9 @@ missive({"user": user, "email": email})`,
         v
 +------------------------------+
 | worker                       |
-| plt.show() is intercepted    |
-| figure rendered to PNG bytes |
-| then encoded to base64       |
+| plt.show() is a no-op; after |
+| the run each open figure is  |
+| saved to PNG, base64-encoded |
 +------------------------------+
         |
         | result: id, figures list

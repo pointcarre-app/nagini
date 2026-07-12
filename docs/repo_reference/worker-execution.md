@@ -20,9 +20,9 @@ This file contains the core logic for executing Python code within the Pyodide w
     -   `workerState` (Object): The current state of the worker.
 -   **Returns:** An object containing the (potentially transformed) `code` and a boolean `needsAsync`.
 
-### `captureOutputs(pyodide, isErrorCase)`
--   **Description:** After execution, this function calls Python helper functions (`get_stdout`, `get_stderr`, etc. in `capture_system.py`) to retrieve the standard output, standard error, missive data, and any Matplotlib figures that were generated.
+### `captureOutputs(workerState, isErrorCase)`
+-   **Description:** After execution, this function retrieves the standard output, standard error, missive data, and any Matplotlib figures through the `capture_system` PyProxy module reference held in `workerState` (`get_stdout`, `get_stderr`, `get_missive`, `get_figures`), never by name lookup in the interpreter globals.
 -   **Parameters:**
-    -   `pyodide` (PyodideAPI): The Pyodide instance.
-    -   `isErrorCase` (boolean): If `true`, it avoids trying to capture the missive, as it might not be valid in an error state.
+    -   `workerState` (Object): The current state of the worker, carrying the `captureSystem` module reference.
+    -   `isErrorCase` (boolean): If `true`, it skips the missive and figure capture, as they might not be valid in an error state; stdout and stderr are still collected.
 -   **Returns:** An object containing the captured `stdout`, `stderr`, `missive`, and `figures`. 

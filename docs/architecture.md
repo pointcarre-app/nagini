@@ -178,7 +178,7 @@ the page (Flask and Django setups, CDNs).
 ### Bundled worker: worker-dist.js
 
 [src/pyodide/worker/worker-dist.js](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/worker/worker-dist.js)
-is a generated file: webpack inlines all worker modules and the four Python
+is a generated file: webpack inlines all worker modules and the three Python
 sources into one script with no imports left. Only this bundle is accepted by
 the manager (checked in the
 [constructor](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/manager/manager.js#L62-L64)),
@@ -252,7 +252,7 @@ which skips packages already loaded in this worker.
 implements the optional interpreter snapshot cache behind the
 `snapshotCache` manager option. It stores a memory snapshot of the bare
 interpreter plus Nagini's embedded Python modules (~31 MB) in IndexedDB,
-keyed by the Pyodide origin and a SHA-256 of the embedded sources; storing
+keyed by the full Pyodide base URL and a SHA-256 of the embedded sources; storing
 a new entry evicts the others. The snapshot is taken right before the
 input bridge is installed: the bridge, loaded files and packages hold live
 JavaScript references (hiwire entries) that Pyodide's snapshot serializer
@@ -314,8 +314,8 @@ no-op, since figures are captured manually after each run.
 
 [src/pyodide/file-loader/file-loader.js](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/file-loader/file-loader.js)
 downloads the `filesToLoad` entries (`{url, path}` objects, local or remote)
-into the Pyodide virtual filesystem during init, with retries and exponential
-backoff in
+into the Pyodide virtual filesystem during init, with up to three attempts
+and a growing delay between them in
 [`loadFiles`](https://github.com/pointcarre-app/nagini/blob/v0.0.49/src/pyodide/file-loader/file-loader.js#L58).
 Although it lives outside the worker directory, it runs inside the worker: it
 is imported by
@@ -357,10 +357,11 @@ this backend.
  +-- worker-execution.js            |     +--------------------------+
  +-- worker-input.js                |     | target: webworker        |
  +-- worker-fs.js                   +---->| alias @python ->         |
- +-- worker-config.js               |     |   src/pyodide/python     |
-                                    |     | rule: *.py bundled as    |
- src/pyodide/file-loader/           |     |   raw text (asset/source)|
- +-- file-loader.js ----------------+     +------------+-------------+
+ +-- worker-snapshot.js             |     |   src/pyodide/python     |
+ +-- worker-config.js               |     | rule: *.py bundled as    |
+                                    |     |   raw text (asset/source)|
+ src/pyodide/file-loader/           |     +------------+-------------+
+ +-- file-loader.js ----------------+                  |
                                     |                  |
  src/pyodide/python/                |                  v
  +-- capture_system.py              |     src/pyodide/worker/worker-dist.js

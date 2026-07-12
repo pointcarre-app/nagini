@@ -48,7 +48,7 @@ environments.
 - **🎮 Interactive Input** - Natural `input()` support with queue/callbacks (Pyodide only)
 - **📊 Matplotlib Integration** - Automatic figure capture as base64 images (Pyodide only)
 - **🔗 Remote Module Loading** - Load Python modules from URLs with retry logic (Pyodide only)
-- **🎯 Namespace Isolation** - Complete execution isolation between runs
+- **🎯 Namespace Isolation** - Per-run namespace objects keep globals from leaking between runs
 - **💬 Structured Data Exchange** - "Missive" system for Python ↔ JavaScript communication
 - **📁 Filesystem Access** - Complete file operations (Pyodide only)
 - **🎨 Dual Backend Support** - Pyodide (full-featured) & Brython (lightweight, instant startup)
@@ -544,7 +544,7 @@ The unified test suite covers all core features:
 - **Pyodide 314.0.2 (Python 3.14)** - Python runtime via WebAssembly (Mozilla Public License 2.0)
 - **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
 - **Matplotlib agg backend** - Figures are rendered off screen in the worker and captured as base64 PNG strings.
-- **Modern Browser** - WebWorkers, SharedArrayBuffer support
+- **Modern Browser** - Web workers and WebAssembly; JSPI (Chrome 137+) enables the native-blocking `input()` mode
 - **No external dependencies** - Self-contained system
 
 **📄 For complete license information and compatibility details, see [3RD-PARTY.md](3RD-PARTY.md)**
