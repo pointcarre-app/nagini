@@ -2,7 +2,7 @@
 
 - **Pyodide 314.0.6**: default CDN bumped from 314.0.2 (Python 3.14.2 unchanged). 314.0.5 and 314.0.6 fix the Python thread state, `contextvars`, `threading.local()`, signal handling and `sys.settrace` around `pyodide.ffi.run_sync()`, which is the path behind the JSPI `input()` bridge; 314.0.6 also fixes `loadPackage()` rejecting requirement specifiers
 - **Cleanup**: removed the old `experiments/` playgrounds (brython copies, xterm terminal, antlr spike, pca_graph_viz), the pre-scenery `tests/` folder (unified-test.html plus its Flask helper), `todo.md`, the orphan `docs/docs.md` (not in the MkDocs nav, described the pre-v0.0.40 layout) and the disabled `docs.yml` workflow. Everything stays in git history (last present in v0.0.50). The MkDocs social-plugin cache (`.cache/`, 86 files) is no longer tracked
-- **Documentation**: README testing section now points at the scenery suite; `docs/index.md` resynced with the README (it had drifted, still advertising the xterm experiment and the old test page)
+- **Documentation**: README rewritten short and straight (install, quick start, feature table, API on one screen, security, development, license). MkDocs restructured into five regular sections: Home, Getting started (install, first run), Guide (one page per capability, each with use / details / limits / see also: execution, input, figures, missive, state, filesystem, packages, snapshot cache, Brython, security), Reference (API, architecture, execution flows, source files), Project (testing, changelog, licenses). The three CDN and local-Pyodide pages are folded into the install page. The changelog is now published in the docs (one v0.0.28 line reworded: its raw regex broke the Markdown parser)
 - **Testing**: full suite green 66/66 on 314.0.6
 
 # v0.0.50
@@ -114,7 +114,7 @@
   - **Fix**: Only genuine calls to the builtin `input()` are prefixed with `await`; names like `some_func__input()` or `obj.input()` are no longer corrupted
   - **Scoping**: Calls inside a sync `def`, a `lambda` or a class body are left untouched; calls inside `async def` are transformed
   - **No Wrapper**: Removed the `async def __run_code()` wrapper; code runs directly via `runPythonAsync` (top-level `await`), so top-level variables now persist in the globals
-  - **Worker**: Detection gate switched from `includes('input(')` to the regex `/(?<![\w.])input\s*\(/` in `worker-execution.js`
+  - **Worker**: Detection gate switched from `includes('input(')` to a regex with a negative lookbehind (an `input` call not preceded by a word character or a dot) in `worker-execution.js`. The pattern is spelled out in the source rather than here, because its `<!` sequence breaks the docs build when this file is included
 - **Testing**: Added integration test #8 covering name collisions and globals persistence; full scenery suite green (57/57)
 
 # v0.0.27

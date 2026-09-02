@@ -330,7 +330,7 @@ Passing `options.pyodideCdnUrl` to `createManager` makes the worker run
 [`import(pyodide.mjs)` and `loadPyodide`](https://github.com/pointcarre-app/nagini/blob/v0.0.50/src/pyodide/worker/worker-handlers.js#L132-L169)
 against your own origin instead, which is how offline and Capacitor setups
 work. See
-[LOCAL_PYODIDE_CONFIGURATION.md](LOCAL_PYODIDE_CONFIGURATION.md)
+[install: offline Pyodide](getting-started/install.md#offline-pyodide)
 for the full recipe.
 
 ### BrythonManager
