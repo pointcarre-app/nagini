@@ -19,3 +19,6 @@
 # Documents de travail locaux (revue et plan, non publiés)
 /revue-code-*.md
 /plan-implementation-*.md
+
+# Cache du plugin social de mkdocs (régénéré au build)
+/.cache/

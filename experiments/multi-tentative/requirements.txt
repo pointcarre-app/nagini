@@ -1,4 +1,0 @@
-# Core dependencies (also defined in pyproject.toml)
-numpy>=1.20.0
-svgwrite>=1.4.0
-pydantic>=2.0.0

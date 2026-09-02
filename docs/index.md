@@ -1,5 +1,16 @@
 # Nagini
 
+**Live Documentation & Demos:**
+- **Browse Full Source Tree:** [https://pointcarre-app.github.io/nagini/](https://pointcarre-app.github.io/nagini/)
+- **Interactive Test Suite (`scenery`):** [https://pointcarre-app.github.io/nagini/scenery/](https://pointcarre-app.github.io/nagini/scenery/)
+- **Visual Showcase (`scenery/examples`):** [https://pointcarre-app.github.io/nagini/scenery/examples/](https://pointcarre-app.github.io/nagini/scenery/examples/) - 12 visual examples (daisyUI + CodeMirror)
+- **High-School Maths Algorithms (`scenery/lycee`):** [https://pointcarre-app.github.io/nagini/scenery/lycee/](https://pointcarre-app.github.io/nagini/scenery/lycee/) - official French curriculum algorithms (seconde, première, terminale)
+- **Main Documentation (MkDocs):** [https://pointcarre-app.github.io/nagini/](https://pointcarre-app.github.io/nagini/)
+- **Architecture:** [https://pointcarre-app.github.io/nagini/architecture/](https://pointcarre-app.github.io/nagini/architecture/) - the whole system on one ASCII diagram, every box linked to its source file ([docs/architecture.md](architecture.md))
+- **Execution flows:** [https://pointcarre-app.github.io/nagini/execution-flows/](https://pointcarre-app.github.io/nagini/execution-flows/) - step-by-step sequence diagrams for init, execute, input(), figures, state, fs(), Brython and missive ([docs/execution-flows.md](execution-flows.md))
+- **API Reference:** [https://pointcarre-app.github.io/nagini/api-reference/](https://pointcarre-app.github.io/nagini/api-reference/)
+- **Repository Reference:** [https://pointcarre-app.github.io/nagini/repo_reference/](https://pointcarre-app.github.io/nagini/repo_reference/)
+
 **Python in the Browser via Pyodide WebAssembly**
 
 > [!IMPORTANT]
@@ -18,9 +29,10 @@ and remote module loading. Perfect for data analysis tools, educational
 platforms, scientific computing applications, and interactive development
 environments.
 
-[![GitHub](https://img.shields.io/badge/GitHub-pca--nagini-blue?logo=github)](https://github.com/pca-nagini/pca-nagini)
+[![GitHub](https://img.shields.io/badge/GitHub-nagini-blue?logo=github)](https://github.com/pointcarre-app/nagini)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Python](https://img.shields.io/badge/Python-Pyodide%20%7C%20Brython-green)](https://pyodide.org/)
+[![Pyodide](https://img.shields.io/badge/Pyodide-314.0.6-blue.svg)](https://pyodide.org/)
+[![Brython](https://img.shields.io/badge/Brython-stable-green.svg)](https://brython.info/)
 
 ## Table of Contents
 
@@ -31,12 +43,12 @@ environments.
 - [Remote Module Loading](#remote-module-loading)
 - [Architecture](#architecture)
 - [API Reference](#api-reference)
-- [Xterm Terminal Integration](#xterm-terminal-integration)
 - [File Structure](#file-structure)
 - [Testing](#testing)
 - [Dependencies](#dependencies)
+- [Security](#security)
 - [Performance](#performance)
-- [Licensing](#licensing-gnu-affero-general-public-license-v30-agpl-30)
+- [Licensing](#licensing---gnu-affero-general-public-license-v30-agpl-30)
 
 ---
 
@@ -45,15 +57,82 @@ environments.
 - **🚀 Worker Architecture** - Python execution isolated in web workers (Pyodide) or main thread (Brython)
 - **🔧 Automatic Blob Workers** - Cross-origin compatibility for Pyodide (Flask, Django, etc.)
 - **📦 Micropip Support** - Install packages from PyPI using micropip (Pyodide only)
-- **🎮 Interactive Input** - Natural `input()` support with queue/callbacks (Pyodide only)
+- **🎮 Interactive Input** - Natural `input()` support with queue/callbacks; blocks natively on JSPI browsers, AST-rewrite fallback elsewhere (Pyodide only)
 - **📊 Matplotlib Integration** - Automatic figure capture as base64 images (Pyodide only)
 - **🔗 Remote Module Loading** - Load Python modules from URLs with retry logic (Pyodide only)
-- **🎯 Namespace Isolation** - Per-run namespace objects keep globals from leaking between runs
+- **🎯 Namespace Isolation** - Per-run namespace objects keep globals from leaking between runs (see the security section for the honest limits)
 - **💬 Structured Data Exchange** - "Missive" system for Python ↔ JavaScript communication
 - **📁 Filesystem Access** - Complete file operations (Pyodide only)
 - **🎨 Dual Backend Support** - Pyodide (full-featured) & Brython (lightweight, instant startup)
+- **🌐 CDN-Ready** - Multiple import solutions for static websites, web apps, and Cordova apps
 
 ## Quick Start
+
+### CDN Import ⭐ (Static Websites, Web Apps, Cordova)
+
+For static websites, web apps, and Cordova applications, use the **esm.sh CDN** - our recommended solution:
+
+#### esm.sh CDN (Recommended - One Line Solution)
+```html
+<script type="module">
+    // esm.sh automatically resolves ALL ES6 imports - no configuration needed!
+    const naginiModule = await import('https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
+    const Nagini = naginiModule.Nagini;
+    
+    // Create manager and start using Python immediately
+    const manager = await Nagini.createManager('pyodide', ['numpy'], [], [], 
+        'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js');
+    
+    await Nagini.waitForReady(manager);
+    
+    // Execute Python code
+    const result = await manager.executeAsync('demo.py', `
+        import numpy as np
+        data = np.array([1, 2, 3, 4, 5])
+        print(f"Mean: {data.mean()}")
+    `);
+    
+    console.log(result.stdout); // "Mean: 3.0"
+</script>
+```
+
+**Why esm.sh?**
+- ✅ **One-line import** - no configuration needed
+- ✅ **Universal compatibility** - works everywhere
+- ✅ **Free for commercial use** - no restrictions
+- ✅ **Automatic dependency resolution** - handles all ES6 imports
+- ✅ **Zero maintenance** - no bundles to update
+
+#### Alternative Solutions
+
+<details>
+<summary>Click to see other CDN options (UMD Bundle, Import Maps)</summary>
+
+**UMD Bundle (Maximum Compatibility):**
+```html
+<script type="module">
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.umd.js');
+    const Nagini = naginiModule.default || naginiModule;
+</script>
+```
+
+**Import Maps (Modern Browsers Only):**
+```html
+<script type="importmap">
+{
+  "imports": {
+    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/utils/validation.js",
+    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/manager/manager.js"
+  }
+}
+</script>
+<script type="module">
+    const naginiModule = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
+    const Nagini = naginiModule.Nagini;
+</script>
+```
+
+</details>
 
 ### Pyodide Backend (Recommended) - Automatic Blob Workers
 
@@ -66,7 +145,7 @@ const manager = await Nagini.createManager(
     ["sympy", "matplotlib"],                                      // Python packages
     ["antlr4-python3-runtime"],                                   // Micropip packages
     [],                                                           // Files to load (URL objects)
-    "./src/pyodide/worker/worker-dist.js"    // Use relative path
+    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"    // Bundled worker
 );
 
 // 2. Wait for initialization
@@ -93,8 +172,8 @@ console.log(result.missive);  // {"solutions": ["-2", "2"]}
 const manager = await Nagini.createManager(
     'brython',      // Backend - no worker requirements
     [],             // Packages ignored (uses Brython stdlib only)
-    [],             // Files ignored
-    '',             // Init path ignored
+    [],             // Micropip packages ignored
+    [],             // Files to load (must be an array)
     ''              // Worker path ignored
 );
 
@@ -126,7 +205,7 @@ const manager = await Nagini.createManager(
     ["numpy", "matplotlib"],
     ["antlr4-python3-runtime"],
     [],
-    "./src/pyodide/worker/worker-dist.js"   // Use relative path
+    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"   // Nagini auto-creates blob worker
 );
 ```
 
@@ -138,7 +217,7 @@ const manager = await Nagini.createManager(
     'brython',  // No worker requirements for Brython
     [],         // Only Brython stdlib available
     [],
-    '',         // Ignored for Brython
+    [],         // Files to load (must be an array)
     ''          // Ignored for Brython
 );
 ```
@@ -155,7 +234,7 @@ async function createBlobWorkerUrl(workerPath) {
 }
 
 // Use in Flask app
-const workerPath = "./src/pyodide/worker/worker-dist.js"; // Use relative path
+const workerPath = "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js";
 const blobWorkerUrl = await createBlobWorkerUrl(workerPath);
 
 const manager = await Nagini.createManager(
@@ -272,46 +351,6 @@ print(f"Fibonacci(10) = {result}")
 `);
 ```
 
-## Xterm Terminal Integration
-
-Nagini includes an experimental **xterm.js terminal integration** that demonstrates creating a full browser-based Python terminal.
-
-### Features
-
-- 🖥️ **Real Terminal Interface** - Full xterm.js terminal with cursor and colors
-- 🐍 **Interactive Python** - Execute Python code via Nagini/Pyodide
-- 📋 **Template System** - Pre-built Python scripts (data analysis, plotting, calculator)
-- ⌨️ **Command History** - Arrow key navigation through previous commands
-- 📊 **Matplotlib Support** - Automatic figure display above terminal
-- 🎨 **Professional Theme** - VS Code-inspired dark interface
-
-### Quick Demo
-
-```bash
-# Start server
-python -m http.server 8000
-
-# Open terminal
-http://localhost:8000/experiments/xterm/
-
-# Try commands
-$ help
-$ templates
-$ run data_analysis
-$ run plot_demo
-```
-
-### Available Templates
-
-- **hello_world** - User input demonstration
-- **data_analysis** - Numpy statistics with matplotlib histogram
-- **calculator** - Interactive math operations
-- **plot_demo** - Multiple chart types (line, scatter, bar, pie)
-
-The xterm integration showcases how Nagini can power full-featured browser-based Python development environments.
-
----
-
 ## Architecture
 
 ### Pyodide Backend (Web Worker + Blob Workers)
@@ -330,10 +369,21 @@ Main Thread                          Blob Web Worker (Cross-Origin Compatible)
 │  ├─ executeAsync    │ Blob Worker │  ├─ Python Env      │
 │  ├─ executeFile     │  Creation   │  ├─ Package Mgmt    │
 │  ├─ queueInput      │             │  ├─ Matplotlib      │
-│  ├─ fs()            │             │  ├─ File Loading    │
-│  └─ Input Callbacks │             │  └─ WebAssembly     │
+│  ├─ fs()            │             │  ├─ Figure Capture  │
+│  └─ Input Callbacks │             │  ├─ File Loading    │
+│                     │             │  └─ WebAssembly     │
 └─────────────────────┘             └─────────────────────┘
 ```
+
+### Visualization Capture System
+
+Nagini automatically captures visualization outputs from Python execution:
+
+#### Matplotlib Capture
+- **Method**: `get_figures()` in `capture_system.py`
+- **Process**: Saves plots to BytesIO → Base64 encoding → Returns as strings
+- **Output**: `result.figures` array containing base64 PNG images
+- **Display**: Direct embedding in `<img>` tags
 
 ### Brython Backend (Main Thread Only)
 
@@ -365,15 +415,15 @@ const pyodideManager = await Nagini.createManager(
     packages,
     micropipPackages,
     filesToLoad,
-    "./src/pyodide/worker/worker-dist.js"   // Use relative path
+    "http://127.0.0.1:8010/src/pyodide/worker/worker-dist.js"   // Auto-converted to blob worker
 );
 
 // Create Brython manager (no worker requirements)
 const brythonManager = await Nagini.createManager(
     'brython', 
     [],      // Packages ignored
-    [],      // Files ignored  
-    '',      // Init path ignored
+    [],      // Micropip packages ignored
+    [],      // Files to load (must be an array)
     ''       // Worker path ignored
 );
 
@@ -449,6 +499,7 @@ src/
     │   ├── worker-fs.js            # Filesystem operations
     │   ├── worker-snapshot.js      # Interpreter snapshot cache (IndexedDB)
     │   ├── webpack.config.cjs      # Webpack bundling configuration
+    │   ├── webpack.umd.config.cjs  # UMD bundle configuration
     │   ├── package.json            # NPM dependencies and build scripts
     │   ├── package-lock.json       # Dependency lock file
     │   ├── worker-dist.js          # **Bundled worker output** (generated)
@@ -461,10 +512,7 @@ src/
         ├── capture_system.py       # Output capture system
         ├── code_transformation.py  # Code transformation utilities
         └── pyodide_utilities.py    # Python helper functions
-tests/
-├── unified-test.html               # **Comprehensive unified test suite**
-├── flask-example.py                # Cross-origin Flask server (port 5001)
-└── README.md                       # Unified test documentation
+scenery/                            # Browser test suite and demo pages (see scenery/README.md)
 ```
 
 ### Pyodide Worker Bundling System
@@ -481,77 +529,61 @@ The Pyodide worker directory includes a complete **webpack-based bundling system
 
 ## Testing
 
-### Unified Test Suite
-
-Nagini includes a **comprehensive unified test suite** that demonstrates both Pyodide and Brython backends in a side-by-side comparison. The unified test provides a complete evaluation of cross-origin compatibility, worker architecture, and dual backend capabilities.
-
-**🎯 Features Tested:**
-
-#### Pyodide Column (Left - Full-Featured)
-- ✅ **Basic Python execution** with automatic blob workers
-- ✅ **NumPy + Matplotlib integration** with figure capture
-- ✅ **Interactive input() handling** with queue system
-- ✅ **Cross-origin compatibility** (Flask ↔ Nagini servers)
-- ✅ **Automatic blob worker creation** for CORS scenarios
-- ✅ **Matplotlib WebAgg Backend** validation
-
-#### Brython Column (Right - Lightweight)
-- ✅ **Basic Python execution** (JavaScript transpilation)
-- ✅ **Tactical turtle graphics** with 300x300 canvas
-- ✅ **DOM integration** and browser APIs
-- ✅ **Instant startup** (no downloads required)
-
-### Quick Test Setup
+The test suite lives in [`scenery/`](scenery/) and runs in a real browser against the local sources: 66 tests covering both backends, the CDN and esm.sh imports, the UMD bundle, file loading, namespace isolation, `input()` in both bridge modes, the snapshot cache, matplotlib capture and Python error handling.
 
 ```bash
-# 1. Start Nagini server (port 8010)
-python3 serve.py
-
-# 2. Start Flask cross-origin test server (port 5001) 
-python3 tests/flask-example.py
-
-# 3. Open unified test suite
-open ./tests/unified-test.html
-
-# 4. Test everything with buttons in both columns
+cd scenery
+python3.12 -m venv env && env/bin/pip install -r requirements.txt   # first time only
+env/bin/python run_tests.py
 ```
 
-### Cross-Origin Testing
-
-The test suite demonstrates **real-world cross-origin scenarios**:
-- **Nagini Server**: Serves static files from the project root.
-- **Flask Server**: `http://127.0.0.1:5001` (provides CORS headers)
-- **Blob Workers**: Automatically created for cross-origin compatibility
-- **Full URLs**: Required for proper cross-origin module loading
-
-### Test Coverage
-
-The unified test suite covers all core features:
-
-- **Manager creation and initialization** (both backends)
-- **Code execution with results tracking**
-- **Namespace isolation and variable scoping**
-- **Interactive input handling with queues** (Pyodide only)
-- **Matplotlib figure capture and display** (Pyodide only)
-- **Turtle graphics with tactical patterns** (Brython only)
-- **DOM integration and browser APIs** (Brython only)
-- **Cross-origin worker compatibility**
-- **Automatic blob worker creation**
-- **Dual backend comparison**
+The runner starts `serve.py`, loads `scenery/index.html` in headless Chrome and fails on any failing test. The same page can be opened by hand at `http://127.0.0.1:8010/scenery/` after `python3 serve.py`. Demo pages (`examples/`, `executions/`, `sympy/`, `lycee/`, `dataeng/`, `arcade/`) sit next to the suite and are published on GitHub Pages.
 
 ## Dependencies
 
-- **Pyodide 314.0.2 (Python 3.14)** - Python runtime via WebAssembly (Mozilla Public License 2.0)
+- **Pyodide 314.0.6 (Python 3.14)** - Python runtime via WebAssembly (Mozilla Public License 2.0)
 - **Brython** - Python-to-JavaScript transpilation capabilities (BSD 3-Clause License)
-- **Matplotlib agg backend** - Figures are rendered off screen in the worker and captured as base64 PNG strings.
 - **Modern Browser** - Web workers and WebAssembly; JSPI (Chrome 137+) enables the native-blocking `input()` mode
 - **No external dependencies** - Self-contained system
 
 **📄 For complete license information and compatibility details, see [3RD-PARTY.md](3RD-PARTY.md)**
 
+## Troubleshooting
+
+## Security
+
+Nagini does not apply any sandboxing beyond what the browser and WebAssembly already provide. Python code runs with full access to the Pyodide environment (virtual filesystem, network requests via the browser, `js` module bridge to the page or worker scope). Do not treat Nagini as a security boundary for untrusted code.
+
+To keep runs from stepping on each other, pass the `namespace` parameter to `executeAsync`: assignments and rebindings then die with the run instead of persisting in the shared globals. The guarantees and the honest list of what a namespaced run can still affect (builtins, `sys.modules`, the virtual filesystem, matplotlib state) are documented in [docs/execution-flows.md](execution-flows.md), section "State across executions". The capture infrastructure itself is called through module references held by the worker since init, so user code rebinding names like `get_stdout` or `json` cannot corrupt result capture; shadowing `missive` or `input` in the persistent globals triggers a one-time `warning` message.
+
+`ValidationUtils.checkDangerousPatterns` (in `src/utils/validation.js`) is an opt-in helper that scans code for known risky patterns. It is **not** applied automatically before execution: if you want it, call it yourself before passing code to `executeAsync`. It is a heuristic filter, not a sandbox, and can be bypassed.
+
+### Brython backend: no isolation
+
+> [!WARNING]
+> Unlike the Pyodide backend (which runs in a web worker), the **Brython backend executes Python in the main thread of the host page, with full DOM access**: cookies, `fetch` with the page's session, the whole document. Only run first-party, trusted code through the Brython backend. Never feed it end-user or student code on a page that holds a session.
+
+### Content Security Policy
+
+Nagini needs a blob worker plus scripts fetched from wherever you host Pyodide and the bundles. A reference CSP for a page embedding Nagini, assuming self-hosted assets plus the jsDelivr Pyodide CDN:
+
+```
+Content-Security-Policy:
+  script-src 'self' https://cdn.jsdelivr.net;
+  worker-src 'self' blob:;
+  connect-src 'self' https://cdn.jsdelivr.net https://pypi.org https://files.pythonhosted.org;
+```
+
+`connect-src` must cover the hosts Pyodide fetches wheels from (jsDelivr for `loadPackage`, PyPI for micropip). If you self-host Pyodide (see `pyodideCdnUrl`), replace the CDN entries with your own origin. Interactive `input()` needs no special headers (it is message-based, and native blocking uses JSPI, not SharedArrayBuffer). The cross-origin isolation headers shown in `serve.py` (`Cross-Origin-Embedder-Policy: require-corp`, `Cross-Origin-Opener-Policy: same-origin`) remain a good default and will be required the day execution interruption lands (it relies on SharedArrayBuffer).
+
+### Pinning and integrity
+
+Load Nagini and `worker-dist.js` from your own origin in production, or pin CDN URLs to an immutable commit SHA rather than a tag (tags can be re-pointed). The demo pages in this repository pin their third-party CDN assets to exact versions with `integrity` (SRI) attributes; do the same in your embedding pages. SRI cannot cover dynamically imported modules (the worker loads `pyodide.mjs` with a dynamic import), which is one more reason to self-host in production.
+
 ## Performance
 
-- **Initialization**: ~3-7 seconds (packages + network)
+- **Initialization**: ~1-3 seconds warm (packages + network); interpreter boot ~0.8 s
+- **Snapshot cache**: pass `{ snapshotCache: true }` in the `createManager` options and later boots restore the interpreter from an IndexedDB memory snapshot in ~100 ms (`manager.snapshotRestored` tells you it happened). Packages, `filesToLoad` and the input bridge are replayed after the restore, so package load and import time is still paid: current Pyodide cannot include package state in a snapshot. The ~31 MB entry is keyed by the Pyodide base URL plus a hash of the embedded Python sources, and any failure falls back to a fresh boot
 - **Execution**: Near-native Python speed in WebAssembly
 - **Memory**: ~100-300MB (package dependent)
 - **Figure Capture**: Real-time base64 encoding
@@ -643,4 +675,4 @@ This software incorporates components from the following open-source projects:
 
 ---
 
-*Nagini is free and open-source software licensed under AGPL v3.0, ensuring it remains available for all users while promoting open-source collaboration and transparency.* 
+*Nagini is free and open-source software licensed under AGPL v3.0, ensuring it remains available for all users while promoting open-source collaboration and transparency.*
