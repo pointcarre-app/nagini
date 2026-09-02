@@ -14,14 +14,14 @@ Always pin a [tag](https://github.com/pointcarre-app/nagini/tags). `main` is the
 
 ```html
 <script type="module">
-  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js';
+  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.51/src/nagini.js';
 </script>
 ```
 
 esm.sh resolves Nagini's ES module imports on the fly. The Pyodide worker must be the bundled `worker-dist.js`. Nagini wraps it in a blob worker, so it can be served from any origin:
 
 ```javascript
-const WORKER = 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js';
+const WORKER = 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/pyodide/worker/worker-dist.js';
 ```
 
 UMD bundle, import maps, self-hosting and offline Pyodide are covered in the [install guide](https://pointcarre-app.github.io/nagini/getting-started/install/).

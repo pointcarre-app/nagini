@@ -11,7 +11,7 @@ Nagini is plain ES modules plus one bundled worker. Pick where each of the two c
 
 The Brython backend needs neither a worker nor a download beyond the Brython runtime files (see [Brython](../guide/brython.md)).
 
-Always pin a [tag](https://github.com/pointcarre-app/nagini/tags). The snippets below use `v0.0.50`; `main` moves.
+Always pin a [tag](https://github.com/pointcarre-app/nagini/tags). The snippets below use `v0.0.51`; `main` moves.
 
 ## esm.sh (recommended)
 
@@ -19,9 +19,9 @@ esm.sh rewrites the relative imports of `nagini.js` on the fly, so one line is e
 
 ```html
 <script type="module">
-  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js';
+  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.51/src/nagini.js';
 
-  const WORKER = 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js';
+  const WORKER = 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/pyodide/worker/worker-dist.js';
   const manager = await Nagini.createManager('pyodide', ['numpy'], [], [], WORKER);
   await Nagini.waitForReady(manager, 60000);
 </script>
@@ -33,7 +33,7 @@ esm.sh rewrites the relative imports of `nagini.js` on the fly, so one line is e
 
 ```html
 <script type="module">
-  const mod = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.umd.js');
+  const mod = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/nagini.umd.js');
   const Nagini = mod.default || mod;
 </script>
 ```
@@ -46,14 +46,14 @@ If you prefer the raw sources from jsDelivr, map the relative imports yourself:
 <script type="importmap">
 {
   "imports": {
-    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/utils/validation.js",
-    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/manager/manager.js",
-    "./brython/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/brython/manager/manager.js"
+    "./utils/validation.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/utils/validation.js",
+    "./pyodide/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/pyodide/manager/manager.js",
+    "./brython/manager/manager.js": "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/brython/manager/manager.js"
   }
 }
 </script>
 <script type="module">
-  const { Nagini } = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js');
+  const { Nagini } = await import('https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/nagini.js');
 </script>
 ```
 

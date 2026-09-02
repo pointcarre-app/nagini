@@ -3,10 +3,10 @@
 Python in the browser behind one small JavaScript API. The Pyodide backend runs real CPython (WebAssembly) inside a web worker. The Brython backend transpiles Python to JavaScript in the page itself, for instant lightweight scripts such as turtle graphics.
 
 ```javascript
-import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js';
+import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.51/src/nagini.js';
 
 const manager = await Nagini.createManager('pyodide', ['numpy'], [], [],
-  'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js');
+  'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/pyodide/worker/worker-dist.js');
 await Nagini.waitForReady(manager, 60000);
 
 const result = await manager.executeAsync('demo.py', 'import numpy as np\nprint(np.arange(5).mean())');

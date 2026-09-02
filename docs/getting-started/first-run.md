@@ -9,9 +9,9 @@ Two complete pages, one per backend. Both are copy-paste ready.
 <meta charset="utf-8">
 <pre id="out">loading Python…</pre>
 <script type="module">
-  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js';
+  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.51/src/nagini.js';
 
-  const WORKER = 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/pyodide/worker/worker-dist.js';
+  const WORKER = 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/pyodide/worker/worker-dist.js';
   const out = document.getElementById('out');
 
   const manager = await Nagini.createManager('pyodide', ['numpy'], [], [], WORKER);
@@ -42,11 +42,11 @@ What happened, in order: the worker was created from a blob of `worker-dist.js`,
 <div id="turtle-canvas"></div>
 <pre id="out"></pre>
 <script type="module">
-  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.50/src/nagini.js';
+  import { Nagini } from 'https://esm.sh/gh/pointcarre-app/nagini@v0.0.51/src/nagini.js';
 
   const manager = await Nagini.createManager('brython', [], [], [], '', {
-    brythonJsPath: 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/brython/lib/brython.js',
-    brythonStdlibPath: 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.50/src/brython/lib/brython_stdlib.js',
+    brythonJsPath: 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/brython/lib/brython.js',
+    brythonStdlibPath: 'https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.51/src/brython/lib/brython_stdlib.js',
   });
   await Nagini.waitForReady(manager);
 
