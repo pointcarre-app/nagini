@@ -1,7 +1,7 @@
 // Memory snapshot spike (lot C). One scenario per page load, results as JSON
 // in #out, IndexedDB carries snapshots between loads.
 
-const CDN = 'https://cdn.jsdelivr.net/pyodide/v314.0.2/full/';
+const CDN = 'https://cdn.jsdelivr.net/pyodide/v314.0.6/full/';
 const DB_NAME = 'nagini-snapshot-spike';
 const STORE = 'snapshots';
 

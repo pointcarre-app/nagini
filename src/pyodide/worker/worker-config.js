@@ -14,7 +14,7 @@ const PYODIDE_WORKER_CONFIG = {
    * Pyodide CDN URL for loading runtime
    * @type {string}
    */
-  PYODIDE_CDN: "https://cdn.jsdelivr.net/pyodide/v314.0.2/full/",
+  PYODIDE_CDN: "https://cdn.jsdelivr.net/pyodide/v314.0.6/full/",
 
   /**
    * Centralized messages for consistent error reporting and logging

@@ -1,3 +1,10 @@
+# v0.0.51 (unreleased)
+
+- **Pyodide 314.0.6**: default CDN bumped from 314.0.2 (Python 3.14.2 unchanged). 314.0.5 and 314.0.6 fix the Python thread state, `contextvars`, `threading.local()`, signal handling and `sys.settrace` around `pyodide.ffi.run_sync()`, which is the path behind the JSPI `input()` bridge; 314.0.6 also fixes `loadPackage()` rejecting requirement specifiers
+- **Cleanup**: removed the old `experiments/` playgrounds (brython copies, xterm terminal, antlr spike, pca_graph_viz), the pre-scenery `tests/` folder (unified-test.html plus its Flask helper), `todo.md`, the orphan `docs/docs.md` (not in the MkDocs nav, described the pre-v0.0.40 layout) and the disabled `docs.yml` workflow. Everything stays in git history (last present in v0.0.50). The MkDocs social-plugin cache (`.cache/`, 86 files) is no longer tracked
+- **Documentation**: README testing section now points at the scenery suite; `docs/index.md` resynced with the README (it had drifted, still advertising the xterm experiment and the old test page)
+- **Testing**: full suite green 66/66 on 314.0.6
+
 # v0.0.50
 
 - **Fix**: `provideInput` and `queueInput` accept the empty string. A bare Enter is a legal answer to `input()` (Python returns `""`); previously the manager threw `input cannot be empty` before anything reached the worker. The scenery input demos were hardened accordingly (value sent before the field is hidden, submission wrapped in try/catch)
